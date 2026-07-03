@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>影视互动游戏故事节奏验证</title>
+<title>影视互动游戏故事节奏验证 · V0.5 研究版</title>
 <style>
   * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   body { margin:0; background:#eef0f4; font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif; color:#1f2430; }
@@ -119,6 +119,7 @@
 <div class="wrap">
   <div class="head">
     <h1>影视互动游戏故事节奏验证</h1>
+    <span style="font-size:12px;font-weight:700;color:#fff;background:#7c3aed;border-radius:6px;padding:2px 8px;">V0.5 研究版</span>
     <p>题材标签可复合（支持融合）· 时长选引擎 · 结局数定终点</p>
     <button id="openrules" style="height:34px;padding:0 14px;border:1px solid #dfe2ea;border-radius:10px;background:#fff;color:#3a4255;font-size:13px;font-weight:600;cursor:pointer;margin-left:12px;">规则书</button>
     <button id="opencard" style="height:34px;padding:0 14px;border:1px solid #dfe2ea;border-radius:10px;background:#fff;color:#3a4255;font-size:13px;font-weight:600;cursor:pointer;margin-left:8px;">执行卡</button>
@@ -251,13 +252,6 @@
             <label class="flab">OpenRouter API Key</label>
             <input id="orkey" type="password" placeholder="null" class="ctl">
           </div>
-          <div style="flex:1;min-width:180px;">
-            <label class="flab">规则注入 <em>（A/B 对照用）</em></label>
-            <select id="orrules" class="ctl">
-              <option value="card" selected>执行卡（约 3.5k 字符，默认）</option>
-              <option value="full">规则书全文（约 30k，对照实验）</option>
-            </select>
-          </div>
           <div style="flex:1;min-width:220px;">
             <label class="flab">模型</label>
             <select id="ormodel" class="ctl">
@@ -339,10 +333,20 @@
   </div>
 </div>
 
+<div id="rulesmask" style="display:none;position:fixed;inset:0;background:rgba(20,25,40,.45);z-index:60;align-items:flex-start;justify-content:center;padding:24px;overflow:auto;">
+  <div style="background:#fff;border-radius:16px;max-width:900px;width:100%;padding:22px 30px 28px;box-shadow:0 8px 30px rgba(20,25,40,.25);">
+    <div style="display:flex;align-items:center;margin-bottom:6px;position:sticky;top:0;background:#fff;padding:6px 0;">
+      <div style="font-size:18px;font-weight:700;">规则书</div>
+      <button id="rulesclose" style="margin-left:auto;height:34px;padding:0 14px;border:none;border-radius:10px;background:#eef1f6;color:#3a4255;font-size:13px;font-weight:600;cursor:pointer;">关闭</button>
+    </div>
+    <div id="rulesbody" style="font-size:13.5px;line-height:1.8;color:#3a4255;"></div>
+  </div>
+</div>
+
 <div id="cardmask" style="display:none;position:fixed;inset:0;background:rgba(20,25,40,.45);z-index:65;align-items:flex-start;justify-content:center;padding:24px;overflow:auto;">
   <div style="background:#fff;border-radius:16px;max-width:860px;width:100%;padding:22px 26px 26px;box-shadow:0 8px 30px rgba(20,25,40,.25);">
     <div style="display:flex;align-items:center;margin-bottom:10px;position:sticky;top:0;background:#fff;padding:6px 0;">
-      <div style="font-size:18px;font-weight:700;">执行卡 <em style="font-style:normal;font-size:12px;color:#aab0bf;font-weight:500;">（模型实际吃的规则操作层，<span id="cardlen"></span> 字符；与规则书全文同源，改规则书需同步此卡）</em></div>
+      <div style="font-size:18px;font-weight:700;">执行卡</div>
       <button id="cardcopy" style="margin-left:auto;height:34px;padding:0 14px;border:1px solid #dfe2ea;border-radius:10px;background:#fff;color:#3a4255;font-size:13px;font-weight:600;cursor:pointer;">复制</button>
       <button id="cardclose" style="margin-left:8px;height:34px;padding:0 14px;border:none;border-radius:10px;background:#eef1f6;color:#3a4255;font-size:13px;font-weight:600;cursor:pointer;">关闭</button>
     </div>
@@ -363,15 +367,8 @@
   </div>
 </div>
 
-<div id="rulesmask" style="display:none;position:fixed;inset:0;background:rgba(20,25,40,.45);z-index:60;align-items:flex-start;justify-content:center;padding:24px;overflow:auto;">
-  <div style="background:#fff;border-radius:16px;max-width:900px;width:100%;padding:22px 30px 28px;box-shadow:0 8px 30px rgba(20,25,40,.25);">
-    <div style="display:flex;align-items:center;margin-bottom:6px;position:sticky;top:0;background:#fff;padding:6px 0;">
-      <div style="font-size:18px;font-weight:700;">规则书</div>
-      <button id="rulesclose" style="margin-left:auto;height:34px;padding:0 14px;border:none;border-radius:10px;background:#eef1f6;color:#3a4255;font-size:13px;font-weight:600;cursor:pointer;">关闭</button>
-    </div>
-    <div id="rulesbody" style="font-size:13.5px;line-height:1.8;color:#3a4255;"></div>
-  </div>
-</div>
+
+
 
 <script type="text/markdown" id="rulebook">## 阅读说明
 
@@ -840,7 +837,7 @@
 | 9 | 3–4 | 0–1 | 4–6 |
 | 10 | 3–4 | 0–1 | 5–7 |
 
-4. **主结局数（题材驱动）**：下限 2（N = 1、或 ≤10 分钟的纯爱 / 抽象可为 1）；一般上限 4。例外：多女主按"每人一个 + 可含'都不选'"可更高；**以结局为核心玩法的题材**（如 Slay the Princess）主结局可一路吃满 N。
+4. **主结局数（题材驱动）**：下限 2（N = 1、或 ≤10 分钟的纯爱 / 抽象可为 1）；一般上限 4，**主结局最多不超过 6**。例外：多女主按"每人一个 + 可含'都不选'"可到 6；**以结局为核心玩法的题材**（如 Slay the Princess）主结局也以 6 为上限、不再一路吃满 N（超出的名额留给小结局）。
 5. **中间大结局 0–1**：仅当有"名利游戏式"的早期隐藏结局机会才取 1（且 N ≥ 3 才有空间）。
 6. **小结局 = 余量**（N − 主结局 − 中间大结局）：是情绪调剂 / 施压手段，**N ≥ 5 时尽量让小结局 ≥ 主结局**；N 小时可为 0。起段那个教学交互点，若有小结局预算就用它当第 1 个死路，没预算就让它"汇回主线"、不必是死路。
 7. 节点总数 ≥ 结局数（总）+ 1。
@@ -1027,8 +1024,6 @@ flowchart TD
 - **不入表**：只在单场出现、无需跨场一致性、无戏剧功能的道具（一杯水、一张纸），剧情中自动解决即可，不要罗列。
 - 每件道具须标注：名称、级别（核心/普通）、外观固定描述、承担的功能（核心道具必填四项之一或多项）、出现场次。
 - 落点：道具总表与场景人物总表同级产出，同为画面资产生成的直接输入。
-
-
 </script>
 
 <script type="text/plain" id="execcard">【互动短剧生成执行卡】与《规则书》全文同源的操作层，含全部操作定义与数值口径，必须逐条执行。区间含两端。
@@ -1065,7 +1060,7 @@ flowchart TD
 - 三类互动：决策性（改分支树，重，集中章节高潮）；情感类（必须让人物情感有链接与改变，最好可量化）；调剂类（安全选项，塑规则/人物/世界观；在连续安全选项中突袭真选择＝质提升；正确做法＝每选项给不同即时结果再合流，忌"两选项同节点、零差异"空选项）。
 - 四段分配（仅长片，只数分支互动，为 18–25 总量的子集）：60 分满载 起≤5 承≤6 转≤5 合≤2（合计 18）。段上限＝round(满载×T/60)；每段在[下限..上限]内取值不固定；T＞10 每段≥1，T≤10 允许 0；全局互动≥2。优先级：段满载（硬上限）＞每 2–4 集一互动（平均目标）＞总量经验值。
 - 编织带：任一路径平均每 2–4 集 1 互动，连续无互动≤4 集；每互动 2–4 选项（推荐 2–3），每选项须有明确代价或实质后果差异；决策/情感类禁伪选项（调剂类安全选项除外）；首层≤4 分支；第二层及更深：**要继续走的分支**汇合≥80%（目标 85%，只约束继续分支、防主线炸开）；死路不进收敛分母、数量按【3】结局分配表定；护栏＝均匀铺开不扎堆＋同一互动不全是死路(至少留一条活路)。少做"空合流"假选项＝一个互动的多个选项直接指向同一后续节点且零差异（选了等于没选）：合流要**带差异地合流**——每个选项先各自岔出一个不同的即时结果节点（不同的一小段戏/反馈/被记住）再汇合回主线；做不到差异就删掉这个选项、改纯剧情。
-- 结局体系（三种全计入 E）：末段主结局(主结局)＝核心体验价值分歧终点；中间大结局＝隐藏结局，起/承带前置条件岔出、2–4 节点(约3分钟)走完转＋合的替代人生圆满收场，全局 0–1（范例：名利游戏，主角”珍惜眼前人”退居幕后捧红女友的隐藏好结局）；小结局/死路＝选错即死，兼作中段情绪调剂/施压。先定主结局、再铺小结局余量。分配软区间（N=总结局数，模型按题材浮动取值）：N1→主1/中0/小0；N2→2/0/0；N3→2/0-1/0-1；N4→2/0-1/1-2；N5→2-3/0-1/2-3；N6→2-3/0-1/2-3；N7→3/0-1/3-4；N8→3/0-1/4-5；N9→3-4/0-1/4-6；N10→3-4/0-1/5-7。主结局题材驱动：下限2(N1或≤10min纯爱/抽象可1)、一般上限4，多女主可含”都不选”更高、结局即玩法(Slay the Princess类)可吃满N；小结局＝余量，N≥5尽量≥主结局，起段教学交互点有预算就当第1个死路、没预算就汇回主线。节点总数≥E＋1。放置(仅长片)：末段主结局全落”合”段、临近结尾连续数个互动分批岔各1–2个、禁单点炸开；中间大结局落起/承隐藏岔口；小结局均匀铺中段不扎堆。冲突裁决：三种之和严格＝E 优先级最高；主结局按题材定、小结局＝余量兜底凑齐 E。
+- 结局体系（三种全计入 E）：末段主结局(主结局)＝核心体验价值分歧终点；中间大结局＝隐藏结局，起/承带前置条件岔出、2–4 节点(约3分钟)走完转＋合的替代人生圆满收场，全局 0–1（范例：名利游戏，主角”珍惜眼前人”退居幕后捧红女友的隐藏好结局）；小结局/死路＝选错即死，兼作中段情绪调剂/施压。先定主结局、再铺小结局余量。分配软区间（N=总结局数，模型按题材浮动取值）：N1→主1/中0/小0；N2→2/0/0；N3→2/0-1/0-1；N4→2/0-1/1-2；N5→2-3/0-1/2-3；N6→2-3/0-1/2-3；N7→3/0-1/3-4；N8→3/0-1/4-5；N9→3-4/0-1/4-6；N10→3-4/0-1/5-7。主结局题材驱动：下限2(N1或≤10min纯爱/抽象可1)、一般上限4、最多不超过6，多女主可含”都不选”到6、结局即玩法(Slay the Princess类)也以6为上限不吃满N；小结局＝余量，N≥5尽量≥主结局，起段教学交互点有预算就当第1个死路、没预算就汇回主线。节点总数≥E＋1。放置(仅长片)：末段主结局全落”合”段、临近结尾连续数个互动分批岔各1–2个、禁单点炸开；中间大结局落起/承隐藏岔口；小结局均匀铺中段不扎堆。冲突裁决：三种之和严格＝E 优先级最高；主结局按题材定、小结局＝余量兜底凑齐 E。
 - 时长推荐（仅未指定时）五因子：高唤醒负向情绪→短；世界观重→长；群像多线→长；累积成长爽点→长；信息密度高→适度拉长。锚点：恐怖/单案 30–45；恋爱/职场/轻悬疑 45–90；权谋/修仙/群像 90–180＋。
 
 【6 剧本制作约束（分场剧本层，生成阶段即执行）】
@@ -1136,6 +1131,7 @@ flowchart TD
   function esc(s){ return String(s==null?'':s).replace(/[&<>]/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[m];}); }
   function mkReq(){
     var T=lastT, E=lastE;
+    var nodeFloor=Math.max(8,E+3), nodeCap=Math.max(22,E*3+2); // 节点总数上限随结局数放大（E=10 时可到 ~32）
     var tags=pickedList();
     var brief=(document.getElementById('brief').value||'').trim();
     var s='【输入】\n'
@@ -1144,7 +1140,7 @@ flowchart TD
       +'时长：'+T+' 分钟\n'
       +'结局数：'+E+' 个主结局\n'
       +'引擎（由时长判定）：'+engineOf(T).txt+'\n\n'
-      +'【任务】你已加载《互动短剧设计规则书》全文作为系统提示，必须逐条忠实执行。请为上述输入生成一套真实可执行的大纲与分集流程，按文末【输出格式】分两段输出。JSON 规格：\n'
+      +'【任务】你已加载《互动短剧设计规则书》的执行卡（操作层）作为系统提示，必须逐条忠实执行。请为上述输入生成一套真实可执行的大纲与分集流程，按文末【输出格式】分两段输出。JSON 规格：\n'
       +'{\n'
       +'  "consistency": {"conflict":"输入自相矛盾描述，无矛盾写\\"无\\"","intent":"真实意图判断","resolution":"裁决方式","newT":调整后时长分钟数,"newE":调整后结局数},\n'
       +'  "logline": "一句话定位，一句之内含期待/反转/钩子/情绪",\n'
@@ -1166,7 +1162,7 @@ flowchart TD
       +'【反俗套硬规则】① 核心装置先列3个候选并在逻辑链第0步展示，第一直觉（训练集最高频）强制弃用，除非用户点名；系统面板/系统宕机/许愿代价类高频装置默认禁用。② 每次反转在逻辑链里写出连锁反应链（A→B→C 至少两环），禁止撞车/坠楼类外部事故反转。③ payoffs 至少1条，每条的 enabledBy 必须是真实存在的 choice 节点 id，beats 中该翻盘拍的 D 必须由负翻正。\n'
       +'【consistency 硬规则】第0步开头先做输入自洽检验（见执行卡【0 全局】容量公式）：内容承诺与时长/结局数矛盾时，以内容承诺为真实意图上调时长，把裁决写进 consistency 字段和逻辑链第0步；newT/newE 填裁决后实际采用的值（无矛盾就填原值），全部后续输出（引擎/节点/beats 时间轴）都按 newT/newE 执行。\n'
       +'【题材与标签硬规则】genres.main必为男频或女频；genres.sub 仅当是恋爱题材时填“恋爱”，非恋爱填空字符串（组合只有：男频 / 男频·恋爱 / 女频 / 女频·恋爱）。tags 恰好 5 个、按 weight 降序；若为恋爱题材，第1个标签必为情感基调（美女like/乙女/纯爱 三选一）；其余自由（如 校园/奇幻/悬疑）。【用户硬输入标签必须体现】输入里用户已选/手填的题材标签必须出现在 tags 里（除非与故事完全不符需在日志里说明为何弃用）；用户选了超过 5 个时，取权重最大的 5 个。\n'
-      +'【nodes 硬规则】① kind 取 normal（剧情）/ choice（抉择，next 每项 label 必填选项文字）/ major（算数正式结局，无 next，且必须加 sub 字段：sub="end"＝末段主结局、sub="mid"＝中间大结局/隐藏结局）/ minor（死路小结局，无 next）；② id 用“集-序[-分支字母]”如 1-4、1-5-A；③ 结局数是总数：major＋minor 的节点总数必须严格等于结局数 E；其中主结局与小结局的拆分按分配软区间（见系统提示，题材浮动：先定主结局≥2，小结局＝余量，N≥5小结局尽量≥主结局，中间大结局0–1）；④ 每个 choice 2–4 个 next，禁止伪选项（某选项明显更优、其余纯送死）；也要少做"空合流"假选项——同一 choice 的多个 next 不要全部 to 同一个节点且无差异（选了等于没选）；要合流也得"带差异地合流"：让各选项先各自经过一个不同的即时结果节点（不同的一小段戏/反馈/被记住），再汇合到共享后续；做不到差异就删掉该选项改纯剧情；⑤ 图必须连通，所有节点从第一个节点可达；⑥ 节点总数控制在 8–22 个；⑦ 每个节点必填 cast（画面内人物）与 script（分场剧本：口语化台词为主＋简单动作，150–300字，禁止镜头外模糊调度、禁止复杂运动运镜；人物出场前须先被台词建置；台词符合各自 voice 人设）。\n'
+      +'【nodes 硬规则】① kind 取 normal（剧情）/ choice（抉择，next 每项 label 必填选项文字）/ major（算数正式结局，无 next，且必须加 sub 字段：sub="end"＝末段主结局、sub="mid"＝中间大结局/隐藏结局）/ minor（死路小结局，无 next）；② id 用“集-序[-分支字母]”如 1-4、1-5-A；③ 结局数是总数：major＋minor 的节点总数必须严格等于结局数 E；其中主结局与小结局的拆分按分配软区间（见系统提示，题材浮动：先定主结局 2–6（最多 6），小结局＝余量，N≥5小结局尽量≥主结局，中间大结局0–1）；④ 每个 choice 2–4 个 next，禁止伪选项（某选项明显更优、其余纯送死）；也要少做"空合流"假选项——同一 choice 的多个 next 不要全部 to 同一个节点且无差异（选了等于没选）；要合流也得"带差异地合流"：让各选项先各自经过一个不同的即时结果节点（不同的一小段戏/反馈/被记住），再汇合到共享后续；做不到差异就删掉该选项改纯剧情；⑤ 图必须连通，所有节点从第一个节点可达；⑥ 节点总数控制在 '+nodeFloor+'–'+nodeCap+' 个（随结局数放大，别硬塞满）；⑦ 每个节点必填 cast（画面内人物）与 script（分场剧本：口语化台词为主＋简单动作，150–300字，禁止镜头外模糊调度、禁止复杂运动运镜；人物出场前须先被台词建置；台词符合各自 voice 人设）。\n'
       +'（短片按结局树、长片按情绪弧组织；beats 的 t＝分钟、V 和 D 都必须给、取 −1 到 1，beats 至少 5 拍且覆盖全程；flowEnter＝大概第几分钟玩家进入心流；choices 与 nodes 里的 choice 节点一一对应。）\n\n'
       +'【输出格式】分两段：\n第一段【生成日志】——严格按规则书第四部分“生成顺序”的六步，逐步写出你对本案例的具体决策（每步 3–6 行，写具体内容禁止套话）：\n第0步 输入自洽检验＋题材先验：先用容量公式反查输入是否自相矛盾（矛盾则写明真实意图与裁决、新参数）；再题材画像/是否需类型融合/视角/金手指及其限制/数值信封（时长·抉择数·结局数总数→先按题材定主结局集合、判断是否有中间大结局）/一句话定位四要素自检；\n第1步 立情绪脊：主干各拍的 PAD 坐标与拐点（哪里 D 负翻正、哪里 V 正翻负）、反差催化剂、观众已知/主角未知的反讽账；\n第2步 识别岔点：从脊上列出候选岔点清单，每个标注价值岔向与选项代价；\n第3步 铺分支拓扑：说明怎么剪裁岔点满足节奏数学（抉择数/三种结局按软区间分配/小结局位置）；\n第4步 填内容：关键节点的场景/人物建置/结局差异化要点，并对 2–3 个关键节点展示题材透镜过程（情节骨架→题材反差物→升级收口→钩子）；\n第5步 自检：对照规则书第五部分清单逐项报 ✓/✗，有 ✗ 必须回步修正后再输出。\n然后另起一行只写 ===JSON===，之后只输出上面规定的 JSON，不要再有其他文字。';
     if(tags.indexOf('抽象')>=0){ s+='\n\n【抽象说明】题材含"抽象"：请以 B站 / 抖音 当下最热门的抽象梗为素材来构建（梗迭代极快，一律取当前流行的，不要套用过时老梗）。'; }
@@ -1291,12 +1287,14 @@ flowchart TD
 
   // ===== 自动模式：直连 OpenRouter（kian 用的就是它）=====
   var SYS='你是互动短剧结构生成器，遵循《互动短剧设计规则书》。⚠ 第零优先：先做输入自洽检验（容量公式：主线≥15分＋每条完整情感弧光≈20分＋每名露脸角色≈5分），用户内容承诺与时长矛盾时，真实意图＝内容承诺，上调时长并重定引擎，裁决写进 consistency。核心：① 题材层：判断题材够不够成为产品；弱题材靠类型融合破局（底色＝用户点的类型，融一个供能类型当惊喜），每阶段配强敌＋可克服难关；必须有受限的金手指。② 引擎由时长定：≤30分钟＝结局树（装置先行→一次兑现＋一记反转→抉择树→2–4结局）；≥45分钟＝情绪弧（起承转合七拍＋PAD坐标V/A/D＋反差催化剂）；30–45过渡。③ 前五分钟必有一个教学交互点，落在第一个情节点高潮；起段固定 1 个选错即死。④ 结局数＝三种之和(末段主结局＋中间大结局0–1＋小结局/死路)，用户输入的就是总数；先按题材定主结局(下限2，≤10min纯爱/抽象可1)、再按余量铺小结局(N≥5尽量多于主结局)，中间大结局＝隐藏结局仅0–1；分配按软区间表(见执行卡【3】)；每个结局一个鲜明的价值/情绪落点。⑤ 一句话定位须含期待/反转/钩子/情绪四要素。⑥ 大纲与节点文字必须具体可执行：写真实场景、真实事件、画面内的人，禁止“主角遇到困难”这类空话。⑦ 剧本层：台词口语化（默认中文，用户提及西幻/具体国家用该语种）、固定镜头为主、以台词传信息传情感、对话符合人设、人物先建置后出场；先产出人物全状态卡与场景日夜状态卡。角色分类用四类固定标签：恋爱类＝主角/男主/女主/配角/NPC，非恋爱类＝主角/主配/配角/NPC；NPC＝跨场出现但没戏、只需固定形象的功能角色也要列。道具分两级入 props：核心道具（金手指载体/世界规则物证/异性信物/反转扳机，至少一项功能）与普通道具（跨场需固定形象）；单场无功能道具不列。⑧ 反俗套：装置三选一弃第一直觉（高频装置默认禁用）；反转必须连锁链≥2环、禁外部事故；每个爽点＝D轴翻盘×玩家抉择促成×反讽风险，登记进 payoffs。⑨ 单点情节题材透镜：每个关键情节先落地一件具体的事，再过题材透镜换成题材独有的反差物（融合题材从供能类型取），收口在题材逻辑内升级禁止常识性收口，钩子留下一段催化剂口子（最强＝双义钩子）；平情节只许当铺陈不许作节点落点。台词比重高于动作，全部script通读顺畅。⑩ 力度谱：开场压制V∈[−0.6,−0.35]且D≤−0.5；首个释放点落差≥0.7；中段最强压制V≤−0.6落差≥1.0反号；高潮释放V≥+0.8落差≥1.4且D翻正；收尾V∈[+0.2,+0.5]；释放强度看落差；两个释放拍之间必有V≤−0.2回落。收到【输入】后只返回规定 JSON，不要多余文字。';
-  var RB=(document.getElementById('rulebook').textContent||'').trim();
   var EXEC=(document.getElementById('execcard').textContent||'').trim();
-  function rulesMode(){ var s=document.getElementById('orrules'); return s?s.value:'card'; }
+  var RB=(document.getElementById('rulebook').textContent||'').trim();
 
   // ===== 拓展能力注册表（基础框架之外的叠加层，开关存 localStorage）=====
   var EXTENSIONS=[
+    { id:'emotion_calib', name:'情绪校准度评测', on:false,
+      desc:'开启后，「情绪对照」页签才出现力度校准评分区（逐拍评压制/释放强弱、保存/重评、可写评语），「记录」里才出现「导出全部校准数据」按钮。关闭时不评分、不导出——纯用来看结构与偏移。',
+      inject:'' },
     { id:'passive_cond', name:'被动条件判断', on:false,
       desc:'允许生成“被动触发”的结局：不由任何抉择直接指向，而是因为玩家“选了/没选某些分支”而被动落入（如：未走任何感情线→孤身成长结局）。仅结构型条件，不含数值累加（数值系统另等拓展）。',
       inject:'\n\n【拓展：被动条件判断（已开启）】除主动抉择（choice→next）外，允许生成“被动触发”节点：由前置结构条件触发，而非某个 choice 的 next 指向。这类节点必须加字段 trigger:{"type":"passive","condition":"触发条件（只写结构型：选了/没选哪些分支、未走哪条线，如‘未走任何感情线且未选 1-3-B’）"}。禁止写数值累加型条件（如“好感度≤60”）——数值系统不属于本拓展。被动节点 kind 仍为 major/minor（计入结局总数），无 next；它不是孤儿，是有意的被动兼底结局。未开启本拓展时，所有结局必须由某条 next 指向（不得产生被动节点）。'
@@ -1313,10 +1311,7 @@ flowchart TD
   extLoad();
 
   function buildSys(){
-    var base = rulesMode()==='full'
-      ? SYS+'\n\n【规则书全文 · 必须逐条忠实执行，冲突时以全文为准】\n\n'+RB
-      : SYS+'\n\n'+EXEC;
-    return base + extInject();
+    return SYS+'\n\n'+EXEC+extInject();
   }
 
   // 拓展弹窗
@@ -1348,8 +1343,6 @@ flowchart TD
   document.getElementById('extallon').addEventListener('click', function(){ EXTENSIONS.forEach(function(e){e.on=true;}); extSave(); extRender(); bindExtToggles(); document.getElementById('sysprompt').value=buildSys(); });
   document.getElementById('extalloff').addEventListener('click', function(){ EXTENSIONS.forEach(function(e){e.on=false;}); extSave(); extRender(); bindExtToggles(); document.getElementById('sysprompt').value=buildSys(); });
   document.getElementById('sysprompt').value=buildSys();
-  document.getElementById('orrules').addEventListener('change', function(){ try{ localStorage.setItem('or_rules', this.value); }catch(e){} });
-  try{ var _rr=localStorage.getItem('or_rules'); if(_rr) document.getElementById('orrules').value=_rr; }catch(e){}
   // Key / 模型 记忆（仅存本机 localStorage）
   try{
     var _k=localStorage.getItem('or_key'), _m=localStorage.getItem('or_model'), _mc=localStorage.getItem('or_model_custom');
@@ -1483,6 +1476,11 @@ flowchart TD
     if(hollow.length) soft=soft.concat(hollow.map(function(n){ return '空合流假选项：抉择 '+n.id+' 的多个选项都通向同一节点（'+((n.next||[])[0]||{}).to+'）且无差异，等于选了没选——应让各选项先经过一个不同的即时结果节点再合流，或删掉该选项改纯剧情。'; }));
     // 结局分配倾向：N≥5 时小结局宜 ≥ 主结局（用死路铺中段压力）
     if(lastE>=5 && minors.length<majors.length) soft=soft.concat(['结局分配：总数 '+lastE+'（N≥5）建议小结局 ≥ 主结局，当前 死路 '+minors.length+' < 主/中间大 '+majors.length+'，可多用死路铺中段压力。']);
+    // 锦上添花：major 结局未标 sub(end/mid)，流程图无法区分末段主结局与中间大结局
+    var majNoSub=majors.filter(function(n){ return n.sub!=='end'&&n.sub!=='mid'; });
+    if(majNoSub.length) soft=soft.concat(['以下 major 结局未标 sub 字段（end=末段主结局 / mid=中间大结局），流程图将默认按末段主结局显示，建议补标：'+majNoSub.map(function(n){return n.id;}).join('、')]);
+    var midCount=majors.filter(function(n){return n.sub==='mid';}).length;
+    if(midCount>1) soft=soft.concat(['中间大结局（sub="mid"）有 '+midCount+' 个，规则是全局 0–1 个，多出的应改成末段主结局(sub="end")或小结局。']);
     var pass=hard.every(function(h){return h.ok;});
     return { hard:hard, soft:soft, pass:pass };
   }
@@ -1623,14 +1621,13 @@ flowchart TD
   // 执行卡查看弹窗
   document.getElementById('opencard').addEventListener('click', function(){
     document.getElementById('cardbody').textContent=EXEC;
-    document.getElementById('cardlen').textContent=EXEC.length;
     document.getElementById('cardmask').style.display='flex';
   });
   document.getElementById('cardclose').addEventListener('click', function(){ document.getElementById('cardmask').style.display='none'; });
   document.getElementById('cardmask').addEventListener('click', function(e){ if(e.target===this) this.style.display='none'; });
   document.getElementById('cardcopy').addEventListener('click', function(){ try{ navigator.clipboard.writeText(EXEC); this.textContent='已复制'; var b=this; setTimeout(function(){ b.textContent='复制'; },1200); }catch(e){} });
 
-  document.getElementById('openhist').addEventListener('click', function(){ histRender(); document.getElementById('histmask').style.display='flex'; });
+  document.getElementById('openhist').addEventListener('click', function(){ document.getElementById('histexport').style.display=(typeof extOn==='function'&&extOn('emotion_calib'))?'':'none'; histRender(); document.getElementById('histmask').style.display='flex'; });
   document.getElementById('histclose').addEventListener('click', function(){ document.getElementById('histmask').style.display='none'; });
   document.getElementById('histmask').addEventListener('click', function(e){ if(e.target===this) this.style.display='none'; });
   document.getElementById('histclear').addEventListener('click', function(){ if(confirm('清空全部生成记录？')){ try{ localStorage.removeItem(HKEY); }catch(e){} histRender(); } });
@@ -1699,14 +1696,14 @@ flowchart TD
     logLine('▸ 参数｜时长 '+lastT+' 分，结局数 '+lastE+'，题材 '+(tags.length?tags.join('＋'):'（未选）')+'，引擎：'+engineOf(lastT).txt);
     mkReq();
     var sys=buildSys();
-    logLine('▸ 规则注入：'+(rulesMode()==='full'?'规则书全文（对照实验）':'执行卡')+'，系统提示 '+sys.length+' 字符');
+    logLine('▸ 规则注入：执行卡，系统提示 '+sys.length+' 字符');
     var baseUser=document.getElementById('req').value;
     var MARK='===JSON===', MAXTRY=2;
     var attempt=0;
 
     function runOnce(user){
       attempt++;
-      logLine('▸ 调用 '+model+'（第 '+attempt+' 次）｜系统提示＝规则书全文，要求按第四部分六步输出逻辑链…');
+      logLine('▸ 调用 '+model+'（第 '+attempt+' 次）｜系统提示＝执行卡，要求按第四部分六步输出逻辑链…');
       logLine('──────────────────────────────');
       var acc='', shownDone=false, lastUsage=null;
       var CHAIN_EXP=2200, JSON_EXP=9000;
@@ -1764,7 +1761,7 @@ flowchart TD
         progSet(100,'完成 ✓');
         logLine('✓ 全部完成。分集流程图已自动打开；校验分析在下方输出区顶部；偏移分析见「情绪对照」页签。');
         histSave({ time:new Date().toLocaleString('zh-CN',{hour12:false}), title:(d.logline||'').slice(0,40), runId:d.__runId,
-          params:'时长'+lastT+'分/结局'+lastE+'/'+(tags.length?tags.join('＋'):'无标签')+'/'+model+'/'+(rulesMode()==='full'?'全文':'执行卡'),
+          params:'时长'+lastT+'分/结局'+lastE+'/'+(tags.length?tags.join('＋'):'无标签')+'/'+model+'/执行卡',
           pass:va.pass, attempts:attempt, log:logEl.textContent, analysisText:analysisText, json:c,
           input:{ brief:briefTxt, tags:tagsNow.slice(), dur:genDurSel, ends:genEndsSel } });
         logLine('▸ 已存入「📜 记录」（右上角），最多保留 100 条。');
@@ -1810,19 +1807,17 @@ flowchart TD
   document.getElementById('ccok').addEventListener('click', function(){ document.getElementById('ccmask').style.display='none'; });
   document.getElementById('ccmask').addEventListener('click', function(e){ if(e.target===this) this.style.display='none'; });
 
-  // ===== 规则书 · 帮助弹窗 =====
-  var rulesRendered=false;
-  document.getElementById('openrules').addEventListener('click', function(){
-    if(!rulesRendered){ document.getElementById('rulesbody').innerHTML=mdToHtml((document.getElementById('rulebook').textContent||'').trim()); rulesRendered=true; }
-    document.getElementById('rulesmask').style.display='flex';
-  });
-  document.getElementById('rulesclose').addEventListener('click', function(){ document.getElementById('rulesmask').style.display='none'; });
-  document.getElementById('rulesmask').addEventListener('click', function(e){ if(e.target===this) this.style.display='none'; });
 
   // ===== markdown 渲染（规则书全文）=====
   var lastData=null;
   function esc2(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function mdInline(s){ var p=esc2(s).split('**'),o=''; for(var k=0;k<p.length;k++){ o+=(k%2===1)?('<strong>'+p[k]+'</strong>'):p[k]; } return o; }
+  document.getElementById('openrules').addEventListener('click', function(){
+    document.getElementById('rulesbody').innerHTML=mdToHtml(RB);
+    document.getElementById('rulesmask').style.display='flex';
+  });
+  document.getElementById('rulesclose').addEventListener('click', function(){ document.getElementById('rulesmask').style.display='none'; });
+  document.getElementById('rulesmask').addEventListener('click', function(e){ if(e.target===this) this.style.display='none'; });
   function mdToHtml(md){
     var L=md.split('\n'), out=[], i=0;
     while(i<L.length){ var ln=L[i], t=ln.trim();
@@ -1881,6 +1876,7 @@ flowchart TD
   var CKEY='calib_data_v2';  // { runId: { beats:[{beat,t,V,type,verdict,note}], overallNote, savedAt, tags, T, logline } }
   function calibAll(){ try{ return JSON.parse(localStorage.getItem(CKEY)||'{}'); }catch(e){ return {}; } }
   function calibHtml(){
+    if(!(typeof extOn==='function' && extOn('emotion_calib'))) return ''; // 情绪校准度评测拓展关闭时不显示评分区
     if(!hasCase()) return '';
     var beats=emoData(), tags=pickedList();
     var store=calibAll()[curRunId()];
