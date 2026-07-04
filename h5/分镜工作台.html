@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>分镜工作台 · V0.1 研究版</title>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{margin:0;background:#eef0f4;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#1f2430;}
+  .wrap{max-width:1240px;margin:0 auto;padding:22px;}
+  .head{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+  .head h1{font-size:20px;font-weight:700;margin:0;letter-spacing:.5px;}
+  .head .ver{font-size:12px;font-weight:700;color:#fff;background:#0891b2;border-radius:6px;padding:2px 8px;}
+  .head p{margin:0 0 0 auto;font-size:12px;color:#7a8194;}
+  .btn-top{height:34px;padding:0 14px;border:1px solid #dfe2ea;border-radius:10px;background:#fff;color:#3a4255;font-size:13px;font-weight:600;cursor:pointer;}
+  .btn-top:hover{border-color:#b9c0cf;}
+  .grid{display:flex;gap:18px;align-items:flex-start;}
+  .panel{background:#fff;border-radius:16px;box-shadow:0 1px 3px rgba(20,25,40,.06);}
+  .left{width:380px;flex:none;padding:20px;}
+  .right{flex:1;min-width:0;padding:0;overflow:hidden;}
+  @media (max-width:900px){.grid{flex-direction:column;}.left{width:100%;}}
+  .field{margin-bottom:18px;}
+  .field>label{display:block;font-size:13px;font-weight:600;color:#3a4255;margin-bottom:8px;}
+  .field label em{font-style:normal;color:#aab0bf;font-weight:500;}
+  textarea,input.ctl,select.ctl{width:100%;border:1px solid #dfe2ea;border-radius:12px;background:#fafbfc;padding:12px;font-size:13px;line-height:1.6;color:#1f2430;box-sizing:border-box;}
+  input.ctl,select.ctl{height:46px;padding:0 14px;}
+  select.ctl{appearance:none;-webkit-appearance:none;cursor:pointer;padding-right:38px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M2 4.5l4 4 4-4' fill='none' stroke='%238a92a6' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat:no-repeat;background-position:right 14px center;}
+  .tabsrc{display:flex;gap:8px;margin-bottom:12px;}
+  .tabsrc button{flex:1;height:38px;border:1.5px solid #dfe2ea;border-radius:10px;background:#fafbfc;color:#3a4255;font-size:13px;font-weight:600;cursor:pointer;}
+  .tabsrc button.on{background:#1f2430;border-color:#1f2430;color:#fff;}
+  .srcpane{display:none;}
+  .srcpane.on{display:block;}
+  .btn{width:100%;height:50px;border:none;border-radius:13px;font-size:15px;font-weight:600;cursor:pointer;background:#0891b2;color:#fff;margin-top:6px;}
+  .btn:active{opacity:.85;}
+  .hint{font-size:11.5px;color:#9aa1b1;margin-top:8px;line-height:1.6;}
+  .rbar{display:flex;align-items:center;gap:10px;padding:15px 18px;border-bottom:1px solid #eef0f4;flex-wrap:wrap;}
+  .rtitle{font-size:15px;font-weight:700;}
+  .rtabs{display:flex;gap:6px;margin-left:auto;}
+  .rtab{border:none;background:none;font-size:13.5px;font-weight:600;color:#8a92a6;padding:6px 11px;border-radius:8px;cursor:pointer;}
+  .rtab.on{color:#1f2430;background:#eef1f6;}
+  .body{padding:16px 18px;max-height:640px;overflow:auto;}
+  .empty{padding:60px 18px;text-align:center;color:#aab0bf;font-size:13px;}
+  /* 场次选择 */
+  .scenepick{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
+  .scenepick .sc{font-size:12px;padding:6px 11px;border-radius:999px;border:1.5px solid #dfe2ea;background:#fafbfc;color:#3a4255;cursor:pointer;}
+  .scenepick .sc.on{background:#0891b2;border-color:#0891b2;color:#fff;}
+  /* 分镜表 */
+  table.shots{width:100%;border-collapse:collapse;font-size:12px;}
+  table.shots th{background:#eef1f6;padding:6px 8px;text-align:left;white-space:nowrap;position:sticky;top:0;}
+  table.shots td{padding:6px 8px;border-top:1px solid #f2f3f6;vertical-align:top;line-height:1.6;}
+  .beatrow td{background:#f0fbfd;font-weight:700;color:#0e7490;}
+  .cam{background:#fafbfc;border:1px solid #eef0f4;border-radius:10px;padding:10px 12px;font-size:12.5px;line-height:1.8;margin-bottom:12px;}
+  .cam b{color:#1f2430;}
+  .grammar{font-size:13px;font-weight:700;color:#0e7490;margin-bottom:10px;}
+  .note{margin-top:12px;font-size:12.5px;color:#6b7488;background:#fffbeb;border:1px solid #f5e2b8;border-radius:10px;padding:10px 12px;line-height:1.8;}
+  /* 提示词卡 */
+  .pcard{border:1px solid #eef0f4;border-radius:10px;padding:10px 12px;margin-bottom:10px;background:#fafbfc;font-size:12.5px;line-height:1.75;}
+  .pcard b{color:#0e7490;}
+  .pcard pre{white-space:pre-wrap;margin:6px 0 0;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#3a4255;}
+  #genlog{display:none;background:#14181f;color:#d5dae4;border-radius:14px;padding:14px 16px;font-size:12px;line-height:1.8;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;max-height:300px;overflow:auto;margin-top:12px;}
+  /* 锁定态 */
+  #orview{display:none;}
+  .mask{display:none;position:fixed;inset:0;background:rgba(20,25,40,.45);z-index:60;align-items:flex-start;justify-content:center;padding:24px;overflow:auto;}
+  .mask .box{background:#fff;border-radius:16px;max-width:820px;width:100%;padding:22px 26px 26px;box-shadow:0 8px 30px rgba(20,25,40,.25);}
+  .mask pre{background:#fafbfc;border:1px solid #eef0f4;border-radius:12px;padding:16px;font-size:12.5px;line-height:1.9;white-space:pre-wrap;font-family:inherit;margin:0;}
+  .hbtn{height:30px;padding:0 12px;border:1px solid #dfe2ea;border-radius:8px;background:#fff;color:#3a4255;font-size:12px;font-weight:600;cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <h1>分镜工作台</h1>
+    <span class="ver">V0.1 研究版</span>
+    <button id="opencard" class="btn-top" style="margin-left:12px;">导演分镜执行卡</button>
+    <p>只做「分集 / 一场戏 → 分镜表 + 分镜提示词」。同源：skill/导演分镜故事版拓展能力</p>
+  </div>
+
+  <div class="grid">
+    <!-- 左：输入 -->
+    <div class="panel left">
+      <div class="tabsrc">
+        <button id="src-json" class="on">接剧本 JSON</button>
+        <button id="src-text">手填一场戏</button>
+      </div>
+
+      <div class="srcpane on" id="pane-json">
+        <div class="field">
+          <label>粘贴分集 / 剧本 JSON <em>（来自「故事节奏验证」H5 的生成结果，或结构骨架）</em></label>
+          <textarea id="jsonin" style="height:150px;" placeholder='粘贴含 nodes 的 JSON，例如 {"nodes":[{"id":"1-1","loc":"…","script":"…"}...]}'></textarea>
+        </div>
+        <div class="field" id="scenewrap" style="display:none;">
+          <label>选要分镜的场次 <em>（点选一个或多个节点）</em></label>
+          <div class="scenepick" id="scenepick"></div>
+        </div>
+      </div>
+
+      <div class="srcpane" id="pane-text">
+        <div class="field">
+          <label>直接写一场戏 <em>（剧情 + 台词，大白话即可）</em></label>
+          <textarea id="textin" style="height:150px;" placeholder="例：雨夜，废弃医院一楼大厅。阿岩戴着耳蜗贴着墙，听见拐角有脚步。他压低声音问林雨：走正门还是侧窗？林雨说侧窗。两人屏息。"></textarea>
+        </div>
+        <div class="field">
+          <label>想要的感觉 <em>（可选：悬念/压迫/温情/暧昧…）</em></label>
+          <input id="moodin" class="ctl" type="text" placeholder="例：压迫、命悬一线">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>镜头风格约束 <em>（默认固定镜头，最贴 AI 视频）</em></label>
+        <select id="camstyle" class="ctl">
+          <option value="fixed" selected>固定镜头为主（推荐）</option>
+          <option value="free">允许必要动镜</option>
+        </select>
+      </div>
+
+      <div class="btn" id="gen">✦ 生成分镜</div>
+      <div class="hint">先在下方「对接模型」填 Key、选模型并锁定。分镜规则内嵌于本页执行卡，点顶部按钮可查看。</div>
+
+      <!-- 对接模型 -->
+      <div style="margin-top:20px;border-top:1px solid #eef0f4;padding-top:16px;">
+        <div style="font-size:14px;font-weight:700;margin-bottom:10px;">对接模型</div>
+        <div id="oredit">
+          <div class="field"><label>OpenRouter API Key</label><input id="orkey" class="ctl" type="password" placeholder="null"></div>
+          <div class="field"><label>模型</label>
+            <select id="ormodel" class="ctl">
+              <option value="anthropic/claude-opus-4.8" selected>Claude Opus 4.8（默认）</option>
+              <option value="openai/gpt-5.5">GPT-5.5</option>
+              <option value="anthropic/claude-sonnet-5">Claude Sonnet 5</option>
+              <option value="__other__">其他（自填 slug）</option>
+            </select>
+            <input id="ormodel_custom" class="ctl" type="text" placeholder="其他：填 model slug" style="display:none;margin-top:8px;">
+          </div>
+          <button id="orlock" class="btn" style="height:42px;">确定锁定</button>
+        </div>
+        <div id="orview" style="position:relative;">
+          <button id="orunlock" class="hbtn" style="position:absolute;top:0;right:0;">✎ 编辑</button>
+          <div style="font-size:13px;color:#3a4255;line-height:1.9;">🔒 已锁定　模型：<b id="orview_model"></b><br>Key：<span id="orview_key" style="font-family:ui-monospace,monospace;"></span></div>
+        </div>
+      </div>
+      <div id="genlog"></div>
+    </div>
+
+    <!-- 右：分镜呈现 -->
+    <div class="panel right">
+      <div class="rbar">
+        <span class="rtitle">分镜结果</span>
+        <div class="rtabs">
+          <button class="rtab on" data-rt="board">分镜表</button>
+          <button class="rtab" data-rt="prompt">分镜提示词</button>
+        </div>
+      </div>
+      <div class="body">
+        <div id="pane-board"><div class="empty">（左侧输入 → 生成分镜，这里显示逐镜头分镜表）</div></div>
+        <div id="pane-prompt" style="display:none;"><div class="empty">（生成后，这里显示一镜一条、可复制的分镜提示词）</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 执行卡弹窗 -->
+<div id="cardmask" class="mask">
+  <div class="box">
+    <div style="display:flex;align-items:center;margin-bottom:10px;">
+      <div style="font-size:18px;font-weight:700;">导演分镜执行卡 <em style="font-style:normal;font-size:12px;color:#aab0bf;font-weight:500;">（模型实际吃的规则，与 skill 同源）</em></div>
+      <button id="cardclose" class="hbtn" style="margin-left:auto;">关闭</button>
+    </div>
+    <pre id="cardbody"></pre>
+  </div>
+</div>
+
+<script type="text/plain" id="execcard">【导演分镜执行卡】把一场戏翻成逐镜头分镜表＋可喂 AI 视频的分镜提示词。导演＝解决特定戏剧问题的视觉语法，不是名字。
+
+【四步】
+第一步 诊断戏剧问题（内部思考、不单列输出）：这场戏要让观众产生什么？剧情＝发生了什么，戏剧问题＝观众该被怎样对待。
+第二步 挑导演语法：一主至多一辅。速查——发现真相/奇观/亲情/让观众认同→斯皮尔伯格；多线并行/倒计时/谜题/被系统压迫→诺兰；谎言/审讯/调查/被监控→芬奇；悬念(观众知危险角色不知)/窥视/延迟揭示→希区柯克；群像调度/天气即情绪/权力移动→黑泽明；家庭秩序/沉默/克制→小津；爱而不得/暧昧/错过→王家卫；欲望/复仇/精密操控/对称控制→朴赞郁；仪式感/制度恐惧/冷峻空间→库布里克；巨大尺度/神秘/负空间/命运压迫→维伦纽瓦。混搭必写清谁是骨架谁是调味。
+第三步 出分镜：先锚定全场相机（一台机身＋一组基准焦段，全片统一，服务情绪）。把戏拆成拍子(beat)，每拍若干镜头，逐镜填字段：镜号/时长/构图/画面描述/景别/焦段(mm)/机位/运镜/情绪/动作/微表情/情绪变化/节奏/剪辑点/声音。
+  · 焦段是性格：14–24广角=尺度压迫吞人；35–50标准=客观日常纪实；85中长=特写压缩隔离亲密；135+长焦=强压缩群像/偷窥监控。
+  · 运镜以固定为主(重要)：默认锁死机位，动的是人物与环境(雨/闪电/穿框)，不是相机。运镜栏多数写"固定"。要动须理由极硬、轻/短/有落点，绝不满场推摇、绝不一镜到底。
+  · 运动语法翻成固定语法：推近→切更紧景别；横移连两人→固定双人构图内走位；摇镜揭示→切或让对象移进画框；跟拍→人物穿过固定画框/几个固定机位接力。
+  · 镜头数手感：情绪戏3–6镜，动作/信息量大8–12。宁可每镜有目的，不凑数。
+第四步 出分镜提示词：把分镜表逐镜转成可喂 AI 视频的提示词，一镜一条，固定三段：①开头逐字写死"不要出现BGM，不要出现字幕，保留音效。"②风格与氛围(全场统一一句，复用相机质感＋情绪基调)③画面(景别＋焦段、明确写"固定机位无运镜"、主体动作、环境动态、光线、保留音效——通顺自然语言)。自检：开头三句逐字在最前；无BGM无字幕音效保留；运镜写固定机位无运镜；焦段与固定机位都带上；只描述本镜不跨镜、不写剪辑点/情绪变化/微表情等表内信息。
+
+【原则】反应比事物重要(先拍脸再拍揭示)；机位即态度(仰=强/俯=压/平=平等/低位固定=冷静旁观)；固定镜头是默认也是风格；相机焦段是叙事；留白沉默是语言；"这镜服务什么"是内部标尺不写进表；贴着用户的故事走、不改剧情走向。
+
+【输出格式】
+## 导演语法
+主：<导演> · 辅：<导演或无> —— <一句话为什么>
+## 全场相机
+机身：<型号＋一句为什么>　基准镜头：<焦段组，如 24/35/85mm>
+## 分镜（严格 JSON，供页面渲染成表）
+===JSON===
+{
+  "grammar":"主X·辅Y——一句话",
+  "camera":{"body":"机身型号＋理由","lenses":"24/35/85mm"},
+  "beats":[
+    {"name":"拍子1在干什么","shots":[
+      {"no":"1","dur":"2秒","comp":"构图","desc":"画面描述","size":"远景","lens":"24mm","pos":"街口低位","move":"固定","emo":"情绪","act":"动作","micro":"微表情","emoshift":"情绪变化","rhythm":"节奏","cut":"剪辑点","sound":"声音"}
+    ]}
+  ],
+  "note":"一句话导演笔记：最容易翻车处或一个小抓手",
+  "prompts":[
+    {"no":"1","text":"不要出现BGM，不要出现字幕，保留音效。\n风格与氛围：<统一质感基调>\n画面：<景别+焦段、固定机位无运镜、主体动作、环境动态、光线、保留音效>"}
+  ]
+}
+只返回 ===JSON=== 之后的 JSON，不要多余文字。prompts 与 beats 里所有 shots 一一对应（按镜号）。</script>
+
+<script>
+(function(){
+  var EXEC=(document.getElementById('execcard').textContent||'').trim();
+  var SYS='你是资深分镜导演，遵循《导演分镜执行卡》。把用户给的一场戏翻成逐镜头分镜表和可直接喂 AI 视频生成的分镜提示词。导演语法一主至多一辅；全场锚定一台相机；运镜以固定镜头为主（默认锁死机位，动的是人物与环境）；焦段是性格不是尺子；反应比事物重要；贴着用户的故事走、绝不改剧情。只返回执行卡规定的 JSON。';
+
+  // ---- 输入源切换 ----
+  var srcMode='json';
+  function setSrc(m){ srcMode=m;
+    document.getElementById('src-json').classList.toggle('on',m==='json');
+    document.getElementById('src-text').classList.toggle('on',m==='text');
+    document.getElementById('pane-json').classList.toggle('on',m==='json');
+    document.getElementById('pane-text').classList.toggle('on',m==='text');
+  }
+  document.getElementById('src-json').addEventListener('click',function(){setSrc('json');});
+  document.getElementById('src-text').addEventListener('click',function(){setSrc('text');});
+
+  // ---- JSON 输入 → 解析出场次供选择 ----
+  var parsedNodes=[], pickedScenes={};
+  document.getElementById('jsonin').addEventListener('input',function(){
+    var raw=this.value.trim(); parsedNodes=[]; pickedScenes={};
+    var wrap=document.getElementById('scenewrap'), pick=document.getElementById('scenepick');
+    if(!raw){ wrap.style.display='none'; return; }
+    var d; try{ d=JSON.parse(raw); }catch(e){ wrap.style.display='none'; return; }
+    var ns=Array.isArray(d.nodes)?d.nodes:(Array.isArray(d)?d:[]);
+    ns=ns.filter(function(n){ return n && n.id && (n.script||n.text); });
+    if(!ns.length){ wrap.style.display='none'; return; }
+    parsedNodes=ns;
+    pick.innerHTML=ns.map(function(n){ return '<span class="sc" data-id="'+esc(n.id)+'">'+esc(n.id)+(n.loc?'·'+esc(n.loc):'')+'</span>'; }).join('');
+    wrap.style.display='block';
+    [].forEach.call(pick.querySelectorAll('.sc'),function(s){ s.addEventListener('click',function(){ var id=this.getAttribute('data-id'); pickedScenes[id]=!pickedScenes[id]; this.classList.toggle('on',pickedScenes[id]); }); });
+  });
+
+  function esc(s){ return String(s==null?'':s).replace(/[&<>]/g,function(m){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[m];}); }
+
+  // ---- 锁定 Key ----
+  function modelLabel(){ var s=document.getElementById('ormodel'); if(s.value==='__other__') return (document.getElementById('ormodel_custom').value||'').trim()||'（未填）'; return s.options[s.selectedIndex].textContent; }
+  function getModel(){ var s=document.getElementById('ormodel'); return s.value==='__other__'?(document.getElementById('ormodel_custom').value||'').trim():s.value; }
+  function setLocked(on){
+    document.getElementById('oredit').style.display=on?'none':'block';
+    document.getElementById('orview').style.display=on?'block':'none';
+    if(on){ document.getElementById('orview_model').textContent=modelLabel(); var k=(document.getElementById('orkey').value||'').trim(); document.getElementById('orview_key').textContent=k?'************':'null'; }
+    try{ localStorage.setItem('sb_locked',on?'1':''); }catch(e){}
+  }
+  function isLocked(){ return document.getElementById('orview').style.display!=='none'; }
+  document.getElementById('ormodel').addEventListener('change',function(){ document.getElementById('ormodel_custom').style.display=this.value==='__other__'?'block':'none'; try{localStorage.setItem('sb_model',this.value);}catch(e){} });
+  document.getElementById('orlock').addEventListener('click',function(){ var k=(document.getElementById('orkey').value||'').trim(); if(!k){alert('先填 API Key');return;} if(!getModel()){alert('选其他时请填 slug');return;} try{localStorage.setItem('sb_key',k);localStorage.setItem('sb_model',document.getElementById('ormodel').value);}catch(e){} setLocked(true); });
+  document.getElementById('orunlock').addEventListener('click',function(){ setLocked(false); });
+  try{ var _k=localStorage.getItem('sb_key'),_m=localStorage.getItem('sb_model'); if(_k)document.getElementById('orkey').value=_k; if(_m){document.getElementById('ormodel').value=_m; if(_m==='__other__')document.getElementById('ormodel_custom').style.display='block';} if(localStorage.getItem('sb_locked')==='1'&&_k)setLocked(true); }catch(e){}
+
+  // ---- 执行卡弹窗 ----
+  document.getElementById('opencard').addEventListener('click',function(){ document.getElementById('cardbody').textContent=EXEC; document.getElementById('cardmask').style.display='flex'; });
+  document.getElementById('cardclose').addEventListener('click',function(){ document.getElementById('cardmask').style.display='none'; });
+  document.getElementById('cardmask').addEventListener('click',function(e){ if(e.target===this)this.style.display='none'; });
+
+  // ---- 结果页签 ----
+  document.querySelectorAll('.rtab').forEach(function(b){ b.addEventListener('click',function(){
+    document.querySelectorAll('.rtab').forEach(function(x){x.classList.remove('on');}); this.classList.add('on');
+    var rt=this.getAttribute('data-rt');
+    document.getElementById('pane-board').style.display=rt==='board'?'':'none';
+    document.getElementById('pane-prompt').style.display=rt==='prompt'?'':'none';
+  }); });
+
+  // ---- 日志 ----
+  var logEl=document.getElementById('genlog');
+  function logReset(){ logEl.style.display='block'; logEl.textContent=''; }
+  function logLine(s){ logEl.textContent+=s+'\n'; logEl.scrollTop=logEl.scrollHeight; }
+  function logStream(s){ logEl.textContent=logHead+s; logEl.scrollTop=logEl.scrollHeight; }
+  var logHead='';
+
+  // ---- 组装输入戏文 ----
+  function buildSceneText(){
+    if(srcMode==='text'){
+      var t=(document.getElementById('textin').value||'').trim();
+      var mood=(document.getElementById('moodin').value||'').trim();
+      if(!t) return null;
+      return '【一场戏】\n'+t+(mood?('\n【想要的感觉】'+mood):'');
+    }
+    // json 模式
+    var picks=parsedNodes.filter(function(n){ return pickedScenes[n.id]; });
+    if(!picks.length){ picks=parsedNodes; } // 没选就全给（但通常一次一两场）
+    if(!picks.length) return null;
+    var s='【分集剧本（按顺序，请为每个场次出分镜）】\n';
+    picks.forEach(function(n){
+      s+='\n场次 '+n.id+(n.loc?'｜'+n.loc:'')+(n.time?'｜'+n.time:'')+'\n'+(n.script||n.text||'')+'\n';
+    });
+    return s;
+  }
+
+  // ---- 生成 ----
+  var busy=false;
+  document.getElementById('gen').addEventListener('click',function(){
+    if(busy) return;
+    if(!isLocked()){ alert('先在下方「对接模型」填 Key、选模型并锁定'); return; }
+    var scene=buildSceneText();
+    if(!scene){ alert(srcMode==='text'?'先写一场戏':'先粘贴 JSON 并选场次（或粘贴含 nodes 的 JSON）'); return; }
+    var camNote=document.getElementById('camstyle').value==='free'?'允许必要动镜（但仍以固定为主，动镜须轻/短/有落点）':'固定镜头为主，运镜栏默认写“固定”';
+    busy=true; var btn=document.getElementById('gen'), old=btn.textContent; btn.textContent='生成中…';
+    logReset(); logLine('▸ 输入：'+(srcMode==='text'?'手填一场戏':'剧本 JSON '+(scene.split('场次 ').length-1)+' 个场次'));
+    logLine('▸ 镜头风格：'+camNote);
+    logLine('▸ 调用 '+getModel()+'，按导演分镜执行卡出分镜…\n──────────────────────────────');
+    var key=(document.getElementById('orkey').value||'').trim();
+    var user=scene+'\n\n【镜头风格约束】'+camNote+'\n\n请按导演分镜执行卡出分镜：先诊断戏剧问题(内部)、挑导演语法、锚定全场相机、逐镜填表、再逐镜出分镜提示词。只返回 ===JSON=== 之后的 JSON。';
+    logHead=logEl.textContent;
+    var acc='';
+    fetch('https://openrouter.ai/api/v1/chat/completions',{method:'POST',headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json'},
+      body:JSON.stringify({model:getModel(),temperature:0.7,max_tokens:16000,stream:true,messages:[{role:'system',content:SYS+'\n\n'+EXEC},{role:'user',content:user}]})
+    }).then(function(r){
+      if(!r.ok) return r.json().then(function(j){ throw new Error((j&&j.error&&j.error.message)||('HTTP '+r.status)); });
+      if(!r.body||!r.body.getReader) return r.text().then(function(t){ acc=t; finish(); });
+      var rd=r.body.getReader(),dec=new TextDecoder(),sse='';
+      function pump(){ return rd.read().then(function(x){ if(x.done){finish();return;}
+        sse+=dec.decode(x.value,{stream:true}); var ls=sse.split('\n'); sse=ls.pop();
+        ls.forEach(function(ln){ ln=ln.trim(); if(ln.slice(0,5)!=='data:')return; var p=ln.slice(5).trim(); if(p==='[DONE]')return;
+          try{ var jj=JSON.parse(p); var dl=jj.choices&&jj.choices[0]&&jj.choices[0].delta&&jj.choices[0].delta.content; if(dl){ acc+=dl; var i=acc.indexOf('===JSON==='); logStream(i>=0?acc.slice(0,i):acc); } }catch(e){}
+        }); return pump();
+      }); }
+      return pump();
+    }).catch(function(e){ logLine('\n✗ 调用失败：'+e.message); done(); });
+
+    function finish(){
+      var c=acc, i=c.indexOf('===JSON==='); if(i>=0)c=c.slice(i+10);
+      var a=c.indexOf('{'),b=c.lastIndexOf('}'); if(a>=0&&b>a)c=c.slice(a,b+1); else { logLine('\n✗ 没找到 JSON'); done(); return; }
+      var d; try{ d=JSON.parse(c); }catch(e){ logLine('\n✗ JSON 解析失败：'+e.message); done(); return; }
+      logLine('\n▸ 分镜接收完成，渲染…'); renderBoard(d); renderPrompts(d);
+      logLine('✓ 完成。分镜表见右侧，分镜提示词切右上页签。'); done();
+    }
+    function done(){ busy=false; btn.textContent=old; }
+  });
+
+  var COLS=[['no','镜号'],['dur','时长'],['size','景别'],['lens','焦段'],['pos','机位'],['move','运镜'],['comp','构图'],['desc','画面描述'],['act','动作'],['micro','微表情'],['emo','情绪'],['emoshift','情绪变化'],['rhythm','节奏'],['cut','剪辑点'],['sound','声音']];
+  function renderBoard(d){
+    var h='';
+    if(d.grammar) h+='<div class="grammar">🎬 '+esc(d.grammar)+'</div>';
+    if(d.camera) h+='<div class="cam"><b>全场相机</b>　机身：'+esc(d.camera.body||'')+'　｜　基准焦段：'+esc(d.camera.lenses||'')+'</div>';
+    var beats=Array.isArray(d.beats)?d.beats:[];
+    if(beats.length){
+      h+='<table class="shots"><tr>'+COLS.map(function(c){return '<th>'+c[1]+'</th>';}).join('')+'</tr>';
+      beats.forEach(function(bt){
+        h+='<tr class="beatrow"><td colspan="'+COLS.length+'">● '+esc(bt.name||'拍子')+'</td></tr>';
+        (bt.shots||[]).forEach(function(s){ h+='<tr>'+COLS.map(function(c){return '<td>'+esc(s[c[0]]||'')+'</td>';}).join('')+'</tr>'; });
+      });
+      h+='</table>';
+    }
+    if(d.note) h+='<div class="note"><b>导演笔记：</b>'+esc(d.note)+'</div>';
+    document.getElementById('pane-board').innerHTML=h||'<div class="empty">（没解析到 beats）</div>';
+  }
+  function renderPrompts(d){
+    var ps=Array.isArray(d.prompts)?d.prompts:[];
+    if(!ps.length){ document.getElementById('pane-prompt').innerHTML='<div class="empty">（模型没返回 prompts）</div>'; return; }
+    var h='<div style="margin-bottom:10px;"><button class="hbtn" id="copyall">复制全部提示词</button></div>';
+    h+=ps.map(function(p){ return '<div class="pcard"><b>【镜头'+esc(p.no)+'】</b><pre>'+esc(p.text||'')+'</pre></div>'; }).join('');
+    var box=document.getElementById('pane-prompt'); box.innerHTML=h;
+    var all=ps.map(function(p){return '【镜头'+p.no+'】\n'+(p.text||'');}).join('\n\n');
+    var cp=document.getElementById('copyall'); if(cp) cp.addEventListener('click',function(){ try{navigator.clipboard.writeText(all); this.textContent='已复制'; var b=this; setTimeout(function(){b.textContent='复制全部提示词';},1200);}catch(e){} });
+  }
+})();
+</script>
+</body>
+</html>
