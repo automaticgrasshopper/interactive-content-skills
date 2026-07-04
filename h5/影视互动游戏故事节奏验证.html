@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>影视互动游戏故事节奏验证 · V0.5 研究版</title>
+<title>影视互动游戏故事节奏验证 · V0.6 研究版</title>
 <style>
   * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   body { margin:0; background:#eef0f4; font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif; color:#1f2430; }
@@ -119,7 +119,7 @@
 <div class="wrap">
   <div class="head">
     <h1>影视互动游戏故事节奏验证</h1>
-    <span style="font-size:12px;font-weight:700;color:#fff;background:#7c3aed;border-radius:6px;padding:2px 8px;">V0.5 研究版</span>
+    <span style="font-size:12px;font-weight:700;color:#fff;background:#7c3aed;border-radius:6px;padding:2px 8px;">V0.6 研究版</span>
     <p>题材标签可复合（支持融合）· 时长选引擎 · 结局数定终点</p>
     <button id="openrules" style="height:34px;padding:0 14px;border:1px solid #dfe2ea;border-radius:10px;background:#fff;color:#3a4255;font-size:13px;font-weight:600;cursor:pointer;margin-left:12px;">规则书</button>
     <button id="opencard" style="height:34px;padding:0 14px;border:1px solid #dfe2ea;border-radius:10px;background:#fff;color:#3a4255;font-size:13px;font-weight:600;cursor:pointer;margin-left:8px;">执行卡</button>
@@ -384,7 +384,7 @@
 
 <script type="text/markdown" id="rulebook">## 阅读说明
 
-本规则书把互动影视游戏的设计经验整理成七个部分。前三部分是三层规则，第四部分是把它们落地成剧本的操作顺序，第五部分是自检清单，第六部分是关键口径说明，第七部分是剧本生成与制作约束（从大纲到分场剧本的落地规则）。
+本规则书把互动影视游戏的设计经验整理成七个部分。前三部分是三层规则，第四部分是把它们落地成剧本的操作顺序，第五部分是自检清单，第六部分是关键口径说明〔INST〕，第七部分是剧本生成与制作约束（从大纲到分场剧本的落地规则）〔/INST〕。
 
 - **题材** 决定为用户生成的这个题材，够不够格称为一个产品；如果不够，缺在哪里。它先于故事。
 - **故事** 决定"用什么内容去兑现题材对玩家许下的承诺"。
@@ -445,12 +445,13 @@
 - **系统规则**：这个世界里"什么可以做、什么会导致什么结果"的一套明确因果。
 - **金手指**：主角相对普通人所拥有的特殊优势或特权。
 
-四条规则：
+五条规则：
 
 1. 必须为每个产品提炼一套"高于玩家认知"的系统规则；否则会出现逻辑漏洞，以及"品类漂移"（产品在生成中跑偏成另一种题材）。
 2. 博弈、智斗、权谋类题材自带被广泛共识的规则性（选对阵营、找对伙伴、避免死亡、成为老大、逃离危局），通常更容易做好。
 3. 其余题材同样可做，但前提是系统先把规则梳理清楚，再生成故事。
 4. 必须有金手指，并且必须明确限制它的"使用规则"和"使用场景"。不受限制的金手指会摧毁难度与代价，游戏随之失去张力。
+5. 金手指不限定为异能或特殊强能力——它是"主角相对普通人独占的那点优势"，形态随题材而变。历史权谋、谍战这类题材里，**超群的智力 / 谋略本身**就是金手指；乙女、纯爱这类题材里，**主角自身的魅力 / 共情力**就是金手指。无论何种形态，都仍受第 4 条约束：必须限定它的"使用规则"与"使用场景"，不能无限制。
 
 ## 1.3　题材想象空间：一份分阶段的幻想契约
 
@@ -468,6 +469,30 @@
 3. 题材划定后，它的"想象空间阶段清单"作为已知输入交给后续的故事生成。
 
 > **重要区分**：题材层的"达成"是**保证**，不是悬念。真正允许失败、需要拉扯的悬念，留给故事层的**情感线**（见 2.5）。事业维度保证兑现，情感维度可成可败——两者分工明确，并不矛盾。
+
+### 1.3.1　热门题材池（优先推荐与融合的备选清单）
+
+以下是当下男频 / 女频较为火热的题材，每条箭头链就是它现成的"想象空间阶段清单"（即 1.3 的分阶段幻想契约、阶段幻想）。当需要为用户推荐题材、或按 1.4 做类型融合时，**优先从这个池子里选取，或在池内相互融合**；池内每条都可直接作为已知输入交给后续故事生成。这不是封闭清单——用户点名池外题材照做，池子只是"没方向时的高命中率起点"。
+
+**男频**
+
+- 历史模拟器：当上皇帝 → 争权夺位 → 掌握朝政 → 统一天下 → 平定叛乱 → 身后留名
+- 无限流：新手入局 → 摸清规则 → 组队博弈 → 变强通关 → 揭开幕后 → 掀桌反杀
+- 系统文：绑定系统 → 签到领奖 → 扮猪吃虎打脸 → 兑换黑科技 → 建势力滚雪球 → 声名鹊起 → 揭系统来历
+- 悬疑恐怖：遭遇诡异 → 察觉异常 → 抽丝剥茧 → 命悬一线 → 惊天反转 → 对决元凶 → 细节回收
+- 盗墓冒险：得图寻踪 → 组队下墓 → 机关陷阱 → 遭遇诡物 → 夺宝相争 → 墓主秘辛 → 死里逃生
+- 末日生存：灾变降临 → 逃生求活 → 搜集物资 → 建据点组队 → 守卫血战 → 派系人祸 → 寻根源找希望
+- 修仙炼丹：踏入仙途 → 拜师得法 → 筑基突破 → 炼丹炼器 → 宗门斗法 → 渡劫飞升 → 掌控大道
+- 游戏竞技：菜鸟入坑 → 苦练技术 → 初露锋芒 → 战队羁绊 → 强敌对决 → 逆风翻盘 → 登顶封神
+
+**女频**
+
+- 宫斗宅斗：初入宫门 → 遭人算计 → 隐忍布局 → 反击打脸 → 争宠夺权 → 扳倒宿敌 → 掌家母仪
+- 综艺想象：拿到入场券 → 初登舞台 → 才艺惊艳 → 综艺名场面 → 竞争淘汰 → 圈粉爆红 → 加冕顶流
+- 年代发家：落魄开局 → 抓住商机 → 白手起家 → 生意扩张 → 迎战打压 → 情感圆满 → 富甲一方
+- 萌宝萌娃：萌宝登场 → 卖萌治愈 → 牵线护家 → 识破坏人 → 团宠光环 → 撮合相认 → 一家团圆
+- 穿书逆袭：穿成炮灰 → 避开死亡 flag → 反套路改命 → 打脸原主 → 攻略大腿 → 改写结局 → 逆天成主角
+- 纯爱百合：初遇心动 → 暧昧拉扯 → 双向奔赴 → 外界阻力 → 误会分离 → 破镜重圆 → 相守圆满
 
 ## 1.4　类型融合与破局
 
@@ -778,7 +803,7 @@
 
 - 定义：为让体验舒服、或用于引导教学而设置的、对剧情和情绪**没有真实影响**的选择，即"**安全选项**"，用于塑造规则、塑造人物或交代世界观。
 - 反直觉的用法：在连续几个安全选项中间，突然嵌入一个真正的情感类或决策性互动，会让游戏性产生质的提升——因为玩家在放松警惕后被真选择击中。
-- 做法要求：调剂类互动的每个选项也要给出**不同的即时结果**（岔出一小段不同的戏 / 一句不同的反馈 / 被人记住），再合流回主线；**不要做"两个选项直接指向同一节点、零差异"的空合流假选项**——那是"选了等于没选"，应尽量少做，宁可改成纯剧情。
+- 做法要求：调剂类互动的每个选项也要给出**不同的即时结果**（岔出一小段不同的戏 / 一句不同的反馈 / 被人记住），再合流回主线；**禁止"两个选项直接指向同一节点、零差异"的空合流假选项**——那是"选了等于没选"，一律不许，凑不出差异就改成纯剧情。
 
 ## 3.4　选择在起承转合四段的分配：数量模型
 
@@ -814,7 +839,7 @@
 四组规则：
 
 - **节奏**：沿任一路径，平均每 2 到 4 集出现 1 个互动；硬上限是任一路径上连续不含互动的集数 ≤ 4。
-- **选项**：每个互动给 2 到 4 个选项（推荐 2 到 3）；每个选项必须具备"明确代价"或"实质后果差异"之一；禁止**伪决策**，即不得存在某一选项明显更优、其余纯送死的情形。**同时要少做"空合流"假选项**：即两个（或多个）选项直接汇入同一个后续节点、彼此毫无差异（"选了等于没选"）。合流本身没问题——编织带就是要时分时合——但必须**带差异地合流**：每个选项先各自产生一个不同的即时结果（岔出一小段不同的戏 / 一句不同的反馈 / "有人记住了你的选择"），再并回主线。做不到差异，就不如省掉这个选项、改成纯剧情推进。
+- **选项**：每个互动给 2 到 4 个选项（推荐 2 到 3）；每个选项必须具备"明确代价"或"实质后果差异"之一；禁止**伪决策**，即不得存在某一选项明显更优、其余纯送死的情形。**同时禁止"空合流"假选项（硬规则）**：同一个互动里，任意两个选项的下一节点不得是同一个——两个选项直接汇入同一后续节点、彼此零差异（"选了等于没选"）一律禁止。合流本身没问题——编织带就是要时分时合——但必须**带差异地合流**：每个选项先各自经过一个不同的即时结果节点（岔出一小段不同的戏 / 一句不同的反馈 / "有人记住了你的选择"），再并回主线。骨架：✗ 选项 A、B 的 next 都指向 1-3；✓ A→1-2-A、B→1-2-B，再由 1-2-A、1-2-B 各自并回 1-3。做不到差异，就删掉这个选项、改成纯剧情推进，绝不允许两条直接并到同一节点。
   - **与 3.3 的衔接**：这里"禁止安全选项"只针对**决策性与情感类**互动；3.3 的**调剂类**安全选项是另一种、有意为之的类型。判断办法：这个选项是否被设计为"对剧情情绪无真实影响"，是则属调剂类，允许；否则属决策类，禁止其成为伪选项。**但即便是允许的调剂类，也遵守上面的"带差异地合流"——调剂类给的是"不同的即时反馈后再合流"，不是"两选项指向同一节点、零差异"。**
 - **宽度**：第一层互动最多分出 4 条分支。
 - **收敛**：第二层及更深的分支里，**要继续往下走的那些**，绝大多数必须汇合回共享后续——**汇合 ≥ 80%**（目标约 85%）。这条只约束"继续分支"，作用是防主线炸开。**小结局（死路）不进这个分母**：它的数量由 3.6 的结局分配表按总结局数定，是单列预算，不是深层分支的百分比。两条护栏：小结局必须**均匀铺开、不扎堆**（按分配数摊到中段各处）；**同一个互动的选项不能全是死路**，至少留一条活路继续。
@@ -944,7 +969,7 @@ flowchart TD
 - 成功是否来自连锁反应而非名义事件？结果是否包含成、败两种可能？
 - 一句话定位是否写得出，且在一句之内同时含期待、反转、钩子、情绪四要素？
 - 关键节点是否都过了题材透镜（2.8）：反差物题材独有？收口在题材逻辑内升级而非常识解决？钩子为下一段留了口子？有无平情节被用作节点落点？
-- 分场剧本全部 script 按顺序通读是否顺畅？台词比重是否高于动作？
+〔INST〕- 分场剧本全部 script 按顺序通读是否顺畅？台词比重是否高于动作？〔/INST〕
 - 异性数量与出场节奏是否达标（短产品 2 到 3 名，依次登场后再设福利节点）？
 
 **节奏**
@@ -979,7 +1004,7 @@ flowchart TD
 9. **类型融合：底色 > 供能**。用户点名的类型是底色，核心承诺必须兑现；融进来的供能类型只增益，不喧宾夺主（见 1.4）。
 
 
----
+〔INST〕---
 # 第七部分　剧本生成与制作约束：从大纲到分场剧本的落地规则
 
 本部分约束"分集 → 分场剧本"阶段的具体写法。背景：当前 AI 视频生成对复杂运动与运镜的表现不佳、镜头变形大，台词是传递信息最可靠的通道。所以剧本层的总原则是：**以传递本场信息与情感为主要目标，而非以复杂运动和运镜为目标**。
@@ -1035,7 +1060,7 @@ flowchart TD
 - **普通道具**：戏剧性弱但**跨场出现、形象需要固定**的道具（例：一次性消耗的钥匙，但跨场景使用了）。不承担核心功能，只需标定外观防止跨场漂移。
 - **不入表**：只在单场出现、无需跨场一致性、无戏剧功能的道具（一杯水、一张纸），剧情中自动解决即可，不要罗列。
 - 每件道具须标注：名称、级别（核心/普通）、外观固定描述、承担的功能（核心道具必填四项之一或多项）、出现场次。
-- 落点：道具总表与场景人物总表同级产出，同为画面资产生成的直接输入。
+- 落点：道具总表与场景人物总表同级产出，同为画面资产生成的直接输入。〔/INST〕
 </script>
 
 <script type="text/plain" id="execcard">【符号】（下文用到即引用、不再解释）：T=主线时长(分,唯一自由变量)；E=总结局数(三种结局之和)；P=(V,A,D)∈[−1,1]³=情绪坐标(效价/唤醒/支配)；Δ=相邻拍之差；落差=一段内 max−min；翻盘拍≡D 由−→+；跌落≡V 由+→−；拐点≡某轴 sign 翻转；∝T≡按 T/60 同比缩放；round=四舍五入；所有数值区间含两端。
@@ -1047,8 +1072,9 @@ flowchart TD
 
 【1 题材（先于故事）】
 - 视角：纯情感/乙女/美女陪伴→POV；纯故事→三视角；两者都重→按题材权衡。
-- 必须提炼系统规则（世界里什么可做、什么导致什么），防品类漂移；必须有金手指且限定使用规则＋使用场景。
+- 必须提炼系统规则（世界里什么可做、什么导致什么），防品类漂移；必须有金手指且限定使用规则＋使用场景。金手指不限异能/强能力＝“主角相对普通人独占的那点优势”，形态随题材变：历史权谋·谍战中智力/谋略本身、乙女纯爱中主角魅力/共情力本身也算金手指（同样须限定使用规则与场景）。
 - 题材想象空间＝分阶段幻想契约：终极幻想目标＋中间阶段幻想；每阶段必配一个强敌＋一个可克服难关；事业维度承诺“正确游玩必达成”（悬念留给情感维度）。
+- 热门题材池（优先推荐/融合，非封闭，用户点名池外照做）：需为用户推荐题材或做类型融合时，优先从当下男频/女频热门池取或池内互融；每个题材的阶段幻想清单按上条当场生成。男频＝历史模拟器/无限流/系统文/悬疑恐怖/盗墓冒险/末日生存/修仙炼丹/游戏竞技；女频＝宫斗宅斗/综艺想象/年代发家/萌宝萌娃/穿书逆袭/纯爱百合。
 - 题材画像五项：核心幻想/阶段幻想清单/天然强敌/可克服难关/核心爽点类型。不达标→类型融合：①诊断缺口②按缺口选供能类型（缺强敌/规则→悬疑推理规则怪谈；缺生死代价→时间循环生存惊悚；缺幻想尺度→异能超自然异世界）③底色＝用户点名类型必须兑现，融入类型只做惊喜，做成开场后反差催化剂（先纯底色兑现预期，再激励事件翻入第二类型）④融合后重验画像＋logline。优先级：底色＞供能。
 
 【2 故事】
@@ -1071,11 +1097,11 @@ flowchart TD
 - 选择总量：长片 ∈[18,25]/60min（三类和，中位 20，∝T）；短片例外 1–3（结局树）。
 - 三类互动：决策性（改分支树，重，集中章节高潮）；情感类（必须让人物情感有链接与改变，最好可量化）；调剂类（安全选项，塑规则/人物/世界观；在连续安全选项中突袭真选择＝质提升；正确做法＝每选项给不同即时结果再合流，忌"两选项同节点、零差异"空选项）。
 - 四段分配（仅长片，只数分支互动，⊂18–25）：满载@60min 起5/承6/转5/合2(Σ18)；段上限=round(满载·T/60)；每段取值∈[下限,上限]不固定；T>10⇒每段≥1，T≤10⇒可0；全局≥2。优先级：段满载(硬上限) > 每2–4集1互动(平均) > 总量经验。
-- 编织带：沿任一路径 互动间隔∈[2,4]集、连续无互动≤4；每互动 2–4 选项(荐2–3)，每选项须有明确代价或实质后果差异；决策/情感类禁伪选项(调剂类除外)；首层分支≤4；深层(层≥2)"要继续走"的分支 汇合≥80%(目标85%，只约束继续分支、防炸开)；死路不进收敛分母(数量按结局分配表)。护栏：死路均匀不扎堆 ∧ 同一互动¬(全选项=死路,至少留一活路)。空合流禁令：禁"一互动多 next→同节点且零差异"；要合流则各选项先经各自不同的即时结果节点再汇合(做不到差异就删该选项改纯剧情)。
+- 编织带：沿任一路径 互动间隔∈[2,4]集、连续无互动≤4；每互动 2–4 选项(荐2–3)，每选项须有明确代价或实质后果差异；决策/情感类禁伪选项(调剂类除外)；首层分支≤4；深层(层≥2)"要继续走"的分支 汇合≥80%(目标85%，只约束继续分支、防炸开)；死路不进收敛分母(数量按结局分配表)。护栏：死路均匀不扎堆 ∧ 同一互动¬(全选项=死路,至少留一活路)。空合流禁令(硬)：同一 choice 的任意两个 next 的 to 不得相同——两选项直接并到同一后续节点＝零差异＝选了等于没选，一律禁。合流本身允许，但必须"带差异地合流"：每选项先各经一个 kind=normal 即时结果节点(写各自不同的反应/代价)，再汇到共享后续。骨架：✗ 1-2 next[{to:1-3},{to:1-3}]；✓ 1-2 next[{to:1-2-A},{to:1-2-B}]，再 1-2-A→1-3、1-2-B→1-3。凑不出差异＝该选项本不该有，删掉改纯剧情，绝不许两条 next 直接指向同一节点。
 - 结局体系（三种全计入 E）：末段主结局(主结局)＝核心体验价值分歧终点；中间大结局＝隐藏结局，起/承带前置条件岔出、2–4 节点(约3分钟)走完转＋合的替代人生圆满收场，全局 0–1（范例：名利游戏，主角”珍惜眼前人”退居幕后捧红女友的隐藏好结局）；小结局/死路＝选错即死，兼作中段情绪调剂/施压。先定主结局、再铺小结局余量。分配软区间（N=总结局数，模型按题材浮动取值）：N1→主1/中0/小0；N2→2/0/0；N3→2/0-1/0-1；N4→2/0-1/1-2；N5→2-3/0-1/2-3；N6→2-3/0-1/2-3；N7→3/0-1/3-4；N8→3/0-1/4-5；N9→3-4/0-1/4-6；N10→3-4/0-1/5-7。主结局题材驱动：下限2(N1或≤10min纯爱/抽象可1)、一般上限4、最多不超过6，多女主可含”都不选”到6、结局即玩法(Slay the Princess类)也以6为上限不吃满N；小结局＝余量，N≥5尽量≥主结局，起段教学交互点有预算就当第1个死路、没预算就汇回主线。节点总数≥E＋1。放置(仅长片)：末段主结局全落”合”段、临近结尾连续数个互动分批岔各1–2个、禁单点炸开；中间大结局落起/承隐藏岔口；小结局均匀铺中段不扎堆。冲突裁决：三种之和严格＝E 优先级最高；主结局按题材定、小结局＝余量兜底凑齐 E。
 - 时长推荐（仅未指定时）五因子：高唤醒负向情绪→短；世界观重→长；群像多线→长；累积成长爽点→长；信息密度高→适度拉长。锚点：恐怖/单案 30–45；恋爱/职场/轻悬疑 45–90；权谋/修仙/群像 90–180＋。
 
-【6 剧本制作约束（分场剧本层，生成阶段即执行）】
+〔INST〕【6 剧本制作约束（分场剧本层，生成阶段即执行）】
 - 总原则：以传递本场信息与情感为目标，不以复杂运动和运镜为目标（当前 AI 视频对复杂动作/运镜表现差、变形大）。
 - 人物建置：未出场人物先用台词提及（"周老师说过……"）→ 出场 → 称呼确认；所有人物出场前必须先立起来，禁止无铺垫入画。落点：分集交代关系＋建置镜头。
 - 台词：口语化（短句、有来有回、可打断），禁书面腔；默认中文；用户提及西幻/具体国家 → 必须用该语种口语台词并附中文对照。台词比重高于动作比重（信息与情感主要靠台词，动作只写必要且画面内可稳定生成的）；全部 script 按顺序通读必须顺畅如短篇，符合自然逻辑与自然语言。
@@ -1083,7 +1109,7 @@ flowchart TD
 - 人设：大纲阶段先梳理人物人设与场景；每个人物列出全部状态（如西服/休闲装、真人/僵尸、动物/人形），每状态单独外观要点；对话必须符合人设，不同角色台词可盲听分辨；关系用戏剧表现，不用旁白。
 - 场景：必须分日夜景；同一空间日夜都有戏就拆成两条描述（天台·日 / 天台·夜），各写光线氛围；每场标 场景＋日/夜＋内/外。
 - 输出：场景与人物总表（人物全状态卡＋场景日夜状态卡）先于分集流程图产出，是角色图/场景图资产的直接输入。
-- 道具两级（都必须固定外观描述，防跨场漂移）：核心道具＝线索道具，承担至少一项：交代金手指/展示世界规则/异性信物/核心剧情反转扳机；普通道具＝戏剧性弱但跨场出现需固定形象（如跨场使用的一次性钥匙）。单场无功能道具不入表，剧情自动解决。每件标：名称/级别/外观/功能/出现场次。
+- 道具两级（都必须固定外观描述，防跨场漂移）：核心道具＝线索道具，承担至少一项：交代金手指/展示世界规则/异性信物/核心剧情反转扳机；普通道具＝戏剧性弱但跨场出现需固定形象（如跨场使用的一次性钥匙）。单场无功能道具不入表，剧情自动解决。每件标：名称/级别/外观/功能/出现场次。〔/INST〕
 
 【4 生成顺序（六步，铁律：先立情绪脊，分支从脊上天然岔点派生；禁止先分支后故事，禁止先线性后切分支；数字先定、拓扑后立）】
 第0步 题材先验＋数值信封：视角/权重/系统规则/金手指限制/T→（选择预算、E）/题材级情绪骨架/logline 四要素自检。
@@ -1093,10 +1119,11 @@ flowchart TD
 第4步 填内容：逐节点 plot/冲突/场景；分支真差异；汇合带入先前选择；结局落点各异；新人物先建置后使用；异性依次登场＋福利节奏。
 第5步 自检（下清单），失败回环：结构错→回 3；戏平拐点弱→回 1；内容撑不起分支差异→回 4。
 
-【5 自检清单（逐项报 ✓/✗，有 ✗ 必须回步修正后再输出）】
+〔ADV〕【5 自检清单（逐项报 ✓/✗，有 ✗ 必须回步修正后再输出）】
 题材：视角匹配？系统规则已提炼？金手指已限定？每阶段强敌＋难关？弱题材已融合？
-故事：权重与题材一致？三维幻想成自发逻辑链？每空间登记反讽风险？负面可剥离/爽点可认领且玩家促成？成功来自连锁反应且含成败？logline 四要素？异性数量与节奏达标？关键节点过题材透镜（反差物题材独有/收口升级非常识/钩子留口子）无平情节作落点？剧本通读顺畅且台词比重＞动作？
-节奏：引擎选对？（长片）七拍齐全无聊点为零？（短片）装置先行＋兑现反转＋抉择 1–3 结局 2–4 各有落点？（长篇）每幕每章有局部高潮？前五分钟交互点落第一情节点高潮？选择总量达标？四段在区间内？无连续＞4 集无互动？每互动 2–4 选项无伪选项？深层"继续分支"汇合≥80%？三种结局之和＝E？主结局落软区间且阶梯放置、小结局＝余量均匀铺不扎堆、同一互动不全死路？中间大结局≤1 且必要？</script>
+故事：权重与题材一致？三维幻想成自发逻辑链？每空间登记反讽风险？负面可剥离/爽点可认领且玩家促成？成功来自连锁反应且含成败？logline 四要素？异性数量与节奏达标？关键节点过题材透镜（反差物题材独有/收口升级非常识/钩子留口子）无平情节作落点？〔INST〕剧本通读顺畅且台词比重＞动作？〔/INST〕
+节奏：引擎选对？（长片）七拍齐全无聊点为零？（短片）装置先行＋兑现反转＋抉择 1–3 结局 2–4 各有落点？（长篇）每幕每章有局部高潮？前五分钟交互点落第一情节点高潮？选择总量达标？四段在区间内？无连续＞4 集无互动？每互动 2–4 选项无伪选项？无空合流（同一 choice 无两 next 指向同节点、都带差异地合流）？深层"继续分支"汇合≥80%？三种结局之和＝E？主结局落软区间且阶梯放置、小结局＝余量均匀铺不扎堆、同一互动不全死路？中间大结局≤1 且必要？〔/ADV〕
+〔ADV_OFF〕【5 自检（精简）】内部自检不打印过程，只在 JSON 加 selfcheck 字段（四组：题材/故事/节奏/剧本，每组值为"✓"或"✗:一句原因"）；重点自查主观项（题材透镜/反俗套/logline四要素/力度谱），客观项前端会硬校验；内部发现 ✗ 仍必须先回步修正再输出（修不了才报✗:原因）。〔/ADV_OFF〕</script>
 
 <script>
 (function(){
@@ -1143,6 +1170,8 @@ flowchart TD
   function esc(s){ return String(s==null?'':s).replace(/[&<>]/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[m];}); }
   function mkReq(){
     var T=lastT, E=lastE;
+    var inst=extOn('script_inst'); // 剧本实例化规则：off＝只出结构骨架，JSON 不要 characters/scenes/props、节点不要 cast/script
+    var advChk=extOn('advanced_check'); // 高级自检：off＝精简，只要 selfcheck JSON 字段
     var nodeFloor=Math.max(8,E+3), nodeCap=Math.max(22,E*3+2); // 节点总数上限随结局数放大（E=10 时可到 ~32）
     var tags=pickedList();
     var brief=(document.getElementById('brief').value||'').trim();
@@ -1159,24 +1188,27 @@ flowchart TD
       +'  "genres": {"main":"主题材：男频/女频（按命中）","sub":"副题材：恋爱/非恋爱（非恋爱留空字符串）"},\n'
       +'  "tags": [ {"tag":"题材标签","weight":权重0-100} ],\n'
       +'  "synopsis": "150–250字故事梗概：世界/金手指/主要冲突/结局分岔逻辑",\n'
-      +'  "characters": [ {"name":"姓名","role":"角色分类（恋爱类用：主角/男主/女主/配角/NPC；非恋爱类用：主角/主配/配角/NPC）","desc":"一句话人设＋在剧情中的功能","voice":"说话方式：用词/语气/口头禅，保证台词可盲听分辨","states":[{"state":"状态名（如：休闲装/西服/僵尸形态）","look":"该状态外观要点，供画面锁定一致性"}]} ],\n'
-      +'  "scenes": [ {"name":"场景名（如：天台）","time":"日/夜","inout":"内/外","look":"该场景此时段的光线氛围与视觉要点"} ],\n'
-      +'  "props": [ {"name":"道具名","level":"core/normal","look":"固定外观描述，供画面锁一致性","func":"核心道具必填：金手指载体/世界规则物证/异性信物/反转扳机 之一或多项；普通道具写跨场用途","appears":"出现场次id，顿号分隔（如 1-1、1-4、E-2）"} ],\n'
+      +(inst?'  "characters": [ {"name":"姓名","role":"角色分类（恋爱类用：主角/男主/女主/配角/NPC；非恋爱类用：主角/主配/配角/NPC）","desc":"一句话人设＋在剧情中的功能","voice":"说话方式：用词/语气/口头禅，保证台词可盲听分辨","states":[{"state":"状态名（如：休闲装/西服/僵尸形态）","look":"该状态外观要点，供画面锁定一致性"}]} ],\n':'')
+      +(inst?'  "scenes": [ {"name":"场景名（如：天台）","time":"日/夜","inout":"内/外","look":"该场景此时段的光线氛围与视觉要点"} ],\n':'')
+      +(inst?'  "props": [ {"name":"道具名","level":"core/normal","look":"固定外观描述，供画面锁一致性","func":"核心道具必填：金手指载体/世界规则物证/异性信物/反转扳机 之一或多项；普通道具写跨场用途","appears":"出现场次id，顿号分隔（如 1-1、1-4、E-2）"} ],\n':'')
       +'  "outline": [ {"stage":"阶段名（短片：装置/兑现/反转/抉择/结局；长片：起/承/转/合）","minutes":"0-2","summary":"可执行段落大纲：具体场景、谁在场、发生什么事、情绪落点、为下一段埋什么；写具体内容不写套话，80–160字"} ],\n'
-      +'  "nodes": [ {"id":"1-1","loc":"场景名（如：废弃医院·一楼大厅）","time":"日 内","kind":"normal","cast":"本场在画面内的人物，顿号分隔","text":"该节点情节概要 2–4 句","script":"本场分场剧本：以口语化台词为主（角色名：台词换行写）＋必要的简单动作描写，150–300字，固定镜头思维，写具体画面内的人与事","next":[{"to":"1-2","label":""}]}, {"id":"E-1","loc":"…","time":"…","kind":"major","sub":"end","cast":"…","text":"…","script":"…"} ],\n'
+      +(inst
+        ? '  "nodes": [ {"id":"1-1","loc":"场景名（如：废弃医院·一楼大厅）","time":"日 内","kind":"normal","cast":"本场在画面内的人物，顿号分隔","text":"该节点情节概要 2–4 句","script":"本场分场剧本：以口语化台词为主（角色名：台词换行写）＋必要的简单动作描写，150–300字，固定镜头思维，写具体画面内的人与事","next":[{"to":"1-2","label":""}]}, {"id":"E-1","loc":"…","time":"…","kind":"major","sub":"end","cast":"…","text":"…","script":"…"} ],\n'
+        : '  "nodes": [ {"id":"1-1","kind":"normal","text":"该节点情节概要 2–4 句（只写结构与情节，不写分场剧本）","next":[{"to":"1-2","label":""}]}, {"id":"E-1","kind":"major","sub":"end","text":"该结局的价值/情绪落点 1–2 句"} ],\n')
       +'  "beats": [ {"t":0, "name":"拍名", "V":-0.6, "D":-0.7, "note":"这一拍发生什么"} ],\n'
       +'  "choices": [ {"at":0, "question":"抉择问题", "options":["选项A","选项B"]} ],\n'
       +'  "payoffs": [ {"beat":"翻盘拍名","flip":"D轴从被压到掌控翻了什么盘","enabledBy":"促成翻盘的choice节点id","irony":"该爽点下观众已知/主角未知的风险"} ],\n'
+      +(advChk?'':'  "selfcheck": {"题材":"✓","故事":"✓","节奏":"✓ 或 ✗:一句原因","剧本":"✓"},\n')
       +'  "flowEnter": 0\n'
       +'}\n'
-      +'【角色分类硬规则】characters 的 role 必须用四类固定标签，先判题材是否恋爱类（含 心动/乙女/美女like 标签或描述含恋爱/暗恋/告白等）：恋爱类＝ 主角 / 男主 / 女主（异性情感核心，按性别向定，可多个；凡描述里写了“情感一号/二号”“主线情感”的角色必须标男主/女主，禁止降格标成配角）/ 配角 / NPC；非恋爱类＝ 主角 / 主配（核心配角，戏份重、推动主线）/ 配角 / NPC。NPC＝跨场出现但基本没戏、只需固定形象的功能性角色（如店员、辅导员、路人甲），也必须列出并给 states 锁形象。每个角色按此四类之一归类，不用其他词。\n'
-      +'【道具硬规则】props 分两级：level=core（核心道具＝线索道具，func 必须写明承担哪项：金手指载体/世界规则物证/异性信物/反转扳机，可多项）；level=normal（普通道具＝戏剧性弱但跨场出现需固定形象，如跨场使用的一次性钥匙）。两级都必须给 look 固定外观与 appears 出现场次；单场出现、无跨场一致性需求、无戏剧功能的道具不要列，剧情中自动解决。核心道具至少 1 件（金手指若有实体载体必须入表）。\n'
+      +(inst?'【角色分类硬规则】characters 的 role 必须用四类固定标签，先判题材是否恋爱类（含 心动/乙女/美女like 标签或描述含恋爱/暗恋/告白等）：恋爱类＝ 主角 / 男主 / 女主（异性情感核心，按性别向定，可多个；凡描述里写了“情感一号/二号”“主线情感”的角色必须标男主/女主，禁止降格标成配角）/ 配角 / NPC；非恋爱类＝ 主角 / 主配（核心配角，戏份重、推动主线）/ 配角 / NPC。NPC＝跨场出现但基本没戏、只需固定形象的功能性角色（如店员、辅导员、路人甲），也必须列出并给 states 锁形象。每个角色按此四类之一归类，不用其他词。\n':'')
+      +(inst?'【道具硬规则】props 分两级：level=core（核心道具＝线索道具，func 必须写明承担哪项：金手指载体/世界规则物证/异性信物/反转扳机，可多项）；level=normal（普通道具＝戏剧性弱但跨场出现需固定形象，如跨场使用的一次性钥匙）。两级都必须给 look 固定外观与 appears 出现场次；单场出现、无跨场一致性需求、无戏剧功能的道具不要列，剧情中自动解决。核心道具至少 1 件（金手指若有实体载体必须入表）。\n':'')
       +'【反俗套硬规则】① 核心装置先列3个候选并在逻辑链第0步展示，第一直觉（训练集最高频）强制弃用，除非用户点名；系统面板/系统宕机/许愿代价类高频装置默认禁用。② 每次反转在逻辑链里写出连锁反应链（A→B→C 至少两环），禁止撞车/坠楼类外部事故反转。③ payoffs 至少1条，每条的 enabledBy 必须是真实存在的 choice 节点 id，beats 中该翻盘拍的 D 必须由负翻正。\n'
       +'【consistency 硬规则】第0步开头先做输入自洽检验（见执行卡【0 全局】容量公式）：内容承诺与时长/结局数矛盾时，以内容承诺为真实意图上调时长，把裁决写进 consistency 字段和逻辑链第0步；newT/newE 填裁决后实际采用的值（无矛盾就填原值），全部后续输出（引擎/节点/beats 时间轴）都按 newT/newE 执行。\n'
       +'【题材与标签硬规则】genres.main必为男频或女频；genres.sub 仅当是恋爱题材时填“恋爱”，非恋爱填空字符串（组合只有：男频 / 男频·恋爱 / 女频 / 女频·恋爱）。tags 恰好 5 个、按 weight 降序；若为恋爱题材，第1个标签必为情感基调（美女like/乙女/纯爱 三选一）；其余自由（如 校园/奇幻/悬疑）。【用户硬输入标签必须体现】输入里用户已选/手填的题材标签必须出现在 tags 里（除非与故事完全不符需在日志里说明为何弃用）；用户选了超过 5 个时，取权重最大的 5 个。\n'
-      +'【nodes 硬规则】① kind 取 normal（剧情）/ choice（抉择，next 每项 label 必填选项文字）/ major（算数正式结局，无 next，且必须加 sub 字段：sub="end"＝末段主结局、sub="mid"＝中间大结局/隐藏结局）/ minor（死路小结局，无 next）；② id 用“集-序[-分支字母]”如 1-4、1-5-A；③ 结局数是总数：major＋minor 的节点总数必须严格等于结局数 E；其中主结局与小结局的拆分按分配软区间（见系统提示，题材浮动：先定主结局 2–6（最多 6），小结局＝余量，N≥5小结局尽量≥主结局，中间大结局0–1）；④ 每个 choice 2–4 个 next，禁止伪选项（某选项明显更优、其余纯送死）；也要少做"空合流"假选项——同一 choice 的多个 next 不要全部 to 同一个节点且无差异（选了等于没选）；要合流也得"带差异地合流"：让各选项先各自经过一个不同的即时结果节点（不同的一小段戏/反馈/被记住），再汇合到共享后续；做不到差异就删掉该选项改纯剧情；⑤ 图必须连通，所有节点从第一个节点可达；⑥ 节点总数控制在 '+nodeFloor+'–'+nodeCap+' 个（随结局数放大，别硬塞满）；⑦ 每个节点必填 cast（画面内人物）与 script（分场剧本：口语化台词为主＋简单动作，150–300字，禁止镜头外模糊调度、禁止复杂运动运镜；人物出场前须先被台词建置；台词符合各自 voice 人设）。\n'
+      +'【nodes 硬规则】① kind 取 normal（剧情）/ choice（抉择，next 每项 label 必填选项文字）/ major（算数正式结局，无 next，且必须加 sub 字段：sub="end"＝末段主结局、sub="mid"＝中间大结局/隐藏结局）/ minor（死路小结局，无 next）；② id 用“集-序[-分支字母]”如 1-4、1-5-A；③ 结局数是总数：major＋minor 的节点总数必须严格等于结局数 E；其中主结局与小结局的拆分按分配软区间（见系统提示，题材浮动：先定主结局 2–6（最多 6），小结局＝余量，N≥5小结局尽量≥主结局，中间大结局0–1）；④ 每个 choice 2–4 个 next，禁止伪选项（某选项明显更优、其余纯送死）；【空合流硬规则】同一 choice 的任意两个 next 的 to 不得相同——两选项直接并到同一后续节点＝零差异＝选了等于没选，一律禁止。要合流必须"带差异地合流"：每个选项先各自经过一个 kind=normal 的即时结果节点（写出各自不同的反应/代价/一小段戏），再汇合到共享后续。骨架示例：✗ 1-2 的 next 是 [{to:"1-3"},{to:"1-3"}]；✓ 1-2 的 next 是 [{to:"1-2-A"},{to:"1-2-B"}]，再让 1-2-A、1-2-B 各自 next 到 1-3。凑不出真差异就删掉该选项改纯剧情，绝不允许两条 next 直接指向同一节点；⑤ 图必须连通，所有节点从第一个节点可达；⑥ 节点总数控制在 '+nodeFloor+'–'+nodeCap+' 个（随结局数放大，别硬塞满）。\n'+(inst?'⑦ 每个节点必填 cast（画面内人物）与 script（分场剧本：口语化台词为主＋简单动作，150–300字，禁止镜头外模糊调度、禁止复杂运动运镜；人物出场前须先被台词建置；台词符合各自 voice 人设）。\n':'⑦ 本模式只出结构骨架：节点只需 id/kind/text/next（choice 节点的 next 带 label），不要写 cast、script、loc、time，不要 characters/scenes/props；把精力放在结构、分支、节奏、结局落点上。\n')
       +'（短片按结局树、长片按情绪弧组织；beats 的 t＝分钟、V 和 D 都必须给、取 −1 到 1，beats 至少 5 拍且覆盖全程；flowEnter＝大概第几分钟玩家进入心流；choices 与 nodes 里的 choice 节点一一对应。）\n\n'
-      +'【输出格式】分两段：\n第一段【生成日志】——严格按规则书第四部分“生成顺序”的六步，逐步写出你对本案例的具体决策（每步 3–6 行，写具体内容禁止套话）：\n第0步 输入自洽检验＋题材先验：先用容量公式反查输入是否自相矛盾（矛盾则写明真实意图与裁决、新参数）；再题材画像/是否需类型融合/视角/金手指及其限制/数值信封（时长·抉择数·结局数总数→先按题材定主结局集合、判断是否有中间大结局）/一句话定位四要素自检；\n第1步 立情绪脊：主干各拍的 PAD 坐标与拐点（哪里 D 负翻正、哪里 V 正翻负）、反差催化剂、观众已知/主角未知的反讽账；\n第2步 识别岔点：从脊上列出候选岔点清单，每个标注价值岔向与选项代价；\n第3步 铺分支拓扑：说明怎么剪裁岔点满足节奏数学（抉择数/三种结局按软区间分配/小结局位置）；\n第4步 填内容：关键节点的场景/人物建置/结局差异化要点，并对 2–3 个关键节点展示题材透镜过程（情节骨架→题材反差物→升级收口→钩子）；\n第5步 自检：对照规则书第五部分清单逐项报 ✓/✗，有 ✗ 必须回步修正后再输出。\n然后另起一行只写 ===JSON===，之后只输出上面规定的 JSON，不要再有其他文字。';
+      +'【输出格式】分两段：\n第一段【生成日志】——严格按规则书第四部分“生成顺序”的六步，逐步写出你对本案例的具体决策（每步 3–6 行，写具体内容禁止套话）：\n第0步 输入自洽检验＋题材先验：先用容量公式反查输入是否自相矛盾（矛盾则写明真实意图与裁决、新参数）；再题材画像/是否需类型融合/视角/金手指及其限制/数值信封（时长·抉择数·结局数总数→先按题材定主结局集合、判断是否有中间大结局）/一句话定位四要素自检；\n第1步 立情绪脊：主干各拍的 PAD 坐标与拐点（哪里 D 负翻正、哪里 V 正翻负）、反差催化剂、观众已知/主角未知的反讽账；\n第2步 识别岔点：从脊上列出候选岔点清单，每个标注价值岔向与选项代价；\n第3步 铺分支拓扑：说明怎么剪裁岔点满足节奏数学（抉择数/三种结局按软区间分配/小结局位置）；\n第4步 填内容：关键节点的场景/人物建置/结局差异化要点，并对 2–3 个关键节点展示题材透镜过程（情节骨架→题材反差物→升级收口→钩子）；\n'+(advChk?'第5步 自检：对照规则书第五部分清单逐项报 ✓/✗，有 ✗ 必须回步修正后再输出。':'第5步 自检（精简）：内部逐项自检不要写过程，有 ✗ 先回步修正；修不了才把结果写进 JSON 的 selfcheck 字段（四组：题材/故事/节奏/剧本，每组 ✓ 或 ✗:一句原因）。')+'\n然后另起一行只写 ===JSON===，之后只输出上面规定的 JSON，不要再有其他文字。';
     if(tags.indexOf('抽象')>=0){ s+='\n\n【抽象说明】题材含"抽象"：请以 B站 / 抖音 当下最热门的抽象梗为素材来构建（梗迭代极快，一律取当前流行的，不要套用过时老梗）。'; }
     document.getElementById('req').value=s;
   }
@@ -1298,12 +1330,18 @@ flowchart TD
   document.getElementById('renderout').addEventListener('click', renderOut);
 
   // ===== 自动模式：直连 OpenRouter（kian 用的就是它）=====
-  var SYS='你是互动短剧结构生成器，遵循《互动短剧设计规则书》。⚠ 第零优先：先做输入自洽检验（容量公式：主线≥15分＋每条完整情感弧光≈20分＋每名露脸角色≈5分），用户内容承诺与时长矛盾时，真实意图＝内容承诺，上调时长并重定引擎，裁决写进 consistency。核心：① 题材层：判断题材够不够成为产品；弱题材靠类型融合破局（底色＝用户点的类型，融一个供能类型当惊喜），每阶段配强敌＋可克服难关；必须有受限的金手指。② 引擎由时长定：≤30分钟＝结局树（装置先行→一次兑现＋一记反转→抉择树→2–4结局）；≥45分钟＝情绪弧（起承转合七拍＋PAD坐标V/A/D＋反差催化剂）；30–45过渡。③ 前五分钟必有一个教学交互点，落在第一个情节点高潮；起段固定 1 个选错即死。④ 结局数＝三种之和(末段主结局＋中间大结局0–1＋小结局/死路)，用户输入的就是总数；先按题材定主结局(下限2，≤10min纯爱/抽象可1)、再按余量铺小结局(N≥5尽量多于主结局)，中间大结局＝隐藏结局仅0–1；分配按软区间表(见执行卡【3】)；每个结局一个鲜明的价值/情绪落点。⑤ 一句话定位须含期待/反转/钩子/情绪四要素。⑥ 大纲与节点文字必须具体可执行：写真实场景、真实事件、画面内的人，禁止“主角遇到困难”这类空话。⑦ 剧本层：台词口语化（默认中文，用户提及西幻/具体国家用该语种）、固定镜头为主、以台词传信息传情感、对话符合人设、人物先建置后出场；先产出人物全状态卡与场景日夜状态卡。角色分类用四类固定标签：恋爱类＝主角/男主/女主/配角/NPC，非恋爱类＝主角/主配/配角/NPC；NPC＝跨场出现但没戏、只需固定形象的功能角色也要列。道具分两级入 props：核心道具（金手指载体/世界规则物证/异性信物/反转扳机，至少一项功能）与普通道具（跨场需固定形象）；单场无功能道具不列。⑧ 反俗套：装置三选一弃第一直觉（高频装置默认禁用）；反转必须连锁链≥2环、禁外部事故；每个爽点＝D轴翻盘×玩家抉择促成×反讽风险，登记进 payoffs。⑨ 单点情节题材透镜：每个关键情节先落地一件具体的事，再过题材透镜换成题材独有的反差物（融合题材从供能类型取），收口在题材逻辑内升级禁止常识性收口，钩子留下一段催化剂口子（最强＝双义钩子）；平情节只许当铺陈不许作节点落点。台词比重高于动作，全部script通读顺畅。⑩ 力度谱：开场压制V∈[−0.6,−0.35]且D≤−0.5；首个释放点落差≥0.7；中段最强压制V≤−0.6落差≥1.0反号；高潮释放V≥+0.8落差≥1.4且D翻正；收尾V∈[+0.2,+0.5]；释放强度看落差；两个释放拍之间必有V≤−0.2回落。收到【输入】后只返回规定 JSON，不要多余文字。';
+  var SYS='你是互动短剧结构生成器，遵循《互动短剧设计规则书》。⚠ 第零优先：先做输入自洽检验（容量公式：主线≥15分＋每条完整情感弧光≈20分＋每名露脸角色≈5分），用户内容承诺与时长矛盾时，真实意图＝内容承诺，上调时长并重定引擎，裁决写进 consistency。核心：① 题材层：判断题材够不够成为产品；弱题材靠类型融合破局（底色＝用户点的类型，融一个供能类型当惊喜），每阶段配强敌＋可克服难关；必须有受限的金手指（金手指不限异能/强能力：历史权谋·谍战中智力、乙女纯爱中主角魅力本身也算，同须限定使用规则与场景）；需推荐或融合题材时优先取当下男频/女频热门池（男频：历史模拟器/无限流/系统文/悬疑恐怖/盗墓冒险/末日生存/修仙炼丹/游戏竞技；女频：宫斗宅斗/综艺想象/年代发家/萌宝萌娃/穿书逆袭/纯爱百合），非封闭，用户点名池外照做。② 引擎由时长定：≤30分钟＝结局树（装置先行→一次兑现＋一记反转→抉择树→2–4结局）；≥45分钟＝情绪弧（起承转合七拍＋PAD坐标V/A/D＋反差催化剂）；30–45过渡。③ 前五分钟必有一个教学交互点，落在第一个情节点高潮；起段固定 1 个选错即死。④ 结局数＝三种之和(末段主结局＋中间大结局0–1＋小结局/死路)，用户输入的就是总数；先按题材定主结局(下限2，≤10min纯爱/抽象可1)、再按余量铺小结局(N≥5尽量多于主结局)，中间大结局＝隐藏结局仅0–1；分配按软区间表(见执行卡【3】)；每个结局一个鲜明的价值/情绪落点。⑤ 一句话定位须含期待/反转/钩子/情绪四要素。⑥ 大纲与节点文字必须具体可执行：写真实场景、真实事件、画面内的人，禁止“主角遇到困难”这类空话。〔INST〕⑦ 剧本层：台词口语化（默认中文，用户提及西幻/具体国家用该语种）、固定镜头为主、以台词传信息传情感、对话符合人设、人物先建置后出场；先产出人物全状态卡与场景日夜状态卡。角色分类用四类固定标签：恋爱类＝主角/男主/女主/配角/NPC，非恋爱类＝主角/主配/配角/NPC；NPC＝跨场出现但没戏、只需固定形象的功能角色也要列。道具分两级入 props：核心道具（金手指载体/世界规则物证/异性信物/反转扳机，至少一项功能）与普通道具（跨场需固定形象）；单场无功能道具不列。〔/INST〕⑧ 反俗套：装置三选一弃第一直觉（高频装置默认禁用）；反转必须连锁链≥2环、禁外部事故；每个爽点＝D轴翻盘×玩家抉择促成×反讽风险，登记进 payoffs。⑨ 单点情节题材透镜：每个关键情节先落地一件具体的事，再过题材透镜换成题材独有的反差物（融合题材从供能类型取），收口在题材逻辑内升级禁止常识性收口，钩子留下一段催化剂口子（最强＝双义钩子）；平情节只许当铺陈不许作节点落点。〔INST〕台词比重高于动作，全部script通读顺畅。〔/INST〕⑩ 力度谱：开场压制V∈[−0.6,−0.35]且D≤−0.5；首个释放点落差≥0.7；中段最强压制V≤−0.6落差≥1.0反号；高潮释放V≥+0.8落差≥1.4且D翻正；收尾V∈[+0.2,+0.5]；释放强度看落差；两个释放拍之间必有V≤−0.2回落。收到【输入】后只返回规定 JSON，不要多余文字。';
   var EXEC=(document.getElementById('execcard').textContent||'').trim();
   var RB=(document.getElementById('rulebook').textContent||'').trim();
 
   // ===== 拓展能力注册表（基础框架之外的叠加层，开关存 localStorage）=====
   var EXTENSIONS=[
+    { id:'script_inst', name:'剧本实例化规则', on:true,
+      desc:'默认开。开＝生成完整可拍剧本：人物全状态卡 / 场景日夜卡 / 道具表 / 分场剧本(台词+动作) / 镜头规范，产出「场景与人物」「分场剧本」两页。关＝只做节奏与结构骨架（大纲 / 分集流程图 / 情绪对照）——执行卡与规则书里的剧本制作约束一并隐藏、JSON 不再要 script/场景/道具/人物卡、校验器跳过相关硬检查，大幅省提示词与输出 token。',
+      inject:'' },
+    { id:'advanced_check', name:'高级自检', on:false,
+      desc:'默认关。关＝精简自检：模型不再逐项打印长自检文字，只在 JSON 里吐一个紧凑的 selfcheck 字段（像控制台日志，四组只报✓或✗:原因），执行卡里的整段自检清单一并隐藏——大幅省执行卡与输出 token（客观项仍有前端硬校验兼底）。开＝恢复完整自检清单＋逻辑链里逐项报 ✓/✗ 的详细过程。两种都保留“有 ✗ 先回步修正再输出”。',
+      inject:'' },
     { id:'emotion_calib', name:'情绪校准度评测', on:false,
       desc:'开启后，「情绪对照」页签才出现力度校准评分区（逐拍评压制/释放强弱、保存/重评、可写评语），「记录」里才出现「导出全部校准数据」按钮。关闭时不评分、不导出——纯用来看结构与偏移。',
       inject:'' },
@@ -1322,8 +1360,17 @@ flowchart TD
   function extOn(id){ var e=EXTENSIONS.filter(function(x){return x.id===id;})[0]; return e&&e.on; }
   extLoad();
 
+  // 剧本实例化规则开关：on＝去掉标记保留内容；off＝连标记带内容一起删（执行卡/SYS/规则书通用）
+  function applyInst(t){ return extOn('script_inst') ? t.replace(/〔\/?INST〕/g,'') : t.replace(/〔INST〕[\s\S]*?〔\/INST〕/g,''); }
+  // 高级自检开关：on＝去标记保留详细自检；off＝连标记带内容一起删（换成精简 selfcheck）
+  function applyAdv(t){
+    if(extOn('advanced_check')){ // 开：保留 ADV 内容、删掉 ADV_OFF 内容
+      return t.replace(/〔ADV_OFF〕[\s\S]*?〔\/ADV_OFF〕/g,'').replace(/〔\/?ADV〕/g,'');
+    } // 关：删掉 ADV 内容、保留 ADV_OFF 内容
+    return t.replace(/〔ADV〕[\s\S]*?〔\/ADV〕/g,'').replace(/〔\/?ADV_OFF〕/g,'');
+  }
   function buildSys(){
-    return SYS+'\n\n'+EXEC+extInject();
+    return applyAdv(applyInst(SYS+'\n\n'+EXEC))+extInject();
   }
 
   // 拓展弹窗
@@ -1406,6 +1453,7 @@ flowchart TD
   // ===== 结构校验：JSON 层硬规则 + 节奏偏移，产出分析对象 =====
   function validateData(d){
     var hard=[], soft=[];
+    var inst=(typeof extOn==='function')&&extOn('script_inst'); // off＝骨架模式，跳过剧本/人物/场景/道具硬检查
     function chk(name,ok,detail){ hard.push({name:name,ok:!!ok,detail:detail||''}); }
     var ns=Array.isArray(d.nodes)?d.nodes:[];
     var byId={}; ns.forEach(function(n){ byId[n.id]=n; });
@@ -1435,11 +1483,11 @@ flowchart TD
       chk('流程图连通（无孤儿节点）', orphan.length===0, orphan.length?('孤儿：'+orphan.map(function(n){return n.id;}).join('、')+'（需给某个 choice 节点加一条 next 指向它；若为被动结局需开启「拓展·被动条件判断」并加 trigger 字段）'):'');
     }
     chk('beats ≥5 拍', Array.isArray(d.beats)&&d.beats.length>=5, 'beats '+((d.beats||[]).length)+' 拍');
-    chk('人物含状态卡（states）', Array.isArray(d.characters)&&d.characters.length>0&&d.characters.every(function(c){return Array.isArray(c.states)&&c.states.length>0;}), '');
+    if(inst) chk('人物含状态卡（states）', Array.isArray(d.characters)&&d.characters.length>0&&d.characters.every(function(c){return Array.isArray(c.states)&&c.states.length>0;}), '');
     var validRoles=['主角','男主','女主','主配','配角','NPC'];
     var badRole=(d.characters||[]).filter(function(c){ return validRoles.indexOf((c.role||'').trim())<0; });
-    chk('角色分类用四类固定标签', Array.isArray(d.characters)&&badRole.length===0, badRole.length?('非法：'+badRole.map(function(c){return c.name+'('+(c.role||'空')+')';}).join('、')):'');
-    chk('至少一个主角', (d.characters||[]).some(function(c){return (c.role||'').trim()==='主角';}), '');
+    if(inst) chk('角色分类用四类固定标签', Array.isArray(d.characters)&&badRole.length===0, badRole.length?('非法：'+badRole.map(function(c){return c.name+'('+(c.role||'空')+')';}).join('、')):'');
+    if(inst) chk('至少一个主角', (d.characters||[]).some(function(c){return (c.role||'').trim()==='主角';}), '');
     // 爽点三要素：D轴翻盘 × 抉择促成 × 反讽登记
     var beats=Array.isArray(d.beats)?d.beats:[];
     var hasDVal=beats.some(function(b){return b.D!=null;});
@@ -1449,10 +1497,10 @@ flowchart TD
     var choiceIdSet={}; ns.forEach(function(n){ if(n.kind==='choice'||n.kind==='interaction') choiceIdSet[n.id]=1; });
     var pf=Array.isArray(d.payoffs)?d.payoffs:[];
     chk('爽点登记 payoffs（翻盘×抉择促成×反讽）', pf.length>0&&pf.every(function(p){return p.enabledBy&&choiceIdSet[p.enabledBy]&&(p.irony||'').length>0;}), pf.length?'':'缺 payoffs 或 enabledBy 不是真实抉择节点');
-    chk('场景表存在且标日/夜', Array.isArray(d.scenes)&&d.scenes.length>0&&d.scenes.every(function(s){return /日|夜/.test(s.time||'');}), '');
+    if(inst) chk('场景表存在且标日/夜', Array.isArray(d.scenes)&&d.scenes.length>0&&d.scenes.every(function(s){return /日|夜/.test(s.time||'');}), '');
     var props=Array.isArray(d.props)?d.props:[];
     var coreProps=props.filter(function(p){return p.level==='core';});
-    chk('道具表存在且核心道具≥1（含外观+功能）', props.length>0&&coreProps.length>=1&&coreProps.every(function(p){return (p.look||'').length>0&&(p.func||'').length>0;}), props.length?('核心 '+coreProps.length+' / 普通 '+props.filter(function(p){return p.level==='normal';}).length):'缺 props');
+    if(inst) chk('道具表存在且核心道具≥1（含外观+功能）', props.length>0&&coreProps.length>=1&&coreProps.every(function(p){return (p.look||'').length>0&&(p.func||'').length>0;}), props.length?('核心 '+coreProps.length+' / 普通 '+props.filter(function(p){return p.level==='normal';}).length):'缺 props');
     chk('大纲每段有具体内容（≥40字）', Array.isArray(d.outline)&&d.outline.length>0&&d.outline.every(function(o){return (o.summary||'').length>=40;}), '');
     // 节奏软指标
     soft=deviationIssues();
@@ -1484,9 +1532,9 @@ flowchart TD
       if(fe > T*0.4) soft=soft.concat(['心流点偏晚：进入心流在第 '+fe+' 分（全程 '+T+' 分的 '+Math.round(fe/T*100)+'%），超过 40% 才抓住人，前段易流失——应在前五分钟交互点或首个正向拐点附近就让玩家进入。']);
       if(firstRiseT!=null && fe < firstRiseT-1) soft=soft.concat(['心流点偏早：进入心流（第 '+fe+' 分）早于首个正向拐点（第 '+firstRiseT+' 分），此前情绪仍在下行，玩家还没尝到甜头，心流点存疑。']);
     } else if(d.flowEnter==null){ soft=soft.concat(['未提供 flowEnter，无法校验心流点位置。']); }
-    // 结构软指标：空合流假选项＝一个抉择的所有 next 都指向同一节点且无差异（选了等于没选）
-    var hollow=choicesN.filter(function(n){ var tos=(n.next||[]).map(function(e){return e.to;}); return tos.length>=2 && tos.every(function(t){return t===tos[0];}); });
-    if(hollow.length) soft=soft.concat(hollow.map(function(n){ return '空合流假选项：抉择 '+n.id+' 的多个选项都通向同一节点（'+((n.next||[])[0]||{}).to+'）且无差异，等于选了没选——应让各选项先经过一个不同的即时结果节点再合流，或删掉该选项改纯剧情。'; }));
+    // 空合流（硬）：同一抉择有两个及以上 next 指向同一节点＝零差异假选项（选了等于没选），触发自动重跑
+    var hollow=choicesN.filter(function(n){ var tos=(n.next||[]).map(function(e){return e.to;}); var seen={},dup=false; tos.forEach(function(t){ if(seen[t])dup=true; seen[t]=1; }); return tos.length>=2 && dup; });
+    chk('无空合流假选项（选项不得直接并到同一节点）', hollow.length===0, hollow.length?('违规：'+hollow.map(function(n){ var tos=(n.next||[]).map(function(e){return e.to;}); var dups=tos.filter(function(t,i){return tos.indexOf(t)!==i;}).filter(function(t,i,a){return a.indexOf(t)===i;}); return n.id+'（多选项同指 '+dups.join('、')+'）'; }).join('；')+'——须让各选项先各经一个不同即时结果节点(kind=normal)再合流，或删掉该选项改纯剧情'):'');
     // 结局分配倾向：N≥5 时小结局宜 ≥ 主结局（用死路铺中段压力）
     if(lastE>=5 && minors.length<majors.length) soft=soft.concat(['结局分配：总数 '+lastE+'（N≥5）建议小结局 ≥ 主结局，当前 死路 '+minors.length+' < 主/中间大 '+majors.length+'，可多用死路铺中段压力。']);
     // 锦上添花：major 结局未标 sub(end/mid)，流程图无法区分末段主结局与中间大结局
@@ -1505,6 +1553,13 @@ flowchart TD
     h+='</div>';
     if(va.soft.length){ h+='<div style="font-weight:600;font-size:12.5px;margin-top:8px;color:#b45309;">节奏偏移提示（软指标，不触发重跑）</div><ul style="margin:4px 0 0;padding-left:20px;font-size:12px;line-height:1.9;color:#7c4a03;">'+va.soft.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>'; }
     else if(va.pass){ h+='<div style="font-size:12px;color:#16a34a;margin-top:6px;">节奏无显著偏移，贴合规则书标准线。</div>'; }
+    // 精简自检模式：展示模型返回的 selfcheck（主观项自评）
+    var sc=lastData&&lastData.selfcheck;
+    if(sc&&typeof sc==='object'){
+      h+='<div style="font-weight:600;font-size:12.5px;margin-top:10px;color:#3a4255;">模型自检（selfcheck）</div><div style="font-size:12px;line-height:1.9;margin-top:2px;">'
+        +Object.keys(sc).map(function(k){ var v=String(sc[k]||''); var bad=v.indexOf('✗')>=0; return '<span style="display:inline-block;margin-right:14px;">'+esc(k)+'：<b style="color:'+(bad?'#dc2626':'#16a34a')+';">'+esc(v)+'</b></span>'; }).join('')
+        +'</div>';
+    }
     h+='</div>';
     return h;
   }
@@ -1528,7 +1583,7 @@ flowchart TD
     list.innerHTML=pageItems.map(function(r,pi){ var i=start+pi;
       var viewing=(viewedHist && r.time===viewedHist);
       return '<div class="histrow'+(viewing?' viewing':'')+'" data-histrow data-i="'+i+'" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #eef0f4;border-radius:10px;margin-bottom:8px;background:#fafbfc;">'
-        +'<div style="flex:1;min-width:0;font-size:12.5px;line-height:1.6;"><b>'+(viewing?'<span title="正在查看" style="color:#1D9E75;">👁 </span>':'')+esc(r.title||('记录 '+(i+1)))+'</b>'+(viewing?' <span class="viewtag">正在查看</span>':'')+'<br><span style="color:#8a92a6;">'+esc(r.time)+'　'+esc(r.params)+'　'+(r.pass?'<span style=\'color:#16a34a\'>✓通过</span>':'<span style=\'color:#dc2626\'>✗未过</span>')+(r.attempts>1?'　重跑'+(r.attempts-1)+'次':'')+'</span></div>'
+        +'<div style="flex:1;min-width:0;font-size:12.5px;line-height:1.6;"><b>'+(viewing?'<span title="正在查看" style="color:#1D9E75;">👁 </span>':'')+esc(r.title||('记录 '+(i+1)))+'</b>'+(viewing?' <span class="viewtag">正在查看</span>':'')+'<br><span style="color:#8a92a6;">'+esc(r.time)+'　'+esc(r.params)+'　'+(r.pass?('<span style=\'color:#16a34a\'>✓'+(r.attempts>1?'重跑后通过':'通过')+'</span>'):('<span style=\'color:#d97706\'>⚠未达标</span>'))+(r.attempts>1?'　<span style=\'color:#aab0bf\'>重跑'+(r.attempts-1)+'次</span>':'')+'</span></div>'
         +'<span class="histrow-hint">点击展开操作 ›</span>'
         +'<span class="histrow-acts">'
         +'<button class="hbtn" data-act="view" data-i="'+i+'">查看</button>'
@@ -1633,10 +1688,11 @@ flowchart TD
   });
   // 执行卡查看弹窗
   document.getElementById('opencard').addEventListener('click', function(){
-    document.getElementById('cardbody').textContent=EXEC;
-    document.getElementById('cardlen').textContent=EXEC.length;
-    document.getElementById('cardtok').textContent='~'+Math.round(EXEC.length/1.6);
-    document.getElementById('cardlen').style.color=EXEC.length>4000?'#dc2626':'';
+    var ec=applyAdv(applyInst(EXEC));
+    document.getElementById('cardbody').textContent=ec;
+    document.getElementById('cardlen').textContent=ec.length;
+    document.getElementById('cardtok').textContent='~'+Math.round(ec.length/1.6);
+    document.getElementById('cardlen').style.color=ec.length>4000?'#dc2626':'';
     document.getElementById('cardmask').style.display='flex';
   });
   document.getElementById('cardclose').addEventListener('click', function(){ document.getElementById('cardmask').style.display='none'; });
@@ -1858,7 +1914,7 @@ flowchart TD
   function esc2(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function mdInline(s){ var p=esc2(s).split('**'),o=''; for(var k=0;k<p.length;k++){ o+=(k%2===1)?('<strong>'+p[k]+'</strong>'):p[k]; } return o; }
   document.getElementById('openrules').addEventListener('click', function(){
-    document.getElementById('rulesbody').innerHTML=mdToHtml(RB);
+    document.getElementById('rulesbody').innerHTML=mdToHtml(applyInst(RB));
     document.getElementById('rulesmask').style.display='flex';
   });
   document.getElementById('rulesclose').addEventListener('click', function(){ document.getElementById('rulesmask').style.display='none'; });
@@ -2002,7 +2058,7 @@ flowchart TD
   function renderCast(){
     var wrap=document.getElementById('castwrap');
     var d=lastData;
-    if(!d || (!Array.isArray(d.characters)&&!Array.isArray(d.scenes)&&!Array.isArray(d.props))){ wrap.innerHTML='<div class="empty">（暂无数据：先「一键生成」）</div>'; return; }
+    if(!d || (!Array.isArray(d.characters)&&!Array.isArray(d.scenes)&&!Array.isArray(d.props))){ wrap.innerHTML='<div class="empty">'+((typeof extOn==='function'&&!extOn('script_inst'))?'（已关闭「剧本实例化规则」：本模式只出节奏与结构骨架，不生成场景与人物。需要人物/场景/道具卡请到「➕ 拓展」重新开启。）':'（暂无数据：先「一键生成」）')+'</div>'; return; }
     var h='<div style="padding:6px 18px 20px;">';
     if(Array.isArray(d.characters)&&d.characters.length){
       h+='<div style="font-weight:700;font-size:14.5px;margin:8px 0 10px;">人物（'+d.characters.length+'）<span style="font-size:11px;font-weight:500;color:#aab0bf;margin-left:8px;">'
@@ -2083,6 +2139,7 @@ flowchart TD
   function renderScript(){
     var wrap=document.getElementById('scriptwrap');
     var ns=(lastData&&Array.isArray(lastData.nodes))?lastData.nodes:[];
+    if(typeof extOn==='function'&&!extOn('script_inst')){ wrap.innerHTML='<div class="empty">（已关闭「剧本实例化规则」：本模式只出节奏与结构骨架，不生成分场剧本。结构见「分集流程图」，节奏见「情绪对照」。需要逐场剧本请到「➕ 拓展」重新开启。）</div>'; return; }
     if(!ns.length){ wrap.innerHTML='<div class="empty">（暂无数据：先「一键生成」）</div>'; return; }
     var kindTag={ normal:'剧情', choice:'抉择', interaction:'抉择', major:'主结局', minor:'死路' };
     var kindColor={ normal:'#3b82f6', choice:'#f59e0b', interaction:'#f59e0b', major:'#f97316', minor:'#ef4444' };
