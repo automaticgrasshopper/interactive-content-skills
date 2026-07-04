@@ -358,12 +358,24 @@
   <div style="background:#fff;border-radius:16px;max-width:880px;width:100%;padding:22px 26px 26px;box-shadow:0 8px 30px rgba(20,25,40,.25);">
     <div style="display:flex;align-items:center;margin-bottom:12px;">
       <div style="font-size:18px;font-weight:700;">生成记录 <em style="font-style:normal;font-size:12px;color:#aab0bf;font-weight:500;">（存本机浏览器，最多 100 条、一页 10 条，超出覆盖最旧）</em></div>
-      <button id="histexport" style="margin-left:auto;height:34px;padding:0 14px;border:none;border-radius:10px;background:#1f2430;color:#fff;font-size:13px;font-weight:600;cursor:pointer;">⬇ 导出全部校准数据</button>
+      <button id="histversions" style="margin-left:auto;height:34px;padding:0 14px;border:1px solid #dfe2ea;border-radius:10px;background:#fff;color:#3a4255;font-size:13px;font-weight:600;cursor:pointer;">📐 数值版本</button>
+      <button id="histexport" style="margin-left:8px;height:34px;padding:0 14px;border:none;border-radius:10px;background:#1f2430;color:#fff;font-size:13px;font-weight:600;cursor:pointer;">⬇ 导出全部校准数据</button>
       <button id="histclear" style="margin-left:8px;height:34px;padding:0 14px;border:1px solid #f3d0d0;border-radius:10px;background:#fff;color:#dc2626;font-size:13px;font-weight:600;cursor:pointer;">一键清空</button>
       <button id="histclose" style="margin-left:8px;height:34px;padding:0 14px;border:none;border-radius:10px;background:#eef1f6;color:#3a4255;font-size:13px;font-weight:600;cursor:pointer;">关闭</button>
     </div>
     <div id="histlist"></div>
     <div id="histview" style="margin-top:14px;border-top:1px solid #eef0f4;padding-top:6px;"></div>
+  </div>
+</div>
+
+<div id="versmask" style="display:none;position:fixed;inset:0;background:rgba(20,25,40,.45);z-index:72;align-items:flex-start;justify-content:center;padding:24px;overflow:auto;">
+  <div style="background:#fff;border-radius:16px;max-width:760px;width:100%;padding:22px 26px 26px;box-shadow:0 8px 30px rgba(20,25,40,.25);">
+    <div style="display:flex;align-items:center;margin-bottom:6px;">
+      <div style="font-size:18px;font-weight:700;">数值版本日志 <em style="font-style:normal;font-size:12px;color:#aab0bf;font-weight:500;">（力度谱阈值 + 情绪标准线坐标；校准后回写新版，可选任意版本为当前依据）</em></div>
+      <button id="versclose" style="margin-left:auto;height:34px;padding:0 14px;border:none;border-radius:10px;background:#eef1f6;color:#3a4255;font-size:13px;font-weight:600;cursor:pointer;">关闭</button>
+    </div>
+    <div class="hint" style="margin-bottom:12px;">题材相符度是持续积累的，不在此版本化。这里只管两组可回退的数值。</div>
+    <div id="verslist"></div>
   </div>
 </div>
 
@@ -1446,21 +1458,22 @@ flowchart TD
     soft=deviationIssues();
     // 力度谱软指标：压制深度/释放落差/释放贬值
     if(beats.length>=3){
+      var F=P.force;
       var vs=beats.map(function(b){return +b.V;});
       var openV=vs[0];
-      if(openV>-0.3) soft=soft.concat(['开场压制不足：首拍 V='+openV.toFixed(2)+'（力度谱要求 ≤−0.35），前段没有压制，后续释放缺乏落差。']);
+      if(openV>F.openMax+0.05) soft=soft.concat(['开场压制不足：首拍 V='+openV.toFixed(2)+'（力度谱要求 ≤'+F.openMax+'），前段没有压制，后续释放缺乏落差。']);
       var peakV=Math.max.apply(null,vs), troughV=Math.min.apply(null,vs);
       var drop=peakV-troughV;
-      if(peakV<0.8) soft=soft.concat(['高潮强度不足：全篇最高 V='+peakV.toFixed(2)+'（力度谱要求 ≥+0.8）。']);
-      if(drop<1.4) soft=soft.concat(['总落差不足：最高−最低='+drop.toFixed(2)+'（力度谱要求 ≥1.4）——压制不深则释放无力，需先压深再弹高。']);
-      // 释放贬值：两个 V>0.4 的拍之间无 V<=-0.2 回落
+      if(peakV<F.peakMin) soft=soft.concat(['高潮强度不足：全篇最高 V='+peakV.toFixed(2)+'（力度谱要求 ≥+'+F.peakMin+'）。']);
+      if(drop<F.dropMin) soft=soft.concat(['总落差不足：最高−最低='+drop.toFixed(2)+'（力度谱要求 ≥'+F.dropMin+'）——压制不深则释放无力，需先压深再弹高。']);
+      // 释放贬值：两个 V>sweet 的拍之间无 V<=dip 回落
       var lastSweet=-1, inflate=false;
       for(var i=0;i<vs.length;i++){
-        if(vs[i]>0.4){ if(lastSweet>=0){ var dip=false; for(var j=lastSweet+1;j<i;j++){ if(vs[j]<=-0.2) dip=true; } if(!dip) inflate=true; } lastSweet=i; }
+        if(vs[i]>F.sweet){ if(lastSweet>=0){ var dip=false; for(var j=lastSweet+1;j<i;j++){ if(vs[j]<=F.dip) dip=true; } if(!dip) inflate=true; } lastSweet=i; }
       }
-      if(inflate) soft=soft.concat(['释放点过密：两个释放拍（V>+0.4）之间没有 V≤−0.2 的回落，后一个释放的体感强度会下降——中间需要一次压制。']);
+      if(inflate) soft=soft.concat(['释放点过密：两个释放拍（V>+'+F.sweet+'）之间没有 V≤'+F.dip+' 的回落，后一个释放的体感强度会下降——中间需要一次压制。']);
       var lastV=vs[vs.length-1];
-      if(lastV>0.6) soft=soft.concat(['收尾过高：末拍 V='+lastV.toFixed(2)+'（力度谱建议 +0.2~+0.5），从高点回落收束，保留余味。']);
+      if(lastV>F.endHi+0.1) soft=soft.concat(['收尾过高：末拍 V='+lastV.toFixed(2)+'（力度谱建议 +'+F.endLo+'~+'+F.endHi+'），从高点回落收束，保留余味。']);
     }
     // 心流点校验：flowEnter 应在首个正向拐点之后、且不晚于全程 40%（否则前段抓不住人）
     if(d.flowEnter!=null && beats.length>=2){
@@ -1630,10 +1643,37 @@ flowchart TD
   document.getElementById('cardmask').addEventListener('click', function(e){ if(e.target===this) this.style.display='none'; });
   document.getElementById('cardcopy').addEventListener('click', function(){ try{ navigator.clipboard.writeText(EXEC); this.textContent='已复制'; var b=this; setTimeout(function(){ b.textContent='复制'; },1200); }catch(e){} });
 
-  document.getElementById('openhist').addEventListener('click', function(){ document.getElementById('histexport').style.display=(typeof extOn==='function'&&extOn('emotion_calib'))?'':'none'; histRender(); document.getElementById('histmask').style.display='flex'; });
+  document.getElementById('openhist').addEventListener('click', function(){ var calOn=(typeof extOn==='function'&&extOn('emotion_calib')); document.getElementById('histexport').style.display=calOn?'':'none'; document.getElementById('histversions').style.display=calOn?'':'none'; histRender(); document.getElementById('histmask').style.display='flex'; });
   document.getElementById('histclose').addEventListener('click', function(){ document.getElementById('histmask').style.display='none'; });
   document.getElementById('histmask').addEventListener('click', function(e){ if(e.target===this) this.style.display='none'; });
   document.getElementById('histclear').addEventListener('click', function(){ if(confirm('清空全部生成记录？')){ try{ localStorage.removeItem(HKEY); }catch(e){} histRender(); } });
+
+  // ===== 数值版本日志 + 回退 =====
+  function versRender(){
+    var vs=paramVersions(), curV=curParams().version, list=document.getElementById('verslist');
+    list.innerHTML=vs.map(function(v){
+      var isCur=v.version===curV;
+      var f=v.force||{};
+      return '<div style="border:1px solid '+(isCur?'#16a34a':'#eef0f4')+';border-radius:12px;padding:12px 14px;margin-bottom:10px;background:'+(isCur?'#f0fdf4':'#fafbfc')+';">'
+        +'<div style="display:flex;align-items:center;gap:8px;"><b style="font-size:14px;">'+esc(v.version)+'</b>'
+        +'<span style="font-size:12px;color:#8a92a6;">'+esc(v.label||'')+'　'+esc(v.ts||'')+'</span>'
+        +(isCur?'<span style="margin-left:auto;font-size:11px;font-weight:700;color:#fff;background:#16a34a;border-radius:5px;padding:2px 9px;">当前依据</span>':'<button class="hbtn versuse" data-v="'+esc(v.version)+'" style="margin-left:auto;">设为当前</button>')+'</div>'
+        +'<div style="font-size:11.5px;color:#6b7488;margin-top:6px;line-height:1.7;">力度阈值：开场≤'+f.openMax+' / 高潮≥'+f.peakMin+' / 总落差≥'+f.dropMin+' / 收尾 '+f.endLo+'~'+f.endHi+' / 回落≤'+f.dip+' / 释放阈 '+f.sweet+'</div>'
+        +(v.note?'<div style="font-size:11.5px;color:#3a4255;margin-top:4px;">调整说明：'+esc(v.note)+'</div>':'')+'</div>';
+    }).join('');
+    [].forEach.call(list.querySelectorAll('.versuse'),function(b){
+      b.addEventListener('click',function(){
+        var vv=this.getAttribute('data-v');
+        if(!confirm('把数值依据切换到版本 '+vv+'？后续生成与校验都按该版数值。')) return;
+        try{ localStorage.setItem(PCUR,vv); }catch(e){}
+        reloadParams(); versRender();
+        if(activeTab()==='emo') drawEmo();
+      });
+    });
+  }
+  document.getElementById('histversions').addEventListener('click', function(){ versRender(); document.getElementById('versmask').style.display='flex'; });
+  document.getElementById('versclose').addEventListener('click', function(){ document.getElementById('versmask').style.display='none'; });
+  document.getElementById('versmask').addEventListener('click', function(ev){ if(ev.target===this) this.style.display='none'; });
 
   // ===== 导出全部校准数据（力度必评满；题材评测开启的场次题材也要评满）=====
   document.getElementById('histexport').addEventListener('click', function(){
@@ -1650,10 +1690,12 @@ flowchart TD
       // 题材评分（仅当该记录有题材评分数据才检查；开启拓展且有 tags 时才要求）
       var d=null; try{ d=JSON.parse(r.json); }catch(e){}
       var g=rid&&genre[rid];
-      var needGenre = d && Array.isArray(d.tags) && d.tags.length>0 && g; // 已存在题材评分才检查完整性
+      // 题材评测拓展开启 且 该记录有 tags 时，要求题材评满（否则不检）
+      var genreExtOn=(typeof extOn==='function')&&extOn('genre_review');
+      var needGenre = genreExtOn && d && Array.isArray(d.tags) && d.tags.length>0;
       if(needGenre){
         var tagNames=d.tags.slice(0,5).map(function(t){return t.tag||t;});
-        var gOk = g.tags && tagNames.every(function(n){return g.tags[n];}) && !g._editing;
+        var gOk = g && g.tags && tagNames.every(function(n){return g.tags[n];}) && !g._editing;
         if(!gOk){ missing.push(label+'：题材相符度评分未完成'); }
       }
       out.push({
@@ -2152,6 +2194,22 @@ flowchart TD
   }
   document.getElementById('flowexport').addEventListener('click', exportFlowPng);
 
+  // ===== 数值参数版本化（力度谱阈值 + 三套标准线坐标，可回退）=====
+  var PARAM_DEFAULT={
+    version:'v1', label:'初始基准', ts:'内置',
+    force:{ openMax:-0.35, peakMin:0.8, dropMin:1.4, endLo:0.2, endHi:0.5, dip:-0.2, sweet:0.4 },
+    curves:{
+      short:{ names:['装置铺陈','一次兑现','一记反转','抉择拉扯','结局落点'], V:[-0.15,0.6,-0.6,-0.2,0.45], fr:[0.05,0.28,0.5,0.72,0.96] },
+      romance:{ names:['社交压制','相遇心动','甜度顶点','误会跌落','拉扯低谷','告白高潮','余韵'], V:[-0.35,0.3,0.65,-0.5,-0.15,0.85,0.4], fr:[0.03,0.16,0.34,0.52,0.66,0.86,0.98] },
+      general:{ names:['紧张开场','惊奇探索','好奇','探索','获得成就','章节高潮','震撼收尾'], V:[-0.35,0.2,0.05,0.35,0.6,0.85,0.2], fr:[0.03,0.15,0.3,0.46,0.66,0.85,0.98] }
+    }
+  };
+  var PKEY='param_versions_v1', PCUR='param_current_v1';
+  function paramVersions(){ try{ var a=JSON.parse(localStorage.getItem(PKEY)||'null'); if(a&&a.length) return a; }catch(e){} return [PARAM_DEFAULT]; }
+  function curParams(){ var vs=paramVersions(); var cur=null; try{ cur=localStorage.getItem(PCUR); }catch(e){} var f=vs.filter(function(v){return v.version===cur;})[0]; return f||vs[0]; }
+  var P=curParams();
+  function reloadParams(){ P=curParams(); }
+
   // ===== 情绪对照：标准线插值 + 逐拍偏移分析 =====
   function isRomance(){
     var t=pickedList(), rset=['心动','乙女','美女like'];
@@ -2161,15 +2219,10 @@ flowchart TD
   }
   function stdData(){
     var T=curT();
-    if(T<=30){ var snm=['装置铺陈','一次兑现','一记反转','抉择拉扯','结局落点'], svv=[-0.15,0.6,-0.6,-0.2,0.45], sfr=[0.05,0.28,0.5,0.72,0.96];
-      return snm.map(function(n,k){ return { t:+(sfr[k]*T).toFixed(1), V:svv[k], name:n }; }); }
-    if(isRomance()){
-      // 恋爱模板：甜点前置 → 转段跌落 → 合段回升
-      var rnm=['社交压制','相遇心动','甜度顶点','误会跌落','拉扯低谷','告白高潮','余韵'], rvv=[-0.35,0.3,0.65,-0.5,-0.15,0.85,0.4], rfr=[0.03,0.16,0.34,0.52,0.66,0.86,0.98];
-      return rnm.map(function(n,k){ return { t:+(rfr[k]*T).toFixed(1), V:rvv[k], name:n }; });
-    }
-    var nm=['紧张开场','惊奇探索','好奇','探索','获得成就','章节高潮','震撼收尾'], vv=[-0.35,0.2,0.05,0.35,0.6,0.85,0.2], fr=[0.03,0.15,0.3,0.46,0.66,0.85,0.98];
-    return nm.map(function(n,k){ return { t:+(fr[k]*T).toFixed(1), V:vv[k], name:n }; });
+    function build(c){ return c.names.map(function(n,k){ return { t:+(c.fr[k]*T).toFixed(1), V:c.V[k], name:n }; }); }
+    if(T<=30) return build(P.curves.short);
+    if(isRomance()) return build(P.curves.romance);
+    return build(P.curves.general);
   }
   function stdAt(t){ var sd=stdData();
     if(t<=sd[0].t) return sd[0].V;
