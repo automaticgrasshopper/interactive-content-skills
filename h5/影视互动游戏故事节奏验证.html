@@ -332,7 +332,7 @@
 <div id="extmask" style="display:none;position:fixed;inset:0;background:rgba(20,25,40,.45);z-index:66;align-items:flex-start;justify-content:center;padding:24px;overflow:auto;">
   <div style="background:#fff;border-radius:16px;max-width:720px;width:100%;padding:22px 26px 26px;box-shadow:0 8px 30px rgba(20,25,40,.25);">
     <div style="display:flex;align-items:center;margin-bottom:6px;">
-      <div style="font-size:18px;font-weight:700;">拓展能力 <em style="font-style:normal;font-size:12px;color:#aab0bf;font-weight:500;">（基础框架之外的可选能力，开关状态存本机、跨会话保持）</em></div>
+      <div style="font-size:18px;font-weight:700;">拓展能力 <em style="font-style:normal;font-size:12px;color:#aab0bf;font-weight:500;">（基础框架之外的可选能力，开关状态存本机、跨会话保持；点标题看说明）</em></div>
       <button id="extclose" style="margin-left:auto;height:34px;padding:0 14px;border:none;border-radius:10px;background:#eef1f6;color:#3a4255;font-size:13px;font-weight:600;cursor:pointer;">关闭</button>
     </div>
     <div style="display:flex;gap:8px;margin:10px 0 16px;">
@@ -1440,19 +1440,23 @@ flowchart TD
     return applyAdv(applyInst(SYS+'\n\n'+EXEC))+extInject();
   }
 
-  // 拓展弹窗
+  // 拓展弹窗（说明默认折叠，点标题行展开/收起——拓展再多也只占一列标题）
+  var extExpanded={};
   function extRender(){
     var list=document.getElementById('extlist');
     list.innerHTML=EXTENSIONS.map(function(e){
-      return '<div style="border:1px solid #eef0f4;border-radius:12px;padding:14px 16px;margin-bottom:10px;background:#fafbfc;">'
-        +'<div style="display:flex;align-items:center;gap:12px;">'
+      var open=!!extExpanded[e.id];
+      return '<div style="border:1px solid #eef0f4;border-radius:12px;padding:12px 16px;margin-bottom:8px;background:#fafbfc;">'
+        +'<div class="exthead" data-id="'+e.id+'" style="display:flex;align-items:center;gap:10px;cursor:pointer;">'
+        +'<span class="extcaret" style="font-size:10px;color:#aab0bf;width:12px;display:inline-block;transition:transform .2s;transform:rotate('+(open?'90':'0')+'deg);">▶</span>'
         +'<div style="font-size:14px;font-weight:700;flex:1;">'+esc(e.name)+'</div>'
-        +'<label style="position:relative;display:inline-block;width:46px;height:26px;cursor:pointer;">'
+        +(e.on?'<em style="font-style:normal;font-size:11px;color:#16a34a;font-weight:600;">已开启</em>':'')
+        +'<label class="extlabel" style="position:relative;display:inline-block;width:46px;height:26px;cursor:pointer;">'
         +'<input type="checkbox" class="exttoggle" data-id="'+e.id+'"'+(e.on?' checked':'')+' style="opacity:0;width:0;height:0;">'
         +'<span class="extslider" style="position:absolute;inset:0;border-radius:999px;background:'+(e.on?'#16a34a':'#cbd5e1')+';transition:.2s;"></span>'
         +'<span style="position:absolute;top:3px;left:'+(e.on?'23px':'3px')+';width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2);"></span>'
         +'</label></div>'
-        +'<div class="hint" style="margin-top:8px;line-height:1.7;">'+esc(e.desc)+'</div></div>';
+        +'<div class="hint" style="margin-top:8px;line-height:1.7;display:'+(open?'block':'none')+';">'+esc(e.desc)+'</div></div>';
     }).join('');
   }
   function bindExtToggles(){
@@ -1460,6 +1464,18 @@ flowchart TD
       cb.addEventListener('change',function(){
         var e=EXTENSIONS.filter(function(x){return x.id===this.getAttribute('data-id');}.bind(this))[0];
         if(e){ e.on=this.checked; extSave(); extRender(); bindExtToggles(); document.getElementById('sysprompt').value=buildSys(); }
+      });
+    });
+    // 点开关不触发展开
+    [].forEach.call(document.querySelectorAll('.extlabel'),function(l){
+      l.addEventListener('click',function(ev){ ev.stopPropagation(); });
+    });
+    // 点标题行折叠/展开说明
+    [].forEach.call(document.querySelectorAll('.exthead'),function(h){
+      h.addEventListener('click',function(){
+        var id=this.getAttribute('data-id');
+        extExpanded[id]=!extExpanded[id];
+        extRender(); bindExtToggles();
       });
     });
   }
