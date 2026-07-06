@@ -1659,6 +1659,7 @@ flowchart TD
         +'<button class="hbtn" data-act="view" data-i="'+i+'">查看</button>'
         +'<button class="hbtn" data-act="dl" data-i="'+i+'">下载</button>'
         +'<button class="hbtn" data-act="regen" data-i="'+i+'" style="background:#1f2430;color:#fff;border-color:#1f2430;">再次生成</button>'
+        +'<button class="hbtn" data-act="storyboard" data-i="'+i+'" style="background:#0891b2;color:#fff;border-color:#0891b2;">🎬 生成分镜</button>'
         +'<button class="hbtn" data-act="del" data-i="'+i+'" style="color:#dc2626;border-color:#f3d0d0;">删除</button>'
         +'</span></div>';
     // 查看＝恢复现场到主界面；下载＝先预览文档再下载
@@ -1692,6 +1693,27 @@ flowchart TD
       return;
     }
     var r=histAll()[+b.getAttribute('data-i')]; if(!r) return;
+    if(b.getAttribute('data-act')==='storyboard'){
+      var d=null; try{ d=JSON.parse(r.json); }catch(e){ alert('这条记录 JSON 解析失败，无法生成分镜。'); return; }
+      var ns=Array.isArray(d.nodes)?d.nodes:[];
+      if(!ns.length){ alert('这条记录没有节点，无法生成分镜。'); return; }
+      // 只送剧情/抉择/结局节点；有 script 用 script，没 script 用 text（情节概要）
+      var hasScript=ns.some(function(n){return (n.script||'').length>0;});
+      var noScript=ns.filter(function(n){return !(n.script||'').length;}).length;
+      var msg='将把本片 '+ns.length+' 个场次整套送去「分镜工作台」，让镜头之间有承接关系。\n\n';
+      if(!hasScript){ msg+='注意：本记录是结构骨架、没有分场剧本（script），将用各节点的情节概要送去分镜——能出分镜，但不如有完整剧本细。\n建议先用「剧本实例化」模式生成一版带剧本的，再来生成分镜。\n\n仍要继续吗？'; }
+      else if(noScript>0){ msg+='注意：其中 '+noScript+' 个节点没有分场剧本，将用其情节概要代替。\n\n确定生成分镜吗？'; }
+      else { msg+='确定生成分镜吗？'; }
+      if(!confirm(msg)) return;
+      // 打包成分镜工作台能读的 payload（沿用 nodes：id/loc/time/cast/script(或 text)）
+      var payload={ from:r.title||'', time:r.time, genres:d.genres||null, tags:d.tags||null,
+        nodes: ns.filter(function(n){ return n.kind!=='minor' || (n.script||n.text); }).map(function(n){
+          return { id:n.id, loc:n.loc||'', time:n.time||'', cast:n.cast||'', kind:n.kind||'normal', script:(n.script||n.text||'') };
+        }) };
+      try{ localStorage.setItem('sb_incoming', JSON.stringify(payload)); }catch(e){ alert('传递失败（本地存储写入错误）。'); return; }
+      window.open('分镜工作台.html','_blank');
+      return;
+    }
     if(b.getAttribute('data-act')==='del'){
       if(!confirm('删除这条记录？\n\n「'+(r.title||'无标题')+'」 '+r.time)) return;
       if(!confirm('删除后不可恢复，确认删除？')) return;

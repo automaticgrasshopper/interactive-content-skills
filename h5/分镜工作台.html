@@ -32,8 +32,15 @@
   .tabsrc button.on{background:#1f2430;border-color:#1f2430;color:#fff;}
   .srcpane{display:none;}
   .srcpane.on{display:block;}
-  .btn{width:100%;height:50px;border:none;border-radius:13px;font-size:15px;font-weight:600;cursor:pointer;background:#0891b2;color:#fff;margin-top:6px;}
+  .btns{display:flex;gap:10px;margin-top:6px;}
+  .btn{flex:1;height:50px;border:none;border-radius:13px;font-size:15px;font-weight:600;cursor:pointer;}
+  .btn.pri{background:#0891b2;color:#fff;}
+  .btn.stop{flex:0 0 96px;background:#ef4444;color:#fff;display:none;}
+  .btn.lock{width:100%;height:42px;border:none;border-radius:12px;background:#0891b2;color:#fff;font-size:14px;font-weight:600;cursor:pointer;}
   .btn:active{opacity:.85;}
+  .btn:disabled{opacity:.6;cursor:default;}
+  #progbox{display:none;margin-top:12px;}
+  #progbar{height:100%;width:0%;background:linear-gradient(90deg,#0891b2,#7c3aed);border-radius:999px;transition:width .4s ease;}
   .hint{font-size:11.5px;color:#9aa1b1;margin-top:8px;line-height:1.6;}
   .rbar{display:flex;align-items:center;gap:10px;padding:15px 18px;border-bottom:1px solid #eef0f4;flex-wrap:wrap;}
   .rtitle{font-size:15px;font-weight:700;}
@@ -115,7 +122,17 @@
         </select>
       </div>
 
-      <div class="btn" id="gen">✦ 生成分镜</div>
+      <div class="btns">
+        <button class="btn pri" id="gen">✦ 生成分镜</button>
+        <button class="btn stop" id="stopgen">■ 停止</button>
+      </div>
+      <div id="progbox">
+        <div style="display:flex;align-items:center;gap:10px;margin:8px 0 6px;">
+          <span id="progstage" style="font-size:12.5px;font-weight:600;color:#3a4255;">准备中…</span>
+          <span id="progpct" style="margin-left:auto;font-size:12.5px;font-weight:700;color:#1f2430;">0%</span>
+        </div>
+        <div style="height:10px;background:#eef1f6;border-radius:999px;overflow:hidden;"><div id="progbar"></div></div>
+      </div>
       <div class="hint">先在下方「对接模型」填 Key、选模型并锁定。分镜规则内嵌于本页执行卡，点顶部按钮可查看。</div>
 
       <!-- 对接模型 -->
@@ -132,7 +149,7 @@
             </select>
             <input id="ormodel_custom" class="ctl" type="text" placeholder="其他：填 model slug" style="display:none;margin-top:8px;">
           </div>
-          <button id="orlock" class="btn" style="height:42px;">确定锁定</button>
+          <button id="orlock" class="btn lock">确定锁定</button>
         </div>
         <div id="orview" style="position:relative;">
           <button id="orunlock" class="hbtn" style="position:absolute;top:0;right:0;">✎ 编辑</button>
@@ -163,48 +180,81 @@
 <div id="cardmask" class="mask">
   <div class="box">
     <div style="display:flex;align-items:center;margin-bottom:10px;">
-      <div style="font-size:18px;font-weight:700;">导演分镜执行卡 <em style="font-style:normal;font-size:12px;color:#aab0bf;font-weight:500;">（模型实际吃的规则，与 skill 同源）</em></div>
+      <div style="font-size:18px;font-weight:700;">导演分镜执行卡 <em style="font-style:normal;font-size:12px;color:#aab0bf;font-weight:500;">（<span id="cardlen"></span> 字符 ≈ <span id="cardtok"></span> token；与 skill 同源，越短模型执行越准）</em></div>
       <button id="cardclose" class="hbtn" style="margin-left:auto;">关闭</button>
     </div>
     <pre id="cardbody"></pre>
   </div>
 </div>
 
-<script type="text/plain" id="execcard">【导演分镜执行卡】把一场戏翻成逐镜头分镜表＋可喂 AI 视频的分镜提示词。导演＝解决特定戏剧问题的视觉语法，不是名字。
+<script type="text/plain" id="execcard">
+【导演分镜执行卡】把一场戏翻成逐镜头分镜表＋可喂 AI 视频的分镜提示词。导演＝解决特定戏剧问题的视觉语法，不是名字。先定影调色盘，再出分镜。
 
-【四步】
-第一步 诊断戏剧问题（内部思考、不单列输出）：这场戏要让观众产生什么？剧情＝发生了什么，戏剧问题＝观众该被怎样对待。
+【第零步·A 先列素材库（占位资源，分镜必须引用它，不许每镜现脑补）】
+分镜不从剧本文字凭空拆，先把三类资源具像化成带 @id 的资源条目，之后每镜@引用——这样人物形象/空间站位/音色全片锚定不漂（这一步只列"资源表"，不接真实图/音生成，占位即可）：
+· 人物 @char_名：外观要点（发型/服装/标识物）＋神情性格＋全部状态＋音色锚(voice：性别年龄质感，如"成熟略低沉御姐音")。
+· 场景 @scene_名_日/夜：空间布局(门/窗/主要陈设的相对位置，供机位与站位参照)＋光线氛围。同一空间日夜拆两条。
+· 声音 @sound：全片声音总则(只环境音效＋动作音效、不配 BGM)＋关键音效清单。
+每条资源给 id、字段、asset_ready:false(占位标记，未来接真资源时置 true)。分镜里每镜的人物/场景/空间站位，必须@引用这些 id，不再重新描述形象。
+
+【第零步·B 定影调色盘（PAD 坐标 → 颜色，不靠题材枚举）】
+影调不按题材硬记，按情绪坐标 PAD 推：V=效价(苦↔爽)、A=唤醒(平静↔激动)、D=支配(被压↔掌控)，各∈[−1,1]。
+· 主色（全片一组，钉死）：落在「一句话主题/logline 的情绪基调」上——不是某一段，是整片的情绪重心。把主题情绪读成一个主 PAD，映射出 4–5 个色（主色/辅色/点缀/暗部/高光），给十六进制。
+· 段落微调（不换色系，只变奏）：每个关键段相对主题 PAD 的偏移 Δ 决定怎么在主色上浮动——更苦(ΔV−)加冷压暗、更爽(ΔV+)回暖提亮、更激动(ΔA+)提饱和加对比、更被压(ΔD−)压低调、更掌控(ΔD+)提亮开阔。色相家族不变，只动 冷暖/明度/饱和/对比。
+· PAD→影调映射区间（取色依据，非精确公式，落在区间内自定具体色值）：
+  V 定色温冷暖：V≤−0.5 冷（蓝/青/墨绿）；−0.5<V<0.3 中性偏灰；V≥0.3 暖（橙/金/暖褐）。V 越负越去饱和越暗。
+  A 定饱和与对比：A≤−0.3 低饱和低对比柔和；−0.3<A<0.4 中；A≥0.4 高饱和高对比冲。
+  D 定明暗调性：D≤−0.4 低调（暗部多、压顶、光不在主体）；−0.4<D<0.4 中调；D≥0.4 高调（亮、开阔、光打在主体）。
+  三轴叠加取色：先 V 定冷暖家族、再 A 定鲜浊、再 D 定明暗，凑成一组和谐的色。
+
+【四步分镜】
+第一步 诊断戏剧问题（内部思考、不单列输出）：这场戏要让观众产生什么？
 第二步 挑导演语法：一主至多一辅。速查——发现真相/奇观/亲情/让观众认同→斯皮尔伯格；多线并行/倒计时/谜题/被系统压迫→诺兰；谎言/审讯/调查/被监控→芬奇；悬念(观众知危险角色不知)/窥视/延迟揭示→希区柯克；群像调度/天气即情绪/权力移动→黑泽明；家庭秩序/沉默/克制→小津；爱而不得/暧昧/错过→王家卫；欲望/复仇/精密操控/对称控制→朴赞郁；仪式感/制度恐惧/冷峻空间→库布里克；巨大尺度/神秘/负空间/命运压迫→维伦纽瓦。混搭必写清谁是骨架谁是调味。
-第三步 出分镜：先锚定全场相机（一台机身＋一组基准焦段，全片统一，服务情绪）。把戏拆成拍子(beat)，每拍若干镜头，逐镜填字段：镜号/时长/构图/画面描述/景别/焦段(mm)/机位/运镜/情绪/动作/微表情/情绪变化/节奏/剪辑点/声音。
+第三步 出分镜：先锚定全场相机（一台机身＋一组基准焦段，全片统一，服务情绪）。把戏拆成拍子(beat)，每拍若干镜头，逐镜填字段：镜号/时长/构图/画面描述/景别/焦段(mm)/机位/运镜/空间站位/接续关系/情绪/动作/微表情/情绪变化/节奏/剪辑点/声音。
   · 焦段是性格：14–24广角=尺度压迫吞人；35–50标准=客观日常纪实；85中长=特写压缩隔离亲密；135+长焦=强压缩群像/偷窥监控。
   · 运镜以固定为主(重要)：默认锁死机位，动的是人物与环境(雨/闪电/穿框)，不是相机。运镜栏多数写"固定"。要动须理由极硬、轻/短/有落点，绝不满场推摇、绝不一镜到底。
   · 运动语法翻成固定语法：推近→切更紧景别；横移连两人→固定双人构图内走位；摇镜揭示→切或让对象移进画框；跟拍→人物穿过固定画框/几个固定机位接力。
   · 镜头数手感：情绪戏3–6镜，动作/信息量大8–12。宁可每镜有目的，不凑数。
-第四步 出分镜提示词：把分镜表逐镜转成可喂 AI 视频的提示词，一镜一条，固定三段：①开头逐字写死"不要出现BGM，不要出现字幕，保留音效。"②风格与氛围(全场统一一句，复用相机质感＋情绪基调)③画面(景别＋焦段、明确写"固定机位无运镜"、主体动作、环境动态、光线、保留音效——通顺自然语言)。自检：开头三句逐字在最前；无BGM无字幕音效保留；运镜写固定机位无运镜；焦段与固定机位都带上；只描述本镜不跨镜、不写剪辑点/情绪变化/微表情等表内信息。
+  · 空间连贯（重要，治文字分镜最易翻车的"站位波动"）：同一场戏先在心里定一条主轴线（180°线），全场机位默认在轴线同侧，人物左右关系全场一致（谁在画框左、谁在右，跨镜别乱跳）。每镜必须写清：机位在轴线哪侧、主体在画框位置(左/中/右/前景/背景)、与上一镜的空间关系(同轴延续/反打/切近切远/明确越轴且给理由)。越轴要么不做，要么用一个中性过渡镜交代。相邻两镜的空间必须能对上——上一镜某人在画框右，下一镜他不该无理由跳到左。
+第四步 出分镜提示词：把分镜表逐镜转成可喂 AI 视频的提示词，一镜一条，固定三段：①开头逐字写死"不要出现BGM，不要出现字幕，保留音效。"②风格与氛围(全场统一一句，复用相机质感＋主色板色值＋该镜所在段落的影调微调)③画面(景别＋焦段、明确写"固定机位无运镜"、主体动作、环境动态、光线、保留音效——通顺自然语言，光线/色调要落到色盘的具体色值)。自检：开头三句逐字在最前；无BGM无字幕音效保留；运镜写固定机位无运镜；焦段与固定机位都带上；风格句带上主色板色值＋段落微调；画面里落实本镜空间站位、与上一镜空间对得上不乱跳；只描述本镜不跨镜、不写剪辑点/情绪变化/微表情等表内信息。
 
-【原则】反应比事物重要(先拍脸再拍揭示)；机位即态度(仰=强/俯=压/平=平等/低位固定=冷静旁观)；固定镜头是默认也是风格；相机焦段是叙事；留白沉默是语言；"这镜服务什么"是内部标尺不写进表；贴着用户的故事走、不改剧情走向。
+【原则】反应比事物重要(先拍脸再拍揭示)；机位即态度(仰=强/俯=压/平=平等/低位固定=冷静旁观)；固定镜头是默认也是风格；相机焦段是叙事；影调随情绪流动但不跳色系(主色钉死、段落只变奏)；留白沉默是语言；"这镜服务什么"是内部标尺不写进表；贴着用户的故事走、不改剧情走向。
 
-【输出格式】
-## 导演语法
-主：<导演> · 辅：<导演或无> —— <一句话为什么>
-## 全场相机
-机身：<型号＋一句为什么>　基准镜头：<焦段组，如 24/35/85mm>
-## 分镜（严格 JSON，供页面渲染成表）
+【输出格式·严格 JSON，供页面渲染】
 ===JSON===
 {
+  "assets":{
+    "characters":[{"id":"@char_丹眉","name":"丹眉","look":"黑色短发、红色发饰、米白立领上衣配黑色长裙","temperament":"冷淡清冷、表情克制","states":["常态"],"voice":"清冷少女音，略低","asset_ready":false}],
+    "scenes":[{"id":"@scene_大厅_夜","name":"废弃医院一楼大厅","layout":"正门在画面左、侧窗在右后、翻倒轮椅居中——供机位与站位参照","light":"应急灯绿光，暗部多","asset_ready":false}],
+    "sounds":{"rule":"只生成环境音效与动作音效，不配背景音乐","key":["雨声","远处滴水","低频心跳"],"voices":[{"id":"@voice_丹眉","desc":"清冷少女音"}],"asset_ready":false}
+  },
+  "palette":{
+    "themeMood":"一句话主题情绪＋读成的主 PAD，如：苦甜交织压抑中带暖 V+0.1/A0/D−0.3",
+    "colors":[
+      {"role":"主色","hex":"#RRGGBB","name":"色名","use":"用在哪（主场景/主色调）"},
+      {"role":"辅色","hex":"#RRGGBB","name":"","use":""},
+      {"role":"点缀","hex":"#RRGGBB","name":"","use":"情绪重点/信物"},
+      {"role":"暗部","hex":"#RRGGBB","name":"","use":""},
+      {"role":"高光","hex":"#RRGGBB","name":"","use":""}
+    ],
+    "segments":[
+      {"seg":"开场压制段","pad":"V−0.5/A0/D−0.6","tone":"在主色上怎么变奏——如：压暗、抽暖、加冷灰，暗红点收敛"}
+    ]
+  },
   "grammar":"主X·辅Y——一句话",
   "camera":{"body":"机身型号＋理由","lenses":"24/35/85mm"},
   "beats":[
-    {"name":"拍子1在干什么","shots":[
-      {"no":"1","dur":"2秒","comp":"构图","desc":"画面描述","size":"远景","lens":"24mm","pos":"街口低位","move":"固定","emo":"情绪","act":"动作","micro":"微表情","emoshift":"情绪变化","rhythm":"节奏","cut":"剪辑点","sound":"声音"}
+    {"name":"拍子1在干什么","seg":"该拍属于哪个影调段落","shots":[
+      {"no":"1","dur":"2秒","comp":"构图","desc":"画面描述","size":"远景","lens":"24mm","pos":"街口低位","move":"固定","refScene":"@scene_大厅_夜","refChar":"本镜出场人物的 @char_id，顿号分隔","space":"机位轴线侧＋主体在画框位置，如：轴线左侧机位，阿岩画框右前景、林雨左中景","link":"与上一镜空间关系，如：同轴延续/反打/切近/首镜","emo":"情绪","act":"动作","micro":"微表情","emoshift":"情绪变化","rhythm":"节奏","cut":"剪辑点","sound":"声音"}
     ]}
   ],
-  "note":"一句话导演笔记：最容易翻车处或一个小抓手",
+  "note":"一句话导演笔记",
   "prompts":[
-    {"no":"1","text":"不要出现BGM，不要出现字幕，保留音效。\n风格与氛围：<统一质感基调>\n画面：<景别+焦段、固定机位无运镜、主体动作、环境动态、光线、保留音效>"}
+    {"no":"1","text":"不要出现BGM，不要出现字幕，保留音效。\n风格与氛围：<质感＋主色板色值＋该镜段落影调微调>\n画面：<景别+焦段、固定机位无运镜、主体动作、环境动态、光线色调落到色值、保留音效>"}
   ]
 }
-只返回 ===JSON=== 之后的 JSON，不要多余文字。prompts 与 beats 里所有 shots 一一对应（按镜号）。</script>
+只返回 ===JSON=== 之后的 JSON，不要多余文字。assets 素材库先列、palette 再定、最后出分镜；每镜的 refScene/refChar 必须@引用 assets 里真实存在的 id，空间站位参照该场景的 layout；prompts 与 beats 里所有 shots 一一对应；每条 prompt 的风格句必须带主色板色值。
+</script>
 
 <script>
 (function(){
@@ -256,7 +306,7 @@
   try{ var _k=localStorage.getItem('sb_key'),_m=localStorage.getItem('sb_model'); if(_k)document.getElementById('orkey').value=_k; if(_m){document.getElementById('ormodel').value=_m; if(_m==='__other__')document.getElementById('ormodel_custom').style.display='block';} if(localStorage.getItem('sb_locked')==='1'&&_k)setLocked(true); }catch(e){}
 
   // ---- 执行卡弹窗 ----
-  document.getElementById('opencard').addEventListener('click',function(){ document.getElementById('cardbody').textContent=EXEC; document.getElementById('cardmask').style.display='flex'; });
+  document.getElementById('opencard').addEventListener('click',function(){ document.getElementById('cardbody').textContent=EXEC; document.getElementById('cardlen').textContent=EXEC.length; document.getElementById('cardtok').textContent='~'+Math.round(EXEC.length/1.6); document.getElementById('cardlen').style.color=EXEC.length>4000?'#dc2626':''; document.getElementById('cardmask').style.display='flex'; });
   document.getElementById('cardclose').addEventListener('click',function(){ document.getElementById('cardmask').style.display='none'; });
   document.getElementById('cardmask').addEventListener('click',function(e){ if(e.target===this)this.style.display='none'; });
 
@@ -295,22 +345,33 @@
   }
 
   // ---- 生成 ----
-  var busy=false;
+  // 进度条
+  function progShow(){ document.getElementById('progbox').style.display='block'; }
+  function progSet(pct,stage){ pct=Math.max(0,Math.min(100,Math.round(pct)));
+    document.getElementById('progbar').style.width=pct+'%'; document.getElementById('progpct').textContent=pct+'%';
+    if(stage) document.getElementById('progstage').textContent=stage; }
+
+  var busy=false, gAbort=null, gStopped=false;
+  document.getElementById('stopgen').addEventListener('click',function(){ if(!busy)return; gStopped=true; this.style.display='none'; try{ if(gAbort)gAbort.abort(); }catch(e){} });
   document.getElementById('gen').addEventListener('click',function(){
     if(busy) return;
     if(!isLocked()){ alert('先在下方「对接模型」填 Key、选模型并锁定'); return; }
     var scene=buildSceneText();
     if(!scene){ alert(srcMode==='text'?'先写一场戏':'先粘贴 JSON 并选场次（或粘贴含 nodes 的 JSON）'); return; }
     var camNote=document.getElementById('camstyle').value==='free'?'允许必要动镜（但仍以固定为主，动镜须轻/短/有落点）':'固定镜头为主，运镜栏默认写“固定”';
-    busy=true; var btn=document.getElementById('gen'), old=btn.textContent; btn.textContent='生成中…';
+    busy=true; gStopped=false; var btn=document.getElementById('gen'), old=btn.textContent; btn.textContent='生成中…'; btn.disabled=true;
+    document.getElementById('stopgen').style.display='block'; document.getElementById('progbar').style.background='linear-gradient(90deg,#0891b2,#7c3aed)';
+    progShow(); progSet(4,'准备请求…');
     logReset(); logLine('▸ 输入：'+(srcMode==='text'?'手填一场戏':'剧本 JSON '+(scene.split('场次 ').length-1)+' 个场次'));
     logLine('▸ 镜头风格：'+camNote);
     logLine('▸ 调用 '+getModel()+'，按导演分镜执行卡出分镜…\n──────────────────────────────');
     var key=(document.getElementById('orkey').value||'').trim();
     var user=scene+'\n\n【镜头风格约束】'+camNote+'\n\n请按导演分镜执行卡出分镜：先诊断戏剧问题(内部)、挑导演语法、锚定全场相机、逐镜填表、再逐镜出分镜提示词。只返回 ===JSON=== 之后的 JSON。';
     logHead=logEl.textContent;
-    var acc='';
-    fetch('https://openrouter.ai/api/v1/chat/completions',{method:'POST',headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json'},
+    var acc='', JSON_EXP=6000;
+    progSet(10,'模型输出中…');
+    gAbort=new AbortController();
+    fetch('https://openrouter.ai/api/v1/chat/completions',{method:'POST',signal:gAbort.signal,headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json'},
       body:JSON.stringify({model:getModel(),temperature:0.7,max_tokens:16000,stream:true,messages:[{role:'system',content:SYS+'\n\n'+EXEC},{role:'user',content:user}]})
     }).then(function(r){
       if(!r.ok) return r.json().then(function(j){ throw new Error((j&&j.error&&j.error.message)||('HTTP '+r.status)); });
@@ -319,25 +380,61 @@
       function pump(){ return rd.read().then(function(x){ if(x.done){finish();return;}
         sse+=dec.decode(x.value,{stream:true}); var ls=sse.split('\n'); sse=ls.pop();
         ls.forEach(function(ln){ ln=ln.trim(); if(ln.slice(0,5)!=='data:')return; var p=ln.slice(5).trim(); if(p==='[DONE]')return;
-          try{ var jj=JSON.parse(p); var dl=jj.choices&&jj.choices[0]&&jj.choices[0].delta&&jj.choices[0].delta.content; if(dl){ acc+=dl; var i=acc.indexOf('===JSON==='); logStream(i>=0?acc.slice(0,i):acc); } }catch(e){}
+          try{ var jj=JSON.parse(p); var dl=jj.choices&&jj.choices[0]&&jj.choices[0].delta&&jj.choices[0].delta.content; if(dl){ acc+=dl; var i=acc.indexOf('===JSON==='); if(i>=0){ logStream(acc.slice(0,i)); progSet(55+40*Math.min(1,(acc.length-i)/JSON_EXP),'接收分镜 JSON…'); } else { logStream(acc); progSet(10+45*Math.min(1,acc.length/1200),'模型输出中…'); } } }catch(e){}
         }); return pump();
       }); }
       return pump();
-    }).catch(function(e){ logLine('\n✗ 调用失败：'+e.message); done(); });
+    }).catch(function(e){
+      if(gStopped||(e&&e.name==='AbortError')){ progSet(100,'已停止'); document.getElementById('progbar').style.background='#94a3b8'; logLine('\n⏹ 已手动停止。'); done(); return; }
+      progSet(100,'失败'); document.getElementById('progbar').style.background='#ef4444'; logLine('\n✗ 调用失败：'+e.message); done();
+    });
 
     function finish(){
+      if(gStopped){ done(); return; }
+      progSet(92,'解析渲染…');
       var c=acc, i=c.indexOf('===JSON==='); if(i>=0)c=c.slice(i+10);
-      var a=c.indexOf('{'),b=c.lastIndexOf('}'); if(a>=0&&b>a)c=c.slice(a,b+1); else { logLine('\n✗ 没找到 JSON'); done(); return; }
-      var d; try{ d=JSON.parse(c); }catch(e){ logLine('\n✗ JSON 解析失败：'+e.message); done(); return; }
+      var a=c.indexOf('{'),b=c.lastIndexOf('}'); if(a>=0&&b>a)c=c.slice(a,b+1); else { progSet(100,'失败'); document.getElementById('progbar').style.background='#ef4444'; logLine('\n✗ 没找到 JSON'); done(); return; }
+      var d; try{ d=JSON.parse(c); }catch(e){ progSet(100,'失败'); document.getElementById('progbar').style.background='#ef4444'; logLine('\n✗ JSON 解析失败：'+e.message); done(); return; }
       logLine('\n▸ 分镜接收完成，渲染…'); renderBoard(d); renderPrompts(d);
-      logLine('✓ 完成。分镜表见右侧，分镜提示词切右上页签。'); done();
+      progSet(100,'完成 ✓'); logLine('✓ 完成。分镜表见右侧，分镜提示词切右上页签。'); done();
     }
-    function done(){ busy=false; btn.textContent=old; }
+    function done(){ busy=false; gAbort=null; document.getElementById('stopgen').style.display='none'; btn.textContent=old; btn.disabled=false; }
   });
 
-  var COLS=[['no','镜号'],['dur','时长'],['size','景别'],['lens','焦段'],['pos','机位'],['move','运镜'],['comp','构图'],['desc','画面描述'],['act','动作'],['micro','微表情'],['emo','情绪'],['emoshift','情绪变化'],['rhythm','节奏'],['cut','剪辑点'],['sound','声音']];
+  var COLS=[['no','镜号'],['dur','时长'],['size','景别'],['lens','焦段'],['pos','机位'],['move','运镜'],['space','空间站位'],['link','接续'],['refScene','场景'],['refChar','人物'],['comp','构图'],['desc','画面描述'],['act','动作'],['micro','微表情'],['emo','情绪'],['emoshift','情绪变化'],['rhythm','节奏'],['cut','剪辑点'],['sound','声音']];
   function renderBoard(d){
     var h='';
+    if(d.assets){
+      var A=d.assets;
+      h+='<div style="border:1px solid #eef0f4;border-radius:12px;padding:12px 14px;margin-bottom:12px;background:#fafcff;">';
+      h+='<div style="font-size:13.5px;font-weight:700;color:#0e7490;margin-bottom:8px;">素材库 <span style="font-size:11px;font-weight:500;color:#aab0bf;">（占位资源·分镜引用它锚定，未来接真图/真音）</span></div>';
+      if(Array.isArray(A.characters)&&A.characters.length){
+        h+='<div style="font-size:12px;font-weight:700;color:#3a4255;margin:4px 0;">人物</div><div style="display:flex;gap:8px;flex-wrap:wrap;">';
+        A.characters.forEach(function(c){ h+='<div style="flex:1;min-width:200px;border:1px solid #e5e9f0;border-radius:8px;padding:8px 10px;font-size:11.5px;line-height:1.7;background:#fff;"><b style="color:#0891b2;">'+esc(c.id||c.name||'')+'</b>　'+esc(c.name||'')+'<br>'+esc(c.look||'')+(c.temperament?'<br>神情：'+esc(c.temperament):'')+(c.voice?'<br>\uD83D\uDD0A 音色：'+esc(c.voice):'')+'</div>'; });
+        h+='</div>';
+      }
+      if(Array.isArray(A.scenes)&&A.scenes.length){
+        h+='<div style="font-size:12px;font-weight:700;color:#3a4255;margin:8px 0 4px;">场景</div><div style="display:flex;gap:8px;flex-wrap:wrap;">';
+        A.scenes.forEach(function(s){ h+='<div style="flex:1;min-width:200px;border:1px solid #e5e9f0;border-radius:8px;padding:8px 10px;font-size:11.5px;line-height:1.7;background:#fff;"><b style="color:#0891b2;">'+esc(s.id||s.name||'')+'</b>　'+esc(s.name||'')+'<br>布局：'+esc(s.layout||'')+(s.light?'<br>光线：'+esc(s.light):'')+'</div>'; });
+        h+='</div>';
+      }
+      if(A.sounds){
+        h+='<div style="font-size:12px;font-weight:700;color:#3a4255;margin:8px 0 4px;">声音</div><div style="font-size:11.5px;line-height:1.7;color:#475569;">总则：'+esc(A.sounds.rule||'')+(Array.isArray(A.sounds.key)?'　关键音效：'+A.sounds.key.map(esc).join('、'):'')+(Array.isArray(A.sounds.voices)?'<br>音色：'+A.sounds.voices.map(function(v){return esc((v.id||'')+' '+(v.desc||''));}).join('　'):'')+'</div>';
+      }
+      h+='</div>';
+    }
+    if(d.palette){
+      var P=d.palette;
+      h+='<div style="border:1px solid #eef0f4;border-radius:12px;padding:12px 14px;margin-bottom:12px;">';
+      h+='<div style="font-size:13.5px;font-weight:700;color:#7c3aed;margin-bottom:8px;">影调色盘 <span style="font-size:11px;font-weight:500;color:#aab0bf;">（主色钉死·段落只变奏不换色系）</span></div>';
+      if(P.themeMood) h+='<div style="font-size:12px;color:#6b7488;margin-bottom:8px;">主题情绪：'+esc(P.themeMood)+'</div>';
+      if(Array.isArray(P.colors)){ h+='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;">';
+        P.colors.forEach(function(c){ var hex=esc(c.hex||'#ccc'); h+='<div style="text-align:center;font-size:10.5px;"><div style="width:56px;height:40px;border-radius:6px;border:1px solid rgba(0,0,0,.12);background:'+hex+';"></div><div style="margin-top:2px;font-weight:700;">'+esc(c.role||'')+'</div><div style="font-family:ui-monospace,monospace;color:#8a92a6;">'+hex+'</div>'+(c.use?'<div style="color:#aab0bf;max-width:64px;">'+esc(c.use)+'</div>':'')+'</div>'; });
+        h+='</div>';
+      }
+      if(Array.isArray(P.segments)&&P.segments.length){ h+='<div style="font-size:11.5px;line-height:1.8;color:#475569;"><b>段落微调：</b><br>'+P.segments.map(function(s){return '· '+esc(s.seg||'')+(s.pad?'（'+esc(s.pad)+'）':'')+'：'+esc(s.tone||'');}).join('<br>')+'</div>'; }
+      h+='</div>';
+    }
     if(d.grammar) h+='<div class="grammar">🎬 '+esc(d.grammar)+'</div>';
     if(d.camera) h+='<div class="cam"><b>全场相机</b>　机身：'+esc(d.camera.body||'')+'　｜　基准焦段：'+esc(d.camera.lenses||'')+'</div>';
     var beats=Array.isArray(d.beats)?d.beats:[];
@@ -361,6 +458,28 @@
     var all=ps.map(function(p){return '【镜头'+p.no+'】\n'+(p.text||'');}).join('\n\n');
     var cp=document.getElementById('copyall'); if(cp) cp.addEventListener('click',function(){ try{navigator.clipboard.writeText(all); this.textContent='已复制'; var b=this; setTimeout(function(){b.textContent='复制全部提示词';},1200);}catch(e){} });
   }
+
+  // ---- 接收从「故事节奏验证」H5 一键送来的全片剧本 ----
+  try{
+    var inc=localStorage.getItem('sb_incoming');
+    if(inc){
+      localStorage.removeItem('sb_incoming'); // 用完即焚，避免下次误带
+      var pay=JSON.parse(inc);
+      if(pay && Array.isArray(pay.nodes) && pay.nodes.length){
+        setSrc('json');
+        document.getElementById('jsonin').value=JSON.stringify({nodes:pay.nodes}, null, 0);
+        document.getElementById('jsonin').dispatchEvent(new Event('input'));
+        // 全选场次
+        setTimeout(function(){
+          [].forEach.call(document.querySelectorAll('#scenepick .sc'),function(s){ var id=s.getAttribute('data-id'); pickedScenes[id]=true; s.classList.add('on'); });
+          var banner=document.createElement('div');
+          banner.style.cssText='margin-top:8px;font-size:12px;color:#0e7490;background:#ecfeff;border:1px solid #a5e8f0;border-radius:8px;padding:8px 10px;line-height:1.6;';
+          banner.textContent='✓ 已接收「'+(pay.from||'一键生成分镜')+'」的 '+pay.nodes.length+' 个场次（已全选）。锁定 Key 后点“生成分镜”即可——整片一起跑，镜头间有承接。';
+          var wrap=document.getElementById('scenewrap'); if(wrap) wrap.appendChild(banner);
+        },50);
+      }
+    }
+  }catch(e){}
 })();
 </script>
 </body>
