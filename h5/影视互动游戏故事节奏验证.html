@@ -135,6 +135,15 @@
         <textarea id="brief" maxlength="5000" placeholder="可长可短：一句话想法，或详细到人设、场景、镜头设计均可。" style="width:100%;height:118px;border:1px solid #dfe2ea;border-radius:12px;background:#fafbfc;padding:12px;font-size:13px;line-height:1.6;color:#1f2430;resize:vertical;"></textarea>
       </div>
       <div class="field">
+        <label>上传文稿 <em>（可选 · 你写多细就以你的为准）</em></label>
+        <input id="docfile" type="file" accept=".txt,.md,.markdown,.text,text/plain,text/markdown" multiple style="display:none;">
+        <div class="addrow" style="align-items:center;">
+          <button id="docbtn" type="button">＋ 上传文稿</button>
+          <span id="dochint" class="hint" style="margin:0;flex:1;">支持 .txt / .md（Word 请先导出成 .md 或 .txt）。上传后即为本次生成的最高权威输入。</span>
+        </div>
+        <div id="doclist" style="display:none;margin-top:8px;"></div>
+      </div>
+      <div class="field">
         <label>题材标签 <em>（可多选 · 复合＝融合）</em></label>
         <div class="chips" id="chips"></div>
         <div class="hint">列表不够，下面可以自己加标签：</div>
@@ -179,6 +188,7 @@
 
       <div class="btns">
         <button class="btn pri" id="gen">✦ 一键生成</button>
+        <button class="btn" id="stopgen" style="display:none;background:#ef4444;color:#fff;border-color:#ef4444;">■ 停止</button>
       </div>
       <div class="hint" style="margin-top:8px;">点击后完整跑一条链：模型按规则书六步生成（逐步日志实时可见）→ 大纲 / 场景与人物 / 分集流程图 / 分场剧本 / 情绪对照。需先在下方「对接模型」锁定 Key 与模型。</div>
     </div>
@@ -337,7 +347,8 @@
   <div style="background:#fff;border-radius:16px;max-width:900px;width:100%;padding:22px 30px 28px;box-shadow:0 8px 30px rgba(20,25,40,.25);">
     <div style="display:flex;align-items:center;margin-bottom:6px;position:sticky;top:0;background:#fff;padding:6px 0;">
       <div style="font-size:18px;font-weight:700;">规则书</div>
-      <button id="rulesclose" style="margin-left:auto;height:34px;padding:0 14px;border:none;border-radius:10px;background:#eef1f6;color:#3a4255;font-size:13px;font-weight:600;cursor:pointer;">关闭</button>
+      <button id="rulesdl" style="margin-left:auto;height:34px;padding:0 14px;border:1px solid #dfe2ea;border-radius:10px;background:#fff;color:#3a4255;font-size:13px;font-weight:600;cursor:pointer;">⬇ 下载 .md</button>
+      <button id="rulesclose" style="margin-left:10px;height:34px;padding:0 14px;border:none;border-radius:10px;background:#eef1f6;color:#3a4255;font-size:13px;font-weight:600;cursor:pointer;">关闭</button>
     </div>
     <div id="rulesbody" style="font-size:13.5px;line-height:1.8;color:#3a4255;"></div>
   </div>
@@ -390,6 +401,8 @@
 - **故事** 决定"用什么内容去兑现题材对玩家许下的承诺"。
 - **节奏** 决定"在时间轴上如何摆布情绪与选择"，让体验全程不无聊。
 - **生成顺序** 决定"上面三层按什么先后落地成一个可生成的剧本和流程"。
+
+> **第一性原则（凌驾全书）：用户输入优先于规则。** 用户已经写到的任何颗粒度——一句灵感、一段大纲、完整分场台词、镜头——都是最高权威，一律原样采纳，本书其余规则只用来**补足用户没写的空白层**、并**叠加节奏/结构/校验**，绝不改写、替换或"优化"用户已给的内容。冲突时取更细颗粒度的一方。当用户上传的是一部**已完成的完整剧本**、只想把它盘成互动结构（画流程图、抽人物场景、画情绪坐标）时，进入**忠实导入**口径：不发明互动、有几处抉择几个结局就照原样，情绪坐标按剧本真实走势如实标注——**哪怕偏离标准线也只提示、不回改**（详见第六部分第 10 条）。
 
 书中凡是形象化的说法（如"情绪脊""编织带"），都紧跟一句直白解释和一句操作定义或量化口径。凡涉及数值，一律给精确区间、公式或阈值，区间都含两端。时间一律以分钟计，它是全书唯一的自由变量：以 60 分钟为核心基准，向下收缩就减少节点，向上扩张就增加节点。
 
@@ -1002,6 +1015,7 @@ flowchart TD
 7. **引擎由时长先定**：≤ 约 30 分钟走结局树（3.1.3），≥ 约 45 分钟走情绪弧（3.1、3.1.1），30–45 分钟过渡。**3.1 七拍、3.4 四段分配、3.6 阶梯放置只对长片**；短片一律以结局树为准。三层结局定义与计数则长短片通用。
 8. **时长：指定 > 推荐**。用户 / 产品给了目标时长就用它；没给、或写完做节奏自检，才用 3.1.4 的推荐区间。
 9. **类型融合：底色 > 供能**。用户点名的类型是底色，核心承诺必须兑现；融进来的供能类型只增益，不喧宾夺主（见 1.4）。
+10. **用户输入第一性 & 忠实导入**（呼应阅读说明的第一性原则）：用户已写到的颗粒度一律原样采纳，本书规则只补空白、叠加节奏与校验，不改写用户已给内容。当输入是一部**已完成的完整剧本**、目标是忠实还原时，以下互动生成硬规则**全部降为参考、不得据以增删或改写剧本**：结局数＝设定值、抉择数分档（3.1.3 / 3.2）、每抉择 2–4 出口、空合流禁令（3.5）、反套路装置与连锁反转（2.5）、力度谱阈值（2.9）、爽点 payoffs 必填（2.8）。此时：① 剧本有几处抉择、几个结局就照原样，线性剧本即输出线性节点链；② 台词/分场/情节原样落进分场剧本，人物与场景据剧本抽取；③ 情绪坐标（PAD/beats）按剧本真实走势打点，**偏离标准线只在分析里提示、绝不回改剧本**；④ 只有剧本自身前后矛盾才登记 consistency，剧本与本工具规则不一致不算矛盾。校验器对上述项相应降级为软提示、且不触发自动重跑。
 
 
 〔INST〕---
@@ -1066,6 +1080,7 @@ flowchart TD
 <script type="text/plain" id="execcard">【符号】（下文用到即引用、不再解释）：T=主线时长(分,唯一自由变量)；E=总结局数(三种结局之和)；P=(V,A,D)∈[−1,1]³=情绪坐标(效价/唤醒/支配)；Δ=相邻拍之差；落差=一段内 max−min；翻盘拍≡D 由−→+；跌落≡V 由+→−；拐点≡某轴 sign 翻转；∝T≡按 T/60 同比缩放；round=四舍五入；所有数值区间含两端。
 
 【0 全局】
+- ⓪ 第一性：用户已写到的任何颗粒度（灵感/大纲/分场/台词/镜头/上传原稿）＝最高权威，原样采纳，本执行卡只补空白＋叠加节奏/结构/校验，不改写用户已给内容；冲突取更细颗粒度方。忠实导入模式（上传完整剧本、只求还原）下：不发明互动、抉择/结局数照剧本原样、情绪坐标按剧本真实走势打点（偏离只提示不回改），本卡内"结局数=E/抉择数档/2–4出口/空合流/反俗套/力度谱/payoffs必填"全部降为参考；只有剧本自身前后矛盾才登记 consistency。
 - 唯一自由变量：时长 T（分钟），基准 60 分，数量按 T/60 同比缩放。时长：用户指定＞推荐，但受下条自洽检验约束。
 - 输入自洽检验（第0步开头强制执行）：先用容量公式反查用户输入——内容承诺所需时长＝主线骨架≥15 分＋每条完整情感弧光≈20 分＋每名仅露脸角色≈5 分。若用户给定时长＜所需时长，判定为自相矛盾：真实意图＝内容承诺（角色都要在、弧光要完整）＞时长数字，必须上调时长到容量公式给出的最小值并重定引擎分档；若用户明确说时长不可动，则反向裁剪内容（减角色/减弧光，依次登场只写透 2 条）。两种裁决都必须在 consistency 字段与逻辑链第0步里写明：矛盾是什么、真实意图判断、怎么裁、裁完的新参数。
 - 结局数 E＝三种结局之和：末段主结局＋中间大结局(0–1)＋小结局/死路，全部计入（用户输入 1–10 或 AI 推荐＝总数）。先按题材定主结局集合、再按余量铺小结局；分配软区间见【3】。”小结局”一词只指死路。
@@ -1168,14 +1183,57 @@ flowchart TD
 
   // ===== 对接模型：打包请求 + 渲染返回 =====
   function esc(s){ return String(s==null?'':s).replace(/[&<>]/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[m];}); }
+  // ===== 用户上传文稿（第一性 · 本次会话内有效，不写进记录）=====
+  var DOCS=[];               // [{name, text}]
+  var DOC_INJECT_CAP=50000;  // 注入模型的字数上限，防止撑爆 max_tokens
+  function docText(){ return DOCS.map(function(d){ return d.text; }).join('\n\n───────\n\n').trim(); }
+  function docChars(){ return docText().length; }
+  function renderDocs(){
+    var wrap=document.getElementById('doclist');
+    if(!DOCS.length){ wrap.style.display='none'; wrap.innerHTML=''; return; }
+    wrap.style.display='block';
+    var total=docChars();
+    var over=total>DOC_INJECT_CAP;
+    wrap.innerHTML='<div class="hint" style="margin:0 0 6px;'+(over?'color:#d97706;':'color:#16a34a;')+'">已载入 '+DOCS.length+' 份，共 '+total+' 字，作为本次生成的最高权威输入。'+(over?('（超过 '+DOC_INJECT_CAP+' 字，注入模型时将截断，建议精简）'):'')+'</div>'
+      + DOCS.map(function(d,i){ return '<div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#1f2430;padding:4px 0;"><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">📄 '+d.name.replace(/</g,'&lt;')+' <em style="color:#8a92a6;">（'+d.text.length+' 字）</em></span><button type="button" class="hbtn" data-doci="'+i+'">移除</button></div>'; }).join('');
+    Array.prototype.forEach.call(wrap.querySelectorAll('[data-doci]'), function(b){ b.addEventListener('click', function(){ DOCS.splice(parseInt(this.getAttribute('data-doci'),10),1); renderDocs(); }); });
+  }
+  document.getElementById('docbtn').addEventListener('click', function(){ document.getElementById('docfile').click(); });
+  document.getElementById('docfile').addEventListener('change', function(){
+    var files=Array.prototype.slice.call(this.files||[]); var self=this;
+    var pending=files.length;
+    files.forEach(function(f){
+      var r=new FileReader();
+      r.onload=function(){ DOCS.push({name:f.name, text:(r.result||'').toString().trim()}); pending--; if(pending<=0){ renderDocs(); self.value=''; } };
+      r.onerror=function(){ pending--; if(pending<=0){ renderDocs(); self.value=''; } alert('读取失败：'+f.name); };
+      r.readAsText(f);
+    });
+    if(!files.length){ self.value=''; }
+  });
+  // 供 mkReq / resolveOne 取用的第一性文稿块（已截断）
+  function docBlock(){
+    var t=docText(); if(!t) return '';
+    var truncated = t.length>DOC_INJECT_CAP;
+    if(truncated) t=t.slice(0,DOC_INJECT_CAP);
+    return '【用户上传原稿·第一性】以下是用户上传的原始文稿，是本次生成的最高权威输入。原则——用户写到哪个颗粒度，就以他写的为准、按他的颗粒度执行：\n'
+      + '· 凡文稿已给出的内容（大纲/分场/人物/场景/道具/台词/镜头/分支/抉择/结局等），一律原样采纳为定稿，禁止改写、替换、删减、"优化"或用你自己的创意顶掉；专有名词、台词原文、既定情节严格保留。\n'
+      + '· 你只做三件事：补齐文稿未写的空白层、把已有内容如实组织进下方要求的 JSON 结构、叠加节奏/PAD/结构校验层。缺失字段才由你创作，已有内容照搬。\n'
+      + '· 仅当文稿内部自相矛盾、或与规则书硬约束冲突且无法两全时，才做最小幅度调整，并在 consistency 与生成日志里写明改了什么、为什么。\n'
+      + '· 文稿与下方「自由描述」冲突时，以更细颗粒度的一方为准。\n'
+      + (truncated?'（注：文稿过长，此处为前 '+DOC_INJECT_CAP+' 字节选。）\n':'')
+      + '──── 文稿正文开始 ────\n' + t + '\n──── 文稿正文结束 ────\n\n';
+  }
+
   function mkReq(){
     var T=lastT, E=lastE;
     var inst=extOn('script_inst'); // 剧本实例化规则：off＝只出结构骨架，JSON 不要 characters/scenes/props、节点不要 cast/script
     var advChk=extOn('advanced_check'); // 高级自检：off＝精简，只要 selfcheck JSON 字段
+    var faith=extOn('faithful_import'); // 忠实导入：以上传剧本原样为准，互动硬规则降为参考
     var nodeFloor=Math.max(8,E+3), nodeCap=Math.max(22,E*3+2); // 节点总数上限随结局数放大（E=10 时可到 ~32）
     var tags=pickedList();
     var brief=(document.getElementById('brief').value||'').trim();
-    var s='【输入】\n'
+    var s=docBlock()
+      +'【输入】\n'
       +(brief?('自由描述：'+brief+'\n'):'')
       +'题材标签：'+(tags.length?tags.join(' ＋ '):'（未选）')+(tags.length>1?'（融合）':'')+(tags.length?'（以上为用户硬选标签，必须在 tags 里体现）':'')+'\n'
       +'时长：'+T+' 分钟\n'
@@ -1210,6 +1268,12 @@ flowchart TD
       +'（短片按结局树、长片按情绪弧组织；beats 的 t＝分钟、V 和 D 都必须给、取 −1 到 1，beats 至少 5 拍且覆盖全程；flowEnter＝大概第几分钟玩家进入心流；choices 与 nodes 里的 choice 节点一一对应。）\n\n'
       +'【输出格式】分两段：\n第一段【生成日志】——严格按规则书第四部分“生成顺序”的六步，逐步写出你对本案例的具体决策（每步 3–6 行，写具体内容禁止套话）：\n第0步 输入自洽检验＋题材先验：先用容量公式反查输入是否自相矛盾（矛盾则写明真实意图与裁决、新参数）；再题材画像/是否需类型融合/视角/金手指及其限制/数值信封（时长·抉择数·结局数总数→先按题材定主结局集合、判断是否有中间大结局）/一句话定位四要素自检；\n第1步 立情绪脊：主干各拍的 PAD 坐标与拐点（哪里 D 负翻正、哪里 V 正翻负）、反差催化剂、观众已知/主角未知的反讽账；\n第2步 识别岔点：从脊上列出候选岔点清单，每个标注价值岔向与选项代价；\n第3步 铺分支拓扑：说明怎么剪裁岔点满足节奏数学（抉择数/三种结局按软区间分配/小结局位置）；\n第4步 填内容：关键节点的场景/人物建置/结局差异化要点，并对 2–3 个关键节点展示题材透镜过程（情节骨架→题材反差物→升级收口→钩子）；\n'+(advChk?'第5步 自检：对照规则书第五部分清单逐项报 ✓/✗，有 ✗ 必须回步修正后再输出。':'第5步 自检（精简）：内部逐项自检不要写过程，有 ✗ 先回步修正；修不了才把结果写进 JSON 的 selfcheck 字段（四组：题材/故事/节奏/剧本，每组 ✓ 或 ✗:一句原因）。')+'\n然后另起一行只写 ===JSON===，之后只输出上面规定的 JSON，不要再有其他文字。';
     if(tags.indexOf('抽象')>=0){ s+='\n\n【抽象说明】题材含"抽象"：请以 B站 / 抖音 当下最热门的抽象梗为素材来构建（梗迭代极快，一律取当前流行的，不要套用过时老梗）。'; }
+    if(faith){ s+='\n\n【忠实导入·总闸（最高优先级，覆盖上面所有互动硬规则）】上传原稿是已完成剧本，本次只做忠实还原，不再创作：\n'
+      +'· 结构照剧本原样：剧本有几处抉择就几处、几个结局就几个（线性剧本＝0 抉择、1 结局、节点顺连成一条链）；不得为满足"结局数='+E+'/抉择数档/每抉择2–4出口/空合流禁令/反俗套/力度谱/payoffs必填"而增删或改写任何情节、抉择、结局、翻盘拍。上面这些规则在本模式下一律降为参考。\n'
+      +'· 内容照剧本原样：每个分场的台词、动作、情节原样落进对应 node 的 script（inst 关时落 text），人物与场景据剧本抽取，不替换不"优化"、不补剧本没有的桥段。\n'
+      +'· 情绪照剧本真实走势：beats 按剧本实际情绪打点，即使不满足力度谱/标准线也如实标注，绝不改情绪去凑节奏。\n'
+      +'· consistency.conflict 只在剧本"自身"前后矛盾时才写；剧本与本工具互动规则不一致不算矛盾、不要裁决、不要上调时长结局。\n'
+      +'· 生成日志照常报节奏偏离（供人看），但严禁据此回改剧本。E='+E+' 仅作参考，实际结局数以剧本为准。'; }
     document.getElementById('req').value=s;
   }
   // ===== 题材与标签 + 相符度评分（题材相符度评测拓展）=====
@@ -1330,7 +1394,7 @@ flowchart TD
   document.getElementById('renderout').addEventListener('click', renderOut);
 
   // ===== 自动模式：直连 OpenRouter（kian 用的就是它）=====
-  var SYS='你是互动短剧结构生成器，遵循《互动短剧设计规则书》。⚠ 第零优先：先做输入自洽检验（容量公式：主线≥15分＋每条完整情感弧光≈20分＋每名露脸角色≈5分），用户内容承诺与时长矛盾时，真实意图＝内容承诺，上调时长并重定引擎，裁决写进 consistency。核心：① 题材层：判断题材够不够成为产品；弱题材靠类型融合破局（底色＝用户点的类型，融一个供能类型当惊喜），每阶段配强敌＋可克服难关；必须有受限的金手指（金手指不限异能/强能力：历史权谋·谍战中智力、乙女纯爱中主角魅力本身也算，同须限定使用规则与场景）；需推荐或融合题材时优先取当下男频/女频热门池（男频：历史模拟器/无限流/系统文/悬疑恐怖/盗墓冒险/末日生存/修仙炼丹/游戏竞技；女频：宫斗宅斗/综艺想象/年代发家/萌宝萌娃/穿书逆袭/纯爱百合），非封闭，用户点名池外照做。② 引擎由时长定：≤30分钟＝结局树（装置先行→一次兑现＋一记反转→抉择树→2–4结局）；≥45分钟＝情绪弧（起承转合七拍＋PAD坐标V/A/D＋反差催化剂）；30–45过渡。③ 前五分钟必有一个教学交互点，落在第一个情节点高潮；起段固定 1 个选错即死。④ 结局数＝三种之和(末段主结局＋中间大结局0–1＋小结局/死路)，用户输入的就是总数；先按题材定主结局(下限2，≤10min纯爱/抽象可1)、再按余量铺小结局(N≥5尽量多于主结局)，中间大结局＝隐藏结局仅0–1；分配按软区间表(见执行卡【3】)；每个结局一个鲜明的价值/情绪落点。⑤ 一句话定位须含期待/反转/钩子/情绪四要素。⑥ 大纲与节点文字必须具体可执行：写真实场景、真实事件、画面内的人，禁止“主角遇到困难”这类空话。〔INST〕⑦ 剧本层：台词口语化（默认中文，用户提及西幻/具体国家用该语种）、固定镜头为主、以台词传信息传情感、对话符合人设、人物先建置后出场；先产出人物全状态卡与场景日夜状态卡。角色分类用四类固定标签：恋爱类＝主角/男主/女主/配角/NPC，非恋爱类＝主角/主配/配角/NPC；NPC＝跨场出现但没戏、只需固定形象的功能角色也要列。道具分两级入 props：核心道具（金手指载体/世界规则物证/异性信物/反转扳机，至少一项功能）与普通道具（跨场需固定形象）；单场无功能道具不列。〔/INST〕⑧ 反俗套：装置三选一弃第一直觉（高频装置默认禁用）；反转必须连锁链≥2环、禁外部事故；每个爽点＝D轴翻盘×玩家抉择促成×反讽风险，登记进 payoffs。⑨ 单点情节题材透镜：每个关键情节先落地一件具体的事，再过题材透镜换成题材独有的反差物（融合题材从供能类型取），收口在题材逻辑内升级禁止常识性收口，钩子留下一段催化剂口子（最强＝双义钩子）；平情节只许当铺陈不许作节点落点。〔INST〕台词比重高于动作，全部script通读顺畅。〔/INST〕⑩ 力度谱：开场压制V∈[−0.6,−0.35]且D≤−0.5；首个释放点落差≥0.7；中段最强压制V≤−0.6落差≥1.0反号；高潮释放V≥+0.8落差≥1.4且D翻正；收尾V∈[+0.2,+0.5]；释放强度看落差；两个释放拍之间必有V≤−0.2回落。收到【输入】后只返回规定 JSON，不要多余文字。';
+  var SYS='你是互动短剧结构生成器，遵循《互动短剧设计规则书》。⓪ 用户输入第一性：用户已写到的任何颗粒度（描述或上传原稿里的大纲/分场/人物/场景/道具/台词/镜头/分支/抉择/结局）都是最高权威，一律原样采纳、禁止改写或用你的创意顶掉，你只补空白层并叠加节奏/结构/校验层；冲突时取更细颗粒度的一方；标了「第一性/原稿」的内容优先级高于本系统提示的默认创作倾向。⚠ 第零优先：先做输入自洽检验（容量公式：主线≥15分＋每条完整情感弧光≈20分＋每名露脸角色≈5分），用户内容承诺与时长矛盾时，真实意图＝内容承诺，上调时长并重定引擎，裁决写进 consistency。核心：① 题材层：判断题材够不够成为产品；弱题材靠类型融合破局（底色＝用户点的类型，融一个供能类型当惊喜），每阶段配强敌＋可克服难关；必须有受限的金手指（金手指不限异能/强能力：历史权谋·谍战中智力、乙女纯爱中主角魅力本身也算，同须限定使用规则与场景）；需推荐或融合题材时优先取当下男频/女频热门池（男频：历史模拟器/无限流/系统文/悬疑恐怖/盗墓冒险/末日生存/修仙炼丹/游戏竞技；女频：宫斗宅斗/综艺想象/年代发家/萌宝萌娃/穿书逆袭/纯爱百合），非封闭，用户点名池外照做。② 引擎由时长定：≤30分钟＝结局树（装置先行→一次兑现＋一记反转→抉择树→2–4结局）；≥45分钟＝情绪弧（起承转合七拍＋PAD坐标V/A/D＋反差催化剂）；30–45过渡。③ 前五分钟必有一个教学交互点，落在第一个情节点高潮；起段固定 1 个选错即死。④ 结局数＝三种之和(末段主结局＋中间大结局0–1＋小结局/死路)，用户输入的就是总数；先按题材定主结局(下限2，≤10min纯爱/抽象可1)、再按余量铺小结局(N≥5尽量多于主结局)，中间大结局＝隐藏结局仅0–1；分配按软区间表(见执行卡【3】)；每个结局一个鲜明的价值/情绪落点。⑤ 一句话定位须含期待/反转/钩子/情绪四要素。⑥ 大纲与节点文字必须具体可执行：写真实场景、真实事件、画面内的人，禁止“主角遇到困难”这类空话。〔INST〕⑦ 剧本层：台词口语化（默认中文，用户提及西幻/具体国家用该语种）、固定镜头为主、以台词传信息传情感、对话符合人设、人物先建置后出场；先产出人物全状态卡与场景日夜状态卡。角色分类用四类固定标签：恋爱类＝主角/男主/女主/配角/NPC，非恋爱类＝主角/主配/配角/NPC；NPC＝跨场出现但没戏、只需固定形象的功能角色也要列。道具分两级入 props：核心道具（金手指载体/世界规则物证/异性信物/反转扳机，至少一项功能）与普通道具（跨场需固定形象）；单场无功能道具不列。〔/INST〕⑧ 反俗套：装置三选一弃第一直觉（高频装置默认禁用）；反转必须连锁链≥2环、禁外部事故；每个爽点＝D轴翻盘×玩家抉择促成×反讽风险，登记进 payoffs。⑨ 单点情节题材透镜：每个关键情节先落地一件具体的事，再过题材透镜换成题材独有的反差物（融合题材从供能类型取），收口在题材逻辑内升级禁止常识性收口，钩子留下一段催化剂口子（最强＝双义钩子）；平情节只许当铺陈不许作节点落点。〔INST〕台词比重高于动作，全部script通读顺畅。〔/INST〕⑩ 力度谱：开场压制V∈[−0.6,−0.35]且D≤−0.5；首个释放点落差≥0.7；中段最强压制V≤−0.6落差≥1.0反号；高潮释放V≥+0.8落差≥1.4且D翻正；收尾V∈[+0.2,+0.5]；释放强度看落差；两个释放拍之间必有V≤−0.2回落。收到【输入】后只返回规定 JSON，不要多余文字。';
   var EXEC=(document.getElementById('execcard').textContent||'').trim();
   var RB=(document.getElementById('rulebook').textContent||'').trim();
 
@@ -1349,6 +1413,9 @@ flowchart TD
       desc:'允许生成“被动触发”的结局：不由任何抉择直接指向，而是因为玩家“选了/没选某些分支”而被动落入（如：未走任何感情线→孤身成长结局）。仅结构型条件，不含数值累加（数值系统另等拓展）。',
       inject:'\n\n【拓展：被动条件判断（已开启）】除主动抉择（choice→next）外，允许生成“被动触发”节点：由前置结构条件触发，而非某个 choice 的 next 指向。这类节点必须加字段 trigger:{"type":"passive","condition":"触发条件（只写结构型：选了/没选哪些分支、未走哪条线，如‘未走任何感情线且未选 1-3-B’）"}。禁止写数值累加型条件（如“好感度≤60”）——数值系统不属于本拓展。被动节点 kind 仍为 major/minor（计入结局总数），无 next；它不是孤儿，是有意的被动兼底结局。未开启本拓展时，所有结局必须由某条 next 指向（不得产生被动节点）。'
     },
+    { id:'faithful_import', name:'忠实导入模式', on:false,
+      desc:'为"上传完整剧本、只想把它盘成互动结构"设计（配合左侧「上传文稿」用）。开＝忠实还原、不再创作：模型不发明互动——剧本是线性就出线性节点链，有几处抉择、几个结局就照剧本原样；台词/分场/情节原样铺进分场剧本，人物与场景据剧本抽取，情绪坐标按剧本真实走势打点。校验器把"结局数=设定 / 抉择数档 / 每抉择2–4出口 / D轴翻盘 / 爽点登记 / 空合流 / 核心道具≥1"等互动硬规则降级为软提示——仍会画出、并告诉你偏离标准线多少，但绝不判失败、不触发自动重跑。适合还原已完成剧本；从零生成新互动时请关掉。',
+      inject:'\n\n【拓展：忠实导入模式（已开启，最高优先级）】本次输入含用户已完成的完整剧本，目标＝忠实还原、不是再创作。硬性要求：① 不发明互动、不为凑规则加抉择/结局/翻盘拍——剧本线性就输出线性节点链，有几处抉择、几个结局就照剧本原样，一个也不多不少；② 台词、分场、情节原样铺进 nodes 的 script 字段，人物/场景据剧本抽取，禁止替换或"优化"；③ beats 按剧本真实情绪走势打点，即使偏离力度谱/标准线也如实标注，绝不为满足节奏硬规则而改情绪；④ 与系统提示里"结局数=E / 每抉择2–4出口 / 反俗套装置 / 力度谱阈值 / payoffs必填 / 空合流禁令"等互动生成硬规则冲突时，一律以忠实还原为准——本模式下这些只作参考、不强制。生成日志里照常报节奏偏离，但不得据此改写剧本。' },
     { id:'genre_review', name:'题材相符度评测', on:false,
       desc:'开启后，「题材与标签」区的 5 个标签可逐个评相符度（符合/一般/不符）并写评语，这些评分会进入导出的评测表。关闭时仅展示题材标签，不评分、不进导出。题材校准是持续积累的，不参与数值版本回退。',
       inject:'' }
@@ -1454,7 +1521,10 @@ flowchart TD
   function validateData(d){
     var hard=[], soft=[];
     var inst=(typeof extOn==='function')&&extOn('script_inst'); // off＝骨架模式，跳过剧本/人物/场景/道具硬检查
+    var faith=(typeof extOn==='function')&&extOn('faithful_import'); // 忠实导入：互动类硬规则降为软提示，不判失败、不触发重跑
     function chk(name,ok,detail){ hard.push({name:name,ok:!!ok,detail:detail||''}); }
+    // 忠实导入下，互动结构类检查降级为软提示（仍显示偏离，不判失败）
+    function chkI(name,ok,detail){ if(faith){ if(!ok) soft.push('忠实导入·仅提示｜'+name+(detail?('（'+detail+'）'):'')); } else { chk(name,ok,detail); } }
     var ns=Array.isArray(d.nodes)?d.nodes:[];
     var byId={}; ns.forEach(function(n){ byId[n.id]=n; });
     var hasScript=ns.every(function(n){ return (n.script||n.text||'').length>=30; });
@@ -1462,14 +1532,14 @@ flowchart TD
     var majors=ns.filter(function(n){return n.kind==='major';});
     var choicesN=ns.filter(function(n){return n.kind==='choice'||n.kind==='interaction';});
     var minors=ns.filter(function(n){return n.kind==='minor';});
-    chk('结局总数＝设定（'+lastE+'）', (majors.length+minors.length)===lastE, '主/中间大 '+majors.length+' + 死路 '+minors.length+' = '+(majors.length+minors.length));
+    chkI('结局总数＝设定（'+lastE+'）', (majors.length+minors.length)===lastE, '主/中间大 '+majors.length+' + 死路 '+minors.length+' = '+(majors.length+minors.length));
     var shortFilm=lastT<=30;
-    if(shortFilm){ var lo=(lastT<=10)?1:2, hi=(lastT<=10)?2:3; chk('抉择数在 '+lo+'–'+hi+'（短片 3.1.3）', choicesN.length>=lo&&choicesN.length<=hi, '实际 '+choicesN.length); }
-    else { chk('抉择数≥2（长片）', choicesN.length>=2, '实际 '+choicesN.length); }
+    if(shortFilm){ var lo=(lastT<=10)?1:2, hi=(lastT<=10)?2:3; chkI('抉择数在 '+lo+'–'+hi+'（短片 3.1.3）', choicesN.length>=lo&&choicesN.length<=hi, '实际 '+choicesN.length); }
+    else { chkI('抉择数≥2（长片）', choicesN.length>=2, '实际 '+choicesN.length); }
     var allDead=choicesN.filter(function(n){ var nx=(n.next||[]); return nx.length>0 && nx.every(function(e){ var t=byId[e.to]; return t&&t.kind==='minor'; }); });
-    chk('无"选项全是死路"的互动（至少留一条活路）', allDead.length===0, allDead.length?('违规：'+allDead.map(function(n){return n.id;}).join('、')):'');
+    chkI('无"选项全是死路"的互动（至少留一条活路）', allDead.length===0, allDead.length?('违规：'+allDead.map(function(n){return n.id;}).join('、')):'');
     var optBad=choicesN.filter(function(n){ var k=(n.next||[]).length; return k<2||k>4; });
-    chk('每个抉择 2–4 个出口', optBad.length===0, optBad.length?('违规：'+optBad.map(function(n){return n.id;}).join('、')):'');
+    chkI('每个抉择 2–4 个出口', optBad.length===0, optBad.length?('违规：'+optBad.map(function(n){return n.id;}).join('、')):'');
     var labBad=choicesN.filter(function(n){ return (n.next||[]).some(function(e){return !e.label;}); });
     chk('抉择出口都有选项文字', labBad.length===0, labBad.length?('缺 label：'+labBad.map(function(n){return n.id;}).join('、')):'');
     var endBad=ns.filter(function(n){ return (n.kind==='major'||n.kind==='minor') && (n.next||[]).length; });
@@ -1493,14 +1563,14 @@ flowchart TD
     var hasDVal=beats.some(function(b){return b.D!=null;});
     var flip=false, minSoFar=1;
     beats.forEach(function(b){ if(b.D==null) return; if(minSoFar<=-0.3 && +b.D>=0.3) flip=true; minSoFar=Math.min(minSoFar,+b.D); });
-    chk('存在 D 轴翻盘拍（被压→掌控，爽点前提）', hasDVal&&flip, hasDVal?'':'beats 未给 D 值');
+    chkI('存在 D 轴翻盘拍（被压→掌控，爽点前提）', hasDVal&&flip, hasDVal?'':'beats 未给 D 值');
     var choiceIdSet={}; ns.forEach(function(n){ if(n.kind==='choice'||n.kind==='interaction') choiceIdSet[n.id]=1; });
     var pf=Array.isArray(d.payoffs)?d.payoffs:[];
-    chk('爽点登记 payoffs（翻盘×抉择促成×反讽）', pf.length>0&&pf.every(function(p){return p.enabledBy&&choiceIdSet[p.enabledBy]&&(p.irony||'').length>0;}), pf.length?'':'缺 payoffs 或 enabledBy 不是真实抉择节点');
+    chkI('爽点登记 payoffs（翻盘×抉择促成×反讽）', pf.length>0&&pf.every(function(p){return p.enabledBy&&choiceIdSet[p.enabledBy]&&(p.irony||'').length>0;}), pf.length?'':'缺 payoffs 或 enabledBy 不是真实抉择节点');
     if(inst) chk('场景表存在且标日/夜', Array.isArray(d.scenes)&&d.scenes.length>0&&d.scenes.every(function(s){return /日|夜/.test(s.time||'');}), '');
     var props=Array.isArray(d.props)?d.props:[];
     var coreProps=props.filter(function(p){return p.level==='core';});
-    if(inst) chk('道具表存在且核心道具≥1（含外观+功能）', props.length>0&&coreProps.length>=1&&coreProps.every(function(p){return (p.look||'').length>0&&(p.func||'').length>0;}), props.length?('核心 '+coreProps.length+' / 普通 '+props.filter(function(p){return p.level==='normal';}).length):'缺 props');
+    if(inst) chkI('道具表存在且核心道具≥1（含外观+功能）', props.length>0&&coreProps.length>=1&&coreProps.every(function(p){return (p.look||'').length>0&&(p.func||'').length>0;}), props.length?('核心 '+coreProps.length+' / 普通 '+props.filter(function(p){return p.level==='normal';}).length):'缺 props');
     chk('大纲每段有具体内容（≥40字）', Array.isArray(d.outline)&&d.outline.length>0&&d.outline.every(function(o){return (o.summary||'').length>=40;}), '');
     // 节奏软指标
     soft=deviationIssues();
@@ -1534,7 +1604,7 @@ flowchart TD
     } else if(d.flowEnter==null){ soft=soft.concat(['未提供 flowEnter，无法校验心流点位置。']); }
     // 空合流（硬）：同一抉择有两个及以上 next 指向同一节点＝零差异假选项（选了等于没选），触发自动重跑
     var hollow=choicesN.filter(function(n){ var tos=(n.next||[]).map(function(e){return e.to;}); var seen={},dup=false; tos.forEach(function(t){ if(seen[t])dup=true; seen[t]=1; }); return tos.length>=2 && dup; });
-    chk('无空合流假选项（选项不得直接并到同一节点）', hollow.length===0, hollow.length?('违规：'+hollow.map(function(n){ var tos=(n.next||[]).map(function(e){return e.to;}); var dups=tos.filter(function(t,i){return tos.indexOf(t)!==i;}).filter(function(t,i,a){return a.indexOf(t)===i;}); return n.id+'（多选项同指 '+dups.join('、')+'）'; }).join('；')+'——须让各选项先各经一个不同即时结果节点(kind=normal)再合流，或删掉该选项改纯剧情'):'');
+    chkI('无空合流假选项（选项不得直接并到同一节点）', hollow.length===0, hollow.length?('违规：'+hollow.map(function(n){ var tos=(n.next||[]).map(function(e){return e.to;}); var dups=tos.filter(function(t,i){return tos.indexOf(t)!==i;}).filter(function(t,i,a){return a.indexOf(t)===i;}); return n.id+'（多选项同指 '+dups.join('、')+'）'; }).join('；')+'——须让各选项先各经一个不同即时结果节点(kind=normal)再合流，或删掉该选项改纯剧情'):'');
     // 结局分配倾向：N≥5 时小结局宜 ≥ 主结局（用死路铺中段压力）
     if(lastE>=5 && minors.length<majors.length) soft=soft.concat(['结局分配：总数 '+lastE+'（N≥5）建议小结局 ≥ 主结局，当前 死路 '+minors.length+' < 主/中间大 '+majors.length+'，可多用死路铺中段压力。']);
     // 锦上添花：major 结局未标 sub(end/mid)，流程图无法区分末段主结局与中间大结局
@@ -1631,9 +1701,11 @@ flowchart TD
     }
     if(b.getAttribute('data-act')==='regen'){
       if(!r.input){ alert('这条是旧版记录，没存输入参数，无法再次生成。'); return; }
-      if(!confirm('本操作会基于记录使用的描述和题材标签重新生成，确定吗？')) return;
-      // 回填输入：描述 / 标签 / 时长与结局选择（含 AI 推荐）
+      var hadDocs=r.input.docs&&r.input.docs.length;
+      if(!confirm('本操作会基于记录使用的描述和题材标签'+(hadDocs?('（含当时上传的 '+r.input.docs.length+' 份文稿，无需重新上传）'):'')+'重新生成，确定吗？')) return;
+      // 回填输入：描述 / 标签 / 时长与结局选择（含 AI 推荐）+ 上传文稿
       document.getElementById('brief').value=r.input.brief||'';
+      DOCS.length=0; (r.input.docs||[]).forEach(function(dd){ DOCS.push({name:dd.name,text:dd.text}); }); renderDocs();
       Object.keys(picked).forEach(function(k){ delete picked[k]; });
       (r.input.tags||[]).forEach(function(t){ if(TAGS.indexOf(t)===-1) TAGS.push(t); picked[t]=true; });
       renderChips();
@@ -1674,6 +1746,7 @@ flowchart TD
           renderChips();
           if(r.input.dur){ document.getElementById('dur').value=r.input.dur; if(r.input.dur!=='ai') lastT=parseInt(r.input.dur,10)||10; }
           if(r.input.ends){ document.getElementById('ends').value=r.input.ends; if(r.input.ends!=='ai') lastE=parseInt(r.input.ends,10)||3; }
+          DOCS.length=0; (r.input.docs||[]).forEach(function(dd){ DOCS.push({name:dd.name,text:dd.text}); }); renderDocs();
         }
         var m=r.params.match(/时长(\d+)分\/结局(\d+)/);
         if(m){ lastT=parseInt(m[1],10)||lastT; lastE=parseInt(m[2],10)||lastE; }
@@ -1776,30 +1849,33 @@ flowchart TD
   });
 
   // ===== 一键生成：完整链条（流式逻辑链日志 → JSON → 校验 → 渲染各页签）=====
-  var genBusy=false;
+  var genBusy=false, genAbort=null, genStopped=false;
   function genAll(skipConfirm){
     if(genBusy) return;
+    genStopped=false;
     var box=document.getElementById('outbox');
-    var briefTxt=(document.getElementById('brief').value||'').trim(), tagsNow=pickedList();
-    if(!briefTxt && !tagsNow.length){ alert('您没有输入任何想法或者选择任何标签。\n\n请在左侧“描述”里写点想法，或至少选一个题材标签。'); document.getElementById('brief').focus(); return; }
-    if(!skipConfirm && !briefTxt && tagsNow.length){ if(!confirm('您没有输入任何故事灵感，我会根据您的题材标签（'+tagsNow.join('＋')+'）生成故事，确定吗？')){ document.getElementById('brief').focus(); return; } }
+    var briefTxt=(document.getElementById('brief').value||'').trim(), tagsNow=pickedList(), hasDoc=docChars()>0;
+    if(!briefTxt && !tagsNow.length && !hasDoc){ alert('您没有输入任何想法、选择任何标签，也没有上传文稿。\n\n请在左侧“描述”里写点想法、选一个题材标签，或上传一份文稿。'); document.getElementById('brief').focus(); return; }
+    if(!skipConfirm && !briefTxt && !hasDoc && tagsNow.length){ if(!confirm('您没有输入任何故事灵感，我会根据您的题材标签（'+tagsNow.join('＋')+'）生成故事，确定吗？')){ document.getElementById('brief').focus(); return; } }
     var genDurSel=document.getElementById('dur').value, genEndsSel=document.getElementById('ends').value;
     if(!isLocked()){ box.innerHTML='<div class="hint" style="color:#d97706">先在下方「对接模型」填 Key、选模型并点「确定」锁定。</div>'; document.getElementById('orbox').scrollIntoView({behavior:'smooth',block:'center'}); return; }
     var key=(document.getElementById('orkey').value||'').trim(), model=getModel();
     genBusy=true;
     var btn=document.getElementById('gen'), old=btn.textContent; btn.textContent='生成中…'; btn.disabled=true;
+    document.getElementById('stopgen').style.display='inline-block';
     box.innerHTML='';
     logReset();
     progShow(); progSet(2,'准备参数…');
     var tags=pickedList();
     resolveAIParams(function(){
+    if(genStopped){ progSet(100,'已停止'); logLine('⏹ 已手动停止。'); done(); return; }
     progSet(8,'参数就绪，调用模型…');
     logLine('▸ 参数｜时长 '+lastT+' 分，结局数 '+lastE+'，题材 '+(tags.length?tags.join('＋'):'（未选）')+'，引擎：'+engineOf(lastT).txt);
     mkReq();
     var sys=buildSys();
     logLine('▸ 规则注入：执行卡，系统提示 '+sys.length+' 字符');
     var baseUser=document.getElementById('req').value;
-    var MARK='===JSON===', MAXTRY=2;
+    var MARK='===JSON===', MAXTRY=extOn('faithful_import')?1:2; // 忠实导入不自动重跑（重跑=改写用户剧本）
     var attempt=0;
 
     function runOnce(user){
@@ -1827,7 +1903,13 @@ flowchart TD
         var a=c.indexOf('{'), b=c.lastIndexOf('}');
         if(a>=0&&b>a){ c=c.slice(a,b+1); } else { fail('模型返回里没找到 JSON，可重试一次'); return; }
         if(idx<0){ logHead=logEl.textContent+'\n'; }
-        var d; try{ d=JSON.parse(c); }catch(e){ fail('JSON 解析失败：'+e.message); return; }
+        var d; try{ d=JSON.parse(c); }catch(e){
+          document.getElementById('resp').value=c; // 保留模型原始返回，便于手动修后重渲染
+          var pm=(e.message.match(/position (\d+)/)||[])[1];
+          if(pm!=null){ var p=+pm, seg=c.slice(Math.max(0,p-45),p+45).replace(/\n/g,'⏎'); logLine('✗ JSON 解析失败｜出错位置约第 '+p+' 字符，附近是：\n    …'+seg+'…'); }
+          logLine('  多半是模型在字符串里写了没转义的英文引号 " 或裸换行（长台词照搬时常见）。原始返回已放进下方「粘贴模型返回的 JSON」框：可手动补/删这处引号后点「渲染大纲 + 情绪节拍表」重渲染，或直接再点一次「一键生成」重跑。');
+          fail('JSON 解析失败：'+e.message+'（原始返回已留在 resp 框，可手改重渲染或重跑）'); return;
+        }
         document.getElementById('resp').value=c;
         lastData=d;
         progSet(92,'校验中…');
@@ -1864,13 +1946,15 @@ flowchart TD
         histSave({ time:new Date().toLocaleString('zh-CN',{hour12:false}), title:(d.logline||'').slice(0,40), runId:d.__runId,
           params:'时长'+lastT+'分/结局'+lastE+'/'+(tags.length?tags.join('＋'):'无标签')+'/'+model+'/执行卡',
           pass:va.pass, attempts:attempt, log:logEl.textContent, analysisText:analysisText, json:c,
-          input:{ brief:briefTxt, tags:tagsNow.slice(), dur:genDurSel, ends:genEndsSel } });
+          input:{ brief:briefTxt, tags:tagsNow.slice(), dur:genDurSel, ends:genEndsSel, docs:(DOCS.length?DOCS.map(function(dd){return {name:dd.name,text:dd.text};}):null) } });
         logLine('▸ 已存入「📜 记录」（右上角），最多保留 100 条。');
         done();
       }
       function fail(msg){ progSet(100,'失败 ✗'); document.getElementById('progbar').style.background='#ef4444'; logLine('✗ '+msg); box.innerHTML='<div class="hint" style="color:#d97706">'+esc(msg)+'</div>'; done(); }
+      genAbort=new AbortController();
       fetch('https://openrouter.ai/api/v1/chat/completions',{
         method:'POST',
+        signal:genAbort.signal,
         headers:{ 'Authorization':'Bearer '+key, 'Content-Type':'application/json' },
         body:JSON.stringify({ model:model, temperature:0.8, max_tokens:20000, stream:true, usage:{include:true}, messages:[ {role:'system',content:sys}, {role:'user',content:user} ] })
       }).then(function(r){
@@ -1887,13 +1971,17 @@ flowchart TD
           return pump();
         }); }
         return pump();
-      }).catch(function(e){ fail('调用失败：'+e.message+'（检查 Key / 模型 slug / 网络；若被 CORS 拦，点"连不上？"让 kian 代发）'); });
+      }).catch(function(e){
+        if(genStopped || (e&&e.name==='AbortError')){ progSet(100,'已停止'); document.getElementById('progbar').style.background='#94a3b8'; logLine('⏹ 已手动停止本次生成（未渲染、未存记录）。可改输入后重新生成。'); box.innerHTML='<div class="hint" style="color:#6b7488">已手动停止。</div>'; done(); return; }
+        fail('调用失败：'+e.message+'（检查 Key / 模型 slug / 网络；若被 CORS 拦，点"连不上？"让 kian 代发）');
+      });
     }
-    function done(){ genBusy=false; btn.textContent=old; btn.disabled=false; setTimeout(function(){ document.getElementById('progbar').style.background='linear-gradient(90deg,#3b82f6,#7c3aed)'; },1500); }
+    function done(){ genBusy=false; genAbort=null; document.getElementById('stopgen').style.display='none'; btn.textContent=old; btn.disabled=false; setTimeout(function(){ document.getElementById('progbar').style.background='linear-gradient(90deg,#3b82f6,#7c3aed)'; },1500); }
     runOnce(baseUser);
     });
   }
   document.getElementById('gen').addEventListener('click', function(){ genAll(false); });
+  document.getElementById('stopgen').addEventListener('click', function(){ if(!genBusy) return; genStopped=true; document.getElementById('stopgen').style.display='none'; try{ if(genAbort) genAbort.abort(); }catch(e){} });
 
   // ===== “连不上？”弹窗：让 kian 代发这段请求 =====
   function openCC(){
@@ -1916,6 +2004,16 @@ flowchart TD
   document.getElementById('openrules').addEventListener('click', function(){
     document.getElementById('rulesbody').innerHTML=mdToHtml(applyInst(RB));
     document.getElementById('rulesmask').style.display='flex';
+  });
+  document.getElementById('rulesdl').addEventListener('click', function(){
+    var md='# 互动影视游戏设计规则书\n\n'+applyInst(RB).trim()+'\n';
+    var blob=new Blob([md],{type:'text/markdown;charset=utf-8'});
+    var url=URL.createObjectURL(blob);
+    var d=new Date(), pad=function(n){return(n<10?'0':'')+n;};
+    var stamp=d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());
+    var a=document.createElement('a'); a.href=url; a.download='互动影视游戏设计规则书_'+stamp+'.md';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); },1000);
   });
   document.getElementById('rulesclose').addEventListener('click', function(){ document.getElementById('rulesmask').style.display='none'; });
   document.getElementById('rulesmask').addEventListener('click', function(e){ if(e.target===this) this.style.display='none'; });
@@ -2338,7 +2436,8 @@ flowchart TD
     var chain = (kind==='dur')
       ? '你在为一部互动短剧推荐【目标时长（分钟，整数）】。必须按逻辑链逐步推理、不许跳步、不许直接报数：① 先概括这个输入的题材画像（核心幻想 / 爽点类型）；② 逐条判断规则里的五个时长驱动因子（情绪基调、世界观负载、角色广度、爽点结构、信息密度）各把时长往长推还是往短推；③ 综合成一个区间；④ 落到一个具体分钟数。'
       : '你在为一部互动短剧推荐【结局数＝总结局数（主结局＋中间大结局＋死路小结局，三种之和，整数 1-10）】。必须按逻辑链逐步推理、不许跳步、不许直接报数：① 概括题材画像；② 先按题材定主结局数（核心体验收场，一般≥2，≤10min纯爱/抽象可1，以结局为核心玩法可更多），再判断是否加 0-1 个中间大结局（隐藏结局），以及用几个死路小结局当中段压力（N≥5 可多于主结局）；③ 三者相加得出结局总数。';
-    var ask = chain+'\n输入——题材标签：'+(tags.join('、')||'（未选）')+'；描述：'+(brief||'（无）')+'。\n先在 reasoning 里写出完整推理，再给 value。只返回 JSON：{"reasoning":"逐条推理","value":整数,"why":"一句话结论"}';
+    var docT=docText();
+    var ask = chain+'\n输入——题材标签：'+(tags.join('、')||'（未选）')+'；描述：'+(brief||'（无）')+'。'+(docT?('\n用户上传原稿（第一性，请据其实际体量/角色数/弧光推定，节选）：\n'+docT.slice(0,3000)):'')+'\n先在 reasoning 里写出完整推理，再给 value。只返回 JSON：{"reasoning":"逐条推理","value":整数,"why":"一句话结论"}';
     orCall(ask, function(err,c){
       var v=null, why='', reasoning='', offline=false;
       if(err){ var r=localRec(kind); v=r.value; why=r.why; offline=true; }
