@@ -259,6 +259,76 @@
 <script>
 (function(){
   var EXEC=(document.getElementById('execcard').textContent||'').trim();
+  // ===== 健壮的 JSON 提取与修复（治“JSON 格式错”的根）=====
+  function extractJson(raw){
+    var s=String(raw||'');
+    // 1) 剔除 ===JSON=== 标记之前的所有内容
+    var mk=s.indexOf('===JSON==='); if(mk>=0) s=s.slice(mk+10);
+    // 2) 剔除 markdown 代码围栏 ```json ... ```
+    s=s.replace(/```[a-zA-Z]*\s*/g,'').replace(/```/g,'');
+    // 3) 截取第一个 { 到最后一个 }
+    var a=s.indexOf('{'); if(a<0) return {ok:false,err:'没找到 JSON 起始 {'};
+    var lastClose=s.lastIndexOf('}');
+    var body=(lastClose>a)?s.slice(a,lastClose+1):s.slice(a);
+    var truncated=(lastClose<=a); // 没有闭合 } → 极可能被截断
+
+    // 第一次：直接试
+    try{ return {ok:true,data:JSON.parse(body)}; }catch(e){}
+
+    // 修复尝试：逐步清洗
+    var repairedNote=[];
+    var t=body;
+    // a) 去掉尾逗号  ,}  ,]
+    var t2=t.replace(/,\s*([}\]])/g,'$1'); if(t2!==t){ t=t2; repairedNote.push('去尾逗号'); }
+    // b) 字符串内部的真换行/制表符 → 转义（常见于 prompts.text 里的 \n 被模型写成真换行）
+    t=escapeControlInStrings(t);
+    try{ return {ok:true,data:JSON.parse(t),repaired:repairedNote.concat('转义字符串内控制符').join('、')}; }catch(e){}
+
+    // c) 若截断：按栈补齐未闭合的 " ] }
+    var fixed=closeTruncatedJson(t);
+    if(fixed){
+      try{ return {ok:true,data:JSON.parse(fixed),repaired:repairedNote.concat('补齐被截断结构').join('、'),truncated:true}; }catch(e){}
+    }
+    return {ok:false,err:'尝试修复后仍无法解析',truncated:truncated};
+  }
+  // 把字符串内的真实换行/回车/制表符转成 \n \r \t
+  function escapeControlInStrings(str){
+    var out='',inStr=false,esc=false;
+    for(var i=0;i<str.length;i++){
+      var ch=str[i];
+      if(esc){ out+=ch; esc=false; continue; }
+      if(ch==='\\'){ out+=ch; esc=true; continue; }
+      if(ch==='"'){ inStr=!inStr; out+=ch; continue; }
+      if(inStr){
+        if(ch==='\n'){ out+='\\n'; continue; }
+        if(ch==='\r'){ out+='\\r'; continue; }
+        if(ch==='\t'){ out+='\\t'; continue; }
+      }
+      out+=ch;
+    }
+    return out;
+  }
+  // 截断时：先关闭未结束的字符串，再按栈补齐 ] 和 }
+  function closeTruncatedJson(str){
+    var stack=[],inStr=false,esc=false,lastGood=-1;
+    for(var i=0;i<str.length;i++){
+      var ch=str[i];
+      if(esc){ esc=false; continue; }
+      if(ch==='\\'){ esc=true; continue; }
+      if(ch==='"'){ inStr=!inStr; continue; }
+      if(inStr) continue;
+      if(ch==='{'||ch==='['){ stack.push(ch); }
+      else if(ch==='}'||ch===']'){ stack.pop(); if(stack.length===0) lastGood=i; }
+    }
+    var t=str;
+    if(inStr) t+='"';                 // 关闭未结束字符串
+    // 去掉末尾可能不完整的 ",key: 片段：回退到最后一个完整元素的逗号前
+    t=t.replace(/,\s*"[^"]*"\s*:?\s*$/,'').replace(/,\s*$/,'');
+    // 按栈逐个补右括号
+    for(var k=stack.length-1;k>=0;k--){ t+= (stack[k]==='{'?'}':']'); }
+    return t;
+  }
+
   var SYS='你是资深分镜导演，遵循《导演分镜执行卡》。把用户给的一场戏翻成逐镜头分镜表和可直接喂 AI 视频生成的分镜提示词。导演语法一主至多一辅；全场锚定一台相机；运镜以固定镜头为主（默认锁死机位，动的是人物与环境）；焦段是性格不是尺子；反应比事物重要；贴着用户的故事走、绝不改剧情。只返回执行卡规定的 JSON。';
 
   // ---- 输入源切换 ----
@@ -372,7 +442,7 @@
     progSet(10,'模型输出中…');
     gAbort=new AbortController();
     fetch('https://openrouter.ai/api/v1/chat/completions',{method:'POST',signal:gAbort.signal,headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json'},
-      body:JSON.stringify({model:getModel(),temperature:0.7,max_tokens:16000,stream:true,messages:[{role:'system',content:SYS+'\n\n'+EXEC},{role:'user',content:user}]})
+      body:JSON.stringify({model:getModel(),temperature:0.7,max_tokens:32000,stream:true,messages:[{role:'system',content:SYS+'\n\n'+EXEC},{role:'user',content:user}]})
     }).then(function(r){
       if(!r.ok) return r.json().then(function(j){ throw new Error((j&&j.error&&j.error.message)||('HTTP '+r.status)); });
       if(!r.body||!r.body.getReader) return r.text().then(function(t){ acc=t; finish(); });
@@ -392,10 +462,18 @@
     function finish(){
       if(gStopped){ done(); return; }
       progSet(92,'解析渲染…');
-      var c=acc, i=c.indexOf('===JSON==='); if(i>=0)c=c.slice(i+10);
-      var a=c.indexOf('{'),b=c.lastIndexOf('}'); if(a>=0&&b>a)c=c.slice(a,b+1); else { progSet(100,'失败'); document.getElementById('progbar').style.background='#ef4444'; logLine('\n✗ 没找到 JSON'); done(); return; }
-      var d; try{ d=JSON.parse(c); }catch(e){ progSet(100,'失败'); document.getElementById('progbar').style.background='#ef4444'; logLine('\n✗ JSON 解析失败：'+e.message); done(); return; }
-      logLine('\n▸ 分镜接收完成，渲染…'); renderBoard(d); renderPrompts(d);
+      var parsed=extractJson(acc);
+      if(!parsed.ok){
+        progSet(100,'失败'); document.getElementById('progbar').style.background='#ef4444';
+        logLine('\n✗ JSON 解析失败：'+parsed.err);
+        if(parsed.truncated) logLine('⚠ 看起来是输出被截断（内容太长→达到 max_tokens）。建议：这一场镜头太多，拆成更少镜头重试，或换一个更稳定输出 JSON 的模型。');
+        logLine('—— 收到的尾部（供排查）：\n'+ (acc.slice(-400)||'(空)') );
+        done(); return;
+      }
+      if(parsed.repaired) logLine('\n⚙ 已自动修复 JSON 格式（'+parsed.repaired+'）');
+      window.__lastBoard=parsed.data;                         // 存下本次分镜，供“导入游戏”用
+      window.__lastNodes=parsedNodes.filter(function(n){ return pickedScenes[n.id]; }); // 本次选中的源剧本节点（带台词）
+      logLine('\n▸ 分镜接收完成，渲染…'); renderBoard(parsed.data); renderPrompts(parsed.data);
       progSet(100,'完成 ✓'); logLine('✓ 完成。分镜表见右侧，分镜提示词切右上页签。'); done();
     }
     function done(){ busy=false; gAbort=null; document.getElementById('stopgen').style.display='none'; btn.textContent=old; btn.disabled=false; }
@@ -452,11 +530,49 @@
   function renderPrompts(d){
     var ps=Array.isArray(d.prompts)?d.prompts:[];
     if(!ps.length){ document.getElementById('pane-prompt').innerHTML='<div class="empty">（模型没返回 prompts）</div>'; return; }
-    var h='<div style="margin-bottom:10px;"><button class="hbtn" id="copyall">复制全部提示词</button></div>';
+    var h='<div style="margin-bottom:10px;display:flex;gap:8px;"><button class="hbtn" id="copyall">复制全部提示词</button><button class="hbtn" id="toGame" style="background:#0b7285;color:#fff;border-color:#0b7285;">▶ 导入游戏</button></div>';
     h+=ps.map(function(p){ return '<div class="pcard"><b>【镜头'+esc(p.no)+'】</b><pre>'+esc(p.text||'')+'</pre></div>'; }).join('');
     var box=document.getElementById('pane-prompt'); box.innerHTML=h;
     var all=ps.map(function(p){return '【镜头'+p.no+'】\n'+(p.text||'');}).join('\n\n');
     var cp=document.getElementById('copyall'); if(cp) cp.addEventListener('click',function(){ try{navigator.clipboard.writeText(all); this.textContent='已复制'; var b=this; setTimeout(function(){b.textContent='复制全部提示词';},1200);}catch(e){} });
+    var tg=document.getElementById('toGame'); if(tg) tg.addEventListener('click',importToGame);
+  }
+
+  // ===== 导入游戏：把台词（源剧本节点）+ 分镜提示词配着注入互动影视游戏 =====
+  function sanitizeLabel(id){ return String(id||'node').replace(/[^\w\-]/g,'_'); }
+  function importToGame(){
+    var board=window.__lastBoard, nodes=window.__lastNodes||[];
+    if(!nodes.length){ alert('没有可导入的剧本节点。请先从左侧选场次并生成分镜。'); return; }
+    var prompts=(board&&Array.isArray(board.prompts))?board.prompts:[];
+    // 把分镜提示词按顺序均匀分配给各节点（作为该节点背景图提示词）
+    var perNode=Math.max(1, Math.ceil(prompts.length/nodes.length));
+    var out=[]; out.push('# '+((board&&board.grammar)||'分镜导入')+'（分镜工作台入库）');
+    var bgPrompts={};
+    nodes.forEach(function(n,idx){
+      var lab=sanitizeLabel(n.id);
+      out.push(''); out.push('@label '+(idx===0?'start':lab));
+      if(n.loc) out.push('：：【'+n.loc+(n.time?' · '+n.time:'')+'】');
+      // 台词：把 script/text 拆成多行
+      var body=String(n.script||n.text||'').trim();
+      if(body){ body.split(/\n+/).forEach(function(ln){ ln=ln.trim(); if(!ln) return;
+        var m=ln.match(/^([^\uff1a:]{1,12})[\uff1a:]\s*(.+)$/);
+        out.push(m&&m[2] ? (m[1].trim()+'：：'+m[2].trim()) : ('：：'+ln));
+      }); } else { out.push('：：（本节无台词）'); }
+      // 出口：按源节点 next
+      var nexts=Array.isArray(n.next)?n.next.filter(function(x){return x&&x.to;}):[];
+      if(nexts.length>=2){ out.push('@choice'); nexts.slice(0,6).forEach(function(x,ci){ out.push('- '+((x.label||('选项'+(ci+1))).slice(0,10))+' => '+sanitizeLabel(x.to)); }); }
+      else if(nexts.length===1){ out.push('@jump '+sanitizeLabel(nexts[0].to)); }
+      else { out.push('@end'); }
+      // 该节点的背景图提示词（取对应的分镜提示词）
+      var pr=prompts.slice(idx*perNode,(idx+1)*perNode).map(function(p){return p.text||'';}).filter(Boolean).join('\n---\n');
+      if(pr) bgPrompts[(idx===0?'start':lab)]=pr;
+    });
+    var text=out.join('\n');
+    var firstLab=sanitizeLabel(nodes[0].id);
+    if(firstLab!=='start'){ text=text.replace(new RegExp('=> '+firstLab+'(\\b|$)','g'),'=> start').replace(new RegExp('@jump '+firstLab+'(\\b|$)','g'),'@jump start'); }
+    var payload={ name:((board&&board.grammar)?'分镜：'+board.grammar:'分镜工作台剧本'), note:'含台词+分镜提示词', script:text, bgPrompts:bgPrompts, palette:(board&&board.palette)||null };
+    try{ localStorage.setItem('vn_incoming_script', JSON.stringify(payload)); }catch(e){ alert('写入失败（本地存储）。'); return; }
+    window.open('互动影视游戏.html','_blank');
   }
 
   // ---- 接收从「故事节奏验证」H5 一键送来的全片剧本 ----
