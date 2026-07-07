@@ -66,6 +66,18 @@
   .pcard{border:1px solid #eef0f4;border-radius:10px;padding:10px 12px;margin-bottom:10px;background:#fafbfc;font-size:12.5px;line-height:1.75;}
   .pcard b{color:#0e7490;}
   .pcard pre{white-space:pre-wrap;margin:6px 0 0;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#3a4255;}
+  /* 分镜提示词：左提示词 + 右故事板卡两栏 */
+  .shotrow{display:flex;gap:12px;align-items:flex-start;border:1px solid #eef0f4;border-radius:10px;padding:10px 12px;margin-bottom:10px;background:#fafbfc;}
+  .shotrow .pinfo{flex:1;min-width:0;font-size:12.5px;line-height:1.75;}
+  .shotrow .pinfo b{color:#0e7490;}
+  .shotrow .pinfo pre{white-space:pre-wrap;margin:6px 0 0;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#3a4255;}
+  .shotcard{width:200px;flex-shrink:0;}
+  .shotcard .thumb{width:200px;height:112px;border-radius:8px;overflow:hidden;background:#0b0f14;display:flex;align-items:center;justify-content:center;color:#5a6472;font-size:12px;}
+  .shotcard .thumb img{width:100%;height:100%;object-fit:cover;}
+  .cgbar{height:6px;border-radius:999px;background:#eef0f4;overflow:hidden;margin:6px 0 2px;display:none;}
+  .cgbar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#0e7490,#0891b2);transition:width .2s;}
+  .hbtn.done{background:#eef0f4;color:#9aa2b1;border-color:#e5e8ef;cursor:default;}
+  .hbtn:disabled{opacity:.75;cursor:default;}
   #genlog{display:none;background:#14181f;color:#d5dae4;border-radius:14px;padding:14px 16px;font-size:12px;line-height:1.8;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;max-height:300px;overflow:auto;margin-top:12px;}
   /* 锁定态 */
   #orview{display:none;}
@@ -387,7 +399,7 @@
     var i=+b.getAttribute('data-i'), a=sbHistAll(), r=a[i]; if(!r) return;
     var act=b.getAttribute('data-sbact');
     if(act==='del'){ if(!confirm('删除这条分镜记录？')) return; a.splice(i,1); try{localStorage.setItem(HSKEY,JSON.stringify(a));}catch(e){} sbHistRender(); return; }
-    if(act==='load'){ window.__lastBoard=r.board; window.__lastNodes=r.nodes||[]; boundStory=r.boundStory||''; renderBoard(r.board); renderPrompts(r.board); document.getElementById('histmask').style.display='none'; var bt=document.querySelector('.rtab[data-rt="board"]'); if(bt)bt.click(); return; }
+    if(act==='load'){ window.__lastBoard=r.board; window.__lastNodes=r.nodes||[]; boundStory=r.boundStory||''; window.__promptRecIdx=i; renderBoard(r.board); renderPrompts(r.board); document.getElementById('histmask').style.display='none'; var bt=document.querySelector('.rtab[data-rt="board"]'); if(bt)bt.click(); return; }
     if(act==='game'){
       window.__lastBoard=r.board; window.__lastNodes=r.nodes||[]; boundStory=r.boundStory||'';
       var imgN=r.images?Object.keys(r.images).length:0;
@@ -639,6 +651,7 @@
       var sbTitle=(parsed.data.grammar||'')+(boundStory?('·'+boundStory):'');
       sbHistSave({ time:new Date().toLocaleString('zh-CN',{hour12:false}), title:(boundStory||parsed.data.grammar||'分镜'), boundStory:boundStory||'',
         shots:shotCount, sceneCount:pickedNodes.length, board:parsed.data, nodes:pickedNodes });
+      window.__promptRecIdx=0;   // 刚 sbHistSave unshift 到开头，当前 prompts 面板对应记录 0
       logLine('\n▸ 分镜接收完成，渲染…'); renderBoard(parsed.data); renderPrompts(parsed.data);
       progSet(100,'完成 ✓'); logLine('✓ 完成。分镜表见右侧，分镜提示词切右上页签。'); done();
     }
@@ -693,23 +706,75 @@
     if(d.note) h+='<div class="note"><b>导演笔记：</b>'+esc(d.note)+'</div>';
     document.getElementById('pane-board').innerHTML=h||'<div class="empty">（没解析到 beats）</div>';
   }
+  // 当前分镜提示词面板对应的记录索引（生成后=0；载入查看时为对应索引），生成的图写回该记录 images
+  window.__promptRecIdx=0;
+  // 取当前 prompts 面板对应的记录的出图提示词（带画风锁点，与 sbImgPrompts 同口径）
+  function promptImgText(no,img,video){ var style=(localStorage.getItem('sb_style')||'').trim(); return (style?style+'，':'')+(img||video||'')+'，16:9，无画面文字，无水印'; }
   function renderPrompts(d){
     var ps=Array.isArray(d.prompts)?d.prompts:[];
     if(!ps.length){ document.getElementById('pane-prompt').innerHTML='<div class="empty">（模型没返回 prompts）</div>'; return; }
-    var h='<div style="margin-bottom:10px;display:flex;gap:8px;"><button class="hbtn" id="copyall">复制全部(img+video)</button><button class="hbtn" id="copyimg">只复制出图 img</button><button class="hbtn" id="toGame" style="background:#0b7285;color:#fff;border-color:#0b7285;">▶ 导入游戏</button></div>';
+    var recIdx=window.__promptRecIdx; var a=sbHistAll(); var rec=a[recIdx]; var images=(rec&&rec.images)||{};
+    var genN=ps.filter(function(p){return images[String(p.no)];}).length;
+    var h='<div style="margin-bottom:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><button class="hbtn" id="copyall">复制全部(img+video)</button><button class="hbtn" id="copyimg">只复制出图 img</button><button class="hbtn" id="genAllShots" style="background:#0e7490;color:#fff;border-color:#0e7490;">✨ 生成全部分镜</button><span style="font-size:11px;color:#8a92a6;">共 '+ps.length+' 镜，已生成 '+genN+' 张。</span></div>';
     h+=ps.map(function(p){
-      var img=p.img||'', video=p.video||p.text||'';
-      return '<div class="pcard"><b>【镜头'+esc(p.no)+'】</b>'
-        +(img?'<div style="font-size:11px;font-weight:700;color:#0e7490;margin:6px 0 2px;">🖼 静态帧出图 img</div><pre>'+esc(img)+'</pre>':'')
-        +(video?'<div style="font-size:11px;font-weight:700;color:#7c3aed;margin:8px 0 2px;">🎬 视频扩展 video</div><pre>'+esc(video)+'</pre>':'')
+      var no=String(p.no), img=p.img||'', video=p.video||p.text||'', has=images[no];
+      return '<div class="shotrow" data-shotno="'+sbEsc(no)+'">'
+        +'<div class="pinfo"><b>【镜头'+esc(p.no)+'】</b>'
+          +(img?'<div style="font-size:11px;font-weight:700;color:#0e7490;margin:6px 0 2px;">🖼 静态帧出图 img</div><pre>'+esc(img)+'</pre>':'')
+          +(video?'<div style="font-size:11px;font-weight:700;color:#7c3aed;margin:8px 0 2px;">🎬 视频扩展 video</div><pre>'+esc(video)+'</pre>':'')
+          +'<div style="margin-top:8px;"><button class="hbtn'+(has?' done':'')+'" data-genshot="'+sbEsc(no)+'"'+(has?' disabled':'')+' style="font-size:12px;'+(has?'':'background:#0e7490;color:#fff;border-color:#0e7490;')+'">'+(has?'✓ 已生成':'🎨 生成分镜')+'</button></div>'
+        +'</div>'
+        +'<div class="shotcard"><div class="thumb" data-thumb="'+sbEsc(no)+'">'+(has?'<img src="'+has+'">':'镜'+esc(no)+'·待生成')+'</div>'
+          +'<div class="cgbar" data-bar="'+sbEsc(no)+'"><i></i></div>'
+          +(has?'<button class="hbtn" data-genshot="'+sbEsc(no)+'" style="font-size:11px;padding:2px 8px;margin-top:4px;">重新生成</button>':'')
+        +'</div>'
         +'</div>';
     }).join('');
     var box=document.getElementById('pane-prompt'); box.innerHTML=h;
     var all=ps.map(function(p){return '【镜头'+p.no+'】\n[img] '+(p.img||'')+'\n[video] '+(p.video||p.text||'');}).join('\n\n');
     var allImg=ps.map(function(p){return '【镜头'+p.no+'】'+(p.img||'');}).join('\n\n');
     var ci=document.getElementById('copyimg'); if(ci) ci.addEventListener('click',function(){ try{navigator.clipboard.writeText(allImg); this.textContent='已复制'; var b=this; setTimeout(function(){b.textContent='只复制出图 img';},1200);}catch(e){} });
-    var cp=document.getElementById('copyall'); if(cp) cp.addEventListener('click',function(){ try{navigator.clipboard.writeText(all); this.textContent='已复制'; var b=this; setTimeout(function(){b.textContent='复制全部提示词';},1200);}catch(e){} });
-    var tg=document.getElementById('toGame'); if(tg) tg.addEventListener('click',importToGame);
+    var cp=document.getElementById('copyall'); if(cp) cp.addEventListener('click',function(){ try{navigator.clipboard.writeText(all); this.textContent='已复制'; var b=this; setTimeout(function(){b.textContent='复制全部(img+video)';},1200);}catch(e){} });
+    var ga=document.getElementById('genAllShots'); if(ga) ga.addEventListener('click',function(){ genAllShots(); });
+    // 单镜生成 / 重新生成
+    [].forEach.call(box.querySelectorAll('[data-genshot]'),function(btn){
+      btn.addEventListener('click',function(){ var no=btn.getAttribute('data-genshot'); genOneShot(no); });
+    });
+  }
+  // 保证当前 prompts 面板对应的记录存在 images 对象，返回 {a,rec}
+  function promptRec(){ var a=sbHistAll(); var rec=a[window.__promptRecIdx]; if(rec){ rec.images=rec.images||{}; } return {a:a,rec:rec}; }
+  function promptPersist(a){ try{ localStorage.setItem(HSKEY,JSON.stringify(a)); }catch(err){} }
+  function shotBar(no){ return document.querySelector('#pane-prompt .cgbar[data-bar="'+cssEsc(no)+'"]'); }
+  function cssEsc(s){ return String(s).replace(/["\\]/g,'\\$&'); }
+  // 生成单个镜头 CG（带进度条，写回当前记录）
+  function genOneShot(no,cb){
+    var pr=promptRec(); if(!pr.rec){ alert('未找到对应记录，请先生成或从记录载入。'); if(cb)cb(new Error('no rec')); return; }
+    var ps=(pr.rec.board&&pr.rec.board.prompts)||[]; var p=ps.filter(function(x){return String(x.no)===String(no);})[0]; if(!p){ if(cb)cb(new Error('no shot')); return; }
+    var prompt=promptImgText(no,p.img||'',p.video||p.text||'');
+    var bar=shotBar(no); var barI=bar&&bar.querySelector('i');
+    var btns=[].slice.call(document.querySelectorAll('#pane-prompt [data-genshot="'+cssEsc(no)+'"]'));
+    btns.forEach(function(b){ b.disabled=true; b.textContent='生成中…'; b.classList.remove('done'); });
+    if(bar){ bar.style.display='block'; }
+    var prog=8; if(barI){ barI.style.width='8%'; }
+    var timer=setInterval(function(){ prog=Math.min(90,prog+Math.random()*12); if(barI)barI.style.width=prog+'%'; },300);
+    sbGenImage(prompt,function(err,url){
+      clearInterval(timer);
+      if(err){ if(barI)barI.style.width='0%'; if(bar)bar.style.display='none'; alert('生成失败：'+err.message); renderPrompts(pr.rec.board); if(cb)cb(err); return; }
+      pr.rec.images[String(no)]=url; promptPersist(pr.a);
+      if(barI)barI.style.width='100%';
+      setTimeout(function(){ renderPrompts(pr.rec.board); sbHistRender&&sbHistRender(); if(cb)cb(null); },250);
+    });
+  }
+  // 生成全部分镜（逐镜，每镜自带进度条）
+  function genAllShots(){
+    var pr=promptRec(); if(!pr.rec){ alert('未找到对应记录。'); return; }
+    var ps=(pr.rec.board&&pr.rec.board.prompts)||[]; var q=ps.map(function(p){return String(p.no);});
+    var ga=document.getElementById('genAllShots'); if(ga){ ga.disabled=true; ga.textContent='生成中…'; }
+    (function next(){
+      if(!q.length){ renderPrompts(pr.rec.board); sbHistRender&&sbHistRender(); return; }
+      var no=q.shift();
+      genOneShot(no,function(){ next(); });
+    })();
   }
 
   // ===== 导入游戏：把台词（源剧本节点）+ 分镜提示词配着注入互动影视游戏 =====
