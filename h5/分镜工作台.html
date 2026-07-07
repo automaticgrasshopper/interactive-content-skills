@@ -713,7 +713,8 @@
   }
 
   // ===== 导入游戏：把台词（源剧本节点）+ 分镜提示词配着注入互动影视游戏 =====
-  function sanitizeLabel(id){ return String(id||'node').replace(/[^\w\-]/g,'_'); }
+  // label 只需避免空白与 choice 分隔符(=>)等冲突字符；游戏引擎 @label 支持任意非空白字符串，中文可直接用，故保留中文与字母数字，避免多个中文节点碰撞成同名。
+  function sanitizeLabel(id){ return String(id||'node').trim().replace(/\s+/g,'_').replace(/[^\w\-\u4e00-\u9fff]/g,'_')||'node'; }
   function importToGame(preImages){
     var board=window.__lastBoard, nodes=window.__lastNodes||[];
     if(!nodes.length){ alert('没有可导入的剧本节点。请先从左侧选场次并生成分镜。'); return; }
