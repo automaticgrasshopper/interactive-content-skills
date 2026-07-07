@@ -201,6 +201,7 @@
         <button class="tab" data-tab="script">分场剧本</button>
         <button class="tab" data-tab="emo">情绪对照</button>
         <button class="tab" data-tab="over">叠加验证</button>
+        <button id="playgame" class="tab" style="margin-left:10px;background:#0b7285;color:#fff;" title="把当前生成的剧本入库并进入互动影视游戏试玩">▶ 进游戏试玩</button>
         <span class="engine" id="engine">—</span>
         <span class="badge" style="margin-left:8px;">总节点<b id="total">0</b></span>
       </div>
@@ -1673,7 +1674,7 @@ flowchart TD
         +'<span class="histrow-hint">点击展开操作 ›</span>'
         +'<span class="histrow-acts">'
         +'<button class="hbtn" data-act="view" data-i="'+i+'">查看</button>'
-        +'<button class="hbtn" data-act="dl" data-i="'+i+'">下载</button>'
+        +'<button class="hbtn" data-act="tolib" data-i="'+i+'" style="background:#0b7285;color:#fff;border-color:#0b7285;">入库</button>'
         +'<button class="hbtn" data-act="regen" data-i="'+i+'" style="background:#1f2430;color:#fff;border-color:#1f2430;">再次生成</button>'
         +'<button class="hbtn" data-act="storyboard" data-i="'+i+'" style="background:#0891b2;color:#fff;border-color:#0891b2;">🎬 生成分镜</button>'
         +'<button class="hbtn" data-act="del" data-i="'+i+'" style="color:#dc2626;border-color:#f3d0d0;">删除</button>'
@@ -1697,6 +1698,66 @@ flowchart TD
     return '【互动短剧生成记录】'+r.time+'\n参数：'+r.params+'\n标题：'+(r.title||'')+'\n\n===== 生成日志（逻辑链） =====\n'+r.log
       +'\n\n===== 校验分析 =====\n'+r.analysisText
       +'\n\n===== 模型返回 JSON =====\n'+r.json;
+  }
+
+  // ===== 剧本转换：节奏验证 nodes → 互动影视游戏剧本（说话人：：文字 + @指令） =====
+  // 每个节点 → 一个 @label；script/text 拆成多行对话；next 多出口(带 label) → @choice；单出口 → @jump；无出口/结局 → @end。
+  function sanitizeLabel(id){ return String(id||'node').replace(/[^\w\-]/g,'_'); }
+  function scriptToLines(script, fallbackText){
+    var body=(script||'').trim() || (fallbackText||'').trim();
+    if(!body) return [];
+    var out=[]; var lines=body.split(/\n+/);
+    lines.forEach(function(ln){
+      ln=ln.trim(); if(!ln) return;
+      // 已是 "角色：台词" / "角色:台词" 形式 → 转成 说话人：：台词
+      var m=ln.match(/^([^\uff1a:]{1,12})[\uff1a:]\s*(.+)$/);
+      if(m && m[2]){ out.push(m[1].trim()+'：：'+m[2].trim()); }
+      else { out.push('：：'+ln); } // 旁白（浮动居中框）
+    });
+    return out;
+  }
+  function dramaToGameScript(dd, title){
+    var ns=Array.isArray(dd.nodes)?dd.nodes:[];
+    var idset={}; ns.forEach(function(n){ idset[sanitizeLabel(n.id)]=true; });
+    var firstId=ns.length?sanitizeLabel(ns[0].id):'start';
+    var out=[];
+    out.push('# '+(title||'导入剧本')+'（由节奏验证工具入库）');
+    // 首节点命名 start 以对齐游戏入口
+    ns.forEach(function(n,idx){
+      var lab=sanitizeLabel(n.id);
+      out.push('');
+      out.push('@label '+(idx===0?'start':lab));
+      if(idx===0 && lab!=='start'){ /* 首节点强制叫 start */ }
+      // 场景提示作为旁白（可选）
+      if(n.loc){ out.push('：：【'+n.loc+(n.time?' · '+n.time:'')+'】'); }
+      // 正文
+      var body=scriptToLines(n.script, n.text);
+      if(body.length) out=out.concat(body);
+      else out.push('：：（本节无剧本）');
+      // 出口
+      var nexts=Array.isArray(n.next)?n.next.filter(function(x){return x&&x.to&&idset[sanitizeLabel(x.to)];}):[];
+      var isEnd=(n.sub==='end'||n.kind==='major'||n.kind==='minor')&&nexts.length===0;
+      if(nexts.length>=2){
+        out.push('@choice');
+        nexts.slice(0,6).forEach(function(x,ci){
+          var lbl=(x.label||('选项'+(ci+1))).slice(0,10);
+          var tgt=sanitizeLabel(x.to); if(tgt===firstId) tgt='start';
+          out.push('- '+lbl+' => '+tgt);
+        });
+      } else if(nexts.length===1){
+        var t1=sanitizeLabel(nexts[0].to); if(t1===firstId) t1='start';
+        out.push('@jump '+t1);
+      } else {
+        out.push('@end');
+      }
+    });
+    // 把引用到 firstId 的 label 也同步改名（首节点名→start）
+    var text=out.join('\n');
+    if(firstId!=='start'){
+      var re=new RegExp('=> '+firstId+'(\\b|$)','g'); text=text.replace(re,'=> start');
+      var re2=new RegExp('@jump '+firstId+'(\\b|$)','g'); text=text.replace(re2,'@jump start');
+    }
+    return text;
   }
   document.getElementById('histlist').addEventListener('click', function(e){
     var b=e.target.closest('button');
@@ -1754,24 +1815,20 @@ flowchart TD
       genAll(true);
       return;
     }
-    if(b.getAttribute('data-act')==='dl'){
-      // 下载前预览：线上文档样式，确认后再下载
-      var d0=null; try{ d0=JSON.parse(r.json); }catch(e0){}
-      var v0=document.getElementById('histview');
-      var h0='<div style="display:flex;align-items:center;margin:8px 0;"><div style="font-weight:700;font-size:14px;">下载预览：'+esc(r.title||'记录')+' <em style="font-style:normal;font-size:12px;color:#aab0bf;font-weight:500;">'+esc(r.time)+'　'+esc(r.params)+'</em></div>'
-        +'<button class="hbtn" id="histdlgo" style="margin-left:auto;white-space:nowrap;padding:0 18px;background:#1f2430;color:#fff;border-color:#1f2430;">⬇ 下载 .txt</button></div>';
-      h0+='<div style="font-weight:600;font-size:13px;margin:10px 0 4px;">生成日志（逻辑链）</div><pre style="background:#14181f;color:#d5dae4;border-radius:10px;padding:12px;font-size:11.5px;line-height:1.7;white-space:pre-wrap;max-height:240px;overflow:auto;">'+esc(r.log)+'</pre>';
-      h0+='<div style="font-weight:600;font-size:13px;margin:10px 0 4px;">校验分析</div><pre style="background:#fafbfc;border:1px solid #eef0f4;border-radius:10px;padding:12px;font-size:11.5px;line-height:1.7;white-space:pre-wrap;max-height:180px;overflow:auto;">'+esc(r.analysisText)+'</pre>';
-      if(d0){
-        if(d0.synopsis) h0+='<div style="font-weight:600;font-size:13px;margin:10px 0 4px;">大纲梗概</div><div style="font-size:12.5px;line-height:1.8;">'+esc(d0.synopsis)+'</div>';
-        if(Array.isArray(d0.outline)) h0+='<div style="font-weight:600;font-size:13px;margin:10px 0 4px;">分段大纲</div>'+d0.outline.map(function(o){return '<div style="font-size:12px;line-height:1.7;padding:4px 0;border-bottom:1px solid #f2f3f6;"><b>'+esc(o.stage||'')+'</b>（'+esc(o.minutes||'')+'分）'+esc(o.summary||'')+'</div>';}).join('');
-        if(Array.isArray(d0.nodes)) h0+='<div style="font-weight:600;font-size:13px;margin:10px 0 4px;">分集节点（'+d0.nodes.length+'）</div>'+d0.nodes.map(function(n){return '<div style="font-size:12px;line-height:1.7;padding:4px 0;border-bottom:1px solid #f2f3f6;"><b>'+esc(n.id||'')+'</b>｜'+esc(n.loc||'')+'｜'+esc(n.time||'')+'｜'+esc(n.kind||'')+'<br>'+esc(n.script||n.text||'')+((n.next||[]).length?'<br><span style="color:#8a92a6;">→ '+n.next.map(function(x){return (x.label?x.label+'→':'')+x.to;}).join('　')+'</span>':'')+'</div>';}).join('');
+    if(b.getAttribute('data-act')==='tolib'){
+      // 入库：把这条记录的 nodes 转成互动影视游戏剧本，写入桥接槽后打开游戏
+      var dd=null; try{ dd=JSON.parse(r.json); }catch(e0){ alert('这条记录 JSON 解析失败，无法入库。'); return; }
+      var ns=Array.isArray(dd.nodes)?dd.nodes:[];
+      if(!ns.length){ alert('这条记录没有节点，无法入库。\n\n请先「一键生成」出带节点的剧本，再入库。'); return; }
+      var hasScript=ns.some(function(n){return (n.script||'').length>0;});
+      if(!hasScript){
+        if(!confirm('这条记录是结构骨架、没有分场剧本（script），入库后游戏里只能显示各节点的情节概要（text）。\n\n建议先用「剧本实例化」模式重新生成一版带完整剧本的，再入库。\n\n仍要用概要入库并进入游戏吗？')) return;
       }
-      v0.innerHTML=h0;
-      document.getElementById('histdlgo').addEventListener('click', function(){
-        var blob=new Blob([histText(r)],{type:'text/plain;charset=utf-8'}), u=URL.createObjectURL(blob), aa=document.createElement('a');
-        aa.href=u; aa.download='生成记录_'+r.time.replace(/[ :]/g,'-')+'.txt'; aa.click(); URL.revokeObjectURL(u);
-      });
+      var gameScript=dramaToGameScript(dd, r.title||'');
+      var payload={ name:(r.title||('导入剧本_'+r.time)), note:'来自节奏验证：'+r.params, script:gameScript };
+      try{ localStorage.setItem('vn_incoming_script', JSON.stringify(payload)); }catch(e){ alert('入库失败（本地存储写入错误）。'); return; }
+      document.getElementById('histmask').style.display='none';
+      window.open('互动影视游戏.html','_blank');
       return;
     }
     // 查看＝把窗口恢复到生成这套内容时的状态：回填输入 + 恢复参数 + 重渲染全部页签
@@ -2450,7 +2507,24 @@ flowchart TD
       +'<table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:10px;"><tr style="background:#eef1f6;"><th style="text-align:left;padding:5px 8px;">拍</th><th style="padding:5px 8px;">时间(分)</th><th style="padding:5px 8px;">本案例 V</th><th style="padding:5px 8px;">标准 V</th><th style="padding:5px 8px;">ΔV</th></tr>'+rows+'</table>'
       +'<ul style="margin:0;padding-left:20px;font-size:12.5px;line-height:1.9;color:#3a4255;">'+issues.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul></div>';
   }
-  Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(b){ b.addEventListener('click',function(){ showTab(b.getAttribute('data-tab')); }); });
+  Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(b){ if(!b.getAttribute('data-tab')) return; b.addEventListener('click',function(){ showTab(b.getAttribute('data-tab')); }); });
+
+  // ===== ▶ 进游戏试玩：把当前展示的生成内容入库并打开游戏 =====
+  document.getElementById('playgame').addEventListener('click', function(){
+    var d=lastData;
+    if(!d || !Array.isArray(d.nodes) || !d.nodes.length){
+      alert('当前还没有可进入游戏的剧本。\n\n请先在下方「对接模型」一键生成一版带节点的剧本，或到「生成记录」里选一条点“入库”。');
+      return;
+    }
+    var hasScript=d.nodes.some(function(n){return (n.script||'').length>0;});
+    if(!hasScript){
+      if(!confirm('当前是结构骨架、没有分场剧本（script），进游戏后只能显示情节概要。\n\n建议先用「剧本实例化」生成带剧本的版本。\n\n仍要进游戏吗？')) return;
+    }
+    var title=(d.title||'当前剧本');
+    var payload={ name:title, note:'来自节奏验证（当前预览）', script:dramaToGameScript(d, title) };
+    try{ localStorage.setItem('vn_incoming_script', JSON.stringify(payload)); }catch(e){ alert('写入失败。'); return; }
+    window.open('互动影视游戏.html','_blank');
+  });
 
   // ===== 推荐时长 / 结局数（模型能力测试；无 Key 或失败时离线粗估兜底）=====
   function orCall(userText, done){
