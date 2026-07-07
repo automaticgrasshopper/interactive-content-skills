@@ -80,9 +80,9 @@
   <div class="head">
     <h1>分镜工作台</h1>
     <span class="ver">V0.1 研究版</span>
-    <button id="opencard" class="btn-top" style="margin-left:12px;">导演分镜执行卡</button>
+    <button id="opencard" class="btn-top" style="margin-left:12px;">剧本转分镜执行卡</button>
     <button id="openhist" class="btn-top" style="margin-left:8px;">📜 记录</button>
-    <p>只做「分集 / 一场戏 → 分镜表 + 分镜提示词」。同源：skill/导演分镜故事版拓展能力</p>
+    <p>剧本 → 分镜（一次规划、两种消费：好分镜改视频，其余出静态帧当背景图）。同源：skill/剧本转分镜</p>
   </div>
 
   <div class="grid">
@@ -181,7 +181,7 @@
 <div id="cardmask" class="mask">
   <div class="box">
     <div style="display:flex;align-items:center;margin-bottom:10px;">
-      <div style="font-size:18px;font-weight:700;">导演分镜执行卡 <em style="font-style:normal;font-size:12px;color:#aab0bf;font-weight:500;">（<span id="cardlen"></span> 字符 ≈ <span id="cardtok"></span> token；与 skill 同源，越短模型执行越准）</em></div>
+      <div style="font-size:18px;font-weight:700;">剧本转分镜执行卡 <em style="font-style:normal;font-size:12px;color:#aab0bf;font-weight:500;">（<span id="cardlen"></span> 字符 ≈ <span id="cardtok"></span> token；与 skill 同源，越短模型执行越准）</em></div>
       <button id="cardclose" class="hbtn" style="margin-left:auto;">关闭</button>
     </div>
     <pre id="cardbody"></pre>
@@ -200,7 +200,7 @@
 </div>
 
 <script type="text/plain" id="execcard">
-【导演分镜执行卡】把一场戏翻成逐镜头分镜表＋可喂 AI 视频的分镜提示词。导演＝解决特定戏剧问题的视觉语法，不是名字。先定影调色盘，再出分镜。
+【剧本转分镜执行卡】把剧本（一集/一场戏/分场节点）翻成很好看的分镜。核心信念：分镜就是分镜，一次规划、两种消费——好的分镜改视频，其余的就当静态帧（视觉小说背景图）。骨架＝剧集级前期规划（节奏/一致性锁点/风险控制），灵魂＝导演视觉语法（解决特定戏剧问题，不是导演名字）。先定影调色盘，再出分镜。
 
 【第零步·A 先列素材库（占位资源，分镜必须引用它，不许每镜现脑补）】
 分镜不从剧本文字凭空拆，先把三类资源具像化成带 @id 的资源条目，之后每镜@引用——这样人物形象/空间站位/音色全片锚定不漂（这一步只列"资源表"，不接真实图/音生成，占位即可）：
@@ -228,7 +228,10 @@
   · 运动语法翻成固定语法：推近→切更紧景别；横移连两人→固定双人构图内走位；摇镜揭示→切或让对象移进画框；跟拍→人物穿过固定画框/几个固定机位接力。
   · 镜头数手感：情绪戏3–6镜，动作/信息量大8–12。宁可每镜有目的，不凑数。
   · 空间连贯（重要，治文字分镜最易翻车的"站位波动"）：同一场戏先在心里定一条主轴线（180°线），全场机位默认在轴线同侧，人物左右关系全场一致（谁在画框左、谁在右，跨镜别乱跳）。每镜必须写清：机位在轴线哪侧、主体在画框位置(左/中/右/前景/背景)、与上一镜的空间关系(同轴延续/反打/切近切远/明确越轴且给理由)。越轴要么不做，要么用一个中性过渡镜交代。相邻两镜的空间必须能对上——上一镜某人在画框右，下一镜他不该无理由跳到左。
-第四步 出分镜提示词：把分镜表逐镜转成可喂 AI 视频的提示词，一镜一条，固定三段：①开头逐字写死"不要出现BGM，不要出现字幕，保留音效。"②风格与氛围(全场统一一句，复用相机质感＋主色板色值＋该镜所在段落的影调微调)③画面(景别＋焦段、明确写"固定机位无运镜"、主体动作、环境动态、光线、保留音效——通顺自然语言，光线/色调要落到色盘的具体色值)。自检：开头三句逐字在最前；无BGM无字幕音效保留；运镜写固定机位无运镜；焦段与固定机位都带上；风格句带上主色板色值＋段落微调；画面里落实本镜空间站位、与上一镜空间对得上不乱跳；只描述本镜不跨镜、不写剪辑点/情绪变化/微表情等表内信息。
+第四步 出分镜提示词（一镜两用：静态帧出图 img ＋ 可选视频扩展 video）：每镜给两段。
+① img（静态帧出图提示词，视觉小说背景图/分镜图直接用）：一句画风锁点（复用相机质感＋主色板色值＋该段影调微调）＋场景@id复述＋人物@id复述及此刻状态/表情＋景别＋焦段＋机位＋构图＋光线色调（落到色值），末尾固定加“16:9，无画面文字，无水印”。这是一张定格画面的描述，不写运镜、不写时长。
+② video（视频扩展提示词，好的分镜要改视频时用）：开头逐字写死“不要出现BGM，不要出现字幕，保留音效。”＋风格氛围（同 img 的质感＋色值）＋画面（在 img 定格基础上补：主体动作、环境动态雨/闪电/穿框、默认固定机位无运镜、保留音效）。
+原则：先能当图（img 必给、能独立成立），再能扩成视频（video 在图的基础上加动态）；不好的分镜只用 img 出静态帧即可。两段都：复用相机质感＋主色板色值＋段落微调；落实本镜空间站位、与上一镜对得上不乱跳；只描述本镜不跨镜；不写剪辑点/情绪变化/微表情等表内信息。video 无BGM无字幕、音效保留。
 
 【原则】反应比事物重要(先拍脸再拍揭示)；机位即态度(仰=强/俯=压/平=平等/低位固定=冷静旁观)；固定镜头是默认也是风格；相机焦段是叙事；影调随情绪流动但不跳色系(主色钉死、段落只变奏)；留白沉默是语言；"这镜服务什么"是内部标尺不写进表；贴着用户的故事走、不改剧情走向。
 
@@ -262,10 +265,10 @@
   ],
   "note":"一句话导演笔记",
   "prompts":[
-    {"no":"1","text":"不要出现BGM，不要出现字幕，保留音效。\n风格与氛围：<质感＋主色板色值＋该镜段落影调微调>\n画面：<景别+焦段、固定机位无运镜、主体动作、环境动态、光线色调落到色值、保留音效>"}
+    {"no":"1","img":"<静态帧出图提示词：画风锁点（质感＋主色板色值＋段落微调）＋场景@id复述＋人物@id复述及此刻状态＋景别+焦段+机位+构图＋光线色调落到色值，16:9，无画面文字，无水印>","video":"不要出现BGM，不要出现字幕，保留音效。\n风格与氛围：<同 img 质感＋色值>\n画面：<在 img 基础上补动态：主体动作、环境动态、固定机位无运镜、保留音效>"}
   ]
 }
-只返回 ===JSON=== 之后的 JSON，不要多余文字。assets 素材库先列、palette 再定、最后出分镜；每镜的 refScene/refChar 必须@引用 assets 里真实存在的 id，空间站位参照该场景的 layout；prompts 与 beats 里所有 shots 一一对应；每条 prompt 的风格句必须带主色板色值。
+只返回 ===JSON=== 之后的 JSON，不要多余文字。assets 素材库先列、palette 再定、最后出分镜；每镜的 refScene/refChar 必须@引用 assets 里真实存在的 id，空间站位参照该场景的 layout；prompts 与 beats 里所有 shots 一一对应；每条 prompt 的 img 与 video 的风格句都必须带主色板色值。
 </script>
 
 <script>
@@ -375,7 +378,7 @@
     if(act==='game'){ window.__lastBoard=r.board; window.__lastNodes=r.nodes||[]; boundStory=r.boundStory||''; importToGame(); return; }
   });
 
-  var SYS='你是资深分镜导演，遵循《导演分镜执行卡》。把用户给的一场戏翻成逐镜头分镜表和可直接喂 AI 视频生成的分镜提示词。导演语法一主至多一辅；全场锚定一台相机；运镜以固定镜头为主（默认锁死机位，动的是人物与环境）；焦段是性格不是尺子；反应比事物重要；贴着用户的故事走、绝不改剧情。只返回执行卡规定的 JSON。';
+  var SYS='你是资深分镜导演，遵循《剧本转分镜执行卡》。把用户给的剧本翻成逐镜头分镜表，并为每镜输出两种提示词：img（静态帧出图，视觉小说背景图直接用）与 video（视频扩展，好分镜改视频用）。核心信念：分镜就是分镜，一次规划、两种消费。导演语法一主至多一辅；全场锚定一台相机；运镜以固定镜头为主（动的是人物与环境）；焦段是性格不是尺子；反应比事物重要；贴着用户的故事走、绝不改剧情。只返回执行卡规定的 JSON。';
 
   // ---- 输入源切换 ----
   var srcMode='json';
@@ -583,10 +586,18 @@
   function renderPrompts(d){
     var ps=Array.isArray(d.prompts)?d.prompts:[];
     if(!ps.length){ document.getElementById('pane-prompt').innerHTML='<div class="empty">（模型没返回 prompts）</div>'; return; }
-    var h='<div style="margin-bottom:10px;display:flex;gap:8px;"><button class="hbtn" id="copyall">复制全部提示词</button><button class="hbtn" id="toGame" style="background:#0b7285;color:#fff;border-color:#0b7285;">▶ 导入游戏</button></div>';
-    h+=ps.map(function(p){ return '<div class="pcard"><b>【镜头'+esc(p.no)+'】</b><pre>'+esc(p.text||'')+'</pre></div>'; }).join('');
+    var h='<div style="margin-bottom:10px;display:flex;gap:8px;"><button class="hbtn" id="copyall">复制全部(img+video)</button><button class="hbtn" id="copyimg">只复制出图 img</button><button class="hbtn" id="toGame" style="background:#0b7285;color:#fff;border-color:#0b7285;">▶ 导入游戏</button></div>';
+    h+=ps.map(function(p){
+      var img=p.img||'', video=p.video||p.text||'';
+      return '<div class="pcard"><b>【镜头'+esc(p.no)+'】</b>'
+        +(img?'<div style="font-size:11px;font-weight:700;color:#0e7490;margin:6px 0 2px;">🖼 静态帧出图 img</div><pre>'+esc(img)+'</pre>':'')
+        +(video?'<div style="font-size:11px;font-weight:700;color:#7c3aed;margin:8px 0 2px;">🎬 视频扩展 video</div><pre>'+esc(video)+'</pre>':'')
+        +'</div>';
+    }).join('');
     var box=document.getElementById('pane-prompt'); box.innerHTML=h;
-    var all=ps.map(function(p){return '【镜头'+p.no+'】\n'+(p.text||'');}).join('\n\n');
+    var all=ps.map(function(p){return '【镜头'+p.no+'】\n[img] '+(p.img||'')+'\n[video] '+(p.video||p.text||'');}).join('\n\n');
+    var allImg=ps.map(function(p){return '【镜头'+p.no+'】'+(p.img||'');}).join('\n\n');
+    var ci=document.getElementById('copyimg'); if(ci) ci.addEventListener('click',function(){ try{navigator.clipboard.writeText(allImg); this.textContent='已复制'; var b=this; setTimeout(function(){b.textContent='只复制出图 img';},1200);}catch(e){} });
     var cp=document.getElementById('copyall'); if(cp) cp.addEventListener('click',function(){ try{navigator.clipboard.writeText(all); this.textContent='已复制'; var b=this; setTimeout(function(){b.textContent='复制全部提示词';},1200);}catch(e){} });
     var tg=document.getElementById('toGame'); if(tg) tg.addEventListener('click',importToGame);
   }
@@ -616,8 +627,8 @@
       if(nexts.length>=2){ out.push('@choice'); nexts.slice(0,6).forEach(function(x,ci){ out.push('- '+((x.label||('选项'+(ci+1))).slice(0,10))+' => '+sanitizeLabel(x.to)); }); }
       else if(nexts.length===1){ out.push('@jump '+sanitizeLabel(nexts[0].to)); }
       else { out.push('@end'); }
-      // 该节点的背景图提示词（取对应的分镜提示词）
-      var pr=prompts.slice(idx*perNode,(idx+1)*perNode).map(function(p){return p.text||'';}).filter(Boolean).join('\n---\n');
+      // 该节点的背景图提示词：取静态帧 img（视觉小说背景直接用图），无 img 则回退 video/text
+      var pr=prompts.slice(idx*perNode,(idx+1)*perNode).map(function(p){return p.img||p.video||p.text||'';}).filter(Boolean).join('\n---\n');
       if(pr) bgPrompts[(idx===0?'start':lab)]=pr;
     });
     var text=out.join('\n');
