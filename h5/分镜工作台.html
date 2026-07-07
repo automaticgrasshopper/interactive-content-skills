@@ -723,6 +723,16 @@
     var perNode=Math.max(1, Math.ceil(prompts.length/nodes.length));
     var out=[]; out.push('# '+((board&&board.grammar)||'分镜导入')+'（分镜工作台入库）');
     var bgPrompts={}, bgImages={};
+    // TODO-4 导入完整性校验：收集已定义的目标 label 与被引用的跳转目标，避免悬空跳转
+    var firstLabInit=sanitizeLabel(nodes[0].id);
+    var definedLabels={ 'start':1 }; definedLabels[firstLabInit]=1;   // firstLab 引用会被后续改写为 start，视为已定义
+    var referenced={};                                              // 被 choice/jump 引用的目标 -> 来源节点名
+    nodes.forEach(function(n,idx){ definedLabels[idx===0?'start':sanitizeLabel(n.id)]=1; });
+    nodes.forEach(function(n){
+      var nx=Array.isArray(n.next)?n.next.filter(function(x){return x&&x.to;}):[];
+      nx.forEach(function(x){ var t=sanitizeLabel(x.to); if(!referenced[t]) referenced[t]=(n.id||''); });
+    });
+    var dangling=Object.keys(referenced).filter(function(t){ return !definedLabels[t]; });
     nodes.forEach(function(n,idx){
       var lab=sanitizeLabel(n.id), gameLab=(idx===0?'start':lab);
       out.push(''); out.push('@label '+gameLab);
@@ -745,6 +755,16 @@
       // 已生成的图（按镜号）→映射到节点 label：取本节第一个有图的镜
       if(preImages){ for(var k=0;k<mine.length;k++){ var no=String(mine[k].no); if(preImages[no]){ bgImages[gameLab]=preImages[no]; break; } } }
     });
+    // TODO-4：为悬空目标补占位 @end 节点，保证游戏不会跳空；并提醒用户建议补选场次
+    if(dangling.length){
+      dangling.forEach(function(t){
+        out.push(''); out.push('@label '+t);
+        out.push('：：（该场次未纳入本次分镜，自动补为占位结局）'); out.push('@end');
+      });
+      alert('⚠ 检测到 '+dangling.length+' 个跳转目标未包含在本次分镜：\n'+
+        dangling.map(function(t){ return '• '+t+'（由「'+(referenced[t]||'?')+'」指向）'; }).join('\n')+
+        '\n\n已自动为它们补上占位结局节点，游戏不会跳空。\n建议：回到场次选择处把这些场次也勾选进分镜，再重新导入。');
+    }
     var text=out.join('\n');
     var firstLab=sanitizeLabel(nodes[0].id);
     if(firstLab!=='start'){ text=text.replace(new RegExp('=> '+firstLab+'(\\b|$)','g'),'=> start').replace(new RegExp('@jump '+firstLab+'(\\b|$)','g'),'@jump start'); }
