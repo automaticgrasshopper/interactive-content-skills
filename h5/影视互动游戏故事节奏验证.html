@@ -201,7 +201,7 @@
         <button class="tab" data-tab="script">分场剧本</button>
         <button class="tab" data-tab="emo">情绪对照</button>
         <button class="tab" data-tab="over">叠加验证</button>
-        <button id="playgame" class="tab" style="margin-left:10px;background:#0b7285;color:#fff;" title="把当前生成的剧本入库并进入互动影视游戏试玩">▶ 进游戏试玩</button>
+        <button id="playgame" class="tab" style="margin-left:10px;background:#0b7285;color:#fff;" title="打开互动影视游戏（独立程序）。要玩某剧本先到生成记录里“入库”">▶ 进入游戏</button>
         <span class="engine" id="engine">—</span>
         <span class="badge" style="margin-left:8px;">总节点<b id="total">0</b></span>
       </div>
@@ -2510,20 +2510,9 @@ flowchart TD
   }
   Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(b){ if(!b.getAttribute('data-tab')) return; b.addEventListener('click',function(){ showTab(b.getAttribute('data-tab')); }); });
 
-  // ===== ▶ 进游戏试玩：把当前展示的生成内容入库并打开游戏 =====
+  // ===== ▶ 进入游戏：直接打开解耦的游戏程序（默认剧本），不搭构任何内容 =====
+  // 要体验某个剧本，先到「生成记录」把它“入库”（才会进入游戏剧本库），游戏里再选。
   document.getElementById('playgame').addEventListener('click', function(){
-    var d=lastData;
-    if(!d || !Array.isArray(d.nodes) || !d.nodes.length){
-      alert('当前还没有可进入游戏的剧本。\n\n请先在下方「对接模型」一键生成一版带节点的剧本，或到「生成记录」里选一条点“入库”。');
-      return;
-    }
-    var hasScript=d.nodes.some(function(n){return (n.script||'').length>0;});
-    if(!hasScript){
-      if(!confirm('当前是结构骨架、没有分场剧本（script），进游戏后只能显示情节概要。\n\n建议先用「剧本实例化」生成带剧本的版本。\n\n仍要进游戏吗？')) return;
-    }
-    var title=storyTitle(d);
-    var payload={ name:title, note:'来自节奏验证（当前预览）', script:dramaToGameScript(d, title) };
-    try{ localStorage.setItem('vn_incoming_script', JSON.stringify(payload)); }catch(e){ alert('写入失败。'); return; }
     window.open('互动影视游戏.html','_blank');
   });
 
