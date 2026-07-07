@@ -188,6 +188,15 @@
   </div>
 </div>
 
+<!-- CG 生成进度遮置 -->
+<div id="cgprogmask" class="mask" style="z-index:100;">
+  <div class="box" style="max-width:520px;text-align:center;">
+    <div id="cgprog_title" style="font-size:16px;font-weight:700;margin-bottom:14px;">正在生成 CG…</div>
+    <div style="background:#eef0f4;border-radius:999px;height:14px;overflow:hidden;margin-bottom:10px;"><div id="cgprog_bar" style="height:100%;width:0%;background:linear-gradient(90deg,#0e7490,#0891b2);transition:width .2s;"></div></div>
+    <div id="cgprog_text" style="font-size:12.5px;color:#8a92a6;"></div>
+  </div>
+</div>
+
 <!-- 分镜生成记录弹窗 -->
 <div id="histmask" class="mask">
   <div class="box">
@@ -357,14 +366,18 @@
       var bound=r.boundStory
         ? '<span style="font-size:11px;padding:2px 8px;border-radius:6px;background:#e0f2fe;color:#0369a1;">绑定故事：'+sbEsc(r.boundStory)+'</span>'
         : '<span style="font-size:11px;padding:2px 8px;border-radius:6px;background:#f3f4f6;color:#6b7280;">用户单传</span>';
+      var imgN=r.images?Object.keys(r.images).length:0;
+      var promptN=(r.board&&Array.isArray(r.board.prompts))?r.board.prompts.length:0;
+      var cgTag=imgN>0?'<span style="font-size:11px;padding:2px 8px;border-radius:6px;background:#cffafe;color:#0e7490;">🎬 CG '+imgN+'/'+promptN+'</span>':'';
       return '<div style="border:1px solid #eef0f4;border-radius:10px;padding:10px 12px;margin-bottom:8px;background:#fafbfc;">'
-        +'<div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;"><span>'+sbEsc(r.title||('分镜 '+(i+1)))+'</span>'+bound+'</div>'
+        +'<div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;flex-wrap:wrap;"><span>'+sbEsc(r.title||('分镜 '+(i+1)))+'</span>'+bound+cgTag+'</div>'
         +'<div style="font-size:11.5px;color:#8a92a6;margin:4px 0 8px;">'+sbEsc(r.time)+'　'+(r.shots||0)+' 镜头　'+(r.sceneCount||0)+' 场次</div>'
-        +'<div style="display:flex;gap:8px;">'
+        +'<div style="display:flex;gap:8px;flex-wrap:wrap;">'
         +'<button class="hbtn" data-sbact="load" data-i="'+i+'">载入查看</button>'
+        +'<button class="hbtn" data-sbact="cg" data-i="'+i+'" style="background:#0e7490;color:#fff;border-color:#0e7490;">🎨 生成CG</button>'
         +'<button class="hbtn" data-sbact="game" data-i="'+i+'" style="background:#0b7285;color:#fff;border-color:#0b7285;">▶ 导入游戏</button>'
         +'<button class="hbtn" data-sbact="del" data-i="'+i+'" style="color:#dc2626;border-color:#f3d0d0;">删除</button>'
-        +'</div></div>';
+        +'</div><div class="cgpanel" data-cg="'+i+'" style="display:none;margin-top:10px;"></div></div>';
     }).join('');
   }
   document.getElementById('openhist').addEventListener('click',function(){ sbHistRender(); document.getElementById('histmask').style.display='flex'; });
@@ -375,8 +388,105 @@
     var act=b.getAttribute('data-sbact');
     if(act==='del'){ if(!confirm('删除这条分镜记录？')) return; a.splice(i,1); try{localStorage.setItem(HSKEY,JSON.stringify(a));}catch(e){} sbHistRender(); return; }
     if(act==='load'){ window.__lastBoard=r.board; window.__lastNodes=r.nodes||[]; boundStory=r.boundStory||''; renderBoard(r.board); renderPrompts(r.board); document.getElementById('histmask').style.display='none'; var bt=document.querySelector('.rtab[data-rt="board"]'); if(bt)bt.click(); return; }
-    if(act==='game'){ window.__lastBoard=r.board; window.__lastNodes=r.nodes||[]; boundStory=r.boundStory||''; importToGame(); return; }
+    if(act==='game'){
+      window.__lastBoard=r.board; window.__lastNodes=r.nodes||[]; boundStory=r.boundStory||'';
+      var imgN=r.images?Object.keys(r.images).length:0;
+      var promptN=(r.board&&Array.isArray(r.board.prompts))?r.board.prompts.length:0;
+      if(imgN===0 && promptN>0){
+        if(confirm('目前尚未生成 CG（分镜背景图）。\n\n是否一键生成全部 CG 并直接导入游戏？\n（选“取消”则不生成图、只带提示词导入）')){
+          sbGenerateAllThenImport(i);
+          return;
+        }
+      }
+      importToGame(r.images||null); return;
+    }
+    if(act==='cg'){ var panel=document.querySelector('.cgpanel[data-cg="'+i+'"]'); if(panel.style.display==='none'){ panel.style.display='block'; renderCgPanel(i); } else { panel.style.display='none'; } return; }
   });
+
+  // ===== 分镜工作台出图（OpenRouter 图像模型）=====
+  function sbGenImage(prompt, cb){
+    var key=(localStorage.getItem('sb_key')||(document.getElementById('orkey').value||'')).trim();
+    if(!key){ cb(new Error('未锁定 OpenRouter Key（下方对接模型处填并锁定）')); return; }
+    var model=(localStorage.getItem('sb_img_model')||'google/gemini-2.5-flash-image-preview');
+    fetch('https://openrouter.ai/api/v1/chat/completions',{method:'POST',headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json'},
+      body:JSON.stringify({model:model,modalities:['image','text'],messages:[{role:'user',content:prompt}]})})
+    .then(function(res){ if(!res.ok) return res.json().then(function(j){throw new Error((j&&j.error&&j.error.message)||('HTTP '+res.status));}); return res.json(); })
+    .then(function(d){ var m=d&&d.choices&&d.choices[0]&&d.choices[0].message;
+      var url=m&&m.images&&m.images[0]&&(m.images[0].image_url&&m.images[0].image_url.url||m.images[0].url);
+      if(!url&&typeof (m&&m.content)==='string'){ var mm=m.content.match(/data:image\/[a-zA-Z]+;base64,[A-Za-z0-9+\/=]+/); if(mm)url=mm[0]; }
+      if(!url){ cb(new Error('模型未返回图片（换支持出图的模型）')); return; }
+      cb(null,url);
+    }).catch(function(e){ cb(e); });
+  }
+  // 取各镜的 img 提示词（按节点/镜号），带上画风锁点
+  function sbImgPrompts(r){
+    var ps=(r.board&&Array.isArray(r.board.prompts))?r.board.prompts:[];
+    var style=(localStorage.getItem('sb_style')||'').trim();
+    return ps.map(function(p){ return { no:String(p.no), prompt:(style?style+'，':'')+(p.img||p.video||p.text||'')+'，16:9，无画面文字，无水印' }; });
+  }
+  function renderCgPanel(i){
+    var a=sbHistAll(), r=a[i]; if(!r) return;
+    var panel=document.querySelector('.cgpanel[data-cg="'+i+'"]'); if(!panel) return;
+    var imgs=sbImgPrompts(r); r.images=r.images||{};
+    var h='<div style="display:flex;gap:8px;margin-bottom:8px;align-items:center;"><button class="hbtn" data-cgall="'+i+'" style="background:#0e7490;color:#fff;border-color:#0e7490;">✨ 生成全部 CG</button><span style="font-size:11px;color:#8a92a6;">共 '+imgs.length+' 镜，已生成 '+Object.keys(r.images).length+' 张。可单张重新生成。</span></div>';
+    h+='<div style="display:flex;flex-wrap:wrap;gap:8px;">'+imgs.map(function(x){
+      var has=r.images[x.no];
+      return '<div style="width:140px;"><div style="width:140px;height:79px;border-radius:6px;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center;">'
+        +(has?'<img src="'+has+'" style="width:100%;height:100%;object-fit:cover;">':'<span style="color:#555;font-size:11px;">未生成</span>')+'</div>'
+        +'<div style="font-size:10.5px;color:#8a92a6;margin:2px 0;">镜'+sbEsc(x.no)+'</div>'
+        +'<button class="hbtn" data-cgone="'+i+'" data-no="'+sbEsc(x.no)+'" style="font-size:11px;padding:3px 8px;">'+(has?'重新生成':'生成')+'</button></div>';
+    }).join('')+'</div>';
+    panel.innerHTML=h;
+  }
+  // CG 面板内按钮（生成全部/单张）
+  document.getElementById('histlist').addEventListener('click',function(e){
+    var one=e.target.closest('[data-cgone]'), all=e.target.closest('[data-cgall]');
+    if(!one&&!all) return;
+    var i=+((one||all).getAttribute(one?'data-cgone':'data-cgall'));
+    var a=sbHistAll(), r=a[i]; if(!r) return; r.images=r.images||{};
+    var imgs=sbImgPrompts(r);
+    function persist(){ try{ localStorage.setItem(HSKEY,JSON.stringify(a)); }catch(err){} }
+    if(one){
+      var no=one.getAttribute('data-no'); var it=imgs.filter(function(x){return x.no===no;})[0]; if(!it) return;
+      one.textContent='生成中…'; one.disabled=true;
+      sbGenImage(it.prompt,function(err,url){ if(err){ alert('生成失败：'+err.message); one.textContent='重试'; one.disabled=false; return; } r.images[no]=url; persist(); renderCgPanel(i); });
+    } else {
+      all.textContent='生成中…'; all.disabled=true;
+      var q=imgs.slice(), ok=0, fail=0;
+      (function next(){
+        if(!q.length){ persist(); renderCgPanel(i); sbHistRender(); alert('完成：成功 '+ok+'，失败 '+fail); return; }
+        var it=q.shift();
+        sbGenImage(it.prompt,function(err,url){ if(err){fail++;}else{ok++; r.images[it.no]=url; persist();} next(); });
+      })();
+    }
+  });
+
+  // 一键生成全部 CG（带进度条）之后直接导入游戏
+  function cgProg(pct,text,title){
+    document.getElementById('cgprogmask').style.display='flex';
+    document.getElementById('cgprog_bar').style.width=Math.max(0,Math.min(100,pct))+'%';
+    if(text!=null) document.getElementById('cgprog_text').textContent=text;
+    if(title!=null) document.getElementById('cgprog_title').textContent=title;
+  }
+  function cgProgHide(){ document.getElementById('cgprogmask').style.display='none'; }
+  function sbGenerateAllThenImport(i){
+    var a=sbHistAll(), r=a[i]; if(!r) return; r.images=r.images||{};
+    var imgs=sbImgPrompts(r);
+    function persist(){ try{ localStorage.setItem(HSKEY,JSON.stringify(a)); }catch(err){} }
+    var total=imgs.length, done=0, ok=0, fail=0;
+    cgProg(0,'共 '+total+' 张…','正在生成 CG…');
+    (function next(){
+      if(!imgs.length){
+        cgProg(100,'完成：成功 '+ok+'，失败 '+fail+'，正在导入游戏…','完成');
+        persist(); renderCgPanel(i); sbHistRender();
+        setTimeout(function(){ cgProgHide(); window.__lastBoard=r.board; window.__lastNodes=r.nodes||[]; boundStory=r.boundStory||''; importToGame(r.images||null); },600);
+        return;
+      }
+      var it=imgs.shift();
+      cgProg(Math.round(done/total*100),'('+(done+1)+'/'+total+') 镜'+it.no+'…');
+      sbGenImage(it.prompt,function(err,url){ done++; if(err){fail++;}else{ok++; r.images[it.no]=url; persist();} cgProg(Math.round(done/total*100),'('+done+'/'+total+') 完成'); next(); });
+    })();
+  }
 
   var SYS='你是资深分镜导演，遵循《剧本转分镜执行卡》。把用户给的剧本翻成逐镜头分镜表，并为每镜输出两种提示词：img（静态帧出图，视觉小说背景图直接用）与 video（视频扩展，好分镜改视频用）。核心信念：分镜就是分镜，一次规划、两种消费。导演语法一主至多一辅；全场锚定一台相机；运镜以固定镜头为主（动的是人物与环境）；焦段是性格不是尺子；反应比事物重要；贴着用户的故事走、绝不改剧情。只返回执行卡规定的 JSON。';
 
@@ -604,17 +714,17 @@
 
   // ===== 导入游戏：把台词（源剧本节点）+ 分镜提示词配着注入互动影视游戏 =====
   function sanitizeLabel(id){ return String(id||'node').replace(/[^\w\-]/g,'_'); }
-  function importToGame(){
+  function importToGame(preImages){
     var board=window.__lastBoard, nodes=window.__lastNodes||[];
     if(!nodes.length){ alert('没有可导入的剧本节点。请先从左侧选场次并生成分镜。'); return; }
     var prompts=(board&&Array.isArray(board.prompts))?board.prompts:[];
     // 把分镜提示词按顺序均匀分配给各节点（作为该节点背景图提示词）
     var perNode=Math.max(1, Math.ceil(prompts.length/nodes.length));
     var out=[]; out.push('# '+((board&&board.grammar)||'分镜导入')+'（分镜工作台入库）');
-    var bgPrompts={};
+    var bgPrompts={}, bgImages={};
     nodes.forEach(function(n,idx){
-      var lab=sanitizeLabel(n.id);
-      out.push(''); out.push('@label '+(idx===0?'start':lab));
+      var lab=sanitizeLabel(n.id), gameLab=(idx===0?'start':lab);
+      out.push(''); out.push('@label '+gameLab);
       if(n.loc) out.push('：：【'+n.loc+(n.time?' · '+n.time:'')+'】');
       // 台词：把 script/text 拆成多行
       var body=String(n.script||n.text||'').trim();
@@ -627,16 +737,20 @@
       if(nexts.length>=2){ out.push('@choice'); nexts.slice(0,6).forEach(function(x,ci){ out.push('- '+((x.label||('选项'+(ci+1))).slice(0,10))+' => '+sanitizeLabel(x.to)); }); }
       else if(nexts.length===1){ out.push('@jump '+sanitizeLabel(nexts[0].to)); }
       else { out.push('@end'); }
-      // 该节点的背景图提示词：取静态帧 img（视觉小说背景直接用图），无 img 则回退 video/text
-      var pr=prompts.slice(idx*perNode,(idx+1)*perNode).map(function(p){return p.img||p.video||p.text||'';}).filter(Boolean).join('\n---\n');
-      if(pr) bgPrompts[(idx===0?'start':lab)]=pr;
+      // 该节点对应的分镜（取分到它的第一个镜）
+      var mine=prompts.slice(idx*perNode,(idx+1)*perNode);
+      var pr=mine.map(function(p){return p.img||p.video||p.text||'';}).filter(Boolean).join('\n---\n');
+      if(pr) bgPrompts[gameLab]=pr;
+      // 已生成的图（按镜号）→映射到节点 label：取本节第一个有图的镜
+      if(preImages){ for(var k=0;k<mine.length;k++){ var no=String(mine[k].no); if(preImages[no]){ bgImages[gameLab]=preImages[no]; break; } } }
     });
     var text=out.join('\n');
     var firstLab=sanitizeLabel(nodes[0].id);
     if(firstLab!=='start'){ text=text.replace(new RegExp('=> '+firstLab+'(\\b|$)','g'),'=> start').replace(new RegExp('@jump '+firstLab+'(\\b|$)','g'),'@jump start'); }
     var gameName=boundStory || ((board&&board.grammar)?'分镜：'+board.grammar:'分镜工作台剧本');
-    var payload={ name:gameName, note:(boundStory?'绑定故事：'+boundStory:'分镜工作台单传')+'（含台词+分镜提示词）', script:text, bgPrompts:bgPrompts, palette:(board&&board.palette)||null };
-    try{ localStorage.setItem('vn_incoming_script', JSON.stringify(payload)); }catch(e){ alert('写入失败（本地存储）。'); return; }
+    var nImg=Object.keys(bgImages).length;
+    var payload={ name:gameName, note:(boundStory?'绑定故事：'+boundStory:'分镜工作台单传')+'（含台词+分镜'+(nImg?'+'+nImg+'张CG':'提示词')+'）', script:text, bgPrompts:bgPrompts, bgImages:(nImg?bgImages:undefined), palette:(board&&board.palette)||null };
+    try{ localStorage.setItem('vn_incoming_script', JSON.stringify(payload)); }catch(e){ alert('写入失败（本地存储，可能图片太大超配额）。'); return; }
     window.open('互动影视游戏.html','_blank');
   }
 
