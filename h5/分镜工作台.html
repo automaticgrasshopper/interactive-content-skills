@@ -81,6 +81,7 @@
     <h1>分镜工作台</h1>
     <span class="ver">V0.1 研究版</span>
     <button id="opencard" class="btn-top" style="margin-left:12px;">导演分镜执行卡</button>
+    <button id="openhist" class="btn-top" style="margin-left:8px;">📜 记录</button>
     <p>只做「分集 / 一场戏 → 分镜表 + 分镜提示词」。同源：skill/导演分镜故事版拓展能力</p>
   </div>
 
@@ -184,6 +185,17 @@
       <button id="cardclose" class="hbtn" style="margin-left:auto;">关闭</button>
     </div>
     <pre id="cardbody"></pre>
+  </div>
+</div>
+
+<!-- 分镜生成记录弹窗 -->
+<div id="histmask" class="mask">
+  <div class="box">
+    <div style="display:flex;align-items:center;margin-bottom:10px;">
+      <div style="font-size:18px;font-weight:700;">分镜生成记录 <em style="font-style:normal;font-size:12px;color:#aab0bf;font-weight:500;">（存本机浏览器，最多 50 条；标注绑定的故事剧本或用户单传）</em></div>
+      <button id="histclose" class="hbtn" style="margin-left:auto;">关闭</button>
+    </div>
+    <div id="histlist"></div>
   </div>
 </div>
 
@@ -329,6 +341,40 @@
     return t;
   }
 
+  var boundStory='';  // 当前输入绑定的故事剧本标题（来自节奏验证）；空=用户单传
+  // 用户手动改了 JSON 输入则视为单传（解除绑定）
+  var HSKEY='sb_history_v1';
+  function sbHistAll(){ try{ return JSON.parse(localStorage.getItem(HSKEY)||'[]'); }catch(e){ return []; } }
+  function sbHistSave(rec){ var a=sbHistAll(); a.unshift(rec); while(a.length>50) a.pop(); try{ localStorage.setItem(HSKEY,JSON.stringify(a)); }catch(e){ while(a.length>1){ a.pop(); try{ localStorage.setItem(HSKEY,JSON.stringify(a)); break; }catch(e2){} } } }
+  function sbEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function sbHistRender(){
+    var a=sbHistAll(), list=document.getElementById('histlist');
+    if(!a.length){ list.innerHTML='<div class="empty">还没记录。每次生成分镜完成后自动存一条。</div>'; return; }
+    list.innerHTML=a.map(function(r,i){
+      var bound=r.boundStory
+        ? '<span style="font-size:11px;padding:2px 8px;border-radius:6px;background:#e0f2fe;color:#0369a1;">绑定故事：'+sbEsc(r.boundStory)+'</span>'
+        : '<span style="font-size:11px;padding:2px 8px;border-radius:6px;background:#f3f4f6;color:#6b7280;">用户单传</span>';
+      return '<div style="border:1px solid #eef0f4;border-radius:10px;padding:10px 12px;margin-bottom:8px;background:#fafbfc;">'
+        +'<div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;"><span>'+sbEsc(r.title||('分镜 '+(i+1)))+'</span>'+bound+'</div>'
+        +'<div style="font-size:11.5px;color:#8a92a6;margin:4px 0 8px;">'+sbEsc(r.time)+'　'+(r.shots||0)+' 镜头　'+(r.sceneCount||0)+' 场次</div>'
+        +'<div style="display:flex;gap:8px;">'
+        +'<button class="hbtn" data-sbact="load" data-i="'+i+'">载入查看</button>'
+        +'<button class="hbtn" data-sbact="game" data-i="'+i+'" style="background:#0b7285;color:#fff;border-color:#0b7285;">▶ 导入游戏</button>'
+        +'<button class="hbtn" data-sbact="del" data-i="'+i+'" style="color:#dc2626;border-color:#f3d0d0;">删除</button>'
+        +'</div></div>';
+    }).join('');
+  }
+  document.getElementById('openhist').addEventListener('click',function(){ sbHistRender(); document.getElementById('histmask').style.display='flex'; });
+  document.getElementById('histclose').addEventListener('click',function(){ document.getElementById('histmask').style.display='none'; });
+  document.getElementById('histlist').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    var i=+b.getAttribute('data-i'), a=sbHistAll(), r=a[i]; if(!r) return;
+    var act=b.getAttribute('data-sbact');
+    if(act==='del'){ if(!confirm('删除这条分镜记录？')) return; a.splice(i,1); try{localStorage.setItem(HSKEY,JSON.stringify(a));}catch(e){} sbHistRender(); return; }
+    if(act==='load'){ window.__lastBoard=r.board; window.__lastNodes=r.nodes||[]; boundStory=r.boundStory||''; renderBoard(r.board); renderPrompts(r.board); document.getElementById('histmask').style.display='none'; var bt=document.querySelector('.rtab[data-rt="board"]'); if(bt)bt.click(); return; }
+    if(act==='game'){ window.__lastBoard=r.board; window.__lastNodes=r.nodes||[]; boundStory=r.boundStory||''; importToGame(); return; }
+  });
+
   var SYS='你是资深分镜导演，遵循《导演分镜执行卡》。把用户给的一场戏翻成逐镜头分镜表和可直接喂 AI 视频生成的分镜提示词。导演语法一主至多一辅；全场锚定一台相机；运镜以固定镜头为主（默认锁死机位，动的是人物与环境）；焦段是性格不是尺子；反应比事物重要；贴着用户的故事走、绝不改剧情。只返回执行卡规定的 JSON。';
 
   // ---- 输入源切换 ----
@@ -344,7 +390,8 @@
 
   // ---- JSON 输入 → 解析出场次供选择 ----
   var parsedNodes=[], pickedScenes={};
-  document.getElementById('jsonin').addEventListener('input',function(){
+  document.getElementById('jsonin').addEventListener('input',function(ev){
+    if(ev && ev.isTrusted) boundStory='';   // 用户手动编辑 = 单传，解除绑定
     var raw=this.value.trim(); parsedNodes=[]; pickedScenes={};
     var wrap=document.getElementById('scenewrap'), pick=document.getElementById('scenepick');
     if(!raw){ wrap.style.display='none'; return; }
@@ -472,7 +519,13 @@
       }
       if(parsed.repaired) logLine('\n⚙ 已自动修复 JSON 格式（'+parsed.repaired+'）');
       window.__lastBoard=parsed.data;                         // 存下本次分镜，供“导入游戏”用
-      window.__lastNodes=parsedNodes.filter(function(n){ return pickedScenes[n.id]; }); // 本次选中的源剧本节点（带台词）
+      var pickedNodes=parsedNodes.filter(function(n){ return pickedScenes[n.id]; });
+      window.__lastNodes=pickedNodes;                          // 本次选中的源剧本节点（带台词）
+      // 存入分镜生成记录（标注绑定故事/用户单传）
+      var shotCount=0; (parsed.data.beats||[]).forEach(function(bt){ shotCount+=(bt.shots||[]).length; });
+      var sbTitle=(parsed.data.grammar||'')+(boundStory?('·'+boundStory):'');
+      sbHistSave({ time:new Date().toLocaleString('zh-CN',{hour12:false}), title:(boundStory||parsed.data.grammar||'分镜'), boundStory:boundStory||'',
+        shots:shotCount, sceneCount:pickedNodes.length, board:parsed.data, nodes:pickedNodes });
       logLine('\n▸ 分镜接收完成，渲染…'); renderBoard(parsed.data); renderPrompts(parsed.data);
       progSet(100,'完成 ✓'); logLine('✓ 完成。分镜表见右侧，分镜提示词切右上页签。'); done();
     }
@@ -570,7 +623,8 @@
     var text=out.join('\n');
     var firstLab=sanitizeLabel(nodes[0].id);
     if(firstLab!=='start'){ text=text.replace(new RegExp('=> '+firstLab+'(\\b|$)','g'),'=> start').replace(new RegExp('@jump '+firstLab+'(\\b|$)','g'),'@jump start'); }
-    var payload={ name:((board&&board.grammar)?'分镜：'+board.grammar:'分镜工作台剧本'), note:'含台词+分镜提示词', script:text, bgPrompts:bgPrompts, palette:(board&&board.palette)||null };
+    var gameName=boundStory || ((board&&board.grammar)?'分镜：'+board.grammar:'分镜工作台剧本');
+    var payload={ name:gameName, note:(boundStory?'绑定故事：'+boundStory:'分镜工作台单传')+'（含台词+分镜提示词）', script:text, bgPrompts:bgPrompts, palette:(board&&board.palette)||null };
     try{ localStorage.setItem('vn_incoming_script', JSON.stringify(payload)); }catch(e){ alert('写入失败（本地存储）。'); return; }
     window.open('互动影视游戏.html','_blank');
   }
@@ -582,6 +636,7 @@
       localStorage.removeItem('sb_incoming'); // 用完即焚，避免下次误带
       var pay=JSON.parse(inc);
       if(pay && Array.isArray(pay.nodes) && pay.nodes.length){
+        boundStory=pay.from||'';   // 绑定的故事剧本标题（空=用户单传）
         setSrc('json');
         document.getElementById('jsonin').value=JSON.stringify({nodes:pay.nodes}, null, 0);
         document.getElementById('jsonin').dispatchEvent(new Event('input'));

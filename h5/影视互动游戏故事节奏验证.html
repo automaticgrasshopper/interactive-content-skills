@@ -1824,8 +1824,9 @@ flowchart TD
       if(!hasScript){
         if(!confirm('这条记录是结构骨架、没有分场剧本（script），入库后游戏里只能显示各节点的情节概要（text）。\n\n建议先用「剧本实例化」模式重新生成一版带完整剧本的，再入库。\n\n仍要用概要入库并进入游戏吗？')) return;
       }
-      var gameScript=dramaToGameScript(dd, r.title||'');
-      var payload={ name:(r.title||('导入剧本_'+r.time)), note:'来自节奏验证：'+r.params, script:gameScript };
+      var t2=r.title||storyTitle(dd);
+      var gameScript=dramaToGameScript(dd, t2);
+      var payload={ name:t2||('导入剧本_'+r.time), note:'来自节奏验证：'+r.params, script:gameScript };
       try{ localStorage.setItem('vn_incoming_script', JSON.stringify(payload)); }catch(e){ alert('入库失败（本地存储写入错误）。'); return; }
       document.getElementById('histmask').style.display='none';
       window.open('互动影视游戏.html','_blank');
@@ -2038,7 +2039,7 @@ flowchart TD
         box.innerHTML=analysisHtml(va,attempt)+box.innerHTML;
         progSet(100,'完成 ✓');
         logLine('✓ 全部完成。分集流程图已自动打开；校验分析在下方输出区顶部；偏移分析见「情绪对照」页签。');
-        histSave({ time:new Date().toLocaleString('zh-CN',{hour12:false}), title:(d.logline||'').slice(0,40), runId:d.__runId,
+        histSave({ time:new Date().toLocaleString('zh-CN',{hour12:false}), title:storyTitle(d), logline:(d.logline||''), synopsis:(d.synopsis||''), runId:d.__runId,
           params:'时长'+lastT+'分/结局'+lastE+'/'+(tags.length?tags.join('＋'):'无标签')+'/'+model+'/执行卡',
           pass:va.pass, attempts:attempt, log:logEl.textContent, analysisText:analysisText, json:c,
           input:{ brief:briefTxt, tags:tagsNow.slice(), dur:genDurSel, ends:genEndsSel, docs:(DOCS.length?DOCS.map(function(dd){return {name:dd.name,text:dd.text};}):null) } });
@@ -2520,11 +2521,19 @@ flowchart TD
     if(!hasScript){
       if(!confirm('当前是结构骨架、没有分场剧本（script），进游戏后只能显示情节概要。\n\n建议先用「剧本实例化」生成带剧本的版本。\n\n仍要进游戏吗？')) return;
     }
-    var title=(d.title||'当前剧本');
+    var title=storyTitle(d);
     var payload={ name:title, note:'来自节奏验证（当前预览）', script:dramaToGameScript(d, title) };
     try{ localStorage.setItem('vn_incoming_script', JSON.stringify(payload)); }catch(e){ alert('写入失败。'); return; }
     window.open('互动影视游戏.html','_blank');
   });
+
+  // 从生成数据抽一个“标题（≤30字一句话简介）”，全局统一，让游戏/分镜工作台都能对得上
+  function storyTitle(d){
+    var s=(d&&(d.title||d.logline||d.synopsis||''))||'';
+    s=String(s).replace(/\s+/g,' ').trim();
+    if(s.length>30) s=s.slice(0,30)+'…';
+    return s||'未命名剧本';
+  }
 
   // ===== 推荐时长 / 结局数（模型能力测试；无 Key 或失败时离线粗估兜底）=====
   function orCall(userText, done){
