@@ -419,7 +419,7 @@
   function sbGenImage(prompt, cb){
     var key=(localStorage.getItem('sb_key')||(document.getElementById('orkey').value||'')).trim();
     if(!key){ cb(new Error('未锁定 OpenRouter Key（下方对接模型处填并锁定）')); return; }
-    var model=(localStorage.getItem('sb_img_model')||'google/gemini-2.5-flash-image-preview');
+    var model=(localStorage.getItem('sb_img_model')||'google/gemini-2.5-flash-image');
     fetch('https://openrouter.ai/api/v1/chat/completions',{method:'POST',headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json'},
       body:JSON.stringify({model:model,modalities:['image','text'],messages:[{role:'user',content:prompt}]})})
     .then(function(res){ if(!res.ok) return res.json().then(function(j){throw new Error((j&&j.error&&j.error.message)||('HTTP '+res.status));}); return res.json(); })
