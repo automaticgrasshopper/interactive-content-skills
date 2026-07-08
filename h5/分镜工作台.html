@@ -94,7 +94,6 @@
     <span class="ver">V0.1 研究版</span>
     <button id="opencard" class="btn-top" style="margin-left:12px;">剧本转分镜执行卡</button>
     <button id="openhist" class="btn-top" style="margin-left:8px;">📜 记录</button>
-    <p>剧本 → 分镜（一次规划、两种消费：好分镜改视频，其余出静态帧当背景图）。同源：skill/剧本转分镜</p>
   </div>
 
   <div class="grid">
@@ -369,7 +368,31 @@
   // 用户手动改了 JSON 输入则视为单传（解除绑定）
   var HSKEY='sb_history_v1';
   function sbHistAll(){ try{ return JSON.parse(localStorage.getItem(HSKEY)||'[]'); }catch(e){ return []; } }
-  function sbHistSave(rec){ var a=sbHistAll(); a.unshift(rec); while(a.length>50) a.pop(); try{ localStorage.setItem(HSKEY,JSON.stringify(a)); }catch(e){ while(a.length>1){ a.pop(); try{ localStorage.setItem(HSKEY,JSON.stringify(a)); break; }catch(e2){} } } }
+  function sbHistSave(rec){ if(!rec.id) rec.id=newRecId(); var a=sbHistAll(); a.unshift(rec); while(a.length>50){ var drop=a.pop(); idbDropRec(drop); } try{ localStorage.setItem(HSKEY,JSON.stringify(a)); }catch(e){ while(a.length>1){ var d2=a.pop(); idbDropRec(d2); try{ localStorage.setItem(HSKEY,JSON.stringify(a)); break; }catch(e2){} } } }
+
+  // ===== CG 图片存储：IndexedDB =====
+  // localStorage 只有约 5–10MB，几十张 base64 CG 会爆配额（且旧代码 try/catch 静默吞错，表现为“只成功几张”）。
+  // 图片实体改存 IndexedDB（本地库，容量几百 MB~GB），localStorage 里只留文字元数据 + 已生成镜号(imgNos)。
+  var IDB={name:'sb_cg',store:'img',db:null};
+  function idbOpen(){ return new Promise(function(res,rej){ if(IDB.db){res(IDB.db);return;} var q=indexedDB.open(IDB.name,1); q.onupgradeneeded=function(){ if(!q.result.objectStoreNames.contains(IDB.store)) q.result.createObjectStore(IDB.store); }; q.onsuccess=function(){ IDB.db=q.result; res(IDB.db); }; q.onerror=function(){ rej(q.error); }; }); }
+  function idbPut(k,v){ return idbOpen().then(function(db){ return new Promise(function(res,rej){ var t=db.transaction(IDB.store,'readwrite'); t.objectStore(IDB.store).put(v,k); t.oncomplete=function(){res();}; t.onerror=function(){rej(t.error);}; }); }); }
+  function idbGet(k){ return idbOpen().then(function(db){ return new Promise(function(res,rej){ var t=db.transaction(IDB.store,'readonly'),rq=t.objectStore(IDB.store).get(k); rq.onsuccess=function(){res(rq.result==null?null:rq.result);}; rq.onerror=function(){rej(rq.error);}; }); }); }
+  function idbDel(k){ return idbOpen().then(function(db){ return new Promise(function(res){ var t=db.transaction(IDB.store,'readwrite'); t.objectStore(IDB.store).delete(k); t.oncomplete=function(){res();}; t.onerror=function(){res();}; }); }); }
+  // 内存缓存（供同步渲染读）：{recId:{no:dataUrl}}；__imgLoaded 标记该记录是否已从 IDB 预热
+  var __imgCache={}, __imgLoaded={};
+  function newRecId(){ return 'rec_'+Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+  function recId(r){ if(!r.id) r.id=newRecId(); return r.id; }
+  function getRecImages(r){ var id=recId(r); return __imgCache[id]||(__imgCache[id]={}); }
+  function recImgCount(r){ return (r.imgNos&&r.imgNos.length)||Object.keys(getRecImages(r)).length; }
+  // 存一张图：写内存缓存 + IDB；localStorage 只更新 imgNos（很小）
+  function setRecImage(a,r,no,url){ var id=recId(r); var cache=getRecImages(r); cache[String(no)]=url; r.imgNos=r.imgNos||[]; if(r.imgNos.indexOf(String(no))<0) r.imgNos.push(String(no)); try{ localStorage.setItem(HSKEY,JSON.stringify(a)); }catch(e){} return idbPut(id+'|'+no,url); }
+  // 从 IDB 把某记录的图预热进内存缓存（返回 Promise<images>）
+  function loadRecImages(r){ var id=recId(r); if(__imgLoaded[id]) return Promise.resolve(getRecImages(r)); var cache=getRecImages(r); if(r.images){ Object.keys(r.images).forEach(function(no){ if(!cache[no]) cache[no]=r.images[no]; }); } var nos=r.imgNos||[]; return Promise.all(nos.map(function(no){ if(cache[no]) return null; return idbGet(id+'|'+no).then(function(u){ if(u) cache[no]=u; }); })).then(function(){ __imgLoaded[id]=true; return cache; }); }
+  // 删除记录时清掉它在 IDB 的所有图
+  function idbDropRec(r){ if(!r||!r.id) return; (r.imgNos||[]).forEach(function(no){ idbDel(r.id+'|'+no); }); delete __imgCache[r.id]; delete __imgLoaded[r.id]; }
+  // 一次性迁移：旧记录把 base64(存在 localStorage 的 r.images) 挪进 IDB 并从 localStorage 删除，减负
+  function sbMigrateOnce(){ var a=sbHistAll(),changed=false; a.forEach(function(r){ if(!r.id){ r.id=newRecId(); changed=true; } if(r.images && Object.keys(r.images).length){ r.imgNos=r.imgNos||[]; Object.keys(r.images).forEach(function(no){ idbPut(r.id+'|'+no,r.images[no]); if(r.imgNos.indexOf(no)<0) r.imgNos.push(no); }); delete r.images; changed=true; } }); if(changed){ try{ localStorage.setItem(HSKEY,JSON.stringify(a)); }catch(e){} } }
+  try{ sbMigrateOnce(); }catch(e){}
   function sbEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
   function sbHistRender(){
     var a=sbHistAll(), list=document.getElementById('histlist');
@@ -378,7 +401,7 @@
       var bound=r.boundStory
         ? '<span style="font-size:11px;padding:2px 8px;border-radius:6px;background:#e0f2fe;color:#0369a1;">绑定故事：'+sbEsc(r.boundStory)+'</span>'
         : '<span style="font-size:11px;padding:2px 8px;border-radius:6px;background:#f3f4f6;color:#6b7280;">用户单传</span>';
-      var imgN=r.images?Object.keys(r.images).length:0;
+      var imgN=recImgCount(r);
       var promptN=(r.board&&Array.isArray(r.board.prompts))?r.board.prompts.length:0;
       var cgTag=imgN>0?'<span style="font-size:11px;padding:2px 8px;border-radius:6px;background:#cffafe;color:#0e7490;">🎬 CG '+imgN+'/'+promptN+'</span>':'';
       return '<div style="border:1px solid #eef0f4;border-radius:10px;padding:10px 12px;margin-bottom:8px;background:#fafbfc;">'
@@ -398,11 +421,11 @@
     var b=e.target.closest('button'); if(!b) return;
     var i=+b.getAttribute('data-i'), a=sbHistAll(), r=a[i]; if(!r) return;
     var act=b.getAttribute('data-sbact');
-    if(act==='del'){ if(!confirm('删除这条分镜记录？')) return; a.splice(i,1); try{localStorage.setItem(HSKEY,JSON.stringify(a));}catch(e){} sbHistRender(); return; }
+    if(act==='del'){ if(!confirm('删除这条分镜记录？')) return; idbDropRec(r); a.splice(i,1); try{localStorage.setItem(HSKEY,JSON.stringify(a));}catch(e){} sbHistRender(); return; }
     if(act==='load'){ window.__lastBoard=r.board; window.__lastNodes=r.nodes||[]; boundStory=r.boundStory||''; window.__promptRecIdx=i; renderBoard(r.board); renderPrompts(r.board); document.getElementById('histmask').style.display='none'; var bt=document.querySelector('.rtab[data-rt="board"]'); if(bt)bt.click(); return; }
     if(act==='game'){
       window.__lastBoard=r.board; window.__lastNodes=r.nodes||[]; boundStory=r.boundStory||'';
-      var imgN=r.images?Object.keys(r.images).length:0;
+      var imgN=recImgCount(r);
       var promptN=(r.board&&Array.isArray(r.board.prompts))?r.board.prompts.length:0;
       if(imgN===0 && promptN>0){
         if(confirm('目前尚未生成 CG（分镜背景图）。\n\n是否一键生成全部 CG 并直接导入游戏？\n（选“取消”则不生成图、只带提示词导入）')){
@@ -410,7 +433,7 @@
           return;
         }
       }
-      importToGame(r.images||null); return;
+      loadRecImages(r).then(function(imgs){ importToGame(Object.keys(imgs).length?imgs:null); }); return;
     }
     if(act==='cg'){ var panel=document.querySelector('.cgpanel[data-cg="'+i+'"]'); if(panel.style.display==='none'){ panel.style.display='block'; renderCgPanel(i); } else { panel.style.display='none'; } return; }
   });
@@ -439,36 +462,37 @@
   function renderCgPanel(i){
     var a=sbHistAll(), r=a[i]; if(!r) return;
     var panel=document.querySelector('.cgpanel[data-cg="'+i+'"]'); if(!panel) return;
-    var imgs=sbImgPrompts(r); r.images=r.images||{};
-    var h='<div style="display:flex;gap:8px;margin-bottom:8px;align-items:center;"><button class="hbtn" data-cgall="'+i+'" style="background:#0e7490;color:#fff;border-color:#0e7490;">✨ 生成全部 CG</button><span style="font-size:11px;color:#8a92a6;">共 '+imgs.length+' 镜，已生成 '+Object.keys(r.images).length+' 张。可单张重新生成。</span></div>';
-    h+='<div style="display:flex;flex-wrap:wrap;gap:8px;">'+imgs.map(function(x){
-      var has=r.images[x.no];
-      return '<div style="width:140px;"><div style="width:140px;height:79px;border-radius:6px;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center;">'
-        +(has?'<img src="'+has+'" style="width:100%;height:100%;object-fit:cover;">':'<span style="color:#555;font-size:11px;">未生成</span>')+'</div>'
-        +'<div style="font-size:10.5px;color:#8a92a6;margin:2px 0;">镜'+sbEsc(x.no)+'</div>'
-        +'<button class="hbtn" data-cgone="'+i+'" data-no="'+sbEsc(x.no)+'" style="font-size:11px;padding:3px 8px;">'+(has?'重新生成':'生成')+'</button></div>';
-    }).join('')+'</div>';
-    panel.innerHTML=h;
+    loadRecImages(r).then(function(){
+      var imgs=sbImgPrompts(r); var stored=getRecImages(r);
+      var h='<div style="display:flex;gap:8px;margin-bottom:8px;align-items:center;"><button class="hbtn" data-cgall="'+i+'" style="background:#0e7490;color:#fff;border-color:#0e7490;">✨ 生成全部 CG</button><span style="font-size:11px;color:#8a92a6;">共 '+imgs.length+' 镜，已生成 '+Object.keys(stored).length+' 张。可单张重新生成。</span></div>';
+      h+='<div style="display:flex;flex-wrap:wrap;gap:8px;">'+imgs.map(function(x){
+        var has=stored[x.no];
+        return '<div style="width:140px;"><div style="width:140px;height:79px;border-radius:6px;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center;">'
+          +(has?'<img src="'+has+'" style="width:100%;height:100%;object-fit:cover;">':'<span style="color:#555;font-size:11px;">未生成</span>')+'</div>'
+          +'<div style="font-size:10.5px;color:#8a92a6;margin:2px 0;">镜'+sbEsc(x.no)+'</div>'
+          +'<button class="hbtn" data-cgone="'+i+'" data-no="'+sbEsc(x.no)+'" style="font-size:11px;padding:3px 8px;">'+(has?'重新生成':'生成')+'</button></div>';
+      }).join('')+'</div>';
+      panel.innerHTML=h;
+    });
   }
   // CG 面板内按钮（生成全部/单张）
   document.getElementById('histlist').addEventListener('click',function(e){
     var one=e.target.closest('[data-cgone]'), all=e.target.closest('[data-cgall]');
     if(!one&&!all) return;
     var i=+((one||all).getAttribute(one?'data-cgone':'data-cgall'));
-    var a=sbHistAll(), r=a[i]; if(!r) return; r.images=r.images||{};
+    var a=sbHistAll(), r=a[i]; if(!r) return;
     var imgs=sbImgPrompts(r);
-    function persist(){ try{ localStorage.setItem(HSKEY,JSON.stringify(a)); }catch(err){} }
     if(one){
       var no=one.getAttribute('data-no'); var it=imgs.filter(function(x){return x.no===no;})[0]; if(!it) return;
       one.textContent='生成中…'; one.disabled=true;
-      sbGenImage(it.prompt,function(err,url){ if(err){ alert('生成失败：'+err.message); one.textContent='重试'; one.disabled=false; return; } r.images[no]=url; persist(); renderCgPanel(i); });
+      sbGenImage(it.prompt,function(err,url){ if(err){ alert('生成失败：'+err.message); one.textContent='重试'; one.disabled=false; return; } setRecImage(a,r,no,url).then(function(){ renderCgPanel(i); }); });
     } else {
       all.textContent='生成中…'; all.disabled=true;
       var q=imgs.slice(), ok=0, fail=0;
       (function next(){
-        if(!q.length){ persist(); renderCgPanel(i); sbHistRender(); alert('完成：成功 '+ok+'，失败 '+fail); return; }
+        if(!q.length){ renderCgPanel(i); sbHistRender(); alert('完成：成功 '+ok+'，失败 '+fail); return; }
         var it=q.shift();
-        sbGenImage(it.prompt,function(err,url){ if(err){fail++;}else{ok++; r.images[it.no]=url; persist();} next(); });
+        sbGenImage(it.prompt,function(err,url){ if(err){fail++; next();}else{ok++; setRecImage(a,r,it.no,url).then(function(){ next(); });} });
       })();
     }
   });
@@ -482,21 +506,20 @@
   }
   function cgProgHide(){ document.getElementById('cgprogmask').style.display='none'; }
   function sbGenerateAllThenImport(i){
-    var a=sbHistAll(), r=a[i]; if(!r) return; r.images=r.images||{};
+    var a=sbHistAll(), r=a[i]; if(!r) return;
     var imgs=sbImgPrompts(r);
-    function persist(){ try{ localStorage.setItem(HSKEY,JSON.stringify(a)); }catch(err){} }
     var total=imgs.length, done=0, ok=0, fail=0;
     cgProg(0,'共 '+total+' 张…','正在生成 CG…');
     (function next(){
       if(!imgs.length){
         cgProg(100,'完成：成功 '+ok+'，失败 '+fail+'，正在导入游戏…','完成');
-        persist(); renderCgPanel(i); sbHistRender();
-        setTimeout(function(){ cgProgHide(); window.__lastBoard=r.board; window.__lastNodes=r.nodes||[]; boundStory=r.boundStory||''; importToGame(r.images||null); },600);
+        renderCgPanel(i); sbHistRender();
+        setTimeout(function(){ cgProgHide(); window.__lastBoard=r.board; window.__lastNodes=r.nodes||[]; boundStory=r.boundStory||''; loadRecImages(r).then(function(m){ importToGame(Object.keys(m).length?m:null); }); },600);
         return;
       }
       var it=imgs.shift();
       cgProg(Math.round(done/total*100),'('+(done+1)+'/'+total+') 镜'+it.no+'…');
-      sbGenImage(it.prompt,function(err,url){ done++; if(err){fail++;}else{ok++; r.images[it.no]=url; persist();} cgProg(Math.round(done/total*100),'('+done+'/'+total+') 完成'); next(); });
+      sbGenImage(it.prompt,function(err,url){ done++; if(err){fail++; cgProg(Math.round(done/total*100),'('+done+'/'+total+') 完成'); next();}else{ok++; setRecImage(a,r,it.no,url).then(function(){ cgProg(Math.round(done/total*100),'('+done+'/'+total+') 完成'); next(); });} });
     })();
   }
 
@@ -713,7 +736,10 @@
   function renderPrompts(d){
     var ps=Array.isArray(d.prompts)?d.prompts:[];
     if(!ps.length){ document.getElementById('pane-prompt').innerHTML='<div class="empty">（模型没返回 prompts）</div>'; return; }
-    var recIdx=window.__promptRecIdx; var a=sbHistAll(); var rec=a[recIdx]; var images=(rec&&rec.images)||{};
+    var recIdx=window.__promptRecIdx; var a=sbHistAll(); var rec=a[recIdx];
+    // 图在 IndexedDB，先预热进内存再渲染（避免缩略图空白）
+    if(rec && !__imgLoaded[recId(rec)]){ loadRecImages(rec).then(function(){ renderPrompts(d); }); }
+    var images=rec?getRecImages(rec):{};
     var genN=ps.filter(function(p){return images[String(p.no)];}).length;
     var h='<div style="margin-bottom:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><button class="hbtn" id="copyall">复制全部(img+video)</button><button class="hbtn" id="copyimg">只复制出图 img</button><button class="hbtn" id="genAllShots" style="background:#0e7490;color:#fff;border-color:#0e7490;">✨ 生成全部分镜</button><span style="font-size:11px;color:#8a92a6;">共 '+ps.length+' 镜，已生成 '+genN+' 张。</span></div>';
     h+=ps.map(function(p){
@@ -741,9 +767,8 @@
       btn.addEventListener('click',function(){ var no=btn.getAttribute('data-genshot'); genOneShot(no); });
     });
   }
-  // 保证当前 prompts 面板对应的记录存在 images 对象，返回 {a,rec}
-  function promptRec(){ var a=sbHistAll(); var rec=a[window.__promptRecIdx]; if(rec){ rec.images=rec.images||{}; } return {a:a,rec:rec}; }
-  function promptPersist(a){ try{ localStorage.setItem(HSKEY,JSON.stringify(a)); }catch(err){} }
+  // 获取当前 prompts 面板对应的记录，返回 {a,rec}
+  function promptRec(){ var a=sbHistAll(); var rec=a[window.__promptRecIdx]; return {a:a,rec:rec}; }
   function shotBar(no){ return document.querySelector('#pane-prompt .cgbar[data-bar="'+cssEsc(no)+'"]'); }
   function cssEsc(s){ return String(s).replace(/["\\]/g,'\\$&'); }
   // 生成单个镜头 CG（带进度条，写回当前记录）
@@ -760,9 +785,8 @@
     sbGenImage(prompt,function(err,url){
       clearInterval(timer);
       if(err){ if(barI)barI.style.width='0%'; if(bar)bar.style.display='none'; alert('生成失败：'+err.message); renderPrompts(pr.rec.board); if(cb)cb(err); return; }
-      pr.rec.images[String(no)]=url; promptPersist(pr.a);
       if(barI)barI.style.width='100%';
-      setTimeout(function(){ renderPrompts(pr.rec.board); sbHistRender&&sbHistRender(); if(cb)cb(null); },250);
+      setRecImage(pr.a,pr.rec,no,url).then(function(){ setTimeout(function(){ renderPrompts(pr.rec.board); sbHistRender&&sbHistRender(); if(cb)cb(null); },250); });
     });
   }
   // 生成全部分镜（逐镜，每镜自带进度条）
