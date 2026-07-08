@@ -1783,9 +1783,12 @@ flowchart TD
       else { msg+='确定生成分镜吗？'; }
       if(!confirm(msg)) return;
       // 打包成分镜工作台能读的 payload（沿用 nodes：id/loc/time/cast/script(或 text)）
+      // 除剧本外，把上游「场景与人物总表」一起送（有剧本必有这两表），供分镜工作台出人物三视图/场景图
       var payload={ from:r.title||'', time:r.time, genres:d.genres||null, tags:d.tags||null,
+        characters: Array.isArray(d.characters)?d.characters:[],
+        scenes: Array.isArray(d.scenes)?d.scenes:[],
         nodes: ns.filter(function(n){ return n.kind!=='minor' || (n.script||n.text); }).map(function(n){
-          return { id:n.id, loc:n.loc||'', time:n.time||'', cast:n.cast||'', kind:n.kind||'normal', script:(n.script||n.text||'') };
+          return { id:n.id, loc:n.loc||'', time:n.time||'', cast:n.cast||'', kind:n.kind||'normal', script:(n.script||n.text||''), next:Array.isArray(n.next)?n.next:undefined };
         }) };
       try{ localStorage.setItem('sb_incoming', JSON.stringify(payload)); }catch(e){ alert('传递失败（本地存储写入错误）。'); return; }
       window.open('分镜工作台.html','_blank');

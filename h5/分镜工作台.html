@@ -93,6 +93,8 @@
     <h1>分镜工作台</h1>
     <span class="ver">V0.1 研究版</span>
     <button id="opencard" class="btn-top" style="margin-left:12px;">剧本转分镜执行卡</button>
+    <button id="opencharcard" class="btn-top" style="margin-left:8px;">三视图骨架</button>
+    <button id="openscenecard" class="btn-top" style="margin-left:8px;">场景图骨架</button>
     <button id="openhist" class="btn-top" style="margin-left:8px;">📜 记录</button>
   </div>
 
@@ -168,21 +170,36 @@
           <div style="font-size:13px;color:#3a4255;line-height:1.9;">🔒 已锁定　模型：<b id="orview_model"></b><br>Key：<span id="orview_key" style="font-family:ui-monospace,monospace;"></span></div>
         </div>
       </div>
+
+      <!-- 出图设置（三视图/场景图/CG 共用） -->
+      <div style="margin-top:16px;border-top:1px solid #eef0f4;padding-top:16px;">
+        <div style="font-size:14px;font-weight:700;margin-bottom:10px;">出图设置 <em style="font-style:normal;font-size:11px;color:#aab0bf;font-weight:500;">（三视图/场景图/CG 共用）</em></div>
+        <div class="field"><label>图像模型 slug <em>（OpenRouter，需支持出图）</em></label><input id="orimg" class="ctl" type="text" placeholder="google/gemini-2.5-flash-image"></div>
+        <div class="field"><label>全片画风锁点 <em>（可选，人物/场景/分镜共用一句）</em></label><input id="orstyle" class="ctl" type="text" placeholder="如：low-saturation muted palette, 35mm film grain, grounded realism"></div>
+      </div>
       <div id="genlog"></div>
     </div>
 
     <!-- 右：分镜呈现 -->
     <div class="panel right">
       <div class="rbar">
-        <span class="rtitle">分镜结果</span>
+        <span class="rtitle">分镜制作</span>
         <div class="rtabs">
+          <button class="rtab" data-rt="char">人物三视图</button>
+          <button class="rtab" data-rt="scene">场景图</button>
           <button class="rtab on" data-rt="board">分镜表</button>
           <button class="rtab" data-rt="prompt">分镜提示词</button>
+          <button class="rtab" data-rt="video">视频提示词</button>
+          <button class="rtab" data-rt="storyboard">故事版</button>
         </div>
       </div>
       <div class="body">
+        <div id="pane-char" style="display:none;"><div class="empty">（人物三视图：来自上游剧本的角色，套三视图设定表骨架真出图，作全片视觉锤点）</div></div>
+        <div id="pane-scene" style="display:none;"><div class="empty">（场景图：来自上游剧本的场景，套稳定场景骨架真出图，作全片视觉锤点）</div></div>
         <div id="pane-board"><div class="empty">（左侧输入 → 生成分镜，这里显示逐镜头分镜表）</div></div>
         <div id="pane-prompt" style="display:none;"><div class="empty">（生成后，这里显示一镜一条、可复制的分镜提示词）</div></div>
+        <div id="pane-video" style="display:none;"><div class="empty">（视频提示词：默认不生成、不占 token。要做视频实验时，点下方按钮把剧本落实成每镜完整视频生成脚本）</div></div>
+        <div id="pane-storyboard" style="display:none;"><div class="empty">（故事版：把已生成的分镜预览图按宫格拼成一张看片用的故事板）</div></div>
       </div>
     </div>
   </div>
@@ -291,9 +308,45 @@
 只返回 ===JSON=== 之后的 JSON，不要多余文字。assets 素材库先列、palette 再定、最后出分镜；每镜的 refScene/refChar 必须@引用 assets 里真实存在的 id，空间站位参照该场景的 layout；prompts 与 beats 里所有 shots 一一对应；每条 prompt 的 img 与 video 的风格句都必须带主色板色值。
 </script>
 
+<script type="text/plain" id="charcard">【人物三视图设定表骨架】与 skill《角色三视图设定表生成能力》同源。核心：版式骨架固定不变，只把人物特征换进占位符——全片每个角色设定表版式一致、画风一致、同一角色多状态还是同一个人。
+
+四条铁律：
+1. 骨架不许改。三视图布局（front / side / back）·右上脸部特写·右下静默细节面板·no horns·末尾整串负向约束，逐字保留。
+2. 画风全片一句、所有人物+所有场景共用（{ART STYLE}），绝不逐图改。灰调/颗粒只作用于光线氛围，别把服装颜色也洗成灰。
+3. 画面不出任何文字（末尾负向串必带全）。
+4. 身份要锁。多图/多态同一人：选一张当身份基准图，其余用它做参考图/图生图，只改皮肤/眼睛/伤口/服装破损。
+
+英文骨架（占位符版，本页自动把剧本角色特征填入）：
+Photorealistic live-action film still style, wide 16:9 character reference sheet / character turnaround / model sheet for one single character: {IDENTITY}, {HAIR}, wearing {OUTFIT}. {ART STYLE}, believable practical realism, not cartoonish, consistent identity across all views. Layout must be a clean production model sheet: left side shows the main character turnaround with three full-body views arranged left to right: front view, side view, back view; full body, neutral standing pose, clear face, clear outfit, consistent identity, same outfit, same hairstyle, same proportions across all three views. Right upper area shows a larger detailed front face close-up with {FACE}. Right lower area shows separate silent detail panels for hairstyle and head area with no horns, outfit fabric, collar/neckline, lower garment, seam stitching and subtle texture, accessories, footwear, and character-specific signature detail. Use panel spacing and blank margins only. No text, no labels, no captions, no annotations, no arrows, no UI, no title, no logo, no watermark, no Front/Side/Back words in the image.
+</script>
+
+<script type="text/plain" id="scenecard">【场景图稳定生成骨架】目标：出一张干净的环境概念/参考图（不是分镜镜头），把空间布局讲清楚，供全片机位与站位锚定。与人物三视图共用同一句画风（{ART STYLE}）保证"同一个世界"。
+
+四条铁律：
+1. 是"环境参考图"不是"剧照"：空镜为主，不放主角、不演戏、不加戏剧动作；清楚展示稳定空间布局。
+2. 布局必须可读：入口/门/窗/主要陈设的相对位置、前中后景、视觉焦点、尺度参照。
+3. 保留时代/类型/色板/光线/世界规则；避免可读招牌文字，必要时用虚构标记。
+4. 画面不出任何文字/标注/箭头/UI/水印（末尾负向串必带全）。
+
+英文骨架（占位符版，本页自动把剧本场景特征填入）：
+Photorealistic live-action film still style, wide 16:9 clean environment concept / location reference image of {SCENE NAME}, {TIME}, {IN/OUT}. {ART STYLE}, believable practical realism, cinematic production design. Show the stable spatial layout clearly: {LAYOUT — entrances, doors, windows, key furniture relative positions, focal point, foreground/midground/background}. Lighting and atmosphere: {LIGHT}. Empty establishing shot, no people, no active drama; consistent world, coherent geography, strong visual anchors so later shots do not drift. Wide 16:9. No text, no labels, no captions, no signage words, no annotations, no arrows, no UI, no title, no logo, no watermark in the image.
+</script>
+
 <script>
 (function(){
   var EXEC=(document.getElementById('execcard').textContent||'').trim();
+  var CHARCARD=(document.getElementById('charcard').textContent||'').trim();
+  var SCENECARD=(document.getElementById('scenecard').textContent||'').trim();
+  // 上游传来的场景与人物总表（供人物三视图/场景图两卡真出图）；无上游时为空数组
+  var upstreamChars=[], upstreamScenes=[];
+  // 锤点图（三视图/场景图）存 IndexedDB，键为 hammer|char|<name> / hammer|scene|<name>；localStorage 只存已生成 key 清单
+  var HAMKEY='sb_hammer_v1';
+  function hamAll(){ try{ return JSON.parse(localStorage.getItem(HAMKEY)||'{}'); }catch(e){ return {}; } }
+  function hamCache(){ return __imgCache['__hammer__']||(__imgCache['__hammer__']={}); }
+  function hamKey(kind,name){ return 'hammer|'+kind+'|'+String(name||''); }
+  function hamGet(kind,name){ return hamCache()[hamKey(kind,name)]; }
+  function hamSet(kind,name,url){ var k=hamKey(kind,name); hamCache()[k]=url; var m=hamAll(); m[k]=1; try{ localStorage.setItem(HAMKEY,JSON.stringify(m)); }catch(e){} return idbPut(k,url); }
+  function hamPreload(){ var m=hamAll(),ks=Object.keys(m),c=hamCache(); return Promise.all(ks.map(function(k){ if(c[k]) return null; return idbGet(k).then(function(u){ if(u)c[k]=u; }); })); }
   // ===== 健壮的 JSON 提取与修复（治“JSON 格式错”的根）=====
   function extractJson(raw){
     var s=String(raw||'');
@@ -410,7 +463,7 @@
         +'<div style="display:flex;gap:8px;flex-wrap:wrap;">'
         +'<button class="hbtn" data-sbact="load" data-i="'+i+'">载入查看</button>'
         +'<button class="hbtn" data-sbact="cg" data-i="'+i+'" style="background:#0e7490;color:#fff;border-color:#0e7490;">🎨 生成CG</button>'
-        +'<button class="hbtn" data-sbact="game" data-i="'+i+'" style="background:#0b7285;color:#fff;border-color:#0b7285;">▶ 导入游戏</button>'
+        +'<button class="hbtn" data-sbact="game" data-i="'+i+'"'+(imgN>0?' style="background:#0b7285;color:#fff;border-color:#0b7285;"':' disabled title="尚未生成 CG，无可入库背景图。先点“生成CG”。" style="opacity:.5;cursor:not-allowed;"')+'>▶ 导入游戏'+(imgN>0?'':'（无CG）')+'</button>'
         +'<button class="hbtn" data-sbact="del" data-i="'+i+'" style="color:#dc2626;border-color:#f3d0d0;">删除</button>'
         +'</div><div class="cgpanel" data-cg="'+i+'" style="display:none;margin-top:10px;"></div></div>';
     }).join('');
@@ -422,7 +475,7 @@
     var i=+b.getAttribute('data-i'), a=sbHistAll(), r=a[i]; if(!r) return;
     var act=b.getAttribute('data-sbact');
     if(act==='del'){ if(!confirm('删除这条分镜记录？')) return; idbDropRec(r); a.splice(i,1); try{localStorage.setItem(HSKEY,JSON.stringify(a));}catch(e){} sbHistRender(); return; }
-    if(act==='load'){ window.__lastBoard=r.board; window.__lastNodes=r.nodes||[]; boundStory=r.boundStory||''; window.__promptRecIdx=i; renderBoard(r.board); renderPrompts(r.board); document.getElementById('histmask').style.display='none'; var bt=document.querySelector('.rtab[data-rt="board"]'); if(bt)bt.click(); return; }
+    if(act==='load'){ window.__lastBoard=r.board; window.__lastNodes=r.nodes||[]; boundStory=r.boundStory||''; window.__promptRecIdx=i; window.__videoPrompts=null; if(r.upstreamChars)upstreamChars=r.upstreamChars; if(r.upstreamScenes)upstreamScenes=r.upstreamScenes; renderBoard(r.board); renderPrompts(r.board); document.getElementById('histmask').style.display='none'; var bt=document.querySelector('.rtab[data-rt="board"]'); if(bt)bt.click(); return; }
     if(act==='game'){
       window.__lastBoard=r.board; window.__lastNodes=r.nodes||[]; boundStory=r.boundStory||'';
       var imgN=recImgCount(r);
@@ -569,18 +622,31 @@
   document.getElementById('orlock').addEventListener('click',function(){ var k=(document.getElementById('orkey').value||'').trim(); if(!k){alert('先填 API Key');return;} if(!getModel()){alert('选其他时请填 slug');return;} try{localStorage.setItem('sb_key',k);localStorage.setItem('sb_model',document.getElementById('ormodel').value);}catch(e){} setLocked(true); });
   document.getElementById('orunlock').addEventListener('click',function(){ setLocked(false); });
   try{ var _k=localStorage.getItem('sb_key'),_m=localStorage.getItem('sb_model'); if(_k)document.getElementById('orkey').value=_k; if(_m){document.getElementById('ormodel').value=_m; if(_m==='__other__')document.getElementById('ormodel_custom').style.display='block';} if(localStorage.getItem('sb_locked')==='1'&&_k)setLocked(true); }catch(e){}
+  // 出图设置（图像模型 + 画风锁点）→ localStorage，实时保存
+  (function(){ var im=document.getElementById('orimg'), st=document.getElementById('orstyle');
+    try{ im.value=localStorage.getItem('sb_img_model')||''; st.value=localStorage.getItem('sb_style')||''; }catch(e){}
+    im.addEventListener('input',function(){ try{ if(this.value.trim())localStorage.setItem('sb_img_model',this.value.trim()); else localStorage.removeItem('sb_img_model'); }catch(e){} });
+    st.addEventListener('input',function(){ try{ if(this.value.trim())localStorage.setItem('sb_style',this.value.trim()); else localStorage.removeItem('sb_style'); }catch(e){} });
+  })();
 
   // ---- 执行卡弹窗 ----
   document.getElementById('opencard').addEventListener('click',function(){ document.getElementById('cardbody').textContent=EXEC; document.getElementById('cardlen').textContent=EXEC.length; document.getElementById('cardtok').textContent='~'+Math.round(EXEC.length/1.6); document.getElementById('cardlen').style.color=EXEC.length>4000?'#dc2626':''; document.getElementById('cardmask').style.display='flex'; });
   document.getElementById('cardclose').addEventListener('click',function(){ document.getElementById('cardmask').style.display='none'; });
   document.getElementById('cardmask').addEventListener('click',function(e){ if(e.target===this)this.style.display='none'; });
+  function showCard(txt){ document.getElementById('cardbody').textContent=txt; document.getElementById('cardlen').textContent=txt.length; document.getElementById('cardtok').textContent='~'+Math.round(txt.length/1.6); document.getElementById('cardlen').style.color=txt.length>4000?'#dc2626':''; document.getElementById('cardmask').style.display='flex'; }
+  document.getElementById('opencharcard').addEventListener('click',function(){ showCard(CHARCARD); });
+  document.getElementById('openscenecard').addEventListener('click',function(){ showCard(SCENECARD); });
 
   // ---- 结果页签 ----
+  var RTABS=['char','scene','board','prompt','video','storyboard'];
   document.querySelectorAll('.rtab').forEach(function(b){ b.addEventListener('click',function(){
     document.querySelectorAll('.rtab').forEach(function(x){x.classList.remove('on');}); this.classList.add('on');
     var rt=this.getAttribute('data-rt');
-    document.getElementById('pane-board').style.display=rt==='board'?'':'none';
-    document.getElementById('pane-prompt').style.display=rt==='prompt'?'':'none';
+    RTABS.forEach(function(k){ var el=document.getElementById('pane-'+k); if(el) el.style.display=(k===rt)?'':'none'; });
+    if(rt==='char') renderCharSheets();
+    else if(rt==='scene') renderSceneImages();
+    else if(rt==='video') renderVideoPrompts();
+    else if(rt==='storyboard') renderStoryboard();
   }); });
 
   // ---- 日志 ----
@@ -673,8 +739,10 @@
       var shotCount=0; (parsed.data.beats||[]).forEach(function(bt){ shotCount+=(bt.shots||[]).length; });
       var sbTitle=(parsed.data.grammar||'')+(boundStory?('·'+boundStory):'');
       sbHistSave({ time:new Date().toLocaleString('zh-CN',{hour12:false}), title:(boundStory||parsed.data.grammar||'分镜'), boundStory:boundStory||'',
-        shots:shotCount, sceneCount:pickedNodes.length, board:parsed.data, nodes:pickedNodes });
+        shots:shotCount, sceneCount:pickedNodes.length, board:parsed.data, nodes:pickedNodes,
+        upstreamChars:(upstreamChars&&upstreamChars.length?upstreamChars:undefined), upstreamScenes:(upstreamScenes&&upstreamScenes.length?upstreamScenes:undefined) });
       window.__promptRecIdx=0;   // 刚 sbHistSave unshift 到开头，当前 prompts 面板对应记录 0
+      window.__videoPrompts=null; // 新分镜，清空旧视频提示词
       logLine('\n▸ 分镜接收完成，渲染…'); renderBoard(parsed.data); renderPrompts(parsed.data);
       progSet(100,'完成 ✓'); logLine('✓ 完成。分镜表见右侧，分镜提示词切右上页签。'); done();
     }
@@ -771,6 +839,147 @@
   function promptRec(){ var a=sbHistAll(); var rec=a[window.__promptRecIdx]; return {a:a,rec:rec}; }
   function shotBar(no){ return document.querySelector('#pane-prompt .cgbar[data-bar="'+cssEsc(no)+'"]'); }
   function cssEsc(s){ return String(s).replace(/["\\]/g,'\\$&'); }
+
+  // ================= 人物三视图 / 场景图（视觉锤点，真出图） =================
+  // 全片统一画风：优先用用户在“图像画风”里填的 sb_style，否则用一句安全默认
+  function artStyle(){ var s=(localStorage.getItem('sb_style')||'').trim(); return s||'cinematic, low-saturation muted palette, naturalistic lighting, film grain, grounded realism'; }
+  function fill(tpl,map){ return tpl.replace(/\{([^}]+)\}/g,function(m,k){ var kk=k.split(/\s|\//)[0].trim(); return (map[k]!=null?map[k]:(map[kk]!=null?map[kk]:'')); }).replace(/ ,/g,',').replace(/,\s*,/g,',').replace(/,\s*\./g,'.'); }
+  // 抽出骨架末尾那段英文提示词模板（去掉字头中文说明）
+  function engTpl(card){ var i=card.indexOf('Photorealistic'); return i>=0?card.slice(i):card; }
+  function charPrompt(c){
+    var states=Array.isArray(c.states)?c.states:[];
+    var st=states[0]||{}; var look=st.look||c.look||c.desc||'';
+    var ident=[c.name,(c.desc||c.role)].filter(Boolean).join(', ');
+    var map={ 'IDENTITY':ident, 'HAIR':'', 'OUTFIT':look, 'ART STYLE':artStyle(), 'FACE':(c.temperament||'composed expression') };
+    return fill(engTpl(CHARCARD),map);
+  }
+  function scenePrompt(s){
+    var map={ 'SCENE NAME':(s.name||''), 'TIME':(s.time||''), 'IN/OUT':(s.inout||''), 'ART STYLE':artStyle(), 'LAYOUT':(s.layout||s.look||''), 'LIGHT':(s.light||s.look||'') };
+    return fill(engTpl(SCENECARD),map);
+  }
+  // 通用锤点卡片渲染：kind=char|scene
+  function renderHammer(paneId,kind,items,promptFn,labelFn){
+    var pane=document.getElementById(paneId); if(!pane) return;
+    if(!items||!items.length){ pane.innerHTML='<div class="empty">（本次没有来自上游的'+(kind==='char'?'人物':'场景')+'总表。从第一个 H5 用“生成分镜”整片送来时会带上，开了剧本实例化就有）</div>'; return; }
+    hamPreload().then(function(){
+      var doneN=items.filter(function(it){ return hamGet(kind,labelFn(it)); }).length;
+      var h='<div style="margin-bottom:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">'
+        +'<button class="hbtn" id="ham_all_'+kind+'" style="background:#0e7490;color:#fff;border-color:#0e7490;">✨ 生成全部'+(kind==='char'?'三视图':'场景图')+'</button>'
+        +'<span style="font-size:11px;color:#8a92a6;">共 '+items.length+' 个，已生成 '+doneN+'。作全片视觉锤点，分镜出图时可拿它做参考图锁一致性。</span></div>';
+      h+='<div style="display:flex;flex-direction:column;gap:10px;">'+items.map(function(it,idx){
+        var name=labelFn(it), has=hamGet(kind,name), pr=promptFn(it);
+        return '<div class="shotrow">'
+          +'<div class="pinfo"><b>'+esc(kind==='char'?(it.name||name):(it.name||name))+'</b>'
+            +(kind==='char'?'<span style="font-size:11px;color:#8a92a6;">　'+esc(it.role||'')+'</span>':'<span style="font-size:11px;color:#8a92a6;">　'+esc((it.time||'')+(it.inout?(' · '+it.inout):''))+'</span>')
+            +'<pre>'+esc(pr)+'</pre>'
+            +'<div style="margin-top:8px;"><button class="hbtn'+(has?' done':'')+'" data-hamone="'+kind+'" data-name="'+sbEsc(name)+'"'+(has?' disabled':'')+' style="font-size:12px;'+(has?'':'background:#0e7490;color:#fff;border-color:#0e7490;')+'">'+(has?'✓ 已生成':'🎨 生成')+'</button></div>'
+          +'</div>'
+          +'<div class="shotcard"><div class="thumb" data-hamthumb="'+kind+'|'+sbEsc(name)+'">'+(has?'<img src="'+has+'">':esc(name)+'·待生成')+'</div>'
+            +'<div class="cgbar" data-hambar="'+kind+'|'+sbEsc(name)+'"><i></i></div>'
+            +(has?'<button class="hbtn" data-hamone="'+kind+'" data-name="'+sbEsc(name)+'" style="font-size:11px;padding:2px 8px;margin-top:4px;">重新生成</button>':'')
+          +'</div></div>';
+      }).join('')+'</div>';
+      pane.innerHTML=h;
+      var allBtn=document.getElementById('ham_all_'+kind); if(allBtn) allBtn.addEventListener('click',function(){ hamGenAll(kind,items,promptFn,labelFn,paneId); });
+      [].forEach.call(pane.querySelectorAll('[data-hamone]'),function(btn){ btn.addEventListener('click',function(){ hamGenOne(kind,btn.getAttribute('data-name'),items,promptFn,labelFn,paneId); }); });
+    });
+  }
+  function hamBar(kind,name){ return document.querySelector('[data-hambar="'+cssEsc(kind+'|'+name)+'"]'); }
+  function hamGenOne(kind,name,items,promptFn,labelFn,paneId,cb){
+    var it=items.filter(function(x){return labelFn(x)===name;})[0]; if(!it){ if(cb)cb(new Error('no item')); return; }
+    var prompt=promptFn(it);
+    var bar=hamBar(kind,name), barI=bar&&bar.querySelector('i');
+    var btns=[].slice.call(document.querySelectorAll('[data-hamone="'+kind+'"][data-name="'+cssEsc(name)+'"]'));
+    btns.forEach(function(b){ b.disabled=true; b.textContent='生成中…'; b.classList.remove('done'); });
+    if(bar) bar.style.display='block'; var prog=8; if(barI)barI.style.width='8%';
+    var timer=setInterval(function(){ prog=Math.min(90,prog+Math.random()*12); if(barI)barI.style.width=prog+'%'; },300);
+    sbGenImage(prompt,function(err,url){
+      clearInterval(timer);
+      if(err){ if(barI)barI.style.width='0%'; if(bar)bar.style.display='none'; alert('生成失败：'+err.message); if(paneId)renderHammerRefresh(paneId); if(cb)cb(err); return; }
+      if(barI)barI.style.width='100%';
+      hamSet(kind,name,url).then(function(){ setTimeout(function(){ if(paneId)renderHammerRefresh(paneId); if(cb)cb(null); },200); });
+    });
+  }
+  function hamGenAll(kind,items,promptFn,labelFn,paneId){
+    var q=items.map(labelFn); var btn=document.getElementById('ham_all_'+kind); if(btn){ btn.disabled=true; btn.textContent='生成中…'; }
+    (function next(){ if(!q.length){ if(paneId)renderHammerRefresh(paneId); return; } var name=q.shift(); hamGenOne(kind,name,items,promptFn,labelFn,paneId,function(){ next(); }); })();
+  }
+  function renderHammerRefresh(paneId){ if(paneId==='pane-char') renderCharSheets(); else if(paneId==='pane-scene') renderSceneImages(); }
+  function currentChars(){ var b=window.__lastBoard; var fromBoard=(b&&b.assets&&Array.isArray(b.assets.characters))?b.assets.characters:[]; return (upstreamChars&&upstreamChars.length)?upstreamChars:fromBoard; }
+  function currentScenes(){ var b=window.__lastBoard; var fromBoard=(b&&b.assets&&Array.isArray(b.assets.scenes))?b.assets.scenes:[]; return (upstreamScenes&&upstreamScenes.length)?upstreamScenes:fromBoard; }
+  function renderCharSheets(){ renderHammer('pane-char','char',currentChars(),charPrompt,function(c){return c.name||c.id||'';}); }
+  function renderSceneImages(){ renderHammer('pane-scene','scene',currentScenes(),scenePrompt,function(s){return s.name||s.id||'';}); }
+
+  // ================= 视频提示词（默认不生成、不占 token，按需） =================
+  function renderVideoPrompts(){
+    var pane=document.getElementById('pane-video');
+    var b=window.__lastBoard, ps=(b&&Array.isArray(b.prompts))?b.prompts:[];
+    if(!ps.length){ pane.innerHTML='<div class="empty">（先生成分镜，才能把镜头落实成视频提示词）</div>'; return; }
+    var vp=window.__videoPrompts;
+    if(!vp){
+      pane.innerHTML='<div style="padding:24px 18px;text-align:center;">'
+        +'<div style="font-size:13px;color:#6b7488;line-height:1.9;margin-bottom:16px;">视频提示词默认不生成、不占 token。<br>镜头 → 视频是真正“带台词的镜头”发生的地方：把每镜的分镜 img + 剧本台词落实成一条完整视频生成脚本。<br>只有你真想做视频实验时才点它。</div>'
+        +'<button class="btn pri" id="genVideoPrompts" style="max-width:280px;margin:0 auto;height:46px;">✨ 生成视频提示词（'+ps.length+' 镜）</button></div>';
+      var gb=document.getElementById('genVideoPrompts'); if(gb) gb.addEventListener('click',function(){ buildVideoPrompts(); });
+      return;
+    }
+    var h='<div style="margin-bottom:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><button class="hbtn" id="copyvid">复制全部视频提示词</button><button class="hbtn" id="regenvid">重新生成</button><span style="font-size:11px;color:#8a92a6;">共 '+vp.length+' 镜。未接视频生成模型，仅产出可直接投嗂的脚本。</span></div>';
+    h+=vp.map(function(v){ return '<div class="pcard"><b>【镜头'+esc(v.no)+'】</b><pre>'+esc(v.script)+'</pre></div>'; }).join('');
+    pane.innerHTML=h;
+    var cv=document.getElementById('copyvid'); if(cv) cv.addEventListener('click',function(){ try{ navigator.clipboard.writeText(vp.map(function(v){return '【镜头'+v.no+'】\n'+v.script;}).join('\n\n')); this.textContent='已复制'; var b=this; setTimeout(function(){b.textContent='复制全部视频提示词';},1200);}catch(e){} });
+    var rv=document.getElementById('regenvid'); if(rv) rv.addEventListener('click',function(){ buildVideoPrompts(); });
+  }
+  // 把分镜 video 段 + 源剧本台词 落实成每镜完整视频生成脚本（纯本地拼装，不调模型、不烧 token）
+  function buildVideoPrompts(){
+    var b=window.__lastBoard, ps=(b&&Array.isArray(b.prompts))?b.prompts:[]; if(!ps.length) return;
+    var nodes=window.__lastNodes||[];
+    // 把各节点台词按镜均匀分配（与导入游戏同构），供镜头取本镜大致对应的台词
+    var lines=[]; nodes.forEach(function(n){ var body=String(n.script||n.text||'').trim(); if(body) body.split(/\n+/).forEach(function(l){ l=l.trim(); if(l)lines.push(l); }); });
+    var per=lines.length&&ps.length?Math.ceil(lines.length/ps.length):0;
+    var pal=(b&&b.palette&&Array.isArray(b.palette.colors))?b.palette.colors.map(function(c){return c.hex;}).filter(Boolean).join(' '):'';
+    var vp=ps.map(function(p,idx){
+      var dlg=per?lines.slice(idx*per,(idx+1)*per).join(' / '):'';
+      var base=(p.video||p.img||p.text||'').trim();
+      var s='不要出现BGM，不要出现字幕，保留音效。\n'
+        +(base?base:('画面：'+(p.img||'')))+'\n'
+        +(pal?('色板锁定：'+pal+'\n'):'')
+        +(dlg?('台词（人物开口说、不烧字幕条，口型与情绪对得上）：'+dlg+'\n'):'无台词，靠动作与环境声叙事。\n')
+        +'机位：默认固定，动的是人物与环境；16:9。';
+      return { no:p.no, script:s };
+    });
+    window.__videoPrompts=vp; renderVideoPrompts();
+  }
+
+  // ================= 故事版（把已生成分镜预览图拼成宫格） =================
+  function renderStoryboard(){
+    var pane=document.getElementById('pane-storyboard');
+    var a=sbHistAll(); var rec=a[window.__promptRecIdx]||null;
+    var b=window.__lastBoard, ps=(b&&Array.isArray(b.prompts))?b.prompts:[];
+    if(!ps.length){ pane.innerHTML='<div class="empty">（先生成分镜，再生成 CG 预览图，故事版才能拼）</div>'; return; }
+    function draw(images){
+      var genN=ps.filter(function(p){return images[String(p.no)];}).length;
+      var title=(rec&&rec.title)||(b&&b.grammar)||'分镜';
+      var h='<div style="margin-bottom:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">'
+        +'<span style="font-size:13px;font-weight:700;color:#0e7490;">🎬 故事版：'+esc(title)+'</span>'
+        +'<span style="font-size:11px;color:#8a92a6;">共 '+ps.length+' 镜，已出图 '+genN+'。底下为分镜字段摘要。</span>';
+      if(genN<ps.length) h+='<span style="font-size:11px;color:#c2860b;">→ 去“分镜提示词”页把未出图的镜头生成，故事版会更完整。</span>';
+      h+='</div>';
+      h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">'+ps.map(function(p){
+        var no=String(p.no), has=images[no];
+        var beat=(p.desc||'').slice(0,40);
+        return '<div style="border:1px solid #eef0f4;border-radius:10px;overflow:hidden;background:#fafbfc;">'
+          +'<div style="position:relative;width:100%;aspect-ratio:16/9;background:#0b0f14;display:flex;align-items:center;justify-content:center;">'
+          +(has?'<img src="'+has+'" style="width:100%;height:100%;object-fit:cover;">':'<span style="color:#5a6472;font-size:12px;">镜'+esc(no)+'·待出图</span>')
+          +'<span style="position:absolute;left:6px;top:6px;background:rgba(11,15,20,.72);color:#fff;font-size:11px;font-weight:700;padding:1px 7px;border-radius:6px;">镜 '+esc(no)+'</span></div>'
+          +'<div style="padding:6px 8px;font-size:11px;color:#6b7488;line-height:1.5;">'+esc((p.size||'')+(p.lens?(' · '+p.lens):''))+(beat?'<br>'+esc(beat):'')+'</div>'
+          +'</div>';
+      }).join('')+'</div>';
+      pane.innerHTML=h;
+    }
+    if(rec){ loadRecImages(rec).then(function(imgs){ draw(imgs||{}); }); }
+    else { draw({}); }
+  }
+
   // 生成单个镜头 CG（带进度条，写回当前记录）
   function genOneShot(no,cb){
     var pr=promptRec(); if(!pr.rec){ alert('未找到对应记录，请先生成或从记录载入。'); if(cb)cb(new Error('no rec')); return; }
@@ -872,6 +1081,8 @@
       var pay=JSON.parse(inc);
       if(pay && Array.isArray(pay.nodes) && pay.nodes.length){
         boundStory=pay.from||'';   // 绑定的故事剧本标题（空=用户单传）
+        upstreamChars=Array.isArray(pay.characters)?pay.characters:[];   // 人物总表（供三视图卡）
+        upstreamScenes=Array.isArray(pay.scenes)?pay.scenes:[];          // 场景总表（供场景图卡）
         setSrc('json');
         document.getElementById('jsonin').value=JSON.stringify({nodes:pay.nodes}, null, 0);
         document.getElementById('jsonin').dispatchEvent(new Event('input'));
