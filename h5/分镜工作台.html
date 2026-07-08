@@ -1159,8 +1159,8 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
       var lab=sanitizeLabel(n.id), gameLab=(idx===0?'start':lab);
       out.push(''); out.push('@label '+gameLab);
       if(n.loc) out.push('：：【'+n.loc+(n.time?' · '+n.time:'')+'】');
-      // 台词：把 script/text 拆成多行
-      var body=String(n.script||n.text||'').trim();
+      // 台词：把 script/text 拆成多行（兼容上游传来的字面 \\n 两字符换行，否则会挤成一大块）
+      var body=String(n.script||n.text||'').replace(/\\r\\n|\\n|\\r/g,'\n').trim();
       if(body){ body.split(/\n+/).forEach(function(ln){ ln=ln.trim(); if(!ln) return;
         var m=ln.match(/^([^\uff1a:]{1,12})[\uff1a:]\s*(.+)$/);
         out.push(m&&m[2] ? (m[1].trim()+'：：'+m[2].trim()) : ('：：'+ln));
@@ -1186,6 +1186,16 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
       alert('⚠ 检测到 '+dangling.length+' 个跳转目标未包含在本次分镜：\n'+
         dangling.map(function(t){ return '• '+t+'（由「'+(referenced[t]||'?')+'」指向）'; }).join('\n')+
         '\n\n已自动为它们补上占位结局节点，游戏不会跳空。\n建议：回到场次选择处把这些场次也勾选进分镜，再重新导入。');
+    }
+    // ★ 导入前自检：自环跳转（节点 next 指向自己）会让游戏 runFrom 无限循环卡死。检出就提醒（游戏侧也有 guard 兜底，但源头拦更好）。
+    var selfLoops=[];
+    nodes.forEach(function(n,idx){
+      var gl=(idx===0?'start':sanitizeLabel(n.id));
+      var nx=Array.isArray(n.next)?n.next.filter(function(x){return x&&x.to;}):[];
+      nx.forEach(function(x){ if(sanitizeLabel(x.to)===gl) selfLoops.push(n.id||gl); });
+    });
+    if(selfLoops.length){
+      alert('⚠ 检测到 '+selfLoops.length+' 个节点的跳转指向自己（自环）：'+selfLoops.join('、')+'\n\n这会让游戏卡住。建议回“生成分镜”重抽或检查上游剧本的 next。已尽量导入，游戏侧也会自动中止死循环。');
     }
     var text=out.join('\n');
     var firstLab=sanitizeLabel(nodes[0].id);
