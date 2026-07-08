@@ -137,7 +137,7 @@
       </div>
 
       <div class="btns">
-        <button class="btn pri" id="gen">✦ 生成分镜</button>
+        <button class="btn pri" id="gen">✦ 一键生成</button>
         <button class="btn stop" id="stopgen">■ 停止</button>
       </div>
       <div id="progbox">
@@ -147,7 +147,7 @@
         </div>
         <div style="height:10px;background:#eef1f6;border-radius:999px;overflow:hidden;"><div id="progbar"></div></div>
       </div>
-      <div class="hint">先在下方「对接模型」填 Key、选模型并锁定。分镜规则内嵌于本页执行卡，点顶部按钮可查看。</div>
+      <div class="hint">一键生成 = 分镜表/分镜提示词 → 人物三视图 → 场景图 → CG分镜（锤点驱动）→ 故事版 一整套跑完，进度条代表整套进度。先在下方「对接模型」填 Key（文本+图像都用它）并锁定。分镜规则内嵌于本页执行卡，点顶部按钮可查看。</div>
 
       <!-- 对接模型 -->
       <div style="margin-top:20px;border-top:1px solid #eef0f4;padding-top:16px;">
@@ -706,6 +706,8 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
   function progSet(pct,stage){ pct=Math.max(0,Math.min(100,Math.round(pct)));
     document.getElementById('progbar').style.width=pct+'%'; document.getElementById('progpct').textContent=pct+'%';
     if(stage) document.getElementById('progstage').textContent=stage; }
+  // 一键生成分阶段：LLM 占 0–30%，人物三视图 30–45%，场景图 45–58%，CG 分镜 58–95%，故事版 95–100%
+  function progScaled(local,lo,hi,stage){ progSet(lo+(hi-lo)*Math.max(0,Math.min(1,local/100)),stage); }
 
   var busy=false, gAbort=null, gStopped=false;
   document.getElementById('stopgen').addEventListener('click',function(){ if(!busy)return; gStopped=true; this.style.display='none'; try{ if(gAbort)gAbort.abort(); }catch(e){} });
@@ -717,15 +719,16 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
     var camNote=document.getElementById('camstyle').value==='free'?'允许必要动镜（但仍以固定为主，动镜须轻/短/有落点）':'固定镜头为主，运镜栏默认写“固定”';
     busy=true; gStopped=false; var btn=document.getElementById('gen'), old=btn.textContent; btn.textContent='生成中…'; btn.disabled=true;
     document.getElementById('stopgen').style.display='block'; document.getElementById('progbar').style.background='linear-gradient(90deg,#0891b2,#7c3aed)';
-    progShow(); progSet(4,'准备请求…');
-    logReset(); logLine('▸ 输入：'+(srcMode==='text'?'手填一场戏':'剧本 JSON '+(scene.split('场次 ').length-1)+' 个场次'));
+    progShow(); progScaled(13,0,30,'准备请求…');
+    logReset(); logLine('▸ 一键生成：分镜→三视图→场景图→CG→故事版');
+    logLine('▸ 输入：'+(srcMode==='text'?'手填一场戏':'剧本 JSON '+(scene.split('场次 ').length-1)+' 个场次'));
     logLine('▸ 镜头风格：'+camNote);
     logLine('▸ 调用 '+getModel()+'，按导演分镜执行卡出分镜…\n──────────────────────────────');
     var key=(document.getElementById('orkey').value||'').trim();
     var user=scene+'\n\n【镜头风格约束】'+camNote+'\n\n请按导演分镜执行卡出分镜：先诊断戏剧问题(内部)、挑导演语法、锚定全场相机、逐镜填表、再逐镜出分镜提示词。只返回 ===JSON=== 之后的 JSON。';
     logHead=logEl.textContent;
     var acc='', JSON_EXP=6000;
-    progSet(10,'模型输出中…');
+    progScaled(33,0,30,'模型输出中…');
     gAbort=new AbortController();
     fetch('https://openrouter.ai/api/v1/chat/completions',{method:'POST',signal:gAbort.signal,headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json'},
       body:JSON.stringify({model:getModel(),temperature:0.7,max_tokens:32000,stream:true,messages:[{role:'system',content:SYS+'\n\n'+EXEC},{role:'user',content:user}]})
@@ -736,7 +739,7 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
       function pump(){ return rd.read().then(function(x){ if(x.done){finish();return;}
         sse+=dec.decode(x.value,{stream:true}); var ls=sse.split('\n'); sse=ls.pop();
         ls.forEach(function(ln){ ln=ln.trim(); if(ln.slice(0,5)!=='data:')return; var p=ln.slice(5).trim(); if(p==='[DONE]')return;
-          try{ var jj=JSON.parse(p); var dl=jj.choices&&jj.choices[0]&&jj.choices[0].delta&&jj.choices[0].delta.content; if(dl){ acc+=dl; var i=acc.indexOf('===JSON==='); if(i>=0){ logStream(acc.slice(0,i)); progSet(55+40*Math.min(1,(acc.length-i)/JSON_EXP),'接收分镜 JSON…'); } else { logStream(acc); progSet(10+45*Math.min(1,acc.length/1200),'模型输出中…'); } } }catch(e){}
+          try{ var jj=JSON.parse(p); var dl=jj.choices&&jj.choices[0]&&jj.choices[0].delta&&jj.choices[0].delta.content; if(dl){ acc+=dl; var i=acc.indexOf('===JSON==='); if(i>=0){ logStream(acc.slice(0,i)); progScaled(55+40*Math.min(1,(acc.length-i)/JSON_EXP),0,30,'接收分镜 JSON…'); } else { logStream(acc); progScaled(10+45*Math.min(1,acc.length/1200),0,30,'模型输出中…'); } } }catch(e){}
         }); return pump();
       }); }
       return pump();
@@ -747,7 +750,7 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
 
     function finish(){
       if(gStopped){ done(); return; }
-      progSet(92,'解析渲染…');
+      progScaled(95,0,30,'解析渲染…');
       var parsed=extractJson(acc);
       if(!parsed.ok){
         progSet(100,'失败'); document.getElementById('progbar').style.background='#ef4444';
@@ -768,9 +771,77 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
         upstreamChars:(upstreamChars&&upstreamChars.length?upstreamChars:undefined), upstreamScenes:(upstreamScenes&&upstreamScenes.length?upstreamScenes:undefined) });
       window.__promptRecIdx=0;   // 刚 sbHistSave unshift 到开头，当前 prompts 面板对应记录 0
       logLine('\n▸ 分镜接收完成，渲染…'); renderBoard(parsed.data); renderPrompts(parsed.data);
-      // 生成后默认停在分镜表；故事版（含衔接自检）在最后一个页签，按需手动切去看
       var bdtab=document.querySelector('.rtab[data-rt="board"]'); if(bdtab) bdtab.click();
-      progSet(100,'完成 ✓'); logLine('✓ 完成。分镜表见右侧；分镜提示词、故事版（含衔接自检）切右上页签。'); done();
+      // → 继续一键生成剩余阶段：三视图→场景图→CG→故事版
+      runImagePipeline();
+    }
+    // ===== 一键生成图像流水线（人物三视图→场景图→CG分镜→故事版）=====
+    function runImagePipeline(){
+      var chars=currentChars(), scenes=currentScenes();
+      logLine('\n▸ 开始出图：人物三视图 '+chars.length+' 个、场景图 '+scenes.length+' 个、CG 分镜。图生图锤点驱动。');
+      hamPreload().then(function(){
+        // 阶段 1：人物三视图 30–45%
+        genHammerSeq('char',chars,function(c){return c.name||c.id||'';},charPrompt,30,45,'人物三视图',function(){
+          if(gStopped) return pipelineDone(true);
+          // 阶段 2：场景图 45–58%
+          genHammerSeq('scene',scenes,function(s){return s.name||s.id||'';},scenePrompt,45,58,'场景图',function(){
+            if(gStopped) return pipelineDone(true);
+            // 阶段 3：CG 分镜 58–95%（锤点驱动）
+            genCgSeq(58,95,function(){
+              if(gStopped) return pipelineDone(true);
+              // 阶段 4：故事版
+              progScaled(50,95,100,'拼故事版…'); renderStoryboard(); sbHistRender&&sbHistRender();
+              pipelineDone(false);
+            });
+          });
+        });
+      });
+    }
+    // 逐个生成锤点图（人物/场景），已有图跳过；lo→hi 区间内推进
+    function genHammerSeq(kind,items,labelFn,promptFn,lo,hi,label,cb){
+      if(!items||!items.length){ progScaled(100,lo,hi,label+'（无）'); cb(); return; }
+      var todo=items.filter(function(it){ return !hamGet(kind,labelFn(it)); });
+      if(!todo.length){ logLine('✓ '+label+'：已全部存在，跳过'); progScaled(100,lo,hi,label+'✓'); cb(); return; }
+      var total=todo.length, done=0;
+      (function next(){
+        if(gStopped){ cb(); return; }
+        if(!todo.length){ logLine('✓ '+label+'：完成 '+done+'/'+total); renderCharSheets&&(kind==='char'&&renderCharSheets()); (kind==='scene'&&renderSceneImages&&renderSceneImages()); cb(); return; }
+        var it=todo.shift(), name=labelFn(it);
+        progScaled(done/total*100,lo,hi,label+' '+(done+1)+'/'+total+'：'+name);
+        sbGenImage(promptFn(it),function(err,url){
+          done++;
+          if(err){ logLine('  ✗ '+label+' '+name+'：'+err.message); }
+          else { hamSet(kind,name,url).then(function(){ next(); }); return; }
+          next();
+        });
+      })();
+    }
+    // 逐镜生成 CG（锤点驱动），已有图跳过
+    function genCgSeq(lo,hi,cb){
+      var pr=promptRec(); if(!pr.rec){ cb(); return; }
+      var ps=(pr.rec.board&&pr.rec.board.prompts)||[];
+      var images=getRecImages(pr.rec);
+      var todo=ps.map(function(p){return String(p.no);}).filter(function(no){ return !images[no]; });
+      if(!todo.length){ logLine('✓ CG 分镜：已全部存在，跳过'); progScaled(100,lo,hi,'CG 分镜✓'); cb(); return; }
+      var total=todo.length, done=0;
+      (function next(){
+        if(gStopped){ cb(); return; }
+        if(!todo.length){ logLine('✓ CG 分镜：完成 '+done+'/'+total); renderPrompts(pr.rec.board); cb(); return; }
+        var no=todo.shift();
+        progScaled(done/total*100,lo,hi,'CG 分镜 '+(done+1)+'/'+total+'：镜'+no);
+        var p=ps.filter(function(x){return String(x.no)===String(no);})[0];
+        var prompt=promptImgText(no,p.img||'',p.video||p.text||'');
+        sbGenImage(prompt,function(err,url){
+          done++;
+          if(err){ logLine('  ✗ CG 镜'+no+'：'+err.message); next(); return; }
+          setRecImage(pr.a,pr.rec,no,url).then(function(){ next(); });
+        }, refsForShot(pr.rec.board,no));
+      })();
+    }
+    function pipelineDone(stopped){
+      if(stopped){ progSet(100,'已停止'); document.getElementById('progbar').style.background='#94a3b8'; logLine('\n⏹ 已手动停止。已完成部分可在各页签查看。'); }
+      else { progSet(100,'完成 ✓'); logLine('\n✓ 一键生成完成：三视图/场景图/分镜表/分镜提示词(含CG)/故事版 均已就绪，切页签查看。'); }
+      done();
     }
     function done(){ busy=false; gAbort=null; document.getElementById('stopgen').style.display='none'; btn.textContent=old; btn.disabled=false; }
   });
