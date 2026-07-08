@@ -428,6 +428,8 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
   function idbOpen(){ return new Promise(function(res,rej){ if(IDB.db){res(IDB.db);return;} var q=indexedDB.open(IDB.name,1); q.onupgradeneeded=function(){ if(!q.result.objectStoreNames.contains(IDB.store)) q.result.createObjectStore(IDB.store); }; q.onsuccess=function(){ IDB.db=q.result; res(IDB.db); }; q.onerror=function(){ rej(q.error); }; }); }
   function idbPut(k,v){ return idbOpen().then(function(db){ return new Promise(function(res,rej){ var t=db.transaction(IDB.store,'readwrite'); t.objectStore(IDB.store).put(v,k); t.oncomplete=function(){res();}; t.onerror=function(){rej(t.error);}; }); }); }
   function idbGet(k){ return idbOpen().then(function(db){ return new Promise(function(res,rej){ var t=db.transaction(IDB.store,'readonly'),rq=t.objectStore(IDB.store).get(k); rq.onsuccess=function(){res(rq.result==null?null:rq.result);}; rq.onerror=function(){rej(rq.error);}; }); }); }
+  // 按前缀清除（用于清临时 vnimg|* 键）
+  function idbClearPrefix(prefix){ return idbOpen().then(function(db){ return new Promise(function(res){ var t=db.transaction(IDB.store,'readwrite'),st=t.objectStore(IDB.store),cur=st.openCursor(); cur.onsuccess=function(e){ var c=e.target.result; if(c){ if(String(c.key).indexOf(prefix)===0) st.delete(c.key); c.continue(); } }; t.oncomplete=function(){res();}; t.onerror=function(){res();}; }); }); }
   function idbDel(k){ return idbOpen().then(function(db){ return new Promise(function(res){ var t=db.transaction(IDB.store,'readwrite'); t.objectStore(IDB.store).delete(k); t.oncomplete=function(){res();}; t.onerror=function(){res();}; }); }); }
   // 内存缓存（供同步渲染读）：{recId:{no:dataUrl}}；__imgLoaded 标记该记录是否已从 IDB 预热
   var __imgCache={}, __imgLoaded={};
@@ -1189,10 +1191,20 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
     var firstLab=sanitizeLabel(nodes[0].id);
     if(firstLab!=='start'){ text=text.replace(new RegExp('=> '+firstLab+'(\\b|$)','g'),'=> start').replace(new RegExp('@jump '+firstLab+'(\\b|$)','g'),'@jump start'); }
     var gameName=boundStory || ((board&&board.grammar)?'分镜：'+board.grammar:'分镜工作台剧本');
-    var nImg=Object.keys(bgImages).length;
-    var payload={ name:gameName, note:(boundStory?'绑定故事：'+boundStory:'分镜工作台单传')+'（含台词+分镜'+(nImg?'+'+nImg+'张CG':'提示词')+'）', script:text, bgPrompts:bgPrompts, bgImages:(nImg?bgImages:undefined), palette:(board&&board.palette)||null };
-    try{ localStorage.setItem('vn_incoming_script', JSON.stringify(payload)); }catch(e){ alert('写入失败（本地存储，可能图片太大超配额）。'); return; }
-    window.open('互动影视游戏.html','_blank');
+    var labels=Object.keys(bgImages);
+    var nImg=labels.length;
+    // ★ 图片不再塞进 localStorage（会超配额）。两个 HTML 同源，IndexedDB 共享：
+    //   把图写进共享库 sb_cg 的临时键 vnimg|<label>，payload 只传 label 清单（bgImageLabels），游戏侧再从 IDB 读图。
+    var payload={ name:gameName, note:(boundStory?'绑定故事：'+boundStory:'分镜工作台单传')+'（含台词+分镜'+(nImg?'+'+nImg+'张CG':'提示词')+'）', script:text, bgPrompts:bgPrompts, bgImageLabels:(nImg?labels:undefined), palette:(board&&board.palette)||null };
+    function writeAndOpen(){
+      try{ localStorage.setItem('vn_incoming_script', JSON.stringify(payload)); }catch(e){ alert('写入失败（剧本文本过大）。'); return; }
+      window.open('互动影视游戏.html','_blank');
+    }
+    if(!nImg){ writeAndOpen(); return; }
+    // 先清掉上一次的临时 vnimg|* 键，再写本次（避免旧图残留）
+    idbClearPrefix('vnimg|').then(function(){
+      return Promise.all(labels.map(function(lab){ return idbPut('vnimg|'+lab, bgImages[lab]); }));
+    }).then(function(){ writeAndOpen(); }).catch(function(e){ alert('写入图片到本地库失败：'+(e&&e.message||e)); });
   }
 
   // ---- 接收从「故事节奏验证」H5 一键送来的全片剧本 ----
