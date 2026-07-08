@@ -264,7 +264,7 @@
   · 镜头数手感：情绪戏3–6镜，动作/信息量大8–12。宁可每镜有目的，不凑数。
   · 空间连贯（重要，治文字分镜最易翻车的"站位波动"）：同一场戏先在心里定一条主轴线（180°线），全场机位默认在轴线同侧，人物左右关系全场一致（谁在画框左、谁在右，跨镜别乱跳）。每镜必须写清：机位在轴线哪侧、主体在画框位置(左/中/右/前景/背景)、与上一镜的空间关系(同轴延续/反打/切近切远/明确越轴且给理由)。越轴要么不做，要么用一个中性过渡镜交代。相邻两镜的空间必须能对上——上一镜某人在画框右，下一镜他不该无理由跳到左。
 第四步 出分镜提示词（一镜两用：静态帧出图 img ＋ 可选视频扩展 video）：每镜给两段。
-① img（静态帧出图提示词，视觉小说背景图/分镜图直接用）：一句画风锁点（复用相机质感＋主色板色值＋该段影调微调）＋场景@id复述＋人物@id复述及此刻状态/表情＋景别＋焦段＋机位＋构图＋光线色调（落到色值），末尾固定加“16:9，无画面文字，无水印”。这是一张定格画面的描述，不写运镜、不写时长。
+① img（静态帧出图提示词，视觉小说背景图/分镜图直接用）：一句画风锁点（复用相机质感＋主色板色值＋该段影调微调）＋场景@id复述＋人物@id复述及此刻状态/表情＋景别＋焦段＋机位＋构图＋光线色调（落到色值），末尾固定加“16:9, no text, no subtitles, no captions, no words, no watermark（画面无任何文字/字幕/台词/水印）”。这是一张定格画面的描述，不写运镜、不写时长；**切记：即使本镜有台词，img 也只描述画面，绝不把台词/字幕写进画面**。
 ② video（视频扩展提示词，好的分镜要改视频时用）：开头逐字写死“不要出现BGM，不要出现字幕，保留音效。”＋风格氛围（同 img 的质感＋色值）＋画面（在 img 定格基础上补：主体动作、环境动态雨/闪电/穿框、默认固定机位无运镜、保留音效）。
 原则：先能当图（img 必给、能独立成立），再能扩成视频（video 在图的基础上加动态）；不好的分镜只用 img 出静态帧即可。两段都：复用相机质感＋主色板色值＋段落微调；落实本镜空间站位、与上一镜对得上不乱跳；只描述本镜不跨镜；不写剪辑点/情绪变化/微表情等表内信息。video 无BGM无字幕、音效保留。
 
@@ -300,7 +300,7 @@
   ],
   "note":"一句话导演笔记",
   "prompts":[
-    {"no":"1","img":"<静态帧出图提示词：画风锁点（质感＋主色板色值＋段落微调）＋场景@id复述＋人物@id复述及此刻状态＋景别+焦段+机位+构图＋光线色调落到色值，16:9，无画面文字，无水印>","video":"不要出现BGM，不要出现字幕，保留音效。\n风格与氛围：<同 img 质感＋色值>\n画面：<在 img 基础上补动态：主体动作、环境动态、固定机位无运镜、保留音效>"}
+    {"no":"1","img":"<静态帧出图提示词：画风锁点（质感＋主色板色值＋段落微调）＋场景@id复述＋人物@id复述及此刻状态＋景别+焦段+机位+构图＋光线色调落到色值，16:9, no text, no subtitles, no captions, no watermark>","video":"不要出现BGM，不要出现字幕，保留音效。\n风格与氛围：<同 img 质感＋色值>\n画面：<在 img 基础上补动态：主体动作、环境动态、固定机位无运镜、保留音效>"}
   ]
 }
 只返回 ===JSON=== 之后的 JSON，不要多余文字。assets 素材库先列、palette 再定、最后出分镜；每镜的 refScene/refChar 必须@引用 assets 里真实存在的 id，空间站位参照该场景的 layout；prompts 与 beats 里所有 shots 一一对应；每条 prompt 的 img 与 video 的风格句都必须带主色板色值。
@@ -511,11 +511,13 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
       cb(null,url);
     }).catch(function(e){ cb(e); });
   }
+  // 静帧出图统一的强负向约束：图像模型对中文负向遵守弱，必须补一串英文 no text/subtitles 才能治住“图里冒字幕”
+  var IMG_NEG='。画面里绝对不能出现任何文字、字幕、台词、水印。Wide 16:9 cinematic still. Absolutely no text, no subtitles, no captions, no letters, no words, no dialogue text, no watermark, no logo, no signature, no timestamp, no UI, no on-screen text of any kind.';
   // 取各镜的 img 提示词（按节点/镜号），带上画风锁点
   function sbImgPrompts(r){
     var ps=(r.board&&Array.isArray(r.board.prompts))?r.board.prompts:[];
     var style=(localStorage.getItem('sb_style')||'').trim();
-    return ps.map(function(p){ return { no:String(p.no), prompt:(style?style+'，':'')+(p.img||p.video||p.text||'')+'，16:9，无画面文字，无水印' }; });
+    return ps.map(function(p){ return { no:String(p.no), prompt:(style?style+'，':'')+(p.img||p.video||p.text||'')+IMG_NEG }; });
   }
   // ===== 锤点驱动：按本镜 refChar/refScene 取已生成的三视图/场景图当参考图（图生图锁一致性）=====
   // @id 归一：去掉 @char_/@scene_ 前缀、空白，与锤点图的 name 键对齐
@@ -824,7 +826,7 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
   // 当前分镜提示词面板对应的记录索引（生成后=0；载入查看时为对应索引），生成的图写回该记录 images
   window.__promptRecIdx=0;
   // 取当前 prompts 面板对应的记录的出图提示词（带画风锁点，与 sbImgPrompts 同口径）
-  function promptImgText(no,img,video){ var style=(localStorage.getItem('sb_style')||'').trim(); return (style?style+'，':'')+(img||video||'')+'，16:9，无画面文字，无水印'; }
+  function promptImgText(no,img,video){ var style=(localStorage.getItem('sb_style')||'').trim(); return (style?style+'，':'')+(img||video||'')+IMG_NEG; }
   function renderPrompts(d){
     var ps=Array.isArray(d.prompts)?d.prompts:[];
     if(!ps.length){ document.getElementById('pane-prompt').innerHTML='<div class="empty">（模型没返回 prompts）</div>'; return; }
@@ -833,8 +835,10 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
     if(rec && !__imgLoaded[recId(rec)]){ loadRecImages(rec).then(function(){ renderPrompts(d); }); }
     var images=rec?getRecImages(rec):{};
     var genN=ps.filter(function(p){return images[String(p.no)];}).length;
+    var remain=ps.length-genN;
+    var genLabel=genN===0?'✨ 生成全部分镜':(remain>0?('✨ 生成剩下分镜（'+remain+'）'):'✓ 全部已生成');
     var hamN=Object.keys(hamAll()).length;
-    var h='<div style="margin-bottom:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><button class="hbtn" id="copyall">复制全部(img+video)</button><button class="hbtn" id="copyimg">只复制出图 img</button><button class="hbtn" id="genAllShots" style="background:#0e7490;color:#fff;border-color:#0e7490;">✨ 生成全部分镜</button><span style="font-size:11px;color:#8a92a6;">共 '+ps.length+' 镜，已生成 '+genN+' 张。</span>'
+    var h='<div style="margin-bottom:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><button class="hbtn" id="copyall">复制全部(img+video)</button><button class="hbtn" id="copyimg">只复制出图 img</button><button class="hbtn" id="genAllShots"'+(remain>0?' style="background:#0e7490;color:#fff;border-color:#0e7490;"':' disabled style="opacity:.55;cursor:default;"')+'>'+genLabel+'</button><span style="font-size:11px;color:#8a92a6;">共 '+ps.length+' 镜，已生成 '+genN+' 张'+(remain>0?('，待生成 '+remain):'')+'。</span>'
       +(hamN?'<span style="font-size:11px;padding:2px 8px;border-radius:6px;background:#ecfeff;color:#0e7490;">🔗 锤点驱动：出图自动拿三视图/场景图做参考图锁一致性</span>':'<span style="font-size:11px;padding:2px 8px;border-radius:6px;background:#fff7ed;color:#c2860b;">未出锤点图：先去“人物三视图/场景图”出图，分镜才能图生图锁一致</span>')+'</div>';
     h+=ps.map(function(p){
       var no=String(p.no), img=p.img||'', video=p.video||p.text||'', has=images[no];
@@ -1014,11 +1018,14 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
       }, refs);
     });
   }
-  // 生成全部分镜（逐镜，每镜自带进度条）
+  // 生成分镜（逐镜）：只生成还没图的镜头，已有图的跳过不重生
   function genAllShots(){
     var pr=promptRec(); if(!pr.rec){ alert('未找到对应记录。'); return; }
-    var ps=(pr.rec.board&&pr.rec.board.prompts)||[]; var q=ps.map(function(p){return String(p.no);});
+    var ps=(pr.rec.board&&pr.rec.board.prompts)||[];
+    var images=getRecImages(pr.rec);
+    var q=ps.map(function(p){return String(p.no);}).filter(function(no){ return !images[no]; }); // 跳过已有图
     var ga=document.getElementById('genAllShots'); if(ga){ ga.disabled=true; ga.textContent='生成中…'; }
+    if(!q.length){ if(ga){ga.disabled=false;} renderPrompts(pr.rec.board); return; }
     (function next(){
       if(!q.length){ renderPrompts(pr.rec.board); sbHistRender&&sbHistRender(); return; }
       var no=q.shift();
