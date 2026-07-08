@@ -682,7 +682,20 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
   var logHead='';
 
   // ---- 组装输入戏文 ----
-  function buildSceneText(){
+  // 把一组节点拼成分集剧本文本
+  function nodesToSceneText(nodes){
+    if(!nodes||!nodes.length) return null;
+    var s='【分集剧本（按顺序，请为每个场次出分镜）】\n';
+    nodes.forEach(function(n){
+      s+='\n场次 '+n.id+(n.loc?'｜'+n.loc:'')+(n.time?'｜'+n.time:'')+'\n'+(n.script||n.text||'')+'\n';
+    });
+    return s;
+  }
+  // useLast=true：优先用当前记录已有的 __lastNodes（重新生成时左侧场次可能已清空，不该再要求重新粘贴）
+  function buildSceneText(useLast){
+    if(useLast && Array.isArray(window.__lastNodes) && window.__lastNodes.length){
+      return nodesToSceneText(window.__lastNodes);
+    }
     if(srcMode==='text'){
       var t=(document.getElementById('textin').value||'').trim();
       var mood=(document.getElementById('moodin').value||'').trim();
@@ -692,12 +705,10 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
     // json 模式
     var picks=parsedNodes.filter(function(n){ return pickedScenes[n.id]; });
     if(!picks.length){ picks=parsedNodes; } // 没选就全给（但通常一次一两场）
+    // 左侧无输入但已有上一次节点（如从记录载入/一键生成后）→ 回退用 __lastNodes
+    if(!picks.length && Array.isArray(window.__lastNodes) && window.__lastNodes.length) return nodesToSceneText(window.__lastNodes);
     if(!picks.length) return null;
-    var s='【分集剧本（按顺序，请为每个场次出分镜）】\n';
-    picks.forEach(function(n){
-      s+='\n场次 '+n.id+(n.loc?'｜'+n.loc:'')+(n.time?'｜'+n.time:'')+'\n'+(n.script||n.text||'')+'\n';
-    });
-    return s;
+    return nodesToSceneText(picks);
   }
 
   // ---- 生成 ----
@@ -716,7 +727,7 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
   function startGen(boardOnly){
     if(busy) return;
     if(!isLocked()){ alert('先在下方「对接模型」填 Key、选模型并锁定'); return; }
-    var scene=buildSceneText();
+    var scene=buildSceneText(boardOnly);   // 重新生成优先用已有节点，不再要求重新粘贴/选场次
     if(!scene){ alert(srcMode==='text'?'先写一场戏':'先粘贴 JSON 并选场次（或粘贴含 nodes 的 JSON）'); return; }
     var camNote=document.getElementById('camstyle').value==='free'?'允许必要动镜（但仍以固定为主，动镜须轻/短/有落点）':'固定镜头为主，运镜栏默认写“固定”';
     busy=true; gStopped=false; var btn=document.getElementById('gen'), old=btn.textContent; btn.textContent='生成中…'; btn.disabled=true;
@@ -764,6 +775,8 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
       if(parsed.repaired) logLine('\n⚙ 已自动修复 JSON 格式（'+parsed.repaired+'）');
       window.__lastBoard=parsed.data;                         // 存下本次分镜，供“导入游戏”用
       var pickedNodes=parsedNodes.filter(function(n){ return pickedScenes[n.id]; });
+      // 重新生成（boardOnly）时左侧可能已清空，沿用上一次节点，避免丢失台词/场次
+      if(!pickedNodes.length && Array.isArray(window.__lastNodes) && window.__lastNodes.length) pickedNodes=window.__lastNodes;
       window.__lastNodes=pickedNodes;                          // 本次选中的源剧本节点（带台词）
       // 存入分镜生成记录（标注绑定故事/用户单传）
       var shotCount=0; (parsed.data.beats||[]).forEach(function(bt){ shotCount+=(bt.shots||[]).length; });
