@@ -187,9 +187,9 @@
         <div class="rtabs">
           <button class="rtab" data-rt="char">人物三视图</button>
           <button class="rtab" data-rt="scene">场景图</button>
-          <button class="rtab" data-rt="storyboard">故事版</button>
           <button class="rtab on" data-rt="board">分镜表</button>
           <button class="rtab" data-rt="prompt">分镜提示词</button>
+          <button class="rtab" data-rt="storyboard">故事版</button>
         </div>
       </div>
       <div class="body">
@@ -662,7 +662,7 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
   document.getElementById('openscenecard').addEventListener('click',function(){ showCard(SCENECARD); });
 
   // ---- 结果页签 ----
-  var RTABS=['char','scene','storyboard','board','prompt'];
+  var RTABS=['char','scene','board','prompt','storyboard'];
   document.querySelectorAll('.rtab').forEach(function(b){ b.addEventListener('click',function(){
     document.querySelectorAll('.rtab').forEach(function(x){x.classList.remove('on');}); this.classList.add('on');
     var rt=this.getAttribute('data-rt');
@@ -766,9 +766,9 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
         upstreamChars:(upstreamChars&&upstreamChars.length?upstreamChars:undefined), upstreamScenes:(upstreamScenes&&upstreamScenes.length?upstreamScenes:undefined) });
       window.__promptRecIdx=0;   // 刚 sbHistSave unshift 到开头，当前 prompts 面板对应记录 0
       logLine('\n▸ 分镜接收完成，渲染…'); renderBoard(parsed.data); renderPrompts(parsed.data);
-      // 生成后先跳“故事版”验镜头衔接合理性，再看分镜表/提示词执行
-      var sbtab=document.querySelector('.rtab[data-rt="storyboard"]'); if(sbtab) sbtab.click();
-      progSet(100,'完成 ✓'); logLine('✓ 完成。先在“故事版”验镜头衔接，再看分镜表/分镜提示词。'); done();
+      // 生成后默认停在分镜表；故事版（含衔接自检）在最后一个页签，按需手动切去看
+      var bdtab=document.querySelector('.rtab[data-rt="board"]'); if(bdtab) bdtab.click();
+      progSet(100,'完成 ✓'); logLine('✓ 完成。分镜表见右侧；分镜提示词、故事版（含衔接自检）切右上页签。'); done();
     }
     function done(){ busy=false; gAbort=null; document.getElementById('stopgen').style.display='none'; btn.textContent=old; btn.disabled=false; }
   });
