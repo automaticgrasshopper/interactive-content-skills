@@ -1,6 +1,6 @@
 ---
 name: outline-generator
-description: "把创作者输入的故事描述、附件、故事体量、视角、结局数、画面比例和期望画风转成互动影游故事大纲与企划基础稿。Use when Codex needs to analyze a creator's story idea, infer or ask for the story core goal, generate story title, one-sentence overview, keywords, plot description, core conflict, worldview, themes, story scale, ending-count guidance, internal input analysis, IP/reference handling, player-identity design, and video-generation-safe story planning. Do not use for character/scene/prop asset sheets, episode-count recommendation, episode breakdowns, storyboards, image prompts, or video prompts."
+description: "把创作者输入的故事描述、附件、故事体量、视角、结局数、画面比例和期望画风转成互动影游故事大纲与企划基础稿。适用于：分析创作者的故事点子，推断或追问故事核心目标，产出故事标题、一句话概述、关键词、剧情描述、核心冲突、世界观、主题、故事体量、结局数指导、内部输入分析、IP/参考处理、玩家身份设计，以及适配视频生成的故事策划。不适用于：角色/场景/道具资产设定、集数推荐、分集拆解、故事板、图像提示词、视频提示词。"
 ---
 
 # 大纲生成师
