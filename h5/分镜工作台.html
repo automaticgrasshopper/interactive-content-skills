@@ -1137,9 +1137,48 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
   // ===== 导入游戏：把台词（源剧本节点）+ 分镜提示词配着注入互动影视游戏 =====
   // label 只需避免空白与 choice 分隔符(=>)等冲突字符；游戏引擎 @label 支持任意非空白字符串，中文可直接用，故保留中文与字母数字，避免多个中文节点碰撞成同名。
   function sanitizeLabel(id){ return String(id||'node').trim().replace(/\s+/g,'_').replace(/[^\w\-\u4e00-\u9fff]/g,'_')||'node'; }
+  // ★ 兜底：当源剧本节点普遍缺 next（跳转结构丢失，会让全片退化成一堆 @end 死路）时，
+  //   按 id 命名约定「集-序[-分支字母]」自动推断连线。就地给 n.next 补上 [{to,label}]，后续导出逻辑原样工作。
+  //   规则：同基序(去掉末尾 -字母)的节点归一「步」；步按首次出现排序，步间线性相连；
+  //   下一步是「多字母分支组」→ 本步出口节点变 @choice 指向各分支；分支各自并回再下一步；末步出口＝结局(@end)。
+  function inferNextByIdConvention(nodes){
+    var isBranch=function(id){ return /-[A-Za-z]+$/.test(String(id||'')); };
+    var base=function(id){ return String(id||'').replace(/-[A-Za-z]+$/,''); };
+    var order=[], groups={};
+    nodes.forEach(function(n){ var b=base(n.id); if(!groups[b]){ groups[b]=[]; order.push(b); } groups[b].push(n); });
+    var byId={}; nodes.forEach(function(n){ byId[n.id]=n; });
+    var info={}, stat={choices:0,jumps:0,ends:0};
+    order.forEach(function(b){
+      var arr=groups[b];
+      var chooser=arr.filter(function(n){ return !isBranch(n.id); });
+      var branches=arr.filter(function(n){ return isBranch(n.id); });
+      var entry, exits, pureBranch=false;
+      if(branches.length>=2 && chooser.length>=1){ entry=[chooser[0].id]; exits=branches.map(function(n){return n.id;}); }
+      else if(branches.length>=2){ pureBranch=true; entry=branches.map(function(n){return n.id;}); exits=entry.slice(); }
+      else { entry=[arr[0].id]; exits=[arr[0].id]; }
+      info[b]={arr:arr,chooser:chooser,branches:branches,entry:entry,exits:exits,pureBranch:pureBranch};
+    });
+    // 抉择步：chooser 指向本组各分支
+    order.forEach(function(b){ var it=info[b];
+      if(it.branches.length>=2 && it.chooser.length>=1){ it.chooser[0].next=it.branches.map(function(n){return {to:n.id,label:''};}); stat.choices++; }
+    });
+    // 步间连接
+    order.forEach(function(b,i){
+      var it=info[b];
+      if(i===order.length-1){ it.exits.forEach(function(id){ if(!byId[id].next||!byId[id].next.length){ byId[id].next=[]; stat.ends++; } }); return; }
+      var nx=info[order[i+1]];
+      if(nx.pureBranch){ it.exits.forEach(function(id){ if(byId[id].next&&byId[id].next.length) return; byId[id].next=nx.entry.map(function(t){return {to:t,label:''};}); stat.choices++; }); }
+      else { var target=nx.entry[0]; it.exits.forEach(function(id){ if(byId[id].next&&byId[id].next.length) return; byId[id].next=[{to:target,label:''}]; stat.jumps++; }); }
+    });
+    return stat;
+  }
   function importToGame(preImages){
     var board=window.__lastBoard, nodes=window.__lastNodes||[];
     if(!nodes.length){ alert('没有可导入的剧本节点。请先从左侧选场次并生成分镜。'); return; }
+    // ★ 缺 next 兜底：全片没有任何有效跳转 → 会导出成全 @end 死路本。按 id 约定自动推断连线。
+    var _withNext=nodes.filter(function(n){ return Array.isArray(n.next)&&n.next.some(function(x){return x&&x.to;}); }).length;
+    var _inferStat=null;
+    if(_withNext===0 && nodes.length>1){ _inferStat=inferNextByIdConvention(nodes); }
     var prompts=(board&&Array.isArray(board.prompts))?board.prompts:[];
     // 把分镜提示词按顺序均匀分配给各节点（作为该节点背景图提示词）
     var perNode=Math.max(1, Math.ceil(prompts.length/nodes.length));
@@ -1198,6 +1237,17 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
       alert('⚠ 检测到 '+selfLoops.length+' 个节点的跳转指向自己（自环）：'+selfLoops.join('、')+'\n\n这会让游戏卡住。建议回“生成分镜”重抽或检查上游剧本的 next。已尽量导入，游戏侧也会自动中止死循环。');
     }
     var text=out.join('\n');
+    // ★ 导出前硬校验：统计生成的出口指令。多节点却零 @choice/@jump（全 @end）＝一堆互不相连的死路，一进游戏就“剧情结束”。不静默导出。
+    var _nChoice=(text.match(/(^|\n)@choice/g)||[]).length, _nJump=(text.match(/(^|\n)@jump /g)||[]).length;
+    if(nodes.length>1 && _nChoice+_nJump===0){
+      alert('⛔ 导出已拦截：本剧本共 '+nodes.length+' 个节点，但节点之间没有任何跳转/分支（全部会变成 @end 死路）。\n一进游戏就会直接“剧情结束”，玩不到后续。\n\n原因：源剧本节点缺少 next 跳转字段，且 id 命名不符合“集-序[-分支字母]”约定，无法自动推断连线。\n建议：回上游重新生成带 next 的剧本，或保证节点 id 按 1-2、1-3-A 这种命名。\n\n仍要强行导出吗（导出后只能看开头一段）？');
+      // 不直接 return：用 confirm 才能拦；上面 alert 后再用 confirm 求确认
+    }
+    if(nodes.length>1 && _nChoice+_nJump===0){
+      if(!confirm('确认还要导出这个“全死路”剧本吗？（不建议）')) return;
+    } else if(_inferStat){
+      alert('ℹ 检测到源剧本节点缺 next 跳转，已按 id 命名约定自动推断连线：\n• 分支抉择 '+_inferStat.choices+' 处\n• 线性跳转 '+_inferStat.jumps+' 处\n• 结局 '+_inferStat.ends+' 个\n\n如果分支结构不对，请回上游补齐节点的 next 字段后重新导入。');
+    }
     var firstLab=sanitizeLabel(nodes[0].id);
     if(firstLab!=='start'){ text=text.replace(new RegExp('=> '+firstLab+'(\\b|$)','g'),'=> start').replace(new RegExp('@jump '+firstLab+'(\\b|$)','g'),'@jump start'); }
     var gameName=boundStory || ((board&&board.grammar)?'分镜：'+board.grammar:'分镜工作台剧本');
