@@ -1,5 +1,5 @@
 ---
-name: episode-generator
+name: nxp-episode-generator
 description: "把上游 outline-generator 产出的 story（含 engine / episodeCount / endingCount / PAD 情绪脊 emotional_spine）落成可游玩、可解析、可展示的互动分集叙事 DAG：在情绪脊上落拓扑，把结局、互动、分支、汇合全部定义清楚，输出 narrative_overview / episodes / edges。每集 plot 写成含承重台词草稿的戏剧化场景，预答下游故事版七问（戏核 / 情感主人 / 当集目标 / 权力转移 / 信息差），character_beats 的 current_objective/emotional_arc 与故事版人物字段同名对齐；全集高密度台词，dialogue_intent 标注渲染意图（对抗/交代/关系），每集拆情绪场并带内部转折。适用于：把上游完成的互动故事大纲拆成集级叙事图——在 PAD 情绪脊上落节点、互动放在情绪拐点、设计三层结局（final/route/dead）、分支与汇合拓扑、密度与编织带规则，产出严格满足 episodes.length=episodeCount、final+route 叶子数=endingCount 的合法 DAG；消费 outline-generator 的 story.engine/episodeCount/endingCount/emotional_spine。不适用于：大纲/故事策划、角色/场景/道具资产设定、集数推荐本身、分镜镜头表、故事板、图像提示词、视频提示词。"
 ---
 
@@ -423,8 +423,8 @@ edges 规则：
 
 ## 触发测试 Prompt
 
-- `Use $episode-generator: {story 来自 outline-generator 输出，含 engine=过渡、episodeCount=14、endingCount=2、emotional_spine 起承转合+双BE落点；assets/settings 齐全}`
-- `Use $episode-generator: 把这份大纲企划的结构信封与情绪脊拆成 episodes 与 edges 的互动 DAG。`
+- `Use $nxp-episode-generator: {story 来自 outline-generator 输出，含 engine=过渡、episodeCount=14、endingCount=2、emotional_spine 起承转合+双BE落点；assets/settings 齐全}`
+- `Use $nxp-episode-generator: 把这份大纲企划的结构信封与情绪脊拆成 episodes 与 edges 的互动 DAG。`
 
 ## 不应触发的反例
 

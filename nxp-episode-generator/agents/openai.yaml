@@ -1,0 +1,4 @@
+interface:
+  display_name: "分集生成师"
+  short_description: "把 outline 产出的 story（engine/episodeCount/endingCount/PAD情绪脊）落成互动分集叙事 DAG"
+  default_prompt: "Use $nxp-episode-generator 读取上游 outline 的 story（含 engine、episodeCount、endingCount、emotional_spine）与 assets、settings，生成 narrative_overview / episodes / edges 的互动分集 DAG。"
