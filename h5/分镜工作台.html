@@ -230,7 +230,8 @@
   <div class="box">
     <div style="display:flex;align-items:center;margin-bottom:10px;">
       <div style="font-size:18px;font-weight:700;">分镜生成记录 <em style="font-style:normal;font-size:12px;color:#aab0bf;font-weight:500;">（存本机浏览器，最多 50 条；标注绑定的故事剧本或用户单传）</em></div>
-      <button id="histclose" class="hbtn" style="margin-left:auto;">关闭</button>
+      <button id="dpExport" class="hbtn" style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;background:#0b7285;color:#fff;border-color:#0b7285;" title="把本地数据包里还没有的记录（剧本+图）增量写入 datapacks/ 文件夹"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v8a2 2 0 0 1-1 1.7l-7 4a2 2 0 0 1-2 0l-7-4A2 2 0 0 1 3 16V8a2 2 0 0 1 1-1.7l7-4a2 2 0 0 1 2 0l7 4A2 2 0 0 1 21 8z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></svg><span id="dpExportTxt">导出内容</span></button>
+      <button id="histclose" class="hbtn" style="margin-left:8px;">关闭</button>
     </div>
     <div id="histlist"></div>
   </div>
@@ -495,6 +496,31 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
 
   // ===== 分镜工作台出图（OpenRouter 图像模型）=====
   // refs：可选参考图 data URL 数组（锤点人物三视图/场景图），传了就走图生图锁一致性
+  // ===== 图片压缩（案例集迁移用：统一 720p + WebP 0.85，体积约为原 PNG 的 1/5~1/10） =====
+  // 出图模型吐多大给多大，这里用 canvas 重编码：按宽 1280 等比缩（高封顶 720），输出 webp。纯浏览器能力，无依赖。
+  var SB_IMG_MAXW=1280, SB_IMG_MAXH=720, SB_IMG_Q=0.85;
+  function sbCompressImage(dataUrl){
+    return new Promise(function(res){
+      if(!dataUrl || typeof dataUrl!=='string' || dataUrl.indexOf('data:image')!==0){ res(dataUrl); return; }
+      var img=new Image();
+      img.onload=function(){
+        try{
+          var w=img.naturalWidth||img.width, h=img.naturalHeight||img.height;
+          if(!w||!h){ res(dataUrl); return; }
+          var scale=Math.min(1, SB_IMG_MAXW/w, SB_IMG_MAXH/h);
+          var nw=Math.max(1,Math.round(w*scale)), nh=Math.max(1,Math.round(h*scale));
+          var cv=document.createElement('canvas'); cv.width=nw; cv.height=nh;
+          var ctx=cv.getContext('2d'); ctx.drawImage(img,0,0,nw,nh);
+          var out=cv.toDataURL('image/webp',SB_IMG_Q);
+          // toDataURL 不支持 webp 的老引擎会退回 png；若未缩小也接受
+          res(out && out.indexOf('data:image')===0 ? out : dataUrl);
+        }catch(e){ res(dataUrl); }
+      };
+      img.onerror=function(){ res(dataUrl); };
+      img.src=dataUrl;
+    });
+  }
+
   function sbGenImage(prompt, cb, refs){
     var key=(localStorage.getItem('sb_key')||(document.getElementById('orkey').value||'')).trim();
     if(!key){ cb(new Error('未锁定 OpenRouter Key（下方对接模型处填并锁定）')); return; }
@@ -512,7 +538,8 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
       var url=m&&m.images&&m.images[0]&&(m.images[0].image_url&&m.images[0].image_url.url||m.images[0].url);
       if(!url&&typeof (m&&m.content)==='string'){ var mm=m.content.match(/data:image\/[a-zA-Z]+;base64,[A-Za-z0-9+\/=]+/); if(mm)url=mm[0]; }
       if(!url){ cb(new Error('模型未返回图片（换支持出图的模型）')); return; }
-      cb(null,url);
+      // 存前压缩：720p + WebP，降体积保一致性（案例集迁移用）
+      sbCompressImage(url).then(function(small){ cb(null, small||url); });
     }).catch(function(e){ cb(e); });
   }
   // 静帧出图统一的强负向约束：图像模型对中文负向遵守弱，必须补一串英文 no text/subtitles 才能治住“图里冒字幕”
@@ -1347,6 +1374,39 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
     }).then(function(){ writeAndOpen(); }).catch(function(e){ alert('写入图片到本地库失败：'+(e&&e.message||e)); });
   }
 
+  // ---- 启动自动加载 datapacks/ 里的案例包（仅 localhost/http 下可 fetch 目录；file:// 跳过）----
+  function dpAutoLoad(){
+    if(location.protocol==='file:') return Promise.resolve(0);
+    return fetch('datapacks/').then(function(r){ return r.ok?r.text():''; }).then(function(html){
+      var files=[]; var re=/href="([^"]+\.sb\.json)"/gi, m;
+      while((m=re.exec(html))) files.push(decodeURIComponent(m[1].split('/').pop()));
+      files=files.filter(function(v,i,s){ return s.indexOf(v)===i; });
+      if(!files.length) return 0;
+      var existed={}; sbHistAll().forEach(function(r){ existed[dpRecKey(r)]=r; });
+      var added=0;
+      return files.reduce(function(chain,fn){ return chain.then(function(){
+        return fetch('datapacks/'+encodeURIComponent(fn)).then(function(r){ return r.ok?r.json():null; }).then(function(p){
+          if(!p||p.kind!=='storyboard') return;
+          var key=p.recKey||p.boundStory||p.title;
+          if(existed[key]) return;   // 已有同条→跳过（只增不覆）
+          var rec={ id:newRecId(), title:p.title||key, boundStory:p.boundStory||'', time:p.time||'', srcId:p.recKey||'',
+            board:p.board||null, nodes:p.nodes||[], upstreamChars:p.upstreamChars||[], upstreamScenes:p.upstreamScenes||[],
+            shots:(p.board&&p.board.beats)?p.board.beats.reduce(function(a,b){return a+((b.shots||[]).length);},0):0,
+            sceneCount:(p.nodes||[]).length, imgNos:p.imgNos||Object.keys(p.images||{}) };
+          var a=sbHistAll(); a.push(rec); try{ localStorage.setItem(HSKEY,JSON.stringify(a)); }catch(e){}
+          var imgs=p.images||{}; var cache=getRecImages(rec);
+          return Promise.all(Object.keys(imgs).map(function(no){ cache[no]=imgs[no]; return idbPut(rec.id+'|'+no, imgs[no]); })).then(function(){
+            __imgLoaded[rec.id]=true; existed[key]=rec;
+            // 自动加载回来的也记入台账（视为已入包，避免重导）
+            var led=dpLedger(); led[key]=('sb:'+Object.keys(imgs).length)+'@'+(p.time||''); dpLedgerSave(led);
+            added++;
+          });
+        }).catch(function(){});
+      }); }, Promise.resolve()).then(function(){ return added; });
+    }).catch(function(){ return 0; });
+  }
+  try{ dpAutoLoad().then(function(n){ if(n>0) console.log('[datapack] 自动加载 '+n+' 个案例包'); }); }catch(e){}
+
   // ---- 接收从「故事节奏验证」H5 一键送来的全片剧本 ----
   try{
     var inc=localStorage.getItem('sb_incoming');
@@ -1371,6 +1431,120 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
       }
     }
   }catch(e){}
+
+  // ========================================================================
+  // 【数据包·案例集迁移】分镜台版：导出 剧本+图，写入 datapacks/ 文件夹
+  //   台账 dp_ledger_v1：{recKey: level}，level = 'script' | 'sb:<图数>'
+  //   只在 localhost(http) + Chrome 下能直写文件夹；file:// 退回逐条下载。
+  // ========================================================================
+  var DP_LEDGER='dp_ledger_v1', DP_DIRKEY='dp_dirhandle';
+  function dpLedger(){ try{ return JSON.parse(localStorage.getItem(DP_LEDGER)||'{}'); }catch(e){ return {}; } }
+  function dpLedgerSave(m){ try{ localStorage.setItem(DP_LEDGER,JSON.stringify(m)); }catch(e){} }
+  function dpRecKey(r){ return r.srcId || r.boundStory || r.title || r.id; }   // 跨两台认亲：优先源ID/绑定故事名
+  function dpSafe(s){ return String(s||'rec').replace(/[^\w\u4e00-\u9fff\-]/g,'_').slice(0,40); }
+  // 本条当前实际级别：有图=sb:<n>，无图但有剧本=script
+  function dpRecLevel(r){ var n=recImgCount(r); return n>0 ? ('sb:'+n) : 'script'; }
+  // 级别高低：script < sb:1 < sb:2 ...；regen 后内容变也算新（靠 rec.time 戳入账）
+  function dpLevelRank(lv){ if(!lv) return -1; if(lv==='script') return 0; var m=/^sb:(\d+)/.exec(lv); return m?(10+ +m[1]):0; }
+  function dpNeedExport(r){
+    var led=dpLedger(), k=dpRecKey(r);
+    var cur=dpRecLevel(r)+'@'+(r.time||'');            // 带时间戳：regen 后 time 变 → 视为新
+    var had=led[k];
+    if(!had) return true;
+    // had 形如 'sb:3@2026..'；比级别或时间戳
+    var hadLv=had.split('@')[0], hadTime=had.split('@')[1]||'';
+    if(dpLevelRank(dpRecLevel(r))>dpLevelRank(hadLv)) return true;   // 剧本→剧本+图 或 图变多
+    if((r.time||'')!==hadTime) return true;                          // 内容重生
+    return false;
+  }
+  function dpMarkExported(r){ var led=dpLedger(); led[dpRecKey(r)]=dpRecLevel(r)+'@'+(r.time||''); dpLedgerSave(led); }
+
+  // 把一条分镜记录打包成数据包对象（剧本+压缩图）
+  function dpBuildPack(r){
+    return loadRecImages(r).then(function(imgs){
+      var images={};
+      Object.keys(imgs||{}).forEach(function(no){ images[no]=imgs[no]; });
+      return {
+        kind:'storyboard', version:1, exportedAt:new Date().toISOString(),
+        recKey:dpRecKey(r),
+        title:r.title||'', boundStory:r.boundStory||'', time:r.time||'',
+        board:r.board||null, nodes:r.nodes||[], upstreamChars:r.upstreamChars||[], upstreamScenes:r.upstreamScenes||[],
+        imgNos:r.imgNos||Object.keys(images), images:images
+      };
+    });
+  }
+
+  // Chrome 文件夹句柄（持久化到 IndexedDB，授权一次之后免再选）
+  function dpGetDirHandle(){ return idbGet(DP_DIRKEY); }
+  function dpSaveDirHandle(h){ return idbPut(DP_DIRKEY,h); }
+  function dpCanFS(){ return (location.protocol==='http:'||location.protocol==='https:') && !!window.showDirectoryPicker; }
+  function dpEnsureDir(){
+    return dpGetDirHandle().then(function(h){
+      if(h){ return h.queryPermission({mode:'readwrite'}).then(function(p){
+        if(p==='granted') return h;
+        return h.requestPermission({mode:'readwrite'}).then(function(p2){ return p2==='granted'?h:null; });
+      }); }
+      return window.showDirectoryPicker({id:'idl-datapacks',mode:'readwrite'}).then(function(nh){ return dpSaveDirHandle(nh).then(function(){ return nh; }); });
+    });
+  }
+  function dpWriteFile(dir,name,text){
+    return dir.getFileHandle(name,{create:true}).then(function(fh){ return fh.createWritable(); }).then(function(w){ return w.write(text).then(function(){ return w.close(); }); });
+  }
+
+  document.getElementById('dpExport').addEventListener('click', function(){
+    var btn=this; var a=sbHistAll();
+    var todo=a.filter(dpNeedExport);
+    if(!todo.length){ alert('✓ 本地数据包已是最新——没有需要新导出的记录。'); return; }
+    btn.disabled=true; var old=btn.textContent; btn.textContent='导出中…';
+    // 逐条构包
+    var packs=[];
+    (function build(i){
+      if(i>=todo.length){ deliver(); return; }
+      dpBuildPack(todo[i]).then(function(p){ packs.push({rec:todo[i],pack:p}); build(i+1); });
+    })(0);
+    function deliver(){
+      if(dpCanFS()){
+        dpEnsureDir().then(function(dir){
+          if(!dir){ throw new Error('未授权文件夹'); }
+          var idx=0;
+          (function wr(){
+            if(idx>=packs.length){ done(true); return; }
+            var it=packs[idx], name=dpSafe(it.pack.boundStory||it.pack.title||it.rec.id)+'.sb.json';
+            dpWriteFile(dir,name,JSON.stringify(it.pack)).then(function(){ dpMarkExported(it.rec); idx++; wr(); })
+              .catch(function(e){ alert('写入失败：'+(e&&e.message||e)); done(false); });
+          })();
+        }).catch(function(e){
+          // 授权失败或非 localhost → 退回下载
+          fallbackDownload();
+        });
+      } else { fallbackDownload(); }
+    }
+    function fallbackDownload(){
+      packs.forEach(function(it){
+        var name=dpSafe(it.pack.boundStory||it.pack.title||it.rec.id)+'.sb.json';
+        var blob=new Blob([JSON.stringify(it.pack)],{type:'application/json'});
+        var url=URL.createObjectURL(blob), aa=document.createElement('a'); aa.href=url; aa.download=name; aa.click(); URL.revokeObjectURL(url);
+        dpMarkExported(it.rec);
+      });
+      alert('已下载 '+packs.length+' 个数据包（file:// 或非 Chrome 退回下载模式）。\n请把它们移到仓库 h5/datapacks/ 目录再推 git。\n（用「启动.command」以 localhost 打开可直写文件夹、免手动移）');
+      done(true);
+    }
+    function done(ok){ btn.disabled=false; btn.textContent=old; if(ok&&dpCanFS()) { sbHistRender(); dpRefreshBtn(); } dpRefreshBtn(); }
+  });
+
+  // 全部已导出 → 按钮置灰
+  function dpRefreshBtn(){
+    var btn=document.getElementById('dpExport'); if(!btn) return;
+    var a=sbHistAll(); var need=a.filter(dpNeedExport).length;
+    btn.disabled = (a.length>0 && need===0);
+    btn.style.opacity = btn.disabled?'.5':'1';
+    var t=document.getElementById('dpExportTxt'); if(t) t.textContent = need>0 ? ('导出内容（'+need+'）') : '导出内容';
+    btn.title = btn.disabled ? '本地数据包已是最新，无新内容可导' : ('有 '+need+' 条尚未入包，点击增量导出到 datapacks/');
+  }
+  // 打开记录弹窗时刷新按钮态
+  var _openhist=document.getElementById('openhist');
+  if(_openhist) _openhist.addEventListener('click', function(){ setTimeout(dpRefreshBtn,0); });
+
 })();
 </script>
 </body>

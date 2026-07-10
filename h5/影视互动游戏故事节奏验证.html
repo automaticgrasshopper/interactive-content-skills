@@ -113,6 +113,16 @@
   .histrow.sel .histrow-acts { display:flex; }
   .histrow.viewing { border-left:3px solid #1D9E75 !important; background:#f3faf7 !important; }
   .viewtag { font-size:11px; font-weight:700; color:#1D9E75; background:#e3f4ec; border-radius:6px; padding:2px 7px; white-space:nowrap; }
+  /* 记录弹窗表头按钮：统一图标+文字、单行不折、hover 微动 */
+  .hdrbtn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;margin-left:8px;white-space:nowrap;border:1px solid #dfe2ea;border-radius:10px;background:#fff;color:#3a4255;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s ease;}
+  .hdrbtn:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(20,25,40,.12);}
+  .hdrbtn svg{flex:0 0 auto;}
+  .hdrbtn.dark{background:#1f2430;color:#fff;border-color:#1f2430;}
+  .hdrbtn.teal{background:#0b7285;color:#fff;border-color:#0b7285;}
+  .hdrbtn.danger{color:#dc2626;border-color:#f3d0d0;}
+  .hdrbtn.danger:hover{background:#fef2f2;}
+  .hdrbtn.ghost{background:#eef1f6;border-color:#eef1f6;color:#3a4255;}
+  .hdrbtn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none;}
 </style>
 </head>
 <body>
@@ -369,11 +379,16 @@
 <div id="histmask" style="display:none;position:fixed;inset:0;background:rgba(20,25,40,.45);z-index:70;align-items:flex-start;justify-content:center;padding:24px;overflow:auto;">
   <div style="background:#fff;border-radius:16px;max-width:880px;width:100%;padding:22px 26px 26px;box-shadow:0 8px 30px rgba(20,25,40,.25);">
     <div style="display:flex;align-items:center;margin-bottom:12px;">
-      <div style="font-size:18px;font-weight:700;">生成记录 <em style="font-style:normal;font-size:12px;color:#aab0bf;font-weight:500;">（存本机浏览器，最多 100 条、一页 10 条，超出覆盖最旧）</em></div>
-      <button id="histversions" style="margin-left:auto;height:34px;padding:0 14px;border:1px solid #dfe2ea;border-radius:10px;background:#fff;color:#3a4255;font-size:13px;font-weight:600;cursor:pointer;">📐 数值版本</button>
-      <button id="histexport" style="margin-left:8px;height:34px;padding:0 14px;border:none;border-radius:10px;background:#1f2430;color:#fff;font-size:13px;font-weight:600;cursor:pointer;">⬇ 导出全部校准数据</button>
-      <button id="histclear" style="margin-left:8px;height:34px;padding:0 14px;border:1px solid #f3d0d0;border-radius:10px;background:#fff;color:#dc2626;font-size:13px;font-weight:600;cursor:pointer;">一键清空</button>
-      <button id="histclose" style="margin-left:8px;height:34px;padding:0 14px;border:none;border-radius:10px;background:#eef1f6;color:#3a4255;font-size:13px;font-weight:600;cursor:pointer;">关闭</button>
+      <div style="font-size:18px;font-weight:700;">生成记录</div>
+      <button id="histversions" class="hdrbtn" style="margin-left:auto;">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10M6 20V4M18 20v-6"/></svg>数值版本</button>
+      <button id="histexport" class="hdrbtn dark" title="导出全部力度谱/情绪校准数据（评测用）">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 12l4-2.5M12 7v0"/></svg>校准导出</button>
+      <button id="dpExport" class="hdrbtn teal" title="把本地数据包里还没有的剧本（纯文本）增量写入 datapacks/。已被分镜台升级为剧本+图的不重导">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v8a2 2 0 0 1-1 1.7l-7 4a2 2 0 0 1-2 0l-7-4A2 2 0 0 1 3 16V8a2 2 0 0 1 1-1.7l7-4a2 2 0 0 1 2 0l7 4A2 2 0 0 1 21 8z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></svg><span id="dpExportTxt">导出内容</span></button>
+      <button id="histclear" class="hdrbtn danger">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6"/></svg>一键清空</button>
+      <button id="histclose" class="hdrbtn ghost">关闭</button>
     </div>
     <div id="histlist"></div>
     <div id="histview" style="margin-top:14px;border-top:1px solid #eef0f4;padding-top:6px;"></div>
@@ -2597,6 +2612,83 @@ flowchart TD
   }
 
   renderChips();
+
+  // ========================================================================
+  // 【数据包·案例集迁移】节奏台版：导出纯剧本（无图）到 datapacks/
+  //   与分镜台共享台账 dp_ledger_v1（同源 localStorage），key=故事标题。
+  //   若某条已被分镜台升级为 sb:<n>（剧本+图），本台纯剧本不再重导。
+  // ========================================================================
+  (function(){
+    var DP_LEDGER='dp_ledger_v1';
+    function led(){ try{ return JSON.parse(localStorage.getItem(DP_LEDGER)||'{}'); }catch(e){ return {}; } }
+    function ledSave(m){ try{ localStorage.setItem(DP_LEDGER,JSON.stringify(m)); }catch(e){} }
+    function key(r){ return r.title || (r.input&&r.input.title) || r.time; }
+    function safe(s){ return String(s||'rec').replace(/[^\w\u4e00-\u9fff\-]/g,'_').slice(0,40); }
+    function rank(lv){ if(!lv) return -1; if(lv==='script') return 0; var m=/^sb:(\d+)/.exec(lv); return m?(10+ +m[1]):0; }
+    // 本台只产纯剧本，级别恒为 script；但若台账里已是 sb:* 则无需导
+    function needExport(r){
+      var had=led()[key(r)];
+      if(!had) return true;
+      var hadLv=had.split('@')[0], hadTime=had.split('@')[1]||'';
+      if(rank('script')>rank(hadLv)) return true;         // 不会发生（script 是最低）
+      if(rank(hadLv)>=10) return false;                    // 已被分镜台升级，不重导
+      if((r.time||'')!==hadTime) return true;              // 内容重生
+      return false;
+    }
+    function mark(r){ var m=led(); m[key(r)]='script@'+(r.time||''); ledSave(m); }
+
+    function buildPack(r){
+      var d=null; try{ d=JSON.parse(r.json); }catch(e){}
+      return { kind:'script', version:1, exportedAt:new Date().toISOString(),
+        recKey:key(r), title:r.title||'', time:r.time||'', input:r.input||null, data:d, json:r.json||'' };
+    }
+
+    // Chrome 文件夹句柄（本台无 IDB，临时开一个）
+    var DB=null;
+    function idb(){ return new Promise(function(res,rej){ if(DB){res(DB);return;} var q=indexedDB.open('idl_dp',1); q.onupgradeneeded=function(){ if(!q.result.objectStoreNames.contains('kv')) q.result.createObjectStore('kv'); }; q.onsuccess=function(){DB=q.result;res(DB);}; q.onerror=function(){rej(q.error);}; }); }
+    function idbGet(k){ return idb().then(function(db){ return new Promise(function(res){ var t=db.transaction('kv','readonly').objectStore('kv').get(k); t.onsuccess=function(){res(t.result==null?null:t.result);}; t.onerror=function(){res(null);}; }); }); }
+    function idbPut(k,v){ return idb().then(function(db){ return new Promise(function(res){ var t=db.transaction('kv','readwrite'); t.objectStore('kv').put(v,k); t.oncomplete=function(){res();}; t.onerror=function(){res();}; }); }); }
+    function canFS(){ return (location.protocol==='http:'||location.protocol==='https:') && !!window.showDirectoryPicker; }
+    function ensureDir(){ return idbGet('dp_dirhandle').then(function(h){ if(h){ return h.queryPermission({mode:'readwrite'}).then(function(p){ return p==='granted'?h:h.requestPermission({mode:'readwrite'}).then(function(p2){return p2==='granted'?h:null;}); }); } return window.showDirectoryPicker({id:'idl-datapacks',mode:'readwrite'}).then(function(nh){ return idbPut('dp_dirhandle',nh).then(function(){return nh;}); }); }); }
+    function writeFile(dir,name,text){ return dir.getFileHandle(name,{create:true}).then(function(fh){ return fh.createWritable(); }).then(function(w){ return w.write(text).then(function(){return w.close();}); }); }
+
+    var btn=document.getElementById('dpExport');
+    function refresh(){ if(!btn) return; var a=histAll(); var need=a.filter(needExport).length; btn.disabled=(a.length>0&&need===0); var t=document.getElementById('dpExportTxt'); if(t) t.textContent=need>0?('导出内容（'+need+'）'):'导出内容'; }
+    if(btn) btn.addEventListener('click',function(){
+      var a=histAll(), todo=a.filter(needExport);
+      if(!todo.length){ alert('✓ 本地数据包已是最新——没有需要新导出的剧本。\n（已被分镜台升级为“剧本+图”的不在此重导）'); return; }
+      var old=btn.textContent; btn.disabled=true; btn.textContent='导出中…';
+      var packs=todo.map(function(r){ return {rec:r,pack:buildPack(r),name:safe(r.title||r.time)+'.script.json'}; });
+      function fin(){ btn.disabled=false; btn.textContent=old; refresh(); }
+      if(canFS()){
+        ensureDir().then(function(dir){ if(!dir) throw new Error('未授权'); var i=0; (function wr(){ if(i>=packs.length){ fin(); return; } writeFile(dir,packs[i].name,JSON.stringify(packs[i].pack)).then(function(){ mark(packs[i].rec); i++; wr(); }).catch(function(e){ alert('写入失败：'+(e&&e.message||e)); fin(); }); })(); })
+        .catch(function(){ dl(); });
+      } else { dl(); }
+      function dl(){ packs.forEach(function(it){ var b=new Blob([JSON.stringify(it.pack)],{type:'application/json'}); var u=URL.createObjectURL(b),aa=document.createElement('a'); aa.href=u; aa.download=it.name; aa.click(); URL.revokeObjectURL(u); mark(it.rec); }); alert('已下载 '+packs.length+' 个剧本包。\n请移到 h5/datapacks/ 再推 git（用启动.command 以 localhost 打开可直写文件夹）。'); fin(); }
+    });
+
+    // 启动自动加载 datapacks/ 里的纯剧本包（仅 http）
+    function autoLoad(){
+      if(location.protocol==='file:') return;
+      fetch('datapacks/').then(function(r){ return r.ok?r.text():''; }).then(function(html){
+        var files=[]; var re=/href="([^"]+\.script\.json)"/gi,m; while((m=re.exec(html))) files.push(decodeURIComponent(m[1].split('/').pop()));
+        files=files.filter(function(v,i,s){return s.indexOf(v)===i;});
+        if(!files.length) return;
+        var have={}; histAll().forEach(function(r){ have[key(r)]=1; });
+        files.reduce(function(chain,fn){ return chain.then(function(){ return fetch('datapacks/'+encodeURIComponent(fn)).then(function(r){return r.ok?r.json():null;}).then(function(p){
+          if(!p||p.kind!=='script') return; var k=p.recKey||p.title; if(have[k]) return;
+          var rec={ title:p.title||k, time:p.time||'', input:p.input||null, json:p.json||(p.data?JSON.stringify(p.data):'') };
+          var a=histAll(); a.push(rec); try{ localStorage.setItem(HKEY,JSON.stringify(a)); }catch(e){}
+          have[k]=1; var m2=led(); if(!m2[k]) { m2[k]='script@'+(p.time||''); ledSave(m2); }
+        }).catch(function(){}); }); }, Promise.resolve());
+      }).catch(function(){});
+    }
+    try{ autoLoad(); }catch(e){}
+
+    var oh=document.getElementById('openhist'); if(oh) oh.addEventListener('click',function(){ setTimeout(refresh,0); });
+    refresh();
+  })();
+
 })();
 </script>
 </body>
