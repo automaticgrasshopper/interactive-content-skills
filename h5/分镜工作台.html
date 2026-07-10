@@ -1031,15 +1031,46 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
     if(/(白天|白昼|日|上午|中午|正午|下午|午后|晌午)/.test(t)) return { tag:'DAYTIME', light:'daytime, bright natural daylight, clear bright sky / strong sunlight through windows, well-lit, high-key, obviously not night' };
     return { tag:'', light:'' };
   }
+  // 场景图=空镜，不能出人。把描述里“含人物名/演戏动作”的分句整句剔除，只留空间/光线/陆景信息。
+  function charNames(){
+    try{ return (upstreamChars||[]).map(function(c){ return String(c&&c.name||'').trim(); }).filter(Boolean); }catch(e){ return []; }
+  }
+  function stripCharacters(text, names){
+    if(!text) return '';
+    // 按中英文句读点分句，丢掉命中人物名或“人/视/看/站/走/说/坐”等演戏动作的分句
+    var parts=String(text).split(/([。；;！!，,、])/);
+    var kept=[], buf='';
+    function flush(sep){
+      var seg=buf.trim();
+      if(seg){
+        var hasName=names.some(function(n){ return n && seg.indexOf(n)!==-1; });
+        var hasAct=/(人影|身影|凝视|注视|回头|转身|站在|坐在|走过|跑|嗊|哭|笑|啼|呼喊|手|脚|眼神|面容|衣服上)/.test(seg);
+        if(!hasName && !hasAct) kept.push(seg);
+      }
+      buf='';
+    }
+    for(var i=0;i<parts.length;i++){
+      if(/^[。；;！!，,、]$/.test(parts[i])) flush();
+      else buf+=parts[i];
+    }
+    flush();
+    return kept.join('，');
+  }
   function scenePrompt(s){
     var te=timeEN(s.time);
+    var names=charNames();
+    // 先洗掉人物/演戏内容，只保留空间与光线
+    var layoutClean=stripCharacters(s.layout||s.look||'', names);
+    var lightBase=stripCharacters(s.light||s.look||'', names);
     // 昼夜前缀顶到开头（高权重），并把强光照锚点并进 LIGHT，压过雷同的 look
     var name=(s.name||'')+(te.tag?(' ('+te.tag+')'):'');
-    var lightBase=(s.light||s.look||'');
     var light=te.light ? (te.light + (lightBase?('. '+lightBase):'')) : lightBase;
     var timeField=(s.time||'')+(te.tag?(' — '+te.tag+', '+te.light):'');
-    var map={ 'SCENE NAME':name, 'TIME':timeField, 'IN/OUT':(s.inout||''), 'ART STYLE':artStyle(), 'LAYOUT':(s.layout||s.look||''), 'LIGHT':light };
-    return fill(engTpl(SCENECARD),map);
+    var map={ 'SCENE NAME':name, 'TIME':timeField, 'IN/OUT':(s.inout||''), 'ART STYLE':artStyle(), 'LAYOUT':layoutClean, 'LIGHT':light };
+    var out=fill(engTpl(SCENECARD),map);
+    // 把人物名加进负向串，双保险不出人
+    var negNames=names.length?(' Absolutely no people, no person, no human figure, no character, no '+names.join(', no ')+' in the image.'):' Absolutely no people, no person, no human figure in the image.';
+    return out.replace(/in the image\.\s*$/, 'in the image.'+negNames);
   }
   // 通用锤点卡片渲染：kind=char|scene
   function renderHammer(paneId,kind,items,promptFn,labelFn){
