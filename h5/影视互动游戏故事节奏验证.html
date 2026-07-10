@@ -207,7 +207,6 @@
         <button class="tab" data-tab="script">分场剧本</button>
         <button class="tab" data-tab="emo">情绪对照</button>
         <button class="tab" data-tab="over">叠加验证</button>
-        <button id="playgame" class="tab" style="margin-left:10px;background:#0b7285;color:#fff;" title="打开互动影视游戏（独立程序）。要玩某剧本先到生成记录里“入库”">▶ 进入游戏</button>
         <span class="engine" id="engine">—</span>
         <span class="badge" style="margin-left:8px;">总节点<b id="total">0</b></span>
       </div>
@@ -2533,12 +2532,6 @@ flowchart TD
       +'<ul style="margin:0;padding-left:20px;font-size:12.5px;line-height:1.9;color:#3a4255;">'+issues.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul></div>';
   }
   Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(b){ if(!b.getAttribute('data-tab')) return; b.addEventListener('click',function(){ showTab(b.getAttribute('data-tab')); }); });
-
-  // ===== ▶ 进入游戏：直接打开解耦的游戏程序（默认剧本），不搭构任何内容 =====
-  // 要体验某个剧本，先到「生成记录」把它“入库”（才会进入游戏剧本库），游戏里再选。
-  document.getElementById('playgame').addEventListener('click', function(){
-    window.open('互动影视游戏.html','_blank');
-  });
 
   // 从生成数据抽一个“标题（≤30字一句话简介）”，全局统一，让游戏/分镜工作台都能对得上
   function storyTitle(d){
