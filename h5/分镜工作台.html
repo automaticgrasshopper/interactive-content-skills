@@ -677,6 +677,8 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
   document.getElementById('ormodel').addEventListener('change',function(){ document.getElementById('ormodel_custom').style.display=this.value==='__other__'?'block':'none'; try{localStorage.setItem('sb_model',this.value);}catch(e){} });
   document.getElementById('orlock').addEventListener('click',function(){ var k=(document.getElementById('orkey').value||'').trim(); if(!k){alert('先填 API Key');return;} if(!getModel()){alert('选其他时请填 slug');return;} try{localStorage.setItem('sb_key',k);localStorage.setItem('sb_model',document.getElementById('ormodel').value);}catch(e){} setLocked(true); });
   document.getElementById('orunlock').addEventListener('click',function(){ setLocked(false); });
+  // 边输入边存（input）：分镜台原本只在点“锁定”才存 key，不锁就不存→下次重输
+  document.getElementById('orkey').addEventListener('input',function(){ try{ localStorage.setItem('sb_key',this.value.trim()); }catch(e){} });
   try{ var _k=localStorage.getItem('sb_key'),_m=localStorage.getItem('sb_model'); if(_k)document.getElementById('orkey').value=_k; if(_m){document.getElementById('ormodel').value=_m; if(_m==='__other__')document.getElementById('ormodel_custom').style.display='block';} if(localStorage.getItem('sb_locked')==='1'&&_k)setLocked(true); }catch(e){}
   // 出图设置（图像模型 + 画风锁点）→ localStorage，实时保存
   (function(){ var im=document.getElementById('orimg'), st=document.getElementById('orstyle');

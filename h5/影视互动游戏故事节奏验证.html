@@ -1510,6 +1510,8 @@ flowchart TD
     if(_k) document.getElementById('orkey').value=_k;
     if(_m){ document.getElementById('ormodel').value=_m; if(_m==='__other__'){ document.getElementById('ormodel_custom').style.display='block'; if(_mc) document.getElementById('ormodel_custom').value=_mc; } }
   }catch(e){}
+  // 边输入边存（input），不再等失焦 change；防“粘完直接用→key 没存上→每次重输”
+  document.getElementById('orkey').addEventListener('input', function(){ try{ localStorage.setItem('or_key', this.value.trim()); }catch(e){} });
   document.getElementById('orkey').addEventListener('change', function(){ try{ localStorage.setItem('or_key', this.value.trim()); }catch(e){} });
   document.getElementById('ormodel_custom').addEventListener('change', function(){ try{ localStorage.setItem('or_model_custom', this.value.trim()); }catch(e){} });
   function getModel(){ var s=document.getElementById('ormodel'); if(s.value==='__other__') return (document.getElementById('ormodel_custom').value||'').trim(); return s.value; }
