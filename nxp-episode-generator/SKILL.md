@@ -350,6 +350,7 @@ edges 规则：
 ```json
 {
   "narrative_overview": {
+    "perspective": "third",
     "total_paths": 0,
     "max_path_length": 0,
     "ending_tones": []
@@ -423,6 +424,7 @@ edges 规则：
 - 台词是否口语（reference ⑦）：读出来像真人张嘴而非书面简洁？有口语垫词/直接对听者/指示确认？意思落地无"到头了"式模糊？狠话是大白话+潜台词而非构造比喻？
 - 信息分层一遍过（reference ⑧）：把每句功能性台词单拎出来、假设只听这一遍，能否一遍听懂信息点？世界规则 / 金手指代价是否被压成对联谜语（“镜照真，人偿岁”式）？谜语是否只在神秘方嘴里、且同场有人替观众翻译？
 - 分支是否由叙事后果驱动、无数值阈值门？是否无任何玩家可见数值系统（好感度/统治度/积分/属性条/等级）？
+- 【视角】narrative_overview.perspective 是否回显了 first/third？若 first：行动/处境是否用第二人称「你」、而主角台词仍用「我」？选项/信息是否按 first（个人欲望拉点、信息与主角同步受限）？若 third：是否客观叙述、不用“你”？
 - PAD 是否只存在于 pad_target 结构字段、未漏进任何 player-facing 文本（plot/标题/选项/question/ending_tone/character_beats）？描述性字段是否只用自然语言、不引坐标数值、不点名 PAD 系统？
 - 每集 dramatic_core / emotional_owner / power_shift / information_gap / dialogue_intent 是否齐全？emotional_owner 是否在本集出场角色中？power_shift 是否与本集 D 轴走向一致？
 - character_beats 是否覆盖全部出场角色且与 characters 一一对应？current_objective 是否由全局驱动力投影？emotional_arc 是否与 pad_target 相容？沿路径是否逐集承接？汇合集是否承接不同来路人物差异？
