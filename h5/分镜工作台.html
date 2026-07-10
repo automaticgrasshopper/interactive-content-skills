@@ -3,14 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>分镜工作台 · V0.5 研究版</title>
+<title>场景分镜台</title>
 <style>
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   body{margin:0;background:#eef0f4;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#1f2430;}
   .wrap{max-width:1240px;margin:0 auto;padding:22px;}
   .head{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
-  .head h1{font-size:20px;font-weight:700;margin:0;letter-spacing:.5px;}
-  .head .ver{font-size:12px;font-weight:700;color:#fff;background:#0891b2;border-radius:6px;padding:2px 8px;}
+  .head .brandtitle{display:flex;flex-direction:column;align-items:flex-start;gap:5px;margin-right:6px;}
+  .head h1{font-size:20px;font-weight:700;margin:0;letter-spacing:.5px;line-height:1;}
+  .head .ver{display:inline-block;font-size:11px;font-weight:700;color:#fff;background:linear-gradient(135deg,#7c5cff,#5b3ee0);border-radius:999px;padding:3px 12px;letter-spacing:.5px;}
   .head p{margin:0 0 0 auto;font-size:12px;color:#7a8194;}
   .btn-top{height:34px;padding:0 14px;border:1px solid #dfe2ea;border-radius:10px;background:#fff;color:#3a4255;font-size:13px;font-weight:600;cursor:pointer;}
   .btn-top:hover{border-color:#b9c0cf;}
@@ -90,8 +91,10 @@
 <body>
 <div class="wrap">
   <div class="head">
-    <h1>分镜工作台</h1>
-    <span class="ver">V0.5 研究版</span>
+    <div class="brandtitle">
+      <h1>互动影视节奏</h1>
+      <span class="ver">v0.6 研究版</span>
+    </div>
     <button id="opencard" class="btn-top" style="margin-left:12px;">剧本转分镜执行卡</button>
     <button id="opencharcard" class="btn-top" style="margin-left:8px;">三视图骨架</button>
     <button id="openscenecard" class="btn-top" style="margin-left:8px;">场景图骨架</button>
