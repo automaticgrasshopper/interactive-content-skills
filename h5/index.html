@@ -20,7 +20,12 @@
     padding:8px 4px 14px; letter-spacing:.5px; border-bottom:1px solid rgba(255,255,255,.08);
     margin-bottom:8px; width:104px; white-space:nowrap;
   }
-  #brand b { display:block; color:#fff; font-size:15px; margin-bottom:3px; }
+  #brand b { display:block; color:#fff; font-size:15px; margin-bottom:4px; }
+  #brand .ver {
+    display:inline-block; margin-top:6px; font-size:10px; font-weight:700; letter-spacing:.5px;
+    color:#e9e2ff; background:linear-gradient(135deg,#7c5cff,#5b3ee0);
+    padding:2px 9px; border-radius:999px; box-shadow:0 2px 8px rgba(124,92,255,.35);
+  }
   .tab {
     width:104px; padding:14px 6px; border-radius:14px; cursor:pointer; text-align:center;
     color:#b9aee0; transition:all .15s; border:1px solid transparent; background:transparent;
@@ -44,7 +49,7 @@
 <body>
 <div id="app">
   <nav id="sidebar">
-    <div id="brand"><b>互动影视</b>Lab</div>
+    <div id="brand"><b>互动影视</b>Lab<span class="ver">V0.6 研究版</span></div>
     <button class="tab active" data-key="outline" data-src="影视互动游戏故事节奏验证.html">
       <span class="ico">📝</span><span class="lbl">大纲编剧台</span>
     </button>

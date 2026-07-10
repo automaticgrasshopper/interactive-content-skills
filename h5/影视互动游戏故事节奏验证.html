@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>影视互动游戏故事节奏验证 · V0.6 研究版</title>
+<title>大纲编剧台</title>
 <style>
   * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   body { margin:0; background:#eef0f4; font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif; color:#1f2430; }
@@ -128,9 +128,7 @@
 <body>
 <div class="wrap">
   <div class="head">
-    <h1>影视互动游戏故事节奏验证</h1>
-    <span style="font-size:12px;font-weight:700;color:#fff;background:#7c3aed;border-radius:6px;padding:2px 8px;">V0.6 研究版</span>
-    <p>题材标签可复合（支持融合）· 时长选引擎 · 结局数定终点</p>
+    <h1>大纲编剧台</h1>
     <button id="openrules" style="height:34px;padding:0 14px;border:1px solid #dfe2ea;border-radius:10px;background:#fff;color:#3a4255;font-size:13px;font-weight:600;cursor:pointer;margin-left:12px;">规则书</button>
     <button id="opencard" style="height:34px;padding:0 14px;border:1px solid #dfe2ea;border-radius:10px;background:#fff;color:#3a4255;font-size:13px;font-weight:600;cursor:pointer;margin-left:8px;">执行卡</button>
     <button id="openext" style="height:34px;padding:0 14px;border:1px solid #dfe2ea;border-radius:10px;background:#fff;color:#3a4255;font-size:13px;font-weight:600;cursor:pointer;margin-left:8px;">➕ 拓展</button>
@@ -193,14 +191,12 @@
           </select>
         </div>
       </div>
-      <div class="hint">结局数＝三种结局之和（主结局＋中间大结局＋死路小结局，全算，1–10）。模型先按题材定主结局（核心收场），再拿死路铺中段压力，中间大结局是可选的隐藏结局。不确定时选「AI 推荐」，模型将根据描述与标签推定（需先填描述或选择标签）。</div>
       <div id="recnote" class="hint" style="color:#16a34a;"></div>
 
       <div class="btns">
         <button class="btn pri" id="gen">✦ 一键生成</button>
         <button class="btn" id="stopgen" style="display:none;background:#ef4444;color:#fff;border-color:#ef4444;">■ 停止</button>
       </div>
-      <div class="hint" style="margin-top:8px;">点击后完整跑一条链：模型按规则书六步生成（逐步日志实时可见）→ 大纲 / 场景与人物 / 分集流程图 / 分场剧本 / 情绪对照。需先在下方「对接模型」锁定 Key 与模型。</div>
     </div>
 
     <!-- ============ 右：预览（三页签） ============ -->
