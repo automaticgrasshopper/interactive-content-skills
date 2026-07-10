@@ -12,7 +12,7 @@ while lsof -i :$PORT >/dev/null 2>&1; do
   PORT=$((PORT+1))
 done
 
-URL="http://localhost:$PORT/h5/"
+URL="http://localhost:$PORT/h5/index.html"
 
 echo "======================================================"
 echo "  互动影视 Lab · 本地前台已启动"

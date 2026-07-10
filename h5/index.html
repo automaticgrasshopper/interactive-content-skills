@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>互动影视 Lab · 工作台</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { height:100%; overflow:hidden; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  #app { display:flex; height:100vh; width:100vw; }
+
+  /* 左侧竖排页签栏 */
+  #sidebar {
+    flex:0 0 84px; background:linear-gradient(180deg,#2b2140 0%,#1b1630 100%);
+    display:flex; flex-direction:column; align-items:center; padding:14px 0; gap:8px;
+    box-shadow:2px 0 12px rgba(0,0,0,.18); z-index:10; user-select:none;
+  }
+  #brand {
+    color:#c9b8ff; font-size:11px; font-weight:700; text-align:center; line-height:1.35;
+    padding:6px 4px 12px; letter-spacing:.5px; border-bottom:1px solid rgba(255,255,255,.08);
+    margin-bottom:6px; width:60px;
+  }
+  #brand b { display:block; color:#fff; font-size:13px; margin-bottom:2px; }
+  .tab {
+    width:64px; padding:12px 4px; border-radius:12px; cursor:pointer; text-align:center;
+    color:#b9aee0; transition:all .15s; border:1px solid transparent; background:transparent;
+  }
+  .tab:hover { background:rgba(255,255,255,.06); color:#fff; }
+  .tab.active { background:linear-gradient(135deg,#7c5cff,#5b3ee0); color:#fff; border-color:rgba(255,255,255,.15); box-shadow:0 4px 14px rgba(124,92,255,.4); }
+  .tab .ico { font-size:22px; display:block; margin-bottom:5px; }
+  .tab .lbl { font-size:11px; font-weight:600; line-height:1.25; }
+
+  /* 右侧内容区 */
+  #stage { flex:1; position:relative; background:#f4f5f8; }
+  .frame-wrap { position:absolute; inset:0; display:none; }
+  .frame-wrap.active { display:block; }
+  .frame-wrap iframe { width:100%; height:100%; border:0; display:block; }
+  .loading {
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    color:#8a86a0; font-size:14px; letter-spacing:1px;
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <nav id="sidebar">
+    <div id="brand"><b>互动影视</b>Lab</div>
+    <button class="tab active" data-key="outline" data-src="影视互动游戏故事节奏验证.html">
+      <span class="ico">📝</span><span class="lbl">大纲<br>编剧台</span>
+    </button>
+    <button class="tab" data-key="storyboard" data-src="分镜工作台.html">
+      <span class="ico">🎬</span><span class="lbl">场景<br>分镜台</span>
+    </button>
+    <button class="tab" data-key="game" data-src="互动影视游戏.html">
+      <span class="ico">🎮</span><span class="lbl">游戏<br>界面</span>
+    </button>
+  </nav>
+  <main id="stage"></main>
+</div>
+
+<script>
+(function(){
+  var stage = document.getElementById('stage');
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  var frames = {}; // key -> {wrap, loaded}
+
+  // 目标文件名 -> 页签 key，用于把子页 window.open 转成切页签
+  var SRC2KEY = {};
+  tabs.forEach(function(t){ SRC2KEY[t.dataset.src] = t.dataset.key; });
+
+  function matchKey(url){
+    if(!url) return null;
+    var u = decodeURIComponent(String(url).split('#')[0].split('?')[0]);
+    var keys = Object.keys(SRC2KEY);
+    for(var i=0;i<keys.length;i++){ if(u.indexOf(keys[i]) !== -1) return SRC2KEY[keys[i]]; }
+    return null;
+  }
+
+  // 同源下拦截子 iframe 的 window.open：命中三台之一 -> 切页签+重载目标(照旧读 localStorage)，
+  // 其它 url 放行到真正的新标签。原文件零改动。
+  function hookOpen(iframe){
+    try{
+      var cw = iframe.contentWindow;
+      var nativeOpen = cw.open.bind(cw);
+      cw.open = function(url){
+        var key = matchKey(url);
+        if(key){
+          var wantSrc = null;
+          tabs.forEach(function(t){ if(t.dataset.key===key) wantSrc=t.dataset.src; });
+          activate(key, wantSrc, /*forceReload=*/true);
+          return cw; // 返回一个非空对象，避免调用方判空报错
+        }
+        return nativeOpen.apply(cw, arguments);
+      };
+    }catch(e){ /* 跨源等异常忽略 */ }
+  }
+
+  function ensureFrame(key, src){
+    if(frames[key]) return frames[key];
+    var wrap = document.createElement('div');
+    wrap.className = 'frame-wrap';
+    wrap.dataset.key = key;
+    var tip = document.createElement('div');
+    tip.className = 'loading';
+    tip.textContent = '正在载入…';
+    wrap.appendChild(tip);
+    var iframe = document.createElement('iframe');
+    iframe.addEventListener('load', function(){
+      if(tip.parentNode) tip.parentNode.removeChild(tip);
+      hookOpen(iframe);
+    });
+    iframe.src = src;
+    wrap.appendChild(iframe);
+    stage.appendChild(wrap);
+    frames[key] = { wrap: wrap, iframe: iframe, src: src };
+    return frames[key];
+  }
+
+  function activate(key, src, forceReload){
+    // 懒加载：首次点击才创建 iframe，之后常驻不重载
+    var f = ensureFrame(key, src);
+    if(forceReload && f && f.iframe){
+      // 跨台传数据（节奏台→分镜台、分镜台→游戏）：重载目标以重新读 localStorage
+      try{ f.iframe.contentWindow.location.reload(); }catch(e){ f.iframe.src = f.src; }
+    }
+    Object.keys(frames).forEach(function(k){
+      frames[k].wrap.classList.toggle('active', k === key);
+    });
+    tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.key === key); });
+    try{ location.hash = key; }catch(e){}
+  }
+
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){ activate(t.dataset.key, t.dataset.src); });
+  });
+
+  // 支持用 hash 直达（如 #storyboard）；默认打开大纲编剧台
+  var init = (location.hash || '').replace('#','');
+  var initTab = tabs.filter(function(t){ return t.dataset.key === init; })[0] || tabs[0];
+  activate(initTab.dataset.key, initTab.dataset.src);
+})();
+</script>
+</body>
+</html>
