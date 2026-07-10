@@ -1021,8 +1021,24 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
     var map={ 'IDENTITY':ident, 'HAIR':'', 'OUTFIT':look, 'ART STYLE':artStyle(), 'FACE':(c.temperament||'composed expression') };
     return fill(engTpl(CHARCARD),map);
   }
+  // 把中文昼夜标注翻成强英文昼夜指令：日/夜孤字权重太低模型会无视，这里给明确光照锚点
+  function timeEN(t){
+    t=String(t||'').trim();
+    // 先判更具体的黄昏/黎明（避免“傍晚”的“晚”被 NIGHT 误抓），再判夜/日
+    if(/(黄昏|傍晚|日落|夕阳|暮)/.test(t)) return { tag:'DUSK', light:'dusk / sunset, warm orange low sun, long shadows, sky turning dark, fading daylight' };
+    if(/(黎明|拂晓|清晨|早晨|破晓)/.test(t)) return { tag:'DAWN', light:'dawn / early morning, soft cool low-angle sunlight, fresh pale sky, gentle daybreak light' };
+    if(/(深夜|夜|晚|凌晨|午夜)/.test(t)) return { tag:'NIGHT', light:'nighttime, after dark, dark night sky outside, no daylight; interior lit only by artificial light sources (lamps/bulbs/practicals), deep shadows, low-key darkness' };
+    if(/(白天|白昼|日|上午|中午|正午|下午|午后|晌午)/.test(t)) return { tag:'DAYTIME', light:'daytime, bright natural daylight, clear bright sky / strong sunlight through windows, well-lit, high-key, obviously not night' };
+    return { tag:'', light:'' };
+  }
   function scenePrompt(s){
-    var map={ 'SCENE NAME':(s.name||''), 'TIME':(s.time||''), 'IN/OUT':(s.inout||''), 'ART STYLE':artStyle(), 'LAYOUT':(s.layout||s.look||''), 'LIGHT':(s.light||s.look||'') };
+    var te=timeEN(s.time);
+    // 昼夜前缀顶到开头（高权重），并把强光照锚点并进 LIGHT，压过雷同的 look
+    var name=(s.name||'')+(te.tag?(' ('+te.tag+')'):'');
+    var lightBase=(s.light||s.look||'');
+    var light=te.light ? (te.light + (lightBase?('. '+lightBase):'')) : lightBase;
+    var timeField=(s.time||'')+(te.tag?(' — '+te.tag+', '+te.light):'');
+    var map={ 'SCENE NAME':name, 'TIME':timeField, 'IN/OUT':(s.inout||''), 'ART STYLE':artStyle(), 'LAYOUT':(s.layout||s.look||''), 'LIGHT':light };
     return fill(engTpl(SCENECARD),map);
   }
   // 通用锤点卡片渲染：kind=char|scene
