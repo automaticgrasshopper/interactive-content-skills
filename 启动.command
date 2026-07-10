@@ -43,5 +43,6 @@ echo ""
 # 稍等半秒再开浏览器，确保服务器起来了
 ( sleep 0.8; open -a "Google Chrome" "$URL" 2>/dev/null || open "$URL" ) &
 
-# 前台运行 http server（Ctrl+C 或关窗口即停）
-python3 -m http.server $PORT
+# 前台运行带“datapacks 直写接口”的本地服务器（Ctrl+C 或关窗口即停）
+# 导出记录会直接落进 h5/datapacks/，免手选文件夹
+python3 serve.py $PORT

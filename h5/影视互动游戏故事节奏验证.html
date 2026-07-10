@@ -2651,11 +2651,23 @@ flowchart TD
       var old=btn.textContent; btn.disabled=true; btn.textContent='导出中…';
       var packs=todo.map(function(r){ return {rec:r,pack:buildPack(r),name:safe(r.title||r.time)+'.script.json'}; });
       function fin(){ btn.disabled=false; btn.textContent=old; refresh(); }
+      // 优先：本地服务器直写接口（启动.command/serve.py），免选文件夹，直落 h5/datapacks/
+      if(location.protocol==='http:'||location.protocol==='https:'){
+        var files=packs.map(function(it){ return {name:it.name,content:it.pack}; });
+        fetch('/__save_datapack',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({files:files})})
+          .then(function(r){ return r.ok?r.json():null; })
+          .then(function(j){ if(j&&j.ok){ packs.forEach(function(it){ mark(it.rec); }); alert('✓ 已直写 '+j.written.length+' 个剧本包到 h5/datapacks/（免选文件夹）。\n推 git 即可同步。'); fin(); } else { fsOrDl(); } })
+          .catch(function(){ fsOrDl(); });
+        return;
+      }
+      fsOrDl();
+      function fsOrDl(){
       if(canFS()){
         ensureDir().then(function(dir){ if(!dir) throw new Error('未授权'); var i=0; (function wr(){ if(i>=packs.length){ fin(); return; } writeFile(dir,packs[i].name,JSON.stringify(packs[i].pack)).then(function(){ mark(packs[i].rec); i++; wr(); }).catch(function(e){ alert('写入失败：'+(e&&e.message||e)); fin(); }); })(); })
         .catch(function(){ dl(); });
       } else { dl(); }
       function dl(){ packs.forEach(function(it){ var b=new Blob([JSON.stringify(it.pack)],{type:'application/json'}); var u=URL.createObjectURL(b),aa=document.createElement('a'); aa.href=u; aa.download=it.name; aa.click(); URL.revokeObjectURL(u); mark(it.rec); }); alert('已下载 '+packs.length+' 个剧本包。\n请移到 h5/datapacks/ 再推 git（用启动.command 以 localhost 打开可直写文件夹）。'); fin(); }
+      }
     });
 
     // 启动自动加载 datapacks/ 里的纯剧本包（仅 http）

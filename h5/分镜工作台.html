@@ -977,7 +977,15 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
     var remain=ps.length-genN;
     var genLabel=genN===0?'✨ 生成全部分镜':(remain>0?('✨ 生成剩下分镜（'+remain+'）'):'✓ 全部已生成');
     var hamN=Object.keys(hamAll()).length;
-    var h='<div style="margin-bottom:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><button class="hbtn" id="copyall">复制全部(img+video)</button><button class="hbtn" id="copyimg">只复制出图 img</button><button class="hbtn" id="regenBoard2">↻ 重新生成分镜</button><button class="hbtn" id="genAllShots"'+(remain>0?' style="background:#0e7490;color:#fff;border-color:#0e7490;"':' disabled style="opacity:.55;cursor:default;"')+'>'+genLabel+'</button><span style="font-size:11px;color:#8a92a6;">共 '+ps.length+' 镜，已生成 '+genN+' 张'+(remain>0?('，待生成 '+remain):'')+'。</span>'
+    // 校验：分镜提示词(prompts)数应等于分镜表(beats[].shots)总数；不等多半是模型输出被 max_tokens 截断/偿懒
+    var shotTotal=0; (Array.isArray(d.beats)?d.beats:[]).forEach(function(bt){ shotTotal+=(bt.shots||[]).length; });
+    var mismatchTip='';
+    if(shotTotal && ps.length < shotTotal){
+      mismatchTip='<div style="margin-bottom:10px;padding:10px 12px;border-radius:10px;background:#fff1f2;border:1px solid #fecdd3;color:#be123c;font-size:12.5px;line-height:1.7;">'
+        +'⚠ 分镜表有 <b>'+shotTotal+'</b> 个镜头，但只收到 <b>'+ps.length+'</b> 条分镜提示词——模型输出被截断或没给全。<br>'
+        +'建议：这一场镜头太多，拆成更少镜头/更少场次分次生成，或换个输出更稳的模型，再点“↻ 重新生成分镜”。</div>';
+    }
+    var h=mismatchTip+'<div style="margin-bottom:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><button class="hbtn" id="copyall">复制全部(img+video)</button><button class="hbtn" id="copyimg">只复制出图 img</button><button class="hbtn" id="regenBoard2">↻ 重新生成分镜</button><button class="hbtn" id="genAllShots"'+(remain>0?' style="background:#0e7490;color:#fff;border-color:#0e7490;"':' disabled style="opacity:.55;cursor:default;"')+'>'+genLabel+'</button><span style="font-size:11px;color:#8a92a6;">共 '+ps.length+' 镜，已生成 '+genN+' 张'+(remain>0?('，待生成 '+remain):'')+'。</span>'
       +(hamN?'<span style="font-size:11px;padding:2px 8px;border-radius:6px;background:#ecfeff;color:#0e7490;">🔗 锤点驱动：出图自动拿三视图/场景图做参考图锁一致性</span>':'<span style="font-size:11px;padding:2px 8px;border-radius:6px;background:#fff7ed;color:#c2860b;">未出锤点图：先去“人物三视图/场景图”出图，分镜才能图生图锁一致</span>')+'</div>';
     h+=ps.map(function(p){
       var no=String(p.no), img=p.img||'', video=p.video||p.text||'', has=images[no];
@@ -1551,6 +1559,21 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
       dpBuildPack(todo[i]).then(function(p){ packs.push({rec:todo[i],pack:p}); build(i+1); });
     })(0);
     function deliver(){
+      // 优先：本地服务器直写接口（启动.command/serve.py）——完全免选文件夹，直落 h5/datapacks/
+      dpTrySrv().then(function(ok){ if(ok) return; else dpDeliverFS(); });
+    }
+    function dpTrySrv(){
+      if(location.protocol!=='http:'&&location.protocol!=='https:') return Promise.resolve(false);
+      var files=packs.map(function(it){ return { name:dpSafe(it.pack.boundStory||it.pack.title||it.rec.id)+'.sb.json', content:it.pack }; });
+      return fetch('/__save_datapack',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({files:files})})
+        .then(function(r){ return r.ok?r.json():null; })
+        .then(function(j){
+          if(j&&j.ok){ packs.forEach(function(it){ dpMarkExported(it.rec); }); alert('✓ 已直写 '+j.written.length+' 个数据包到 h5/datapacks/（免选文件夹）。\n推 git 即可同步，拉下来自动在 h5/datapacks/。'); done(true); return true; }
+          return false;
+        })
+        .catch(function(){ return false; });
+    }
+    function dpDeliverFS(){
       if(dpCanFS()){
         dpEnsureDir().then(function(dir){
           if(!dir){ throw new Error('未授权文件夹'); }

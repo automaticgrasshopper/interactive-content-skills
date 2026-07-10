@@ -54,5 +54,6 @@ if %errorlevel% neq 0 (
 rem 稍等再开浏览器，确保服务器起来了；优先 Chrome，没有则用默认浏览器
 start "" cmd /c "timeout /t 1 >nul & (start chrome "%URL%" || start "" "%URL%")"
 
-rem 前台运行 http server（关窗口即停）
-python -m http.server %PORT%
+rem 前台运行带“datapacks 直写接口”的本地服务器（关窗口即停）
+rem 导出记录会直接落进 h5\datapacks\，免手选文件夹
+python serve.py %PORT%
