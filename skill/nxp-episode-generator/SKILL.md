@@ -84,21 +84,24 @@ description: "把上游 outline-generator 产出的 story（含 engine / episode
 
 ### 2.6 视角落地规则（first / third 必须真正体现在产物里）
 
-`settings.perspective`（first / third，缺省 third）不是读一下就算，必须落到选项/信息/人称/镜头信号四处。**只换视角、不改其他**：两种视角下主角都正常说话、都有台词、台词密度与其他规则一致，只是“谁的眼睛在看 / 用什么人称写行动 / 信息给谁”不同。旁白不在本规则约束内（两种视角都可有）。
+`settings.perspective`（first / third，缺省 third）不是读一下就算。**只换视角、不改其他**：两种视角下主角都正常说话、都有台词、台词密度与其他规则一致，只是“选项拉点 / 信息给谁 / 下游镜头怎么拍”不同。
+
+⚠ **视角靠信号字段传递，不靠正文人称。** plot 正文一律用**客观人称写“谁做了什么”**（角色名 + 动作，如“林野推开门，握紧那张照片”），**不用第二人称“你”**——为了让下游看得懂“画面里谁做了什么”。“是第一视角”这件事完全交给下面两个字段，不拿正文人称去暗示（第二人称反而让下游分不清“你”是谁、入不入画）。旁白不在本规则约束内。
 
 **第一视角 first：**
 - 选项/拉点：围绕个人欲望 / 信任 / 情感代价 / 隐瞞 / 冒险 / 自保。
 - 信息：玩家与主角信息同步、受限——主角不知道的，玩家也不知道（information_gap 按此写）。
-- 人称：主角的**行动与处境用第二人称「你」写**（“你推开门，握紧那张照片”）；但主角**开口说话仍是第一人称台词「我…」**（台词不能用第二人称）。即：叙述/行动=你，台词=我。
-- 镜头信号（通知下游）：摄像机=主角的眼睛（POV）；主角基本不进画，只出现手/手臂/服装/镜面倒影；其他角色面向镜头、与“你”对视。主角无立绘（你看不到自己）。
+- 正文：仍用客观人称写主角（“林野…”），主角台词照常。
 
 **第三视角 third（缺省）：**
 - 选项/拉点：围绕信息分配 / 角色路线 / 阵营 / 真相揭露顺序 / 关系操盘。
 - 信息：玩家可掌握多方信息（导演/命运观察者视角）。
-- 人称：客观叙述（三人称/角色名），不用“你”。
-- 镜头信号：客观镜头；主角正常有立绘、正常入画。
 
-**代入主体以 outline 的 logline / 故事核心目标写死的视角为准，本模块不推翻。** 必须把 `perspective` 回显到 `narrative_overview.perspective`（值 first / third），供下游分镜直接读取，不用回头翻 settings。
+**传给下游的两个信号（写进 narrative_overview，不用回头翻 settings）：**
+- `narrative_overview.perspective`：值 first / third。
+- `narrative_overview.perspective_note`：一句人话镜头指令，供分镜直接照做。first 写：“第一视角：摄像机＝主角<名>的双眼（POV），主角不入画、只出现其手/服装/镜面倒影，其他角色面向镜头与主角对视，主角无立绘”；third 写：“第三视角：客观镜头，主角正常入画、正常有立绘”。
+
+**代入主体以 outline 的 logline / 故事核心目标写死的视角为准，本模块不推翻。**
 
 ## 3. 工作流程 + 方法原则 + 可选结构模板
 
@@ -351,6 +354,7 @@ edges 规则：
 {
   "narrative_overview": {
     "perspective": "third",
+    "perspective_note": "一句人话镜头指令，供下游分镜直接照做（见 2.6）",
     "total_paths": 0,
     "max_path_length": 0,
     "ending_tones": []
@@ -424,7 +428,7 @@ edges 规则：
 - 台词是否口语（reference ⑦）：读出来像真人张嘴而非书面简洁？有口语垫词/直接对听者/指示确认？意思落地无"到头了"式模糊？狠话是大白话+潜台词而非构造比喻？
 - 信息分层一遍过（reference ⑧）：把每句功能性台词单拎出来、假设只听这一遍，能否一遍听懂信息点？世界规则 / 金手指代价是否被压成对联谜语（“镜照真，人偿岁”式）？谜语是否只在神秘方嘴里、且同场有人替观众翻译？
 - 分支是否由叙事后果驱动、无数值阈值门？是否无任何玩家可见数值系统（好感度/统治度/积分/属性条/等级）？
-- 【视角】narrative_overview.perspective 是否回显了 first/third？若 first：行动/处境是否用第二人称「你」、而主角台词仍用「我」？选项/信息是否按 first（个人欲望拉点、信息与主角同步受限）？若 third：是否客观叙述、不用“你”？
+- 【视角】narrative_overview.perspective（first/third）与 perspective_note（一句镜头指令）是否都回显了？plot 正文是否一律客观人称（角色名+动作）、**没有用第二人称“你”**？若 first：选项/信息是否按 first（个人欲望拉点、信息与主角同步受限）？
 - PAD 是否只存在于 pad_target 结构字段、未漏进任何 player-facing 文本（plot/标题/选项/question/ending_tone/character_beats）？描述性字段是否只用自然语言、不引坐标数值、不点名 PAD 系统？
 - 每集 dramatic_core / emotional_owner / power_shift / information_gap / dialogue_intent 是否齐全？emotional_owner 是否在本集出场角色中？power_shift 是否与本集 D 轴走向一致？
 - character_beats 是否覆盖全部出场角色且与 characters 一一对应？current_objective 是否由全局驱动力投影？emotional_arc 是否与 pad_target 相容？沿路径是否逐集承接？汇合集是否承接不同来路人物差异？
