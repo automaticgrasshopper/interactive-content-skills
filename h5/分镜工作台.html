@@ -1451,23 +1451,55 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
       var lab=sanitizeLabel(n.id), gameLab=(idx===0?'start':lab);
       out.push(''); out.push('@label '+gameLab);
       if(n.loc) out.push('：：【'+n.loc+(n.time?' · '+n.time:'')+'】');
-      // 台词：把 script/text 拆成多行（兼容上游传来的字面 \\n 两字符换行，否则会挤成一大块）
+      // 该节点分到的分镜（按顺序均分）
+      var mine=prompts.slice(idx*perNode,(idx+1)*perNode);
+      // 本节已生成的图（保留镜头顺序）——全部用上，不再只取第一张
+      var myImgs=[];  // [{key,url}]
+      if(preImages){ mine.forEach(function(p){ var no=String(p.no); if(preImages[no]){ myImgs.push({no:no,url:preImages[no]}); } }); }
+      // 台词行
       var body=String(n.script||n.text||'').replace(/\\r\\n|\\n|\\r/g,'\n').trim();
+      var sayLines=[];
       if(body){ body.split(/\n+/).forEach(function(ln){ ln=ln.trim(); if(!ln) return;
         var m=ln.match(/^([^\uff1a:]{1,12})[\uff1a:]\s*(.+)$/);
-        out.push(m&&m[2] ? (m[1].trim()+'：：'+m[2].trim()) : ('：：'+ln));
-      }); } else { out.push('：：（本节无台词）'); }
+        sayLines.push(m&&m[2] ? (m[1].trim()+'：：'+m[2].trim()) : ('：：'+ln));
+      }); }
+      if(!sayLines.length) sayLines.push('：：（本节无台词）');
+      // ★ 把本节多张分镜图按台词行均匀铺开：每隔几句切下一张，让全部图都随剧情用上
+      // 图键：<gameLab>  (第一张，兼容旧版 applyLabelBg) / <gameLab>#2 <gameLab>#3 ...
+      if(myImgs.length){
+        var imgKeys=myImgs.map(function(im,ii){ var kk=(ii===0?gameLab:(gameLab+'#'+(ii+1))); bgImages[kk]=im.url; return kk; });
+        var emitted={};
+        if(myImgs.length<=sayLines.length){
+          // 图≤句：每张图管一段句，随台词推进切图
+          var per=Math.max(1, Math.ceil(sayLines.length/myImgs.length));
+          sayLines.forEach(function(sl,li){
+            var gi=Math.min(myImgs.length-1, Math.floor(li/per));
+            var kk=imgKeys[gi];
+            if(!emitted[kk]){ out.push('@bg '+kk); emitted[kk]=1; }
+            out.push(sl);
+          });
+          // 兵底：若仍有图未用（向下取整导致），末尾依次补切，保证全部图都用上
+          imgKeys.forEach(function(kk){ if(!emitted[kk]){ out.push('@bg '+kk); emitted[kk]=1; } });
+        } else {
+          // 图>句：每句先铺一张，剩余多出的图在末句后连续切展（全部不丢）
+          sayLines.forEach(function(sl,li){
+            var kk=imgKeys[Math.min(li,imgKeys.length-1)];
+            if(!emitted[kk]){ out.push('@bg '+kk); emitted[kk]=1; }
+            out.push(sl);
+          });
+          imgKeys.forEach(function(kk){ if(!emitted[kk]){ out.push('@bg '+kk); emitted[kk]=1; } });
+        }
+      } else {
+        sayLines.forEach(function(sl){ out.push(sl); });
+      }
       // 出口：按源节点 next
       var nexts=Array.isArray(n.next)?n.next.filter(function(x){return x&&x.to;}):[];
       if(nexts.length>=2){ out.push('@choice'); nexts.slice(0,6).forEach(function(x,ci){ out.push('- '+((x.label||('选项'+(ci+1))).slice(0,10))+' => '+sanitizeLabel(x.to)); }); }
       else if(nexts.length===1){ out.push('@jump '+sanitizeLabel(nexts[0].to)); }
       else { out.push('@end'); }
-      // 该节点对应的分镜（取分到它的第一个镜）
-      var mine=prompts.slice(idx*perNode,(idx+1)*perNode);
+      // 提示词（供未出图时展示）
       var pr=mine.map(function(p){return p.img||p.video||p.text||'';}).filter(Boolean).join('\n---\n');
       if(pr) bgPrompts[gameLab]=pr;
-      // 已生成的图（按镜号）→映射到节点 label：取本节第一个有图的镜
-      if(preImages){ for(var k=0;k<mine.length;k++){ var no=String(mine[k].no); if(preImages[no]){ bgImages[gameLab]=preImages[no]; break; } } }
     });
     // TODO-4：为悬空目标补占位 @end 节点，保证游戏不会跳空；并提醒用户建议补选场次
     if(dangling.length){
