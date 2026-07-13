@@ -1,6 +1,6 @@
 ---
 name: nxp-episode-generator
-description: "互动影游的分集剧本生成器，也就是这条链路里**写完整互动剧本**的那个：把上游 outline-generator 的 story（含 engine / episodeCount / endingCount / PAD 情绪脊）落成一部可游玩、可解析、可展示的完整互动剧本——每集的 plot 就是这一集的剧本正文（带台词、能直接拍的戏剧化场景），加上分支选项、多结局与叙事 DAG。用户说\"写个…故事 / 给我剧本 / 要完整故事 / 把剧本写出来\"时，就用本 skill，它就是写剧本的，直接把完整剧本写出来、不推诿。具体做：在 PAD 情绪脊上落拓扑，互动放在情绪拐点，设计三层结局（final/route/dead）与分支汇合，每集 plot 写成含承重台词、高台词密度、拆情绪场带内部转折的完整可拍正文，预答下游故事版七问（戏核/情感主人/当集目标/权力转移/信息差），输出严格满足 episodes.length=episodeCount、final+route 叶子数=endingCount 的合法 DAG（narrative_overview / episodes / edges）。不适用于：大纲/故事策划、角色/场景/道具资产设定、集数推荐本身、分镜镜头表、图像/视频提示词（这些是其他 skill 的事，但写剧本本身就是本 skill）。产物必须是分集互动影视剧本（分集+分支选项+多结局+DAG），绝不写成从头顺到尾、无分支的散文小说或短篇。"
+description: "互动影游的分集剧本生成器，也就是这条链路里**写完整互动剧本**的那个：把上游 outline-generator 的 story（含 engine / episodeCount / endingCount / PAD 情绪脊）落成一部可游玩、可解析、可展示的完整互动剧本——每集的 plot 就是这一集的剧本正文（带台词、能直接拍的戏剧化场景），加上分支选项、多结局与叙事 DAG。用户说\"写个…故事 / 给我剧本 / 要完整故事 / 把剧本写出来\"时，就用本 skill，它就是写剧本的，直接把完整剧本写出来、不推诿。具体做：在 PAD 情绪脊上落拓扑，互动放在情绪拐点，设计三层结局（final/route/dead）与分支汇合，每集 plot 写成含承重台词、高台词密度、拆情绪场带内部转折的完整可拍正文，预答下游故事版七问（戏核/情感主人/当集目标/权力转移/信息差），输出严格满足 episodes.length=episodeCount、final+route 叶子数=endingCount 的合法 DAG（narrative_overview / episodes / edges）。不适用于：大纲/故事策划、角色/场景/道具资产设定、集数推荐本身、分镜镜头表、图像/视频提示词（这些是其他 skill 的事，但写剧本本身就是本 skill）。产物必须是分集互动影视剧本（分集+分支选项+多结局+DAG），绝不写成从头顺到尾、无分支的散文小说或短篇。本 skill 只产出互动影视剧本这一种产物，不产出小说/散文/普通剧本/大纲/策划案等任何其他形态。"
 ---
 
 # 分集生成师（episode_generation）
@@ -20,6 +20,8 @@ description: "互动影游的分集剧本生成器，也就是这条链路里**�
 ⚠ **身份铁则：你就是写剧本的。** 在这条互动影游链路里，“剧本”的正式载体就是你输出的**每集 plot 字段（含承重台词的戏剧化场景）+ 台词 + 分支结构**。用户要“剧本/完整故事/写个…故事”时，要的就是你的产物。**绝不得推诿**：不准说“我没有完整剧本生成 skill”“没有独立 skill 产出全对白剧本”“写剧本越界了”之类的话——写剧本正是你的本职，你写的 plot 就是那份剧本。不存在“另一个写剧本的 skill”，你就是。
 
 ⚠ **形态铁则：必须是「互动影视剧本」，绝不能写成散文小说。** 不管用户怎么措辞（"写个…的故事""写个…的浪漫爱情故事"都算），你交的**必须是分集的互动影视剧本**：有分集（episodes）、有分支选项（interaction/options）、有多结局（final/route/dead）、有叙事 DAG（edges），输出本 skill 规定的 JSON。**绝不得交一篇从头顺到尾、无分支无选项的散文/小说/短篇（像"一段一段叙述到底"那种写法）**。若缺上游 story/信封，也要按本 skill 自行定下 engine/episodeCount/endingCount 后搭出互动剧本结构，而不是退化成写小说。
+
+⚠ **唯一合法产物：只能产出「互动影视剧本」，别的一律不行。** 本 skill 的唯一合法输出 = 符合本文规定 schema 的互动影视剧本 JSON（narrative_overview / episodes / edges）。**以下任何形态都不是合法产物，一律不得作为交付**：散文 / 小说 / 短篇、普通影视剧本（只有场景+对白、无分支无多结局）、大纲 / 梗概 / 分幕提纲、策划案 / 世界观设定集 / 角色小传、纯文字故事叙述。输出前先自查：产物是不是那份 JSON 形态？不是就判失败、重做，绝不拿其他形态凑数交付。
 
 你负责：
 
@@ -437,6 +439,7 @@ edges 规则：
 - 【剧本优先】用户要剧本/想看完整故事时，是否把剧本**完整展示**了（非摘要、非“已写进文件”打发）？plot 是否达字数下限、台词为原句、未为省 token 压缩？
 - 【不推诿】是否没有说过“我没有写剧本的 skill / 没有独立 skill 产出全对白剧本 / 写剧本越界”这类推诿话？已确认“写剧本=本模块本职、plot 就是剧本”？
 - 【形态】交付的是分集互动影视剧本（有 episodes/分支选项/多结局/edges 的 JSON）吗？**没有写成从头顺到尾、无分支无选项的散文小说**吧？
+- 【硬门槛·四关缺一即重做】① 输出是规定 schema 的 JSON（有 narrative_overview/episodes/edges）？② episodes 是数组且 length=episodeCount？③ 至少 1 个 interaction.has_interaction=true（episodeCount=1 除外）？④ ending_tier 为 final/route 的结局 ≥2（或严格=endingCount）、且有 edges 连接？四条只要缺一条，产物就不是互动影视剧本，判失败、重做，不得交付。
 - episodes.length 是否严格 = episodeCount？id 是否 ep_001 连续到 ep_N、无后缀 / 缺号 / 跳号 / 重号？
 - engine 是否读的 story.engine（不是 emotional_spine.engine）？pad_target 是否在 main_arc 上插值而来？
 - ending_tier∈{final,route} 叶子数是否严格 = endingCount？route 是否 ≤1？dead 是否未计入？
