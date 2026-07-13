@@ -111,7 +111,9 @@
           <textarea id="jsonin" style="height:150px;" placeholder='粘贴含 nodes 的 JSON，例如 {"nodes":[{"id":"1-1","loc":"…","script":"…"}...]}'></textarea>
         </div>
         <div class="field" id="scenewrap" style="display:none;">
-          <label>选要分镜的场次 <em>（点选一个或多个节点）</em></label>
+          <label style="display:flex;align-items:center;gap:8px;">选要分镜的场次 <em>（点选一个或多个节点）</em>
+            <button type="button" id="selall" class="hbtn" style="margin-left:auto;font-size:12px;padding:3px 12px;">全选</button>
+          </label>
           <div class="scenepick" id="scenepick"></div>
         </div>
       </div>
@@ -449,6 +451,71 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
   function sbMigrateOnce(){ var a=sbHistAll(),changed=false; a.forEach(function(r){ if(!r.id){ r.id=newRecId(); changed=true; } if(r.images && Object.keys(r.images).length){ r.imgNos=r.imgNos||[]; Object.keys(r.images).forEach(function(no){ idbPut(r.id+'|'+no,r.images[no]); if(r.imgNos.indexOf(no)<0) r.imgNos.push(no); }); delete r.images; changed=true; } }); if(changed){ try{ localStorage.setItem(HSKEY,JSON.stringify(a)); }catch(e){} } }
   try{ sbMigrateOnce(); }catch(e){}
   function sbEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  // 同剧本合并键：优先 boundStory；否则用 grammar/title + 首节点集号前缀，尽量把同一剧本的多批归一起
+  function sbMergeKey(board, nodes, boundStoryName){
+    if(boundStoryName) return 'bs:'+boundStoryName;
+    var g=(board&&board.grammar)||'';
+    var ep=''; if(nodes&&nodes[0]&&nodes[0].id){ var m=String(nodes[0].id).match(/^(\d+)/); ep=m?m[1]:''; }
+    return 'g:'+g+'|ep:'+ep;
+  }
+  // 把本次 board+nodes 合并到同剧本的已有记录；无则新建。返回 {rec, idx, merged}
+  function mergeStoryboardRecord(board, pickedNodes, srcSnap){
+    var a=sbHistAll();
+    var key=sbMergeKey(board, pickedNodes, boundStory);
+    var idx=-1; for(var i=0;i<a.length;i++){ if(a[i] && a[i].mergeKey===key){ idx=i; break; } }
+    var nowStr=new Date().toLocaleString('zh-CN',{hour12:false});
+    if(idx<0){
+      // 新建（同原逻辑），带上 mergeKey
+      var shotCount=0; (board.beats||[]).forEach(function(bt){ shotCount+=(bt.shots||[]).length; });
+      var rec={ time:nowStr, title:(boundStory||board.grammar||'分镜'), boundStory:boundStory||'', mergeKey:key,
+        shots:shotCount, sceneCount:(pickedNodes||[]).length, board:board, nodes:pickedNodes||[], src:srcSnap,
+        upstreamChars:(upstreamChars&&upstreamChars.length?upstreamChars:undefined), upstreamScenes:(upstreamScenes&&upstreamScenes.length?upstreamScenes:undefined) };
+      sbHistSave(rec);   // unshift 到开头
+      return { rec:rec, idx:0, merged:false };
+    }
+    // 合并到已有记录 a[idx]
+    var rec=a[idx];
+    var ob=rec.board||{beats:[],prompts:[]};
+    ob.beats=Array.isArray(ob.beats)?ob.beats:[];
+    ob.prompts=Array.isArray(ob.prompts)?ob.prompts:[];
+    // 去重：本批新场次若与旧节点 id 重复，视为重新生成该场次→先移除旧节点（及其图）
+    var newIds={}; (pickedNodes||[]).forEach(function(n){ newIds[n.id]=1; });
+    var oldNodes=Array.isArray(rec.nodes)?rec.nodes:[];
+    var dupIds={}; oldNodes.forEach(function(n){ if(newIds[n.id]) dupIds[n.id]=1; });
+    // 重编镜号：先把新 board 的镜号平移到旧最大镜号之后，避免冲突；因为刚出分镜表、新批还没图，平移安全
+    var maxNo=0; ob.prompts.forEach(function(p){ var v=parseInt(p.no,10); if(!isNaN(v)&&v>maxNo)maxNo=v; });
+    ob.beats.forEach(function(bt){ (bt.shots||[]).forEach(function(s){ var v=parseInt(s.no,10); if(!isNaN(v)&&v>maxNo)maxNo=v; }); });
+    var offset=maxNo;
+    (board.beats||[]).forEach(function(bt){ (bt.shots||[]).forEach(function(s){ var v=parseInt(s.no,10); s.no=(isNaN(v)?(++offset):(v+maxNo)); }); });
+    (board.prompts||[]).forEach(function(p){ var v=parseInt(p.no,10); p.no=(isNaN(v)?(++offset):(v+maxNo)); });
+    // 追加 beats / prompts
+    ob.beats=ob.beats.concat(board.beats||[]);
+    ob.prompts=ob.prompts.concat(board.prompts||[]);
+    // assets / palette / camera / grammar 缺则补
+    if(!ob.grammar && board.grammar) ob.grammar=board.grammar;
+    if(!ob.camera && board.camera) ob.camera=board.camera;
+    if(!ob.palette && board.palette) ob.palette=board.palette;
+    if(board.assets){ ob.assets=ob.assets||{}; ['characters','scenes'].forEach(function(kk){ var old=Array.isArray(ob.assets[kk])?ob.assets[kk]:[]; var seen={}; old.forEach(function(x){ seen[x.id||x.name]=1; }); (board.assets[kk]||[]).forEach(function(x){ if(!seen[x.id||x.name]) old.push(x); }); ob.assets[kk]=old; }); if(!ob.assets.sounds&&board.assets.sounds) ob.assets.sounds=board.assets.sounds; }
+    rec.board=ob;
+    // 合并 nodes（新同 id 覆盖旧，保留顺序：先旧后新）
+    var mergedNodes=oldNodes.filter(function(n){ return !newIds[n.id]; }).concat(pickedNodes||[]);
+    rec.nodes=mergedNodes;
+    rec.sceneCount=mergedNodes.length;
+    rec.shots=(ob.beats||[]).reduce(function(a2,b){return a2+(b.shots||[]).length;},0);
+    rec.time=nowStr;
+    // src.picked 累加（便于载入时回填全部已做场次）；json 文本用最新一次（通常同一份剧本）
+    if(srcSnap && srcSnap.mode==='json'){
+      var oldPicked=(rec.src&&rec.src.picked)||[]; var mset={}; oldPicked.concat(srcSnap.picked||[]).forEach(function(x){ mset[x]=1; });
+      rec.src={ mode:'json', json:srcSnap.json||(rec.src&&rec.src.json)||'', picked:Object.keys(mset) };
+    } else if(srcSnap){ rec.src=srcSnap; }
+    // 上游总表补充
+    if(upstreamChars&&upstreamChars.length) rec.upstreamChars=upstreamChars;
+    if(upstreamScenes&&upstreamScenes.length) rec.upstreamScenes=upstreamScenes;
+    // 把合并后的记录提到最前（保持“最近”在顶）
+    a.splice(idx,1); a.unshift(rec);
+    try{ localStorage.setItem(HSKEY,JSON.stringify(a)); }catch(e){}
+    return { rec:rec, idx:0, merged:true };
+  }
   function sbHistRender(){
     var a=sbHistAll(), list=document.getElementById('histlist');
     if(!a.length){ list.innerHTML='<div class="empty">还没记录。每次生成分镜完成后自动存一条。</div>'; return; }
@@ -477,7 +544,22 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
     var i=+b.getAttribute('data-i'), a=sbHistAll(), r=a[i]; if(!r) return;
     var act=b.getAttribute('data-sbact');
     if(act==='del'){ if(!confirm('删除这条分镜记录？')) return; idbDropRec(r); a.splice(i,1); try{localStorage.setItem(HSKEY,JSON.stringify(a));}catch(e){} sbHistRender(); return; }
-    if(act==='load'){ window.__lastBoard=r.board; window.__lastNodes=r.nodes||[]; boundStory=r.boundStory||''; window.__promptRecIdx=i; if(r.upstreamChars)upstreamChars=r.upstreamChars; if(r.upstreamScenes)upstreamScenes=r.upstreamScenes; renderBoard(r.board); renderPrompts(r.board); document.getElementById('histmask').style.display='none'; var bt=document.querySelector('.rtab[data-rt="board"]'); if(bt)bt.click(); return; }
+    if(act==='load'){ window.__lastBoard=r.board; window.__lastNodes=r.nodes||[]; boundStory=r.boundStory||''; window.__promptRecIdx=i; if(r.upstreamChars)upstreamChars=r.upstreamChars; if(r.upstreamScenes)upstreamScenes=r.upstreamScenes;
+      // 回填左侧输入区（免再从上游重点）：优先用记录里存的 src 快照，老记录降级用 nodes 反推 JSON
+      try{
+        if(r.src && r.src.mode==='text'){ setSrc('text'); document.getElementById('textin').value=r.src.text||''; document.getElementById('moodin').value=r.src.mood||''; }
+        else {
+          setSrc('json');
+          var jsonText = (r.src&&r.src.json) ? r.src.json : (r.nodes&&r.nodes.length? JSON.stringify({nodes:r.nodes}) : '');
+          var ji=document.getElementById('jsonin'); ji.value=jsonText;
+          // 重建场次选择区
+          parsedNodes=[]; pickedScenes={};
+          if(jsonText){ try{ var dd=JSON.parse(jsonText); var ns=Array.isArray(dd.nodes)?dd.nodes:(Array.isArray(dd)?dd:[]); ns=ns.filter(function(n){return n&&n.id&&(n.script||n.text);}); parsedNodes=ns; }catch(e){} }
+          var pre = (r.src&&r.src.picked&&r.src.picked.length) ? r.src.picked : (r.nodes||[]).map(function(n){return n.id;});
+          renderScenePick(pre);
+        }
+      }catch(e){}
+      renderBoard(r.board); renderPrompts(r.board); document.getElementById('histmask').style.display='none'; var bt=document.querySelector('.rtab[data-rt="board"]'); if(bt)bt.click(); return; }
     if(act==='game'){
       window.__lastBoard=r.board; window.__lastNodes=r.nodes||[]; boundStory=r.boundStory||'';
       var imgN=recImgCount(r);
@@ -647,19 +729,45 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
 
   // ---- JSON 输入 → 解析出场次供选择 ----
   var parsedNodes=[], pickedScenes={};
+  // 根据当前 parsedNodes 渲染场次选择区（含全选按钮）；preselect=要默认选中的 id 数组
+  function renderScenePick(preselect){
+    var wrap=document.getElementById('scenewrap'), pick=document.getElementById('scenepick');
+    if(!parsedNodes.length){ wrap.style.display='none'; return; }
+    if(preselect){ pickedScenes={}; preselect.forEach(function(id){ pickedScenes[id]=true; }); }
+    pick.innerHTML=parsedNodes.map(function(n){ return '<span class="sc'+(pickedScenes[n.id]?' on':'')+'" data-id="'+esc(n.id)+'">'+esc(n.id)+(n.loc?'·'+esc(n.loc):'')+'</span>'; }).join('');
+    wrap.style.display='block';
+    updateSelAllBtn(); updateGenBtnLabel();
+    [].forEach.call(pick.querySelectorAll('.sc'),function(s){ s.addEventListener('click',function(){ var id=this.getAttribute('data-id'); pickedScenes[id]=!pickedScenes[id]; this.classList.toggle('on',pickedScenes[id]); updateSelAllBtn(); updateGenBtnLabel(); }); });
+  }
+  // 全选/全不选
+  function allPicked(){ return parsedNodes.length>0 && parsedNodes.every(function(n){ return pickedScenes[n.id]; }); }
+  function pickedCount(){ return parsedNodes.filter(function(n){ return pickedScenes[n.id]; }).length; }
+  function updateSelAllBtn(){ var b=document.getElementById('selall'); if(b) b.textContent=allPicked()?'全不选':'全选'; }
+  // 左侧主生成按钮文案随选中数变：全选=生成全部，部分=批量生成 N 场
+  function updateGenBtnLabel(){
+    var g=document.getElementById('gen'); if(!g||busy) return;
+    if(srcMode!=='json'||!parsedNodes.length){ g.textContent='✨ 一键生成'; return; }
+    var n=pickedCount();
+    g.textContent = (n===0||allPicked()) ? '✨ 生成全部分镜' : ('✨ 批量生成（'+n+' 场）');
+  }
   document.getElementById('jsonin').addEventListener('input',function(ev){
     if(ev && ev.isTrusted) boundStory='';   // 用户手动编辑 = 单传，解除绑定
     var raw=this.value.trim(); parsedNodes=[]; pickedScenes={};
-    var wrap=document.getElementById('scenewrap'), pick=document.getElementById('scenepick');
-    if(!raw){ wrap.style.display='none'; return; }
-    var d; try{ d=JSON.parse(raw); }catch(e){ wrap.style.display='none'; return; }
+    var wrap=document.getElementById('scenewrap');
+    if(!raw){ wrap.style.display='none'; updateGenBtnLabel(); return; }
+    var d; try{ d=JSON.parse(raw); }catch(e){ wrap.style.display='none'; updateGenBtnLabel(); return; }
     var ns=Array.isArray(d.nodes)?d.nodes:(Array.isArray(d)?d:[]);
     ns=ns.filter(function(n){ return n && n.id && (n.script||n.text); });
-    if(!ns.length){ wrap.style.display='none'; return; }
+    if(!ns.length){ wrap.style.display='none'; updateGenBtnLabel(); return; }
     parsedNodes=ns;
-    pick.innerHTML=ns.map(function(n){ return '<span class="sc" data-id="'+esc(n.id)+'">'+esc(n.id)+(n.loc?'·'+esc(n.loc):'')+'</span>'; }).join('');
-    wrap.style.display='block';
-    [].forEach.call(pick.querySelectorAll('.sc'),function(s){ s.addEventListener('click',function(){ var id=this.getAttribute('data-id'); pickedScenes[id]=!pickedScenes[id]; this.classList.toggle('on',pickedScenes[id]); }); });
+    renderScenePick();
+  });
+  // 全选按钮
+  document.addEventListener('click',function(e){
+    var b=e.target.closest&&e.target.closest('#selall'); if(!b) return;
+    var toAll=!allPicked();
+    parsedNodes.forEach(function(n){ pickedScenes[n.id]=toAll; });
+    renderScenePick();
   });
 
   function esc(s){ return String(s==null?'':s).replace(/[&<>]/g,function(m){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[m];}); }
@@ -822,10 +930,16 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
       // 存入分镜生成记录（标注绑定故事/用户单传）
       var shotCount=0; (parsed.data.beats||[]).forEach(function(bt){ shotCount+=(bt.shots||[]).length; });
       var sbTitle=(parsed.data.grammar||'')+(boundStory?('·'+boundStory):'');
-      sbHistSave({ time:new Date().toLocaleString('zh-CN',{hour12:false}), title:(boundStory||parsed.data.grammar||'分镜'), boundStory:boundStory||'',
-        shots:shotCount, sceneCount:pickedNodes.length, board:parsed.data, nodes:pickedNodes,
-        upstreamChars:(upstreamChars&&upstreamChars.length?upstreamChars:undefined), upstreamScenes:(upstreamScenes&&upstreamScenes.length?upstreamScenes:undefined) });
-      window.__promptRecIdx=0;   // 刚 sbHistSave unshift 到开头，当前 prompts 面板对应记录 0
+      // 存原始输入（供载入记录时回填左侧，免再从上游重点）：srcMode=json 存原 JSON 文本+选中场次；text 存一场戏文本
+      var srcSnap;
+      if(srcMode==='text'){ srcSnap={ mode:'text', text:(document.getElementById('textin').value||''), mood:(document.getElementById('moodin').value||'') }; }
+      else { srcSnap={ mode:'json', json:(document.getElementById('jsonin').value||''), picked:Object.keys(pickedScenes).filter(function(k){return pickedScenes[k];}) }; }
+      // ★ 同一剧本多批生成 → 合并到同一条记录（不再每批各存一条，否则无法整部导入游戏）
+      var mergeInfo=mergeStoryboardRecord(parsed.data, pickedNodes, srcSnap);
+      window.__promptRecIdx=mergeInfo.idx;   // 当前 prompts 面板对应合并后的记录
+      window.__lastBoard=mergeInfo.rec.board; window.__lastNodes=mergeInfo.rec.nodes||pickedNodes;
+      parsed.data=mergeInfo.rec.board;  // 后续渲染/图像流水线都用合并后的完整 board
+      if(mergeInfo.merged) logLine('\n▸ 已合并到同剧本记录（现共 '+((parsed.data.beats||[]).reduce(function(a,b){return a+(b.shots||[]).length;},0))+' 镜、'+(mergeInfo.rec.nodes||[]).length+' 场次）。');
       logLine('\n▸ 分镜接收完成，渲染…'); renderBoard(parsed.data); renderPrompts(parsed.data);
       if(boardOnly){
         // 只补分镜：停在分镜提示词页，不跑图像流水线
@@ -905,7 +1019,7 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
       else { progSet(100,'完成 ✓'); logLine('\n✓ 一键生成完成：三视图/场景图/分镜表/分镜提示词(含CG)/故事版 均已就绪，切页签查看。'); }
       done();
     }
-    function done(){ busy=false; gAbort=null; document.getElementById('stopgen').style.display='none'; btn.textContent=old; btn.disabled=false; }
+    function done(){ busy=false; gAbort=null; document.getElementById('stopgen').style.display='none'; btn.textContent=old; btn.disabled=false; try{ updateGenBtnLabel(); }catch(e){} }
   }
 
   var COLS=[['no','镜号'],['dur','时长'],['size','景别'],['lens','焦段'],['pos','机位'],['move','运镜'],['space','空间站位'],['link','接续'],['dial','台词'],['refScene','场景'],['refChar','人物'],['comp','构图'],['desc','画面描述'],['act','动作'],['micro','微表情'],['emo','情绪'],['emoshift','情绪变化'],['rhythm','节奏'],['cut','剪辑点'],['sound','声音']];
@@ -975,7 +1089,8 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
     var images=rec?getRecImages(rec):{};
     var genN=ps.filter(function(p){return images[String(p.no)];}).length;
     var remain=ps.length-genN;
-    var genLabel=genN===0?'✨ 生成全部分镜':(remain>0?('✨ 生成剩下分镜（'+remain+'）'):'✓ 全部已生成');
+    // 只剩最后未出图的→“生成剩下”；一张都没→“生成全部”；全部完成→不出按钮
+    var genLabel=genN===0?'🎨 生成全部分镜图':('🎨 生成剩下分镜图（'+remain+'）');
     var hamN=Object.keys(hamAll()).length;
     // 校验：分镜提示词(prompts)数应等于分镜表(beats[].shots)总数；不等多半是模型输出被 max_tokens 截断/偿懒
     var shotTotal=0; (Array.isArray(d.beats)?d.beats:[]).forEach(function(bt){ shotTotal+=(bt.shots||[]).length; });
@@ -985,7 +1100,7 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
         +'⚠ 分镜表有 <b>'+shotTotal+'</b> 个镜头，但只收到 <b>'+ps.length+'</b> 条分镜提示词——模型输出被截断或没给全。<br>'
         +'建议：这一场镜头太多，拆成更少镜头/更少场次分次生成，或换个输出更稳的模型，再点“↻ 重新生成分镜”。</div>';
     }
-    var h=mismatchTip+'<div style="margin-bottom:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><button class="hbtn" id="copyall">复制全部(img+video)</button><button class="hbtn" id="copyimg">只复制出图 img</button><button class="hbtn" id="regenBoard2">↻ 重新生成分镜</button><button class="hbtn" id="genAllShots"'+(remain>0?' style="background:#0e7490;color:#fff;border-color:#0e7490;"':' disabled style="opacity:.55;cursor:default;"')+'>'+genLabel+'</button><span style="font-size:11px;color:#8a92a6;">共 '+ps.length+' 镜，已生成 '+genN+' 张'+(remain>0?('，待生成 '+remain):'')+'。</span>'
+    var h=mismatchTip+'<div style="margin-bottom:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><button class="hbtn" id="regenBoard2">↻ 重新生成分镜</button>'+(remain>0?('<button class="hbtn" id="genAllShots" style="background:#0e7490;color:#fff;border-color:#0e7490;">'+genLabel+'</button>'):'')+'<span style="font-size:11px;color:#8a92a6;">共 '+ps.length+' 镜，已生成 '+genN+' 张'+(remain>0?('，待生成 '+remain):'，✓ 已全部生成')+'。</span>'
       +(hamN?'<span style="font-size:11px;padding:2px 8px;border-radius:6px;background:#ecfeff;color:#0e7490;">🔗 锤点驱动：出图自动拿三视图/场景图做参考图锁一致性</span>':'<span style="font-size:11px;padding:2px 8px;border-radius:6px;background:#fff7ed;color:#c2860b;">未出锤点图：先去“人物三视图/场景图”出图，分镜才能图生图锁一致</span>')+'</div>';
     h+=ps.map(function(p){
       var no=String(p.no), img=p.img||'', video=p.video||p.text||'', has=images[no];
@@ -1002,10 +1117,6 @@ Photorealistic live-action film still style, wide 16:9 clean environment concept
         +'</div>';
     }).join('');
     var box=document.getElementById('pane-prompt'); box.innerHTML=h;
-    var all=ps.map(function(p){return '【镜头'+p.no+'】\n[img] '+(p.img||'')+'\n[video] '+(p.video||p.text||'');}).join('\n\n');
-    var allImg=ps.map(function(p){return '【镜头'+p.no+'】'+(p.img||'');}).join('\n\n');
-    var ci=document.getElementById('copyimg'); if(ci) ci.addEventListener('click',function(){ try{navigator.clipboard.writeText(allImg); this.textContent='已复制'; var b=this; setTimeout(function(){b.textContent='只复制出图 img';},1200);}catch(e){} });
-    var cp=document.getElementById('copyall'); if(cp) cp.addEventListener('click',function(){ try{navigator.clipboard.writeText(all); this.textContent='已复制'; var b=this; setTimeout(function(){b.textContent='复制全部(img+video)';},1200);}catch(e){} });
     var ga=document.getElementById('genAllShots'); if(ga) ga.addEventListener('click',function(){ genAllShots(); });
     var rb2=document.getElementById('regenBoard2'); if(rb2) rb2.addEventListener('click',function(){ if(confirm('重新生成分镜？将重跑一次 LLM 出新的分镜表+提示词（新开一条记录，不动图像）。')) startGen(true); });
     // 单镜生成 / 重新生成
