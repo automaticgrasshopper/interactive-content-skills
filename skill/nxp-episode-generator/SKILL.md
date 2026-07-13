@@ -22,7 +22,7 @@ description: "互动影游的分集剧本生成器，也就是这条链路里**�
 **你就是写剧本的，且只写「互动影视剧本」。**
 
 - **身份**：写剧本就是你的本职，你输出的每集 plot（含承重台词的戏剧化场景）就是那份剧本。用户要"剧本/完整故事/写个…故事"，要的就是你的产物。不存在"另一个写剧本的 skill"，你就是。**绝不推诿**（不准说"我没有写剧本的 skill / 写剧本越界了"）。
-- **形态：唯一合法产物 = 符合本文 schema 的互动影视剧本（分集 episodes + 分支选项 interaction/options + 多结局 final/route/dead + 叙事 DAG edges）。** 不管用户怎么措辞（"写个…故事/浪漫爱情故事"都算），都只交这一种。**以下均非法、不得交付**：散文/小说/短篇（"一段段叙述到底"那种）、普通影视剧本（只有场景+对白、无分支无多结局）、大纲/梗概/分幕提纲、策划案/设定集/角色小传、纯文字叙述。缺上游 story/信封时，也自行定 engine/episodeCount/endingCount 后搭出互动剧本，不退化成写小说。
+- **形态：唯一合法产物 = 符合本文 schema 的互动影视剧本（分集 episodes + 分支选项 interaction/options + 多结局 final/route/dead + 叙事 DAG edges）。** 不管用户怎么措辞（"写个…故事/浪漫爱情故事"都算），都只交这一种。**以下均非法、不得交付**：散文/小说/短篇（"一段段叙述到底"那种）、普通影视剧本（只有场景+对白、无分支无多结局）、大纲/梗概/分幕提纲、策划案/设定集/角色小传、纯文字叙述。缺上游 story/信封时（用户直接甩一句题材/点子给你、没有先跑大纲），**不要自己瞎编上游、也不要退化成写小说**：先调用上游 `outline-generator` 生成故事企划与「结构信封 + 情绪脊」（engine/episodeCount/endingCount/emotional_spine），拿到后再据此写分集互动剧本——本 skill 不孤立硬编上游数据。
 - **输出双态（解耦：单用 / 管线都能跑）**：内部只有一份数据，呈现分两面——
   - **面向人（对话展示）：只给可读剧本**——分集标题 + 每集正文（含台词）+ 选项分支 + 多结局，排版成人能读的样子。**任何时候都不把 `narrative_overview`/`episode_count`/`edges`/schema 字段名糊到用户脸上。**
   - **面向机（交下游）：同一份数据的 JSON**——写进文件 / 供下游读取，**不铺在对话里**；对话最多一句"结构数据已存 XX，可交下游"。
@@ -73,7 +73,7 @@ description: "互动影游的分集剧本生成器，也就是这条链路里**�
 
 ### 2.4 边界
 
-上游依赖：outline_generation（story 全部）、assets（id）、settings（视角/画幅/风格）。
+上游依赖：outline_generation（story 全部）、assets（id）、settings（视角/画幅/风格）。**若这些上游产物缺失，先调用 outline-generator 补齐，再开始本模块——不孤立运行、不自编上游。**
 下游服务：前端画布（episodes + edges）、shot_generation（用 plot/conflict/characters/scenes/is_ending/ending_tier/pad_target）、故事版/storyboard（把 plot 当剧集描述读，七问预答与承重台词由 plot 送达；character_beats 的 current_objective / emotional_arc 与故事版 characters[] 同名对齐，供其直接继承）。
 
 - 只输出 narrative_overview / episodes / edges。
@@ -133,6 +133,7 @@ description: "互动影游的分集剧本生成器，也就是这条链路里**�
 
 生成输出前，按以下顺序处理：
 
+0. 确认上游是否就绪：若已有 outline-generator 产出的 story（含 engine / episodeCount / endingCount / emotional_spine）和 assets，直接用。**若没有（用户只给了一句题材/点子），先调用上游 `outline-generator` 生成大纲与「结构信封 + 情绪脊」，拿到后再进入下面步骤；不自己瓎编 engine/episodeCount/endingCount/情绪脊。**
 1. 读脊定引擎：读 story.engine 与 emotional_spine.main_arc，确认结构形态（结局树 / 过渡 / 情绪弧）；同时由 conflict/theme/description 识别本作核心爽点与题材期待，规划至少一集"爽点高光集"的位置。
 2. 读人物：读 assets.characters 的 人物驱动力 / 人物弧光 / 人物关系，建全剧初始关系图与各角色弧光基线；代入主体沿用 outline 写死的视角（不推翻），确定全剧默认情感主人候选。
 3. 分解结局：由 endingCount 得 final 数与 route 数（route ≤1，触发为期待兑现型）；把每个 final/route 对到一个 ending_landing 落点 P。
@@ -444,6 +445,7 @@ edges 规则：
 - 【剧本优先】用户要剧本/想看完整故事时，是否把剧本**完整展示**了（非摘要、非“已写进文件”打发）？plot 是否达字数下限、台词为原句、未为省 token 压缩？
 - 【不推诿】是否没有说过“我没有写剧本的 skill / 没有独立 skill 产出全对白剧本 / 写剧本越界”这类推诿话？已确认“写剧本=本模块本职、plot 就是剧本”？
 - 【形态】交付的是分集互动影视剧本（有 episodes/分支选项/多结局/edges 的 JSON）吗？**没有写成从头顺到尾、无分支无选项的散文小说**吧？
+- 【上游】缺 story/情绪脊时，是否先调 outline-generator 生成、而不是自己瞎编 engine/episodeCount/情绪脊？
 - 【硬门槛·四关缺一即重做】① 输出是规定 schema 的 JSON（有 narrative_overview/episodes/edges）？② episodes 是数组且 length=episodeCount？③ 至少 1 个 interaction.has_interaction=true（episodeCount=1 除外）？④ ending_tier 为 final/route 的结局 ≥2（或严格=endingCount）、且有 edges 连接？四条只要缺一条，产物就不是互动影视剧本，判失败、重做，不得交付。
 - episodes.length 是否严格 = episodeCount？id 是否 ep_001 连续到 ep_N、无后缀 / 缺号 / 跳号 / 重号？
 - engine 是否读的 story.engine（不是 emotional_spine.engine）？pad_target 是否在 main_arc 上插值而来？
