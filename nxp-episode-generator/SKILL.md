@@ -150,7 +150,13 @@ description: "互动影游的分集剧本生成器，也就是这条链路里**�
 
 生成输出前，按以下顺序处理：
 
-0. 确认大纲是否就绪（硬前提）：写剧本前必须有大纲和情绪脊。若已有 outline-generator 产出的 story（含 engine / episodeCount / endingCount / emotional_spine），直接用；**若没有（用户只给一句题材/点子），先调用上游 `outline-generator` 生成大纲与「结构信封 + 情绪脊」，拿到后再进入下面步骤，绝不自己瞎编 engine/episodeCount/endingCount/情绪脊**。assets（人物）有就读、缺则从大纲/description 保守推定，不阻塞。
+0. **【大纲门禁 · 硬闸，不过不准往下写】** 写任何一集前，先在内部（不给用户看）逐项填答下面这张核对表，把实际值填上：
+   ```
+   大纲来源 = ？（outline-generator 产物 / 画布事实 / 无）
+   engine = ？    episodeCount = ？    endingCount = ？
+   emotional_spine = ？（齐 / 缺）    ending_landings = ？（齐 / 缺）
+   ```
+   **判定：只要任一项填不出、或答案是“无 / 我自己定的 / 我现编的”——立即停下，不准写剧本。** 先调用上游 `outline-generator` 生成大纲与「结构信封 + 情绪脊」，拿到真实产物、把上表填满，才能进入第 1 步。**绝不允许自己瞎编 engine/episodeCount/endingCount/情绪脊来“凑齐”过关。** （assets（人物）不入门禁：有就读、缺则从大纲/description 保守推定，不阻塞。）
 1. 读脊定引擎：读 story.engine 与 emotional_spine.main_arc，确认结构形态（结局树 / 过渡 / 情绪弧）；同时由 conflict/theme/description 识别本作核心爽点与题材期待，规划至少一集"爽点高光集"的位置。
 2. 读人物：读 assets.characters 的 人物驱动力 / 人物弧光 / 人物关系，建全剧初始关系图与各角色弧光基线；代入主体沿用 outline 写死的视角（不推翻），确定全剧默认情感主人候选。
 3. 分解结局：由 endingCount 得 final 数与 route 数（route ≤1，触发为期待兑现型）；把每个 final/route 对到一个 ending_landing 落点 P。
@@ -477,7 +483,7 @@ edges 规则：
 - 【形态】交付的是分集互动影视剧本（有 episodes/分支选项/多结局/edges 的 JSON）吗？**没有写成从头顺到尾、无分支无选项的散文小说**吧？
 - 【制片级格式·抽查任意一集】有场次标题（地点/日夜/内外）吗？出场人物单列了吗？△动作与「角色名：台词」彻底分离了吗？动作是可拍的客观描述、没写不可拍的内心旁白吗？有互动选项及真实后果吗？——若仍是连续叙述段落/对白埋在叙述里，判失败、返工。
 - 【触发即执行】命中 skill 后，是否一次就走完「查大纲→缺则先生成→按情绪脊排布→写完整剧本」并交付？**有没有先写一篇故事应付、等用户追问"要剧本"才动手（要两遍）**？
-- 【大纲前提】写剧本前是否已有大纲+情绪脊？缺就先调 outline-generator 生成，而不是自己瞎编 engine/episodeCount/情绪脊？
+- 【大纲门禁·填答核对】写第一集前，是否真的逐项填了核对表（大纲来源/engine/episodeCount/endingCount/情绪脊/结局落点）？每一项都有真实值、没有一项是"无/我自己定的/现编的"？只要有一项填不出，是否已停下先调 outline-generator、而不是硬编凑齐过关？
 - 【硬门槛·四关缺一即重做】① 输出是规定 schema 的 JSON（有 narrative_overview/episodes/edges）？② episodes 是数组且 length=episodeCount？③ 至少 1 个 interaction.has_interaction=true（episodeCount=1 除外）？④ ending_tier 为 final/route 的结局 ≥2（或严格=endingCount）、且有 edges 连接？四条只要缺一条，产物就不是互动影视剧本，判失败、重做，不得交付。
 - episodes.length 是否严格 = episodeCount？id 是否 ep_001 连续到 ep_N、无后缀 / 缺号 / 跳号 / 重号？
 - engine 是否读的 story.engine（不是 emotional_spine.engine）？pad_target 是否在 main_arc 上插值而来？
