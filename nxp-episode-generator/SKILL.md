@@ -47,20 +47,25 @@ description: "把上游 outline-generator 的故事大纲（含叙事引擎、�
 
 上游产物缺失时（用户直接给一句题材或点子、没有先跑大纲），先调用 outline-generator 生成大纲与情绪脊，拿到真实产物再写剧本，绝不自编上游数据、也不退化成写小说。大纲含情绪脊是写剧本的硬前提。
 
-## 下游产物
+## 下游传递参数
 
-- 面向人：可读的分集剧本（制片级格式），或按需先给可读的分集结构总览。
-- 面向机：narrative_overview / episodes / edges 的 JSON，写进文件供下游读取。
-- 服务对象：前端画布（episodes + edges）、分镜生成（读 plot/conflict/characters/scenes/is_ending/ending_tier/pad_target）、故事版（把 plot 当剧集描述读，七问预答与承重台词经 plot 送达，character_beats 的 current_objective / emotional_arc 与故事版 characters[] 同名对齐）。
-- 交付前经旁路质检 nxp-episode-checker 做可理解性冷读校验；它只读正文、只出判决，不改产物、不动字段、不碰上下游接口参数，拆不拆它本模块的输入输出口径不变。
+本 skill 在能力链路内部向下游传递 `narrative_overview / episodes / edges` 三组结构化参数。它们与上游传入的 story、assets、settings 性质相同，属于模块间数据传递，不决定用户看到的回复形式。
 
-## 输出格式
+- 前端画布读取 episodes + edges。
+- 分镜生成读取 plot / conflict / characters / scenes / is_ending / ending_tier / pad_target。
+- 故事版把 plot 当剧集描述读，七问预答与承重台词经 plot 送达；character_beats 的 current_objective / emotional_arc 与故事版 characters[] 同名对齐。
+- 下游传递参数须严格符合「下游参数结构」，不得新增或删除字段；但不得因此把结构化参数直接展示给用户。
+- 交付前经 nxp-episode-checker 校验用户呈现与可理解性。checker 只出判决，不改剧本、不动下游参数、不碰上下游接口口径。
 
-面向人与面向机是同一份数据的两种呈现，内部只有一份数据。
+## 用户呈现
 
-- 面向人：制片级剧本终稿，每集按「场次标题 / 出场人物 / △动作 / 角色名：台词」排布，加选项分支与多结局。任何时候不把 narrative_overview、episode_count、edges 等 schema 字段名展示给用户。
-- 面向机：同一份数据的规定 JSON，写进文件或供下游读取，不铺在对话里，对话最多一句「结构数据已存，可交下游」。
-- 除非明确要求 JSON，对用户展示可读剧本；JSON 是产物与接口，不是对话内容。
+用户呈现是当前对话里创作者直接看到的内容；下游传递参数是能力链路内部数据。两者彼此独立，不得用下游 JSON 结构决定用户呈现形式。
+
+- 用户要分集结构时，呈现可读的分集结构总览。
+- 用户要完整剧本时，呈现制片级剧本终稿，每集按「场次标题 / 出场人物 / △动作 / 角色名：台词」排布，加选项分支与多结局。
+- 用户未明确要求查看原始数据时，禁止在对话中展示 JSON、JSON 代码块、完整 episode 对象或 narrative_overview / episodes / edges 等 schema 字段名。
+- 只有用户明确要求「查看原始 JSON / 查看结构数据 / 按 JSON 返回」时，才可在用户呈现中展开下游参数。
+- 下游参数是否已经生成、保存或传递，与用户呈现多少无关；对话可用一句自然语言说明「结构数据已准备好，可交下游」，但不能用原始参数代替可读内容。
 
 ## 展示分流
 
@@ -110,7 +115,7 @@ description: "把上游 outline-generator 的故事大纲（含叙事引擎、�
 依次过三关，全部通过才交付。
 
 1. 硬数据关：逐项填答验收回执（见「验收回执」），把可核验的数字与复述真的算出来。任一项不达标，返工重填。
-2. 可理解关：把剧本正文交给 nxp-episode-checker 做冷读校验。判 PASS 才算通过；判 FAIL 按其逐条理由返工重写，再送检，直到 PASS（见「冷读校验」）。
+2. 用户呈现与可理解关：把「呈现模式 + 准备直接发给用户的完整内容」交给 nxp-episode-checker。checker 先检查是否误展示原始 JSON及呈现类型是否符合请求，再做冷读五问。判 PASS 才算通过；判 FAIL 按其错误码、理由与定位返工，再送检直到 PASS（见「冷读校验」）。
 3. 逐条清单关：走「自检清单」逐条核对。
 
 ## 剧本正文写法
@@ -315,9 +320,9 @@ interaction 规则：一个 episode 最多一个 interaction，落在 PAD 拐点
 
 edges 规则：顶层输出，与 narrative_overview / episodes 同级；type∈{default,choice}；source / target 必须是真实存在的 episode id；id 用 edge_源_目标 或 edge_源_目标_选项id，稳定；default 边的 interaction_id / option_id / label 为空串，choice 边三者必填并与 source 的 interaction / option 对应。
 
-输出要求：只输出规定 JSON，不新增或删除字段，空值按约定输出 ""、[]、false。plot 字段内容为制片级剧本拍摄终稿（场次标题 / 出场人物 / △动作与「角色名：台词」分离，台词用 \n 换行）。
+下游参数要求：传递给下游的结构化数据只包含规定的 `narrative_overview / episodes / edges`，不新增或删除字段，空值按约定使用 ""、[]、false。该规则只约束模块间传参，与用户呈现形式无关。plot 字段内容为制片级剧本拍摄终稿（场次标题 / 出场人物 / △动作与「角色名：台词」分离，台词用 \n 换行）。
 
-## 输出 JSON 格式
+## 下游参数结构
 
 ```json
 {
@@ -389,7 +394,9 @@ edges 规则：顶层输出，与 narrative_overview / episodes 同级；type∈
 
 「观众看不看得懂」这一类检查本模块自己验不了：写剧本的脑子里装着纸面之外的全部前因后果，读自己写的东西永远是顺的，缺的环自动脑补了。这是知识诅咒，同一个脑子在同一次生成里物理上卸不掉自己已知的信息、装不成不知道。
 
-所以把剧本正文（只给正文，不给大纲 / 情绪脊 / 设定 / 前情）交给 nxp-episode-checker，由它以零上下文观众身份逐集答冷读五问（每个人是谁 / 谁想要什么 / 发生了什么为什么 / 那条规矩大白话是什么意思 / 下一集想看什么），给出 PASS 或 FAIL + 逐条理由。判 PASS 才算输出成功；判 FAIL 按理由返工重写、再送检，直到 PASS。单用无法调 checker 时，至少把「卸上下文再读」当兵线尽力自验，但这比换脑子弱。
+所以交付前把以下内容交给 nxp-episode-checker：①呈现模式（结构总览 / 完整剧本 / 用户明确要求原始数据）；②准备直接发给用户的完整内容。技术参数如需在能力间传递，可以附带给 checker 原样回传，但 checker 不得用技术参数替用户呈现脑补前因后果。
+
+checker 先检查用户呈现是否误泄漏原始 JSON、是否符合呈现模式；格式通过后，再以零上下文观众身份逐集答冷读五问（每个人是谁 / 谁想要什么 / 发生了什么为什么 / 那条规矩大白话是什么意思 / 下一集想看什么）。判 PASS 才算成功；判 FAIL 按错误码、理由与定位返工重写、再送检，直到 PASS。
 
 ## 自检清单
 
@@ -402,14 +409,15 @@ edges 规则：顶层输出，与 narrative_overview / episodes 同级；type∈
 - ending_tier∈{final,route} 叶子数严格 = endingCount？route ≤1？dead 未计入？
 - DAG 无环、全可达、无断头、结局无出边？分支全走 edges（非 id 后缀）？max_path_length 按 edges 算对？
 - 每个节点有 pad_target？互动落在拐点？结局 pad_target 贴 ending_landing 且彼此不同？
-- 四关硬门槛缺一即重做：① 输出是规定 schema 的 JSON？② episodes 是数组且 length=episodeCount？③ 至少 1 个 has_interaction=true（episodeCount=1 除外）？④ ending_tier 为 final/route 的结局 ≥2（或严格=endingCount）且有 edges 连接？
+- 下游参数四关缺一即重做：① 下游传递参数含规定的 narrative_overview / episodes / edges？② episodes 是数组且 length=episodeCount？③ 至少 1 个 has_interaction=true（episodeCount=1 除外）？④ ending_tier 为 final/route 的结局 ≥2（或严格=endingCount）且有 edges 连接？这四关只检查模块间传参，不决定用户呈现形式。
 - 集级五字段齐全？emotional_owner 在本集出场角色中？power_shift 与 D 轴一致？
 - character_beats 覆盖全部出场角色且一一对应？current_objective 由全局驱动力投影？emotional_arc 与 pad_target 相容？沿路径逐集承接？汇合集承接不同来路差异？
 - 七问各有唯一显式答案（Q5 场景用法、Q6 潜台词道具已在 plot 内点名）？plot 与字段无矛盾？
 - 互动数符合密度公式与四段分布（全树 ≥2）？首层 ≤4？深层汇合约 85% / 小结局约 15%？无空合流？
 - options 2–4、互不指向同一 next、每个有 choice 边、无安全选项？default 边三附加字段空串？choice 边与 option 一一对应？
 - 分支由叙事后果驱动、无数值阈值门？无任何玩家可见数值系统？
-- 越界检查：没有生成 shots / video / URL / 编造 id / 新增字段？安全底线守住？输出 JSON 合规？
+- 用户呈现检查：用户未明确要求原始数据时，没有展示 JSON、JSON 代码块、完整 episode 对象或 schema 字段名？要结构时给可读结构总览，要剧本时给可读制片级剧本？
+- 下游参数检查：没有生成 shots / video / URL / 编造 id / 新增字段？安全底线守住？narrative_overview / episodes / edges 符合传参契约？
 
 展示与流程：
 
@@ -471,7 +479,8 @@ edges 规则：顶层输出，与 narrative_overview / episodes 同级；type∈
 - 结局雷同 → 拉开 pad_target 落点、重写 ending_tone、明确选择回收。
 - 分支弱 / 汇合抹平 / 空合流 → 补实质差异 / 汇合集写明各来路影响 / 为不同 option 设计不同后续。
 - 安全过高 → 用暗示 / 后果 / 象征替代。
-- JSON 结构错 → 优先修复结构。
+- 用户呈现误展示 JSON → 保留下游参数不动，把准备给用户的内容重新渲染成对应的可读结构总览或制片级剧本，再送 checker 校验。
+- 下游参数结构错 → 优先修复 narrative_overview / episodes / edges 的数据结构，不用原始参数替代用户呈现。
 
 ## 安全与生成边界
 
