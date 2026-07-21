@@ -856,25 +856,43 @@ def validate(
     for name in required:
         read_text(cache / name, errors)
 
-    topology = read_text(cache / "topology.md", errors)
+    manifest = read_text(cache / "manifest.md", [])
+    is_v31 = "episode-cache-v0.1.31" in manifest
+    is_v30 = "episode-cache-v0.1.30" in manifest
+    is_v29 = "episode-cache-v0.1.29" in manifest
+    raw_topology = read_text(cache / "topology.md", errors)
+    try:
+        if is_v29:
+            from episode_topology import load_collapsed  # v0.1.29 cache migration only
+            topology = load_collapsed(cache)
+        else:
+            topology = raw_topology
+    except (OSError, ValueError) as exc:
+        errors.append(f"分集映射校验失败：{exc}")
+        topology = ""
     nodes = parse_topology(topology, errors) if topology else {}
     input_text = read_text(cache / "input.md", errors)
     validate_input_contract(input_text, errors)
+    def input_asset_names(kind: str) -> set[str]:
+        # Accept both the normalized ``角色名称: 值`` form and the Markdown
+        # field form emitted by upstream asset sheets: ``- `角色名称`: 值``.
+        pattern = rf"^\s*(?:-\s*)?`?{kind}名称`?\s*:\s*`?([^`\n]+?)`?\s*$"
+        return {value.strip() for value in re.findall(pattern, input_text, re.MULTILINE)}
+
     known_assets = {
-        "角色": set(re.findall(r"^角色名称:\s*(\S.*?)\s*$", input_text, re.MULTILINE)),
-        "场景": set(re.findall(r"^场景名称:\s*(\S.*?)\s*$", input_text, re.MULTILINE)),
-        "道具": set(re.findall(r"^道具名称:\s*(\S.*?)\s*$", input_text, re.MULTILINE)),
+        "角色": input_asset_names("角色"),
+        "场景": input_asset_names("场景"),
+        "道具": input_asset_names("道具"),
     }
     for kind, values in known_assets.items():
         if not values:
             errors.append(f"input.md 未解析到正式{kind}名称")
-    manifest = read_text(cache / "manifest.md", [])
     is_v12 = "episode-cache-v0.1.12" in manifest
     is_v13 = "episode-cache-v0.1.13" in manifest
     is_v14 = "episode-cache-v0.1.14" in manifest
     is_v17 = "episode-cache-v0.1.17" in manifest
-    is_v28 = "episode-cache-v0.1.28" in manifest
-    is_v27 = "episode-cache-v0.1.27" in manifest or is_v28
+    is_v28 = "episode-cache-v0.1.28" in manifest or is_v29 or is_v30
+    is_v27 = "episode-cache-v0.1.27" in manifest or is_v28 or is_v31
     is_v26 = "episode-cache-v0.1.26" in manifest or is_v27
     is_v25 = "episode-cache-v0.1.25" in manifest or is_v26
     is_v24 = "episode-cache-v0.1.24" in manifest or is_v25
@@ -885,7 +903,7 @@ def validate(
     is_v18 = "episode-cache-v0.1.18" in manifest or is_v19
     is_current_cache = is_v12 or is_v13 or is_v14 or is_v17 or is_v18
     if is_v28:
-        for name in ("emotional-spine.md", "causal-graph.md"):
+        for name in ("emotional-spine.md", "causal-graph.md") + (("episode-map.md",) if is_v29 else ()):
             read_text(cache / name, errors)
         if require_public:
             try:

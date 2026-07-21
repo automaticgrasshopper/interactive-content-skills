@@ -1,4 +1,4 @@
 interface:
-  display_name: "NXP-分集规划师"
-  short_description: "锚定一集一节点拓扑，再用事实、首次交代和人话三条规则写完整剧本"
-  default_prompt: "Use $episode-generator 读取游戏企划和正式角色、场景、道具，先生成并确认一集一个节点的拓扑；确认后逐集写完整现场，只检查事实正确、人物与设定首次出现已交代、全部台词自然可懂，最后输出三个画布文件和每集九字段。"
+  display_name: "分集规划师"
+  short_description: "用情绪脊驱动可执行拓扑与因果清晰的互动影游剧本"
+  default_prompt: "Use $episode-generator 读取企划与正式资产，以情绪脊生成可执行状态拓扑，再用相邻因果拍写完全部分集剧本。"

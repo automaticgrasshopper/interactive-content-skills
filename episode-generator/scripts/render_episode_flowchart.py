@@ -207,12 +207,17 @@ def main() -> int:
 
     root = args.canvas_root.resolve()
     cache_root = args.cache_root.resolve() if args.cache_root else cache_root_for(root)
-    topology_path = cache_root / "topology.md"
-    nodes = parse_topology(topology_path.read_text(encoding="utf-8"))
+    manifest = (cache_root / "manifest.md").read_text(encoding="utf-8")
+    if "episode-cache-v0.1.29" in manifest:
+        from episode_topology import load_collapsed
+
+        topology_text = load_collapsed(cache_root)
+    else:
+        topology_text = (cache_root / "topology.md").read_text(encoding="utf-8")
+    nodes = parse_topology(topology_text)
     title = args.title or f"{root.name} 分集流程图"
     output = args.output.resolve() if args.output else root / "episode-flowchart.svg"
-    manifest = (cache_root / "manifest.md").read_text(encoding="utf-8")
-    if "episode-cache-v0.1.28" in manifest:
+    if "episode-cache-v0.1.28" in manifest or "episode-cache-v0.1.29" in manifest:
         try:
             output.relative_to(root)
             is_public_output = True

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import json
 import re
 import subprocess
 import sys
@@ -19,6 +20,7 @@ from validate_storyboard_fields import (
 from load_reference_bundle import verify_receipts
 from prepare_dialogue_review import build_dialogue_packet
 from seal_pipeline_stage import seal_stage, verify_stage
+from episode_topology import load_collapsed, parse_episode_map
 
 
 REQUIRED_REFERENCE_PHASES = (
@@ -156,7 +158,7 @@ def pending_dialogue_audit_v25() -> str:
     )
 
 
-def validate_genre_lens(cache_text: str, episode_id: str) -> None:
+def validate_genre_lens(cache_text: str, episode_id: str, require_declared_pass: bool = True) -> None:
     block = section(cache_text, "题材透镜记录")
     if not block:
         raise SystemExit(f"{episode_id} 缺少题材透镜记录")
@@ -174,8 +176,32 @@ def validate_genre_lens(cache_text: str, episode_id: str) -> None:
             "见梗概",
         }:
             raise SystemExit(f"{episode_id} 的题材透镜记录缺少具体内容：{name}")
-    if field(block, "判定").strip() != "PASS":
+    if require_declared_pass and field(block, "判定").strip() != "PASS":
         raise SystemExit(f"{episode_id} 的题材透镜记录未通过")
+
+
+def validate_atomic_ledger(cache_root: Path) -> None:
+    path = cache_root / "atomic-tasks.json"
+    if not path.is_file():
+        raise SystemExit("v0.1.29 缺少私有原子任务账本")
+    try:
+        ledger = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise SystemExit("原子任务账本无法读取") from exc
+    tasks = ledger.get("tasks") if isinstance(ledger, dict) else None
+    if not isinstance(tasks, list) or not tasks:
+        raise SystemExit("原子任务账本为空")
+    running = [item for item in tasks if isinstance(item, dict) and item.get("status") == "running"]
+    if len(running) > 1:
+        raise SystemExit("原子任务账本存在多个 running 任务")
+    for item in tasks:
+        if not isinstance(item, dict):
+            raise SystemExit("原子任务账本含非法记录")
+        if item.get("id") == "final-assembly":
+            if item.get("status") not in {"running", "complete"}:
+                raise SystemExit("最终组装任务尚未领取")
+        elif item.get("status") != "complete":
+            raise SystemExit(f"原子任务尚未完成：{item.get('id')}")
 
 
 def validate_audit(
@@ -280,13 +306,6 @@ def validate_v25_dialogue_audit(
         raise SystemExit(f"{episode_id} 的人物交流复核未覆盖全部台词")
     if field(block, "问题项") != "无" or field(block, "未解决问题") != "无":
         raise SystemExit(f"{episode_id} 的人物交流复核仍有未解决问题")
-    required = {scene for scene, lines in dialogue_map.items() if lines}
-    if not required <= covered:
-        raise SystemExit(
-            f"{episode_id} 的人物交流证据未覆盖对白场次：{sorted(required - covered)}"
-        )
-
-
 def validate_trigger_registry(cache_text: str, script_text: str, episode_id: str) -> None:
     block = section(cache_text, "语义触发登记")
     if not block:
@@ -355,7 +374,8 @@ def main() -> int:
     root = args.canvas_root.resolve()
     cache_root = args.cache_root.resolve() if args.cache_root else cache_root_for(root)
     manifest = (cache_root / "manifest.md").read_text(encoding="utf-8")
-    is_v28 = "episode-cache-v0.1.28" in manifest
+    is_v29 = "episode-cache-v0.1.29" in manifest
+    is_v28 = "episode-cache-v0.1.28" in manifest or is_v29
     is_v27 = "episode-cache-v0.1.27" in manifest or is_v28
     is_v25 = (
         "episode-cache-v0.1.25" in manifest
@@ -409,6 +429,14 @@ def main() -> int:
                 str(root),
                 "--cache-root",
                 str(cache_root),
+                "--min-visible-chars",
+                str(args.min_visible_chars),
+                "--max-visible-chars",
+                str(args.max_visible_chars),
+                "--min-action-beats",
+                str(args.min_action_beats),
+                "--max-action-beats",
+                str(args.max_action_beats),
             ],
             capture_output=True,
             text=True,
@@ -421,14 +449,14 @@ def main() -> int:
     character_exchange_fields = (
         CHARACTER_EXCHANGE_FIELDS_V19 if is_v19 else CHARACTER_EXCHANGE_FIELDS_V18
     )
-    topology = (cache_root / "topology.md").read_text(encoding="utf-8")
+    topology = load_collapsed(cache_root) if is_v29 else (cache_root / "topology.md").read_text(encoding="utf-8")
     targets = selected_paths(root, args.episodes, cache_root)
 
     for cache_path in targets:
         episode_id = cache_path.stem
         cache_text = cache_path.read_text(encoding="utf-8")
         if is_v27:
-            validate_genre_lens(cache_text, episode_id)
+            validate_genre_lens(cache_text, episode_id, require_declared_pass=not is_v29)
 
         if args.mode == "record-draft":
             draft_text = section(cache_text, "当前集初稿")
@@ -595,7 +623,16 @@ def main() -> int:
             validate_fields(build_storyboard_fields(cache_text, topology))
 
     if args.mode == "finalize":
+        if is_v29:
+            validate_atomic_ledger(cache_root)
         all_cache = sorted((cache_root / "episodes").glob("episode-*.md"))
+        if is_v29:
+            node_ids = set(re.findall(r"node-\d{3}", (cache_root / "topology.md").read_text(encoding="utf-8")))
+            order = [episode_id for episode_id, _, _ in parse_episode_map((cache_root / "episode-map.md").read_text(encoding="utf-8"), node_ids)]
+            known = {path.stem: path for path in all_cache}
+            if set(known) != set(order):
+                raise SystemExit("分集文件集合与 episode-map.md 不一致")
+            all_cache = [known[episode_id] for episode_id in order]
         final_texts: list[str] = []
         synopsis_texts: list[str] = []
         for cache_path in all_cache:

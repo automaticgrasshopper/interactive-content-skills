@@ -20,7 +20,7 @@ from typing import Any
 from load_reference_bundle import load_bundle
 
 
-PIPELINE_VERSION = "episode-pipeline-v0.1.28"
+PIPELINE_VERSION = "episode-pipeline-v0.1.31"
 STAGES = (
     "upstream",
     "emotional-spine",
@@ -34,8 +34,8 @@ STAGES = (
 )
 REFERENCE_PHASES = {
     "upstream": ("upstream",),
-    "emotional-spine": ("topology",),
-    "causal-graph": ("topology",),
+    "emotional-spine": ("emotional-spine",),
+    "causal-graph": ("causal-graph",),
     "topology": ("topology",),
     "production-cards": ("production-cards",),
     "drafts": ("episode-writing",),
@@ -43,6 +43,7 @@ REFERENCE_PHASES = {
     "state-writeback": ("state-writeback",),
     "final": ("whole-play-review",),
 }
+NODE_HEADER = re.compile(r"^##\s+(episode-\d{3})\s*｜\s*(.+?)\s*$", re.MULTILINE)
 EPISODE_HEADER = re.compile(r"^##\s+(episode-\d{3})\s*｜\s*(.+?)\s*$", re.MULTILINE)
 EMOTION_HEADER = re.compile(r"^##\s+(ES-\d{3})\s*｜\s*(.+?)\s*$", re.MULTILINE)
 CAUSAL_HEADER = re.compile(r"^##\s+(CG-\d{3})\s*｜\s*(.+?)\s*$", re.MULTILINE)
@@ -208,16 +209,16 @@ def validate_topology_provenance(
     cache: Path, emotion_ids: set[str], causal_ids: set[str]
 ) -> tuple[set[str], str]:
     text = read_required(cache / "topology.md")
-    entries = blocks(text, EPISODE_HEADER)
+    entries = blocks(text, NODE_HEADER)
     if not entries:
         raise ValueError("topology.md 未找到节点")
-    for episode_id, block in entries.items():
+    for node_id, block in entries.items():
         emotional = set(re.findall(r"ES-\d{3}", field(block, "情绪事件")))
         causal = set(re.findall(r"CG-\d{3}", field(block, "因果事件")))
         if not emotional or not emotional <= emotion_ids:
-            raise ValueError(f"{episode_id} 未引用有效情绪事件")
+            raise ValueError(f"{node_id} 未引用有效情绪事件")
         if not causal or not causal <= causal_ids:
-            raise ValueError(f"{episode_id} 未引用有效因果事件")
+            raise ValueError(f"{node_id} 未引用有效因果事件")
         successors = set(re.findall(r"episode-\d{3}", field(block, "后续节点")))
         choices = set(
             re.findall(r"^-\s*选择：.*?(?:->|→)\s*(episode-\d{3})\s*$", block, re.MULTILINE)
@@ -230,18 +231,43 @@ def validate_topology_provenance(
             )
             consequence_targets = {item[0] for item in consequence_lines}
             if consequence_targets != successors:
-                raise ValueError(f"{episode_id} 的每条选择边必须有可追溯的选择后果")
+                raise ValueError(f"{node_id} 的每条选择边必须有可追溯的选择后果")
             for target, emotion_id, causal_id, consequence in consequence_lines:
                 if emotion_id not in emotion_ids or causal_id not in causal_ids:
-                    raise ValueError(f"{episode_id}->{target} 的选择后果引用无效")
+                    raise ValueError(f"{node_id}->{target} 的选择后果引用无效")
                 if len(re.sub(r"\s+", "", consequence)) < 10:
-                    raise ValueError(f"{episode_id}->{target} 的不可逆后果不具体")
+                    raise ValueError(f"{node_id}->{target} 的不可逆后果不具体")
         predecessors = set(re.findall(r"episode-\d{3}", field(block, "前置节点")))
         if len(predecessors) > 1:
             merge = field(block, "合流保留差异")
             if any(item not in merge for item in predecessors) or len(re.sub(r"\s+", "", merge)) < 18:
-                raise ValueError(f"{episode_id} 合流时未保留全部来路差异")
+                raise ValueError(f"{node_id} 合流时未保留全部来路差异")
     return set(entries), text
+
+
+def validate_episode_map(cache: Path, node_ids: set[str]) -> tuple[dict[str, set[str]], str]:
+    text = read_required(cache / "episode-map.md")
+    entries = blocks(text, EPISODE_HEADER)
+    if not entries:
+        raise ValueError("episode-map.md 未找到分集容器")
+    assigned: list[str] = []
+    mapping: dict[str, set[str]] = {}
+    for episode_id, block in entries.items():
+        members = set(re.findall(r"node-\d{3}", field(block, "剧情节点")))
+        if not members:
+            raise ValueError(f"{episode_id} 未映射剧情节点")
+        unknown = members - node_ids
+        if unknown:
+            raise ValueError(f"{episode_id} 映射未知剧情节点：{sorted(unknown)}")
+        mapping[episode_id] = members
+        assigned.extend(members)
+    duplicates = sorted({item for item in assigned if assigned.count(item) > 1})
+    missing = sorted(node_ids - set(assigned))
+    if duplicates:
+        raise ValueError(f"剧情节点被重复映射：{duplicates}")
+    if missing:
+        raise ValueError(f"剧情节点未映射：{missing}")
+    return mapping, text
 
 
 def episode_section_payload(cache: Path, headings: tuple[str, ...]) -> dict[str, Any]:
@@ -273,7 +299,7 @@ def artifact_payload(cache: Path, canvas: Path, stage: str) -> dict[str, Any]:
     causal_ids, causal_text = validate_causal_graph(cache, emotion_ids)
     if stage == "causal-graph":
         return {"causal-graph.md": causal_text}
-    episode_ids, topology_text = validate_topology_provenance(
+    node_ids, topology_text = validate_topology_provenance(
         cache, emotion_ids, causal_ids
     )
     if stage == "topology":
@@ -293,18 +319,18 @@ def artifact_payload(cache: Path, canvas: Path, stage: str) -> dict[str, Any]:
                 "题材透镜记录",
             ),
         )
-        if set(cards) != episode_ids:
-            raise ValueError("生产卡与拓扑节点集合不一致")
+        if set(cards) != node_ids:
+            raise ValueError("生产卡与分集拓扑集合不一致")
         for episode_id, selected in cards.items():
             card = selected["生产卡"]
-            if field(card, "拓扑节点") != episode_id:
-                raise ValueError(f"{episode_id} 生产卡未绑定自身拓扑节点")
-            topology_block = blocks(topology_text, EPISODE_HEADER)[episode_id]
+            if field(card, "分集容器") != episode_id:
+                raise ValueError(f"{episode_id} 生产卡未绑定自身分集容器")
+            topology_blocks = blocks(topology_text, NODE_HEADER)
             for label, prefix in (("情绪事件", "ES"), ("因果事件", "CG")):
                 card_refs = set(re.findall(rf"{prefix}-\d{{3}}", field(card, label)))
-                topology_refs = set(re.findall(rf"{prefix}-\d{{3}}", field(topology_block, label)))
+                topology_refs = set(re.findall(rf"{prefix}-\d{{3}}", field(topology_blocks[episode_id], label)))
                 if not card_refs or card_refs != topology_refs:
-                    raise ValueError(f"{episode_id} 生产卡的{label}未逐项继承拓扑")
+                    raise ValueError(f"{episode_id} 生产卡的{label}未继承本集拓扑")
         return cards
     if stage == "drafts":
         return episode_section_payload(cache, ("当前集初稿",))
