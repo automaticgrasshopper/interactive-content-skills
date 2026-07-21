@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any
 
 
-SCENE_RE = re.compile(r"^【\s*(场[^·】]+?)\s*·")
+SCENE_RE = re.compile(r"^【\s*([^】]+?)\s*】$")
 DIALOGUE_RE = re.compile(r"^([^：:\n]{1,30})[：:]\s*(\S.*)$")
 EXCLUDED_SPEAKERS = {"单集梗概", "出场", "选择", "互动选项"}
 QUESTION_RE = re.compile(r"[？?]|(?:吗|呢|吧|怎么|为什么|哪|谁|什么|是否|有没有)[？?]?$" )
@@ -82,7 +82,7 @@ def build_dialogue_packet(script: str) -> dict[str, Any]:
 
     canonical = json.dumps(entries, ensure_ascii=False, separators=(",", ":"))
     return {
-        "packet_version": "dialogue-review-v1",
+        "packet_version": "dialogue-review-v2",
         "script_sha256": _sha(str(script or "").strip()),
         "dialogue_sha256": _sha(canonical),
         "dialogue_count": len(entries),
