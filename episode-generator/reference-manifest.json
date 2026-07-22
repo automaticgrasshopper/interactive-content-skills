@@ -1,5 +1,5 @@
 {
-  "skill_version": "v0.1.37",
+  "skill_version": "v0.1.42",
   "phases": {
     "upstream": [
       "upstream-input-translation.md",
@@ -25,6 +25,9 @@
     "dialogue-polish": [
       "causal-episode-writing.md",
       "chinese-dialogue-craft.md"
+    ],
+    "episode-quality-review": [
+      "episode-quality-review.md"
     ],
     "scene-review": [
       "causal-episode-writing.md"
