@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate v0.1.36 nine-field episode scripts and assemble the public script."""
+"""Validate reviewed nine-field episode scripts and assemble the public script."""
 
 from __future__ import annotations
 
@@ -10,6 +10,7 @@ import re
 from pathlib import Path
 
 from validate_topology import parse
+from episode_quality_gate import verify_project
 
 
 FIELDS = [
@@ -140,6 +141,7 @@ def main() -> int:
         issues.extend(validate_episode(node_id, node, text))
         scripts.append(text)
         digests.append(f"{node_id} {hashlib.sha256(text.encode()).hexdigest()}")
+    issues.extend(verify_project(args.cache_root))
     if issues:
         print("FAIL")
         for issue in issues:
