@@ -26,6 +26,13 @@ REQUIRED_CHECKS = [
     PLAIN_LANGUAGE_CHECK,
     "结尾画面与下一入口",
 ]
+COMPREHENSION_FIELDS = {
+    "character_task": "人物任务",
+    "trigger_cost": "触发代价",
+    "action_result": "行动结果",
+    "next_entry": "下一入口",
+}
+COMPREHENSION_FAILURE_MARKERS = ("正文不清楚", "无法判断", "无法确认", "信息不足", "未说明")
 
 
 def sha256(text: str) -> str:
@@ -44,6 +51,17 @@ def read_episode(cache_root: Path, episode_id: str) -> tuple[Path, str]:
     return path, text
 
 
+def complete_script(artifact: str) -> str:
+    match = re.search(
+        r"^## 完整剧本\n\n(.*?)(?=^# 剧本分析)",
+        artifact,
+        re.MULTILINE | re.DOTALL,
+    )
+    if not match or not match.group(1).strip():
+        raise ValueError("分集缺少完整剧本正文")
+    return match.group(1).strip()
+
+
 def current_reference() -> tuple[str, str, str]:
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
     version = str(manifest.get("skill_version") or "")
@@ -57,14 +75,15 @@ def current_reference() -> tuple[str, str, str]:
 
 
 def build_packet(cache_root: Path, episode_id: str) -> dict[str, Any]:
-    path, script = read_episode(cache_root, episode_id)
+    path, artifact = read_episode(cache_root, episode_id)
+    script = complete_script(artifact)
     version, reference, reference_sha = current_reference()
     return {
         "packet_version": "episode-quality-gate-v1",
         "skill_version": version,
         "episode_id": episode_id,
         "script_path": str(path),
-        "script_sha256": sha256(script),
+        "script_sha256": sha256(artifact),
         "reference_name": REFERENCE_NAME,
         "reference_sha256": reference_sha,
         "required_checks": REQUIRED_CHECKS,
@@ -75,6 +94,21 @@ def build_packet(cache_root: Path, episode_id: str) -> dict[str, Any]:
 
 def validate_review(packet: dict[str, Any], review: dict[str, Any]) -> list[str]:
     errors: list[str] = []
+    comprehension = review.get("comprehension")
+    if not isinstance(comprehension, dict):
+        errors.append("复检缺少结构化理解门")
+        comprehension = {}
+    for key, label in COMPREHENSION_FIELDS.items():
+        item = comprehension.get(key)
+        if not isinstance(item, dict):
+            errors.append(f"理解门缺少：{label}")
+            continue
+        answer = str(item.get("answer") or "").strip()
+        proof = str(item.get("proof") or "").strip()
+        if len(answer) < 4 or len(proof) < 6:
+            errors.append(f"理解门证据不完整：{label}")
+        elif any(marker in answer or marker in proof for marker in COMPREHENSION_FAILURE_MARKERS):
+            errors.append(f"理解门未通过：{label}")
     covered = [str(item) for item in review.get("covered_checks") or []]
     missing = [item for item in REQUIRED_CHECKS if item not in covered]
     if missing:
@@ -123,6 +157,7 @@ def seal(cache_root: Path, episode_id: str, review_path: Path) -> Path:
         "reference_name": packet["reference_name"],
         "reference_sha256": packet["reference_sha256"],
         "required_checks": REQUIRED_CHECKS,
+        "comprehension": review["comprehension"],
         "covered_checks": review["covered_checks"],
         "evidence": review["evidence"],
         "issues": [],
