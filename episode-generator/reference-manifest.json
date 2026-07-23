@@ -1,5 +1,5 @@
 {
-  "skill_version": "v0.1.46",
+  "skill_version": "v0.1.47",
   "phases": {
     "upstream": [
       "upstream-input-translation.md",
