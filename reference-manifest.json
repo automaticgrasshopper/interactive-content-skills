@@ -1,5 +1,5 @@
 {
-  "skill_version": "v0.1.43",
+  "skill_version": "v0.1.44",
   "phases": {
     "upstream": [
       "upstream-input-translation.md",
@@ -56,6 +56,17 @@
     "suspense": {},
     "confrontation": {},
     "power-reversal": {},
-    "evidence-verification": {}
+    "evidence-verification": {},
+    "written-text": {
+      "episode-writing": [
+        "written-text-to-dialogue.md"
+      ],
+      "dialogue-polish": [
+        "written-text-to-dialogue.md"
+      ],
+      "episode-quality-review": [
+        "written-text-to-dialogue.md"
+      ]
+    }
   }
 }
