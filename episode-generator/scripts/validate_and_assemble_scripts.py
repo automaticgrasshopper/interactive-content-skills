@@ -9,6 +9,7 @@ import json
 import re
 from pathlib import Path
 
+from validate_emotional_topology import validate_emotional_topology
 from validate_topology import parse
 from episode_quality_gate import verify_project
 
@@ -63,7 +64,23 @@ def values(block: str) -> set[str]:
     return {item.strip() for item in re.split(r"[、，,]", block) if item.strip() and item.strip() != "无"}
 
 
-def validate_episode(node_id: str, node: dict[str, object], text: str) -> list[str]:
+def subsection(block: str, name: str) -> str:
+    match = re.search(rf"^## {re.escape(name)}\n\n(.*?)(?=^## |\Z)", block, re.MULTILINE | re.DOTALL)
+    if not match:
+        raise ValueError(f"缺少二级字段：{name}")
+    return match.group(1).strip()
+
+
+def episode_ids(block: str) -> list[str]:
+    return re.findall(r"episode-\d{3}", block)
+
+
+def validate_episode(
+    node_id: str,
+    node: dict[str, object],
+    text: str,
+    expected_predecessors: list[str] | None = None,
+) -> list[str]:
     issues: list[str] = []
     headings = re.findall(r"^# (.+?)\s*$", text, re.MULTILINE)
     if headings != FIELDS:
@@ -102,7 +119,48 @@ def validate_episode(node_id: str, node: dict[str, object], text: str) -> list[s
     expected_ending = "是" if bool(node["ending"]) else "否"
     if blocks["是否结局"] != expected_ending:
         issues.append(f"结局标记错误：{node_id}")
-    expected_targets = [target for _, target in node["choices"]]
+    analysis = blocks["剧本分析"]
+    try:
+        actual_predecessors = episode_ids(subsection(analysis, "前置节点编号列表"))
+        actual_successors = episode_ids(subsection(analysis, "后续节点编号列表"))
+        if expected_predecessors is not None and actual_predecessors != expected_predecessors:
+            issues.append(f"前置节点错误：{node_id}={actual_predecessors} expected={expected_predecessors}")
+        expected_successors = list(node.get("successors") or [])
+        if actual_successors != expected_successors:
+            issues.append(f"后续节点错误：{node_id}={actual_successors} expected={expected_successors}")
+    except ValueError as error:
+        issues.append(f"{node_id}/{error}")
+    choices = list(node.get("choices") or [])
+    successors = list(node.get("successors") or [])
+    expected_targets = [target for _, target in choices]
+    expected_texts = [label.strip() for label, _ in choices]
+    interaction = blocks["互动节点"]
+    try:
+        expected_branch = "是" if expected_targets else "否"
+        if subsection(interaction, "是否为分支节点") != expected_branch:
+            issues.append(f"分支节点标记错误：{node_id}")
+        if subsection(interaction, "是否有选择问题") != expected_branch:
+            issues.append(f"选择问题标记错误：{node_id}")
+        question = subsection(interaction, "选择问题")
+        if expected_targets and question == "无":
+            issues.append(f"选择问题为空：{node_id}")
+        expected_question = str(node.get("question") or "").strip()
+        if expected_targets and expected_question and question != expected_question:
+            issues.append(f"选择问题错误：{node_id}={question} expected={expected_question}")
+        if not expected_targets and question != "无":
+            issues.append(f"非分支节点存在选择问题：{node_id}")
+        default_target = subsection(interaction, "默认下一分集编号")
+        if not expected_targets and len(successors) > 1:
+            issues.append(f"非分支节点存在多个后续：{node_id}")
+        if expected_targets:
+            if default_target != "无" and default_target not in expected_targets:
+                issues.append(f"默认下一分集错误：{node_id}={default_target} 不在选项目标中")
+        else:
+            expected_default = str(successors[0]) if successors else "无"
+            if default_target != expected_default:
+                issues.append(f"默认下一分集错误：{node_id}={default_target} expected={expected_default}")
+    except ValueError as error:
+        issues.append(f"{node_id}/{error}")
     option_block = re.search(
         r"^## 选项列表\n\n(.*?)(?=^## 默认下一分集编号)",
         blocks["互动节点"],
@@ -115,6 +173,10 @@ def validate_episode(node_id: str, node: dict[str, object], text: str) -> list[s
     option_texts = re.findall(r"^\s+- 选项文字：(.+?)\s*$", option_block.group(1) if option_block else "", re.MULTILINE)
     if expected_targets and (len(option_numbers) != len(expected_targets) or len(option_texts) != len(expected_targets)):
         issues.append(f"选项字段不完整：{node_id}")
+    if option_texts != expected_texts:
+        issues.append(f"选项文字错误：{node_id}={option_texts} expected={expected_texts}")
+    if len(option_numbers) != len(set(option_numbers)):
+        issues.append(f"选项编号重复：{node_id}")
     return issues
 
 
@@ -129,8 +191,14 @@ def main() -> int:
         print(f"FAIL: 正式资产清单无效：{error}")
         return 1
     topology = parse(args.cache_root / "topology.md")
+    topology_issues = validate_emotional_topology(args.cache_root / "topology.md", None)
+    predecessors = {node_id: [] for node_id in topology}
+    for source_id, node in topology.items():
+        for target_id in node["successors"]:
+            if target_id in predecessors:
+                predecessors[target_id].append(source_id)
     scripts: list[str] = []
-    issues: list[str] = []
+    issues: list[str] = list(topology_issues)
     digests: list[str] = []
     for node_id, node in topology.items():
         path = args.cache_root / "episodes" / f"{node_id}.md"
@@ -138,7 +206,7 @@ def main() -> int:
             issues.append(f"缺少正文：{node_id}")
             continue
         text = path.read_text(encoding="utf-8").strip()
-        issues.extend(validate_episode(node_id, node, text))
+        issues.extend(validate_episode(node_id, node, text, predecessors[node_id]))
         scripts.append(text)
         digests.append(f"{node_id} {hashlib.sha256(text.encode()).hexdigest()}")
     issues.extend(verify_project(args.cache_root))

@@ -49,7 +49,7 @@ description: "当outline-generator 已经产出 游戏企划 和，以及asset-d
 画布一级目录严格保留三个文件：
 
 1. `episode-flowchart.svg`：真实节点、选择、条件、跳转、汇合和结局。
-2. `episode-structure.md`：分集编号、标题、类型、单集梗概和玩家可见跳转。
+2. `episode-synopsis.md`：只含分集标题与单集梗概。
 3. `episode-script.md`：全部九字段分集结果组成的完整剧本。
 
 缓存、状态表、路径枚举、检查记录和中间稿全部放在画布外。
@@ -82,7 +82,7 @@ description: "当outline-generator 已经产出 游戏企划 和，以及asset-d
 
 完成本轮正文后，必须在组装前对本轮生成或修改的每一集执行`references/chinese-dialogue-craft.md`中的“轻量台词复写”：单独提取台词、复写并放回原位。不得以随写自检代替；未完成不得进入阶段四。
 
-轻量台词复写完成后，不得直接人工打开 reference 自称复检。对本轮生成或修改的每一集运行`scripts/episode_quality_gate.py packet <缓存目录> <分集编号>`，完整读取脚本输出的 reference 与当前正文复检包，再逐场独立复检。把七项覆盖、逐项证据、问题、正文指纹与 reference 指纹写入临时 JSON；其中普通话检查必须分别举证台词与非台词描述。运行同脚本的`seal`命令生成私有回执；发现问题时先定点返修，再重新生成复检包。不得手写、复制或沿用旧回执。
+轻量台词复写完成后，不得直接人工打开 reference 自称复检。对本轮生成或修改的每一集运行`scripts/episode_quality_gate.py packet <缓存目录> <分集编号>`，完整读取脚本输出的 reference 与当前正文复检包，再逐场独立复检。临时 JSON 必须写入理解门四项复述及正文证据、七项覆盖及逐项证据、问题、正文指纹与 reference 指纹；其中普通话检查必须分别举证台词与非台词描述。运行同脚本的`seal`命令生成私有回执；发现问题时先定点返修，再重新生成复检包。不得手写、复制或沿用旧回执。
 
 所有分集完成后运行`scripts/episode_quality_gate.py verify <缓存目录>`。缺少当前有效回执、覆盖或证据不全、问题未清空、reference 变化或正文一字变化均必须失败；未通过不得冻结、组装或回写状态。
 

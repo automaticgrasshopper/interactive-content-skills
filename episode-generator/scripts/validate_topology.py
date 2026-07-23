@@ -20,6 +20,11 @@ def field(block: str, name: str) -> str:
     return match.group(1).strip()
 
 
+def optional_field(block: str, name: str) -> str:
+    match = re.search(rf"^-\s*{re.escape(name)}：\s*(.*?)\s*$", block, re.MULTILINE)
+    return match.group(1).strip() if match else ""
+
+
 def parse(path: Path) -> dict[str, dict[str, object]]:
     text = path.read_text(encoding="utf-8")
     matches = list(HEADER.finditer(text))
@@ -44,6 +49,7 @@ def parse(path: Path) -> dict[str, dict[str, object]]:
             "title": match.group(3).strip(),
             "successors": successors,
             "choices": choices,
+            "question": optional_field(block, "选择问题"),
             "interaction": field(block, "互动类型"),
             "ending": field(block, "结局") == "是",
         }
