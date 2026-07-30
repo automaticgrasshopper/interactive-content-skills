@@ -1,0 +1,52 @@
+{
+  "skill_version": "v0.1.50",
+  "phases": {
+    "input": [
+      "business/input.md"
+    ],
+    "contract": [
+      "output-contract.md"
+    ],
+    "workflow": [
+      "business/workflow.md"
+    ],
+    "emotional-spine": [
+      "business/structure.md"
+    ],
+    "topology": [
+      "business/structure.md"
+    ],
+    "episode-writing": [
+      "business/writing.md",
+      "business/dialogue.md"
+    ],
+    "character-appearance": [
+      "business/character-continuity.md"
+    ],
+    "dialogue-polish": [
+      "business/dialogue.md"
+    ],
+    "episode-quality-review": [
+      "business/quality-review.md"
+    ],
+    "modification": [
+      "business/modification.md"
+    ],
+    "validation": [
+      "business/validation.md"
+    ]
+  },
+  "profiles": {
+    "written-text": {
+      "episode-writing": [
+        "business/written-text.md"
+      ],
+      "dialogue-polish": [
+        "business/written-text.md"
+      ],
+      "episode-quality-review": [
+        "business/written-text.md"
+      ]
+    }
+  }
+}

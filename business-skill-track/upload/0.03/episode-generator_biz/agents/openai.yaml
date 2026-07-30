@@ -1,0 +1,4 @@
+interface:
+  display_name: "分集规划师（业务版）"
+  short_description: "完整执行原版分集流程，再生成工程业务合同输出"
+  default_prompt: "Use $episode-generator_biz 完整执行episode-generator v0.1.51的情绪脊、拓扑、逐集写作、独立冷读与组装流程，再生成并强验证业务JSON。"

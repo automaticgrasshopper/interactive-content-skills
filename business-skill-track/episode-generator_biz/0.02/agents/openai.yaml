@@ -1,0 +1,7 @@
+interface:
+  display_name: "分集规划师（业务版）"
+  short_description: "先建情绪脊和分支，再生成并强验证完整互动剧本"
+  default_prompt: "Use $episode-generator 读取游戏企划与正式角色、场景、道具，先冻结情绪脊和分支拓扑，再逐路径完成剧本、角色首次出场、台词复写与强验证，最终按业务接口返回分集结构和九字段分集列表。"
+
+policy:
+  allow_implicit_invocation: true

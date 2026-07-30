@@ -1,0 +1,53 @@
+{
+  "skill_version": "v0.1.50",
+  "phases": {
+    "input": [
+      "input-and-conflict-rules.md"
+    ],
+    "contract": [
+      "business-interface.md",
+      "episode-output-schema.md"
+    ],
+    "workflow": [
+      "generation-workflow.md"
+    ],
+    "emotional-spine": [
+      "emotional-spine-and-topology.md"
+    ],
+    "topology": [
+      "emotional-spine-and-topology.md"
+    ],
+    "episode-writing": [
+      "episode-writing-rules.md",
+      "dialogue-rules.md"
+    ],
+    "character-appearance": [
+      "character-continuity-rules.md"
+    ],
+    "dialogue-polish": [
+      "dialogue-rules.md"
+    ],
+    "episode-quality-review": [
+      "episode-quality-review.md"
+    ],
+    "modification": [
+      "modification-audit-rules.md"
+    ],
+    "validation": [
+      "validation-gates.md"
+    ]
+  },
+  "profiles": {
+    "written-text": {
+      "episode-writing": [
+        "written-text-rules.md"
+      ],
+      "dialogue-polish": [
+        "written-text-rules.md"
+      ],
+      "episode-quality-review": [
+        "written-text-rules.md"
+      ]
+    }
+  }
+}
