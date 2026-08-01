@@ -1,0 +1,4 @@
+interface:
+  display_name: "分集规划师"
+  short_description: "用合同化情绪脊与角色连续性门禁生成互动影游剧本"
+  default_prompt: "Use $episode-generator 读取企划与正式资产，以内部合同锁定用户明确要求；前后意愿冲突时先 AskUser，再冻结情绪脊与拓扑、逐集写作、强校验并组装十一字段剧本；将互动另行投射为选择节点，且不展示内部推导。"
