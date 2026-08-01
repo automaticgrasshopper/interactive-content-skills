@@ -1,0 +1,4 @@
+interface:
+  display_name: "分集规划师（业务版）"
+  short_description: "完整执行原版分集流程并生成经交叉校验的工程路线输出"
+  default_prompt: "Use $episode-generator_biz 生成十一字段分集与Nextplay路线，并在提交前校验首个剧情节点、唯一选择、连线和节点数量。"
