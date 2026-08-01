@@ -211,5 +211,3 @@ description: "业务工程接入版分集规划师。仅在outline-generator 已
 内部情绪脊、创作拓扑、逐集草稿和节点投射全部只写入私有运行空间。`scripts/assemble_business_output.py`是正式业务 JSON 的唯一生产者，`scripts/build_route_projection.py`是Nextplay路线提案的唯一生产者；模型不得手写、提前输出或通过页面工具逐个创建`分集列表`、`episode-xxx`、`choice-xxx`或路线投影。只有原版全部门禁、业务组装器、业务校验器和路线交叉校验器同时通过后，才能一次性返回完整业务对象并写入页面。验证前、生成中和修复中不得向页面发布任何中间节点；失败时不提交部分拓扑。重做时整组替换旧节点与边，不追加、不合并、不保留上一轮派生节点。
 
 `references/technical-handoff.md`只供技术接入人员理解投射与持久化边界，不参与创作和语义审核。
-
-当需要讲解、维护、评审或对接本 Skill 的完整生命周期时，完整读取`references/architecture-and-lifecycle.md`。该文件只解释现有分层架构、数据流和失败边界，不新增业务规则，也不得替代本文件及各阶段 Reference 的执行要求。
