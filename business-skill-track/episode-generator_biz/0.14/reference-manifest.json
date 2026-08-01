@@ -1,6 +1,9 @@
 {
   "skill_version": "v0.1.53",
   "phases": {
+    "architecture": [
+      "architecture-and-lifecycle.md"
+    ],
     "business-contract": [
       "business-interface.md",
       "episode-output-schema.md",
