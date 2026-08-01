@@ -1,6 +1,10 @@
 {
   "skill_version": "v0.1.52",
   "phases": {
+    "business-contract": [
+      "business-interface.md",
+      "episode-output-schema.md"
+    ],
     "upstream": [
       "upstream-input-translation.md",
       "public-output-and-progress.md"
@@ -53,6 +57,10 @@
     "whole-play-review": [
       "emotional-spine-state-graph.md",
       "causal-episode-writing.md"
+    ],
+    "business-output": [
+      "business-interface.md",
+      "episode-output-schema.md"
     ]
   },
   "profiles": {
