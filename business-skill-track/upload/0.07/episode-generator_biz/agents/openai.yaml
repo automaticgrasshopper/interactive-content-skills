@@ -1,0 +1,4 @@
+interface:
+  display_name: "分集规划师（业务版）"
+  short_description: "完整执行原版分集流程，再生成工程业务合同输出"
+  default_prompt: "Use $episode-generator_biz 生成并检查十一字段分集结果，忠实保留用户明确要求；用户前后要求冲突时先 AskUser。默认不发送过程消息；平台强制要求状态时只逐字发送“正在生成中”，不得描述任何内部阶段、合同、检查或修复。"
