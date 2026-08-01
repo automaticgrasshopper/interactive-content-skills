@@ -1,0 +1,87 @@
+{
+  "skill_version": "v0.1.53",
+  "phases": {
+    "business-contract": [
+      "business-interface.md",
+      "episode-output-schema.md"
+    ],
+    "upstream": [
+      "user-intent-lock.md",
+      "upstream-input-translation.md",
+      "public-output-and-progress.md"
+    ],
+    "emotional-spine": [
+      "emotional-spine-state-graph.md"
+    ],
+    "causal-graph": [
+      "emotional-spine-state-graph.md"
+    ],
+    "topology": [
+      "emotional-spine-state-graph.md",
+      "public-output-and-progress.md"
+    ],
+    "production-cards": [
+      "causal-episode-writing.md"
+    ],
+    "episode-writing": [
+      "causal-episode-writing.md",
+      "chinese-dialogue-craft.md"
+    ],
+    "character-appearance": [
+      "character-appearance-validation.md"
+    ],
+    "dialogue-polish": [
+      "causal-episode-writing.md",
+      "chinese-dialogue-craft.md"
+    ],
+    "episode-quality-review": [
+      "episode-quality-review.md"
+    ],
+    "user-intent-review": [
+      "user-intent-lock.md"
+    ],
+    "scene-review": [
+      "causal-episode-writing.md"
+    ],
+    "dialogue-review": [
+      "causal-episode-writing.md",
+      "chinese-dialogue-craft.md"
+    ],
+    "isolated-audience": [
+      "causal-episode-writing.md"
+    ],
+    "state-writeback": [
+      "emotional-spine-state-graph.md",
+      "causal-episode-writing.md"
+    ],
+    "continuity-review": [
+      "emotional-spine-state-graph.md",
+      "causal-episode-writing.md"
+    ],
+    "whole-play-review": [
+      "emotional-spine-state-graph.md",
+      "causal-episode-writing.md"
+    ],
+    "business-output": [
+      "business-interface.md",
+      "episode-output-schema.md"
+    ]
+  },
+  "profiles": {
+    "suspense": {},
+    "confrontation": {},
+    "power-reversal": {},
+    "evidence-verification": {},
+    "written-text": {
+      "episode-writing": [
+        "written-text-to-dialogue.md"
+      ],
+      "dialogue-polish": [
+        "written-text-to-dialogue.md"
+      ],
+      "episode-quality-review": [
+        "written-text-to-dialogue.md"
+      ]
+    }
+  }
+}
