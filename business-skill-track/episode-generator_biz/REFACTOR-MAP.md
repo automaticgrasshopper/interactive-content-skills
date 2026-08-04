@@ -17,6 +17,7 @@
 - `0.11`：继续完整使用通用 `v0.1.53` 内核和 0.10 十一字段；根据 0.10 线上双端回放，确认业务 JSON 正确但临时路线脚本把boolean与字符串`是`比较，导致互动与结局标记失真。新增唯一确定性路线投影器和业务 JSON—route.json 交叉校验器，禁止临时手写投影；强验证首个剧情节点、剧情/选择/可视节点数量、choice/default边、目标、结局和全图可达性；不覆盖、不合并 `0.10`。
 - `0.12`—`0.14`：继续完整使用通用 `v0.1.53` 内核，逐步稳定路线节点编号、入口剧情渲染、选择节点展示与线上兼容性；历史快照保持不变。
 - `0.15`：对齐当前工程路线合同，剧情节点使用`node_type=video`、选择节点使用`node_type=choice`，移除工程合同未声明的`route.settings`；投影器与交叉校验器同步采用同一规则。Skill 标准名称及上传目录由`episode-generator_biz`改为`episode-generator-biz`。业务十一字段、情绪脊、拓扑、逐集写作、语义审核和玩家可见路线均不改变；不覆盖、不合并`0.14`。
+- `0.16`：仅调整业务输出合同为九个一级字段：删除逐集重复的`分集数`和一级`选择节点`，把分支标记、选择问题、选项、目标分集和默认下一分集统一收进`互动节点`。路线投影层继续确定性派生独立`choice-xxx`，首个剧情节点、节点数量、默认边／选择边、情绪脊、拓扑、逐集写作和全部强验证能力不变；不覆盖、不合并`0.15`。
 - 通用验证引擎同步升级为 `v0.1.53`；版本号本身仍不使回执失效，只有正文、Reference、用户要求源、用户意图合同或回执合同变化才会失效。
 
 网页在 2026-07-29 当前可见的全部 `_biz` Skill 共三个：
@@ -32,10 +33,10 @@
 - 通用 Skill：`episode-generator`
 - 业务平台 slug：`episode-generator-biz`
 - Skill 内部标准名称：`episode-generator-biz`
-- 当前业务协作快照：`0.15`
-- 唯一工程字段合同：`0.15/references/business-interface.md`
-- 精确内容结构：`0.15/references/episode-output-schema.md`
-- 路线投影合同：`0.15/references/route-projection-contract.md`
+- 当前业务协作快照：`0.16`
+- 唯一工程字段合同：`0.16/references/business-interface.md`
+- 精确内容结构：`0.16/references/episode-output-schema.md`
+- 路线投影合同：`0.16/references/route-projection-contract.md`
 - 当前通用验证引擎：`v0.1.53`
 
 四者独立管理，不互相替代。
@@ -81,9 +82,9 @@
 | 理解门、七项覆盖、正文与 Reference 指纹回执 | `episode_quality_gate.py` |
 | 用户要求源、合同、创作物和逐项履约证据绑定 | `validate_user_intent_lock.py`、`episode_quality_gate.py` |
 | `episode-001`为分支时的两行、60字符实质剧情和制作话术拦截 | `validate_business_output.py` |
-| 十一字段及子字段、互动节点数、选择单一事实源、前后节点、结局、场次格式 | `validate_business_output.py` |
-| 互动／选择编号域、节点类型与一入多出投射 | `validate_business_output.py` |
-| 每个分集恰好一个互动节点、互动／选择身份互斥、同一来源恰好封装一个选择 | `validate_business_output.py` |
+| 九字段及子字段、分集列表长度、选择单一事实源、前后节点、结局、场次格式 | `validate_business_output.py` |
+| 分集编号域、互动字段与一入多出投射 | `validate_business_output.py` |
+| 同一来源恰好封装一个选择，分支标记、选择问题与默认下一分集一致 | `validate_business_output.py` |
 | 业务 JSON 与路线节点等长同序、入口先剧情、选择只投影一次、boolean类型正确 | `build_route_projection.py`、`validate_route_projection.py` |
 | choice/default边、目标、结局标记、剧情可达和结局可达 | `validate_route_projection.py` |
 | 未授权分集不变、对白范围内非台词不变、拓扑不变 | `validate_business_output.py` |
@@ -91,7 +92,7 @@
 
 ## 输出字段锁
 
-`0.15`继续沿用 Sheet3 最新格式，正式结果顶层只含`分集列表`。每集严格使用十一字段及全部子字段：`分集数`等于互动节点总数并在所有分集对象中一致；分集记录固定为互动节点身份；`选择节点`字段只封装播完本集后的可选问题、选项文字与目标互动节点，不把当前分集再次标为选择节点。路线提案只由内置投影器从该结果生成；`选择数`和重复的`分集结构`不属于正式业务字段。
+`0.16`正式结果顶层只含`分集列表`。每集严格使用九个一级字段：`分集编号`、`分集标题`、`分集剧本`、`剧本分析`、`关联角色`、`关联场景`、`关联道具`、`是否结局`、`互动节点`。选择问题、选项文字、目标分集和默认下一分集只在来源分集的`互动节点`中封装一次；路线提案由内置投影器确定性派生独立选择卡。`分集数`、`选择数`、一级`选择节点`和重复的`分集结构`都不属于正式业务字段。
 
 不再把`合同版本`、`状态`、`动作`、`本轮变更`、`保持不变`、`工具结果`、`待确认问题`、`警告`或`错误`包进正式业务 JSON。这些属于调用控制或运行时错误通道，不是 Sheet3 业务字段，也不应进入数据库或玩家界面。
 
