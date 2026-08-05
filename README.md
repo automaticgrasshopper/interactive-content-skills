@@ -42,3 +42,11 @@ outline-generator-v1.0.0
 ```
 
 历史来源与提取校验见 `PROVENANCE.md`。
+
+## 可回退工程基线
+
+- `episode-generator-biz/0.22`：2026-08-05 已完成工程实测的稳定基线。
+  维护源码位于 `business-skill-track/episode-generator-biz/0.22/`，平台上传包位于
+  `business-skill-track/upload/0.22/episode-generator-biz/`，Git 回退标签为
+  `episode-generator-biz-v0.22-baseline`。后续版本发生回归时应整包回退到该标签，
+  不把后续版本文件合并进本基线。
