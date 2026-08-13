@@ -1,0 +1,121 @@
+#!/usr/bin/env python3
+"""Validate exact root-to-ending route durations against the upstream play-time cap."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import re
+from pathlib import Path
+from typing import Any
+
+from validate_topology import parse
+
+
+CONTRACT_VERSION = "nextplay.route-duration.v1"
+ROOT_FIELDS = {"contract_version", "unit", "duration_limit_minutes", "mainline_path", "node_minutes", "paths"}
+PATH_FIELDS = {"ending_id", "node_ids", "total_minutes"}
+
+
+def extract_limit(stage_two: dict[str, Any]) -> int:
+    text = json.dumps(stage_two, ensure_ascii=False)
+    patterns = (
+        r"(\d+)\s*(?:至|到|[-–—~～])\s*(\d+)\s*分钟",
+        r"(?:不超过|最多|上限)\s*(\d+)\s*分钟",
+    )
+    for pattern in patterns:
+        match = re.search(pattern, text)
+        if match:
+            return int(match.group(match.lastindex or 1))
+    raise ValueError("上游没有可确定的单次游戏时长上限（分钟）")
+
+
+def graph_paths(nodes: dict[str, dict[str, object]]) -> list[list[str]]:
+    result: list[list[str]] = []
+    def walk(node_id: str, path: list[str]) -> None:
+        current = path + [node_id]
+        successors = list(nodes[node_id]["successors"])
+        if not successors:
+            result.append(current)
+            return
+        for target in successors:
+            walk(str(target), current)
+    walk("episode-001", [])
+    return sorted(result)
+
+
+def validate(duration_path: Path, topology_path: Path, stage_two_path: Path) -> list[str]:
+    issues: list[str] = []
+    try:
+        data = json.loads(duration_path.read_text(encoding="utf-8"))
+        stage_two = json.loads(stage_two_path.read_text(encoding="utf-8"))
+        nodes = parse(topology_path)
+        expected_limit = extract_limit(stage_two)
+    except (OSError, ValueError, json.JSONDecodeError) as error:
+        return [str(error)]
+    if not isinstance(data, dict) or set(data) != ROOT_FIELDS:
+        return ["路线时长根字段错误"]
+    if data.get("contract_version") != CONTRACT_VERSION or data.get("unit") != "minutes":
+        issues.append("路线时长合同版本或单位错误")
+    if data.get("duration_limit_minutes") != expected_limit:
+        issues.append(f"路线时长上限未绑定上游：期望{expected_limit}")
+    minutes = data.get("node_minutes")
+    if not isinstance(minutes, dict) or set(minutes) != set(nodes):
+        issues.append("node_minutes必须逐一覆盖全部拓扑节点")
+        minutes = {}
+    for node_id, value in minutes.items():
+        if not isinstance(value, (int, float)) or isinstance(value, bool) or value <= 0:
+            issues.append(f"节点预计时长必须为正数：{node_id}")
+    expected_paths = graph_paths(nodes)
+    supplied = data.get("paths")
+    supplied_by_nodes: dict[tuple[str, ...], dict[str, Any]] = {}
+    if not isinstance(supplied, list):
+        issues.append("paths必须为数组")
+        supplied = []
+    for item in supplied:
+        if not isinstance(item, dict) or set(item) != PATH_FIELDS or not isinstance(item.get("node_ids"), list):
+            issues.append("路线记录字段错误")
+            continue
+        key = tuple(str(value) for value in item["node_ids"])
+        if key in supplied_by_nodes:
+            issues.append(f"重复路线：{key}")
+        supplied_by_nodes[key] = item
+    if set(supplied_by_nodes) != {tuple(path) for path in expected_paths}:
+        issues.append("paths没有精确枚举全部入口到结局路线")
+    for path in expected_paths:
+        item = supplied_by_nodes.get(tuple(path))
+        if not item or set(minutes) != set(nodes):
+            continue
+        total = round(sum(float(minutes[node]) for node in path), 3)
+        if item.get("ending_id") != path[-1] or not isinstance(item.get("total_minutes"), (int, float)):
+            issues.append(f"路线结局或总时长字段错误：{path[-1]}")
+            continue
+        if abs(float(item["total_minutes"]) - total) > 0.001:
+            issues.append(f"路线总时长计算错误：{path[-1]}")
+        if total > expected_limit:
+            issues.append(f"路线超过上游单次游戏时长：{path[-1]}={total}>{expected_limit}")
+    mainline = data.get("mainline_path")
+    if not isinstance(mainline, list) or tuple(mainline) not in {tuple(path) for path in expected_paths}:
+        issues.append("mainline_path必须是实际入口到结局路线")
+    elif "正式结局" not in str(nodes[str(mainline[-1])]["interaction"]):
+        issues.append("mainline_path必须到达正式结局")
+    return list(dict.fromkeys(issues))
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("duration", type=Path)
+    parser.add_argument("topology", type=Path)
+    parser.add_argument("stage_two_input", type=Path)
+    args = parser.parse_args()
+    issues = validate(args.duration, args.topology, args.stage_two_input)
+    if issues:
+        print("FAIL")
+        for issue in issues: print(f"- {issue}")
+        return 1
+    print("PASS: every route is enumerated and within the upstream duration cap")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
