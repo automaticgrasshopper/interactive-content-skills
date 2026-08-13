@@ -1,0 +1,4 @@
+interface:
+  display_name: "分集规划师（业务版）"
+  short_description: "分阶段生成并验证互动影游分集，只返回九字段业务JSON"
+  default_prompt: "Use $episode-generator-biz 按冻结基础、无编号情绪运动与路线级完整故事、因果展开后确定节点数、正式拓扑与逐节点情绪脊、全体梗概、单Agent有限工作集逐集写作、最终组装顺序执行；阶段二隔离上游节点建议，题材只作稀疏场面导演；每阶段和每集门禁通过后再继续，只返回完整九字段分集列表JSON。"
