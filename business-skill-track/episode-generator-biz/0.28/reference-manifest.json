@@ -1,0 +1,78 @@
+{
+  "skill_version": "episode-generator-biz/0.28",
+  "phases": {
+    "business-contract": [
+      "business-interface.md",
+      "episode-output-schema.md"
+    ],
+    "external-boundary": [
+      "external-output-boundary.md"
+    ],
+    "stage-one": [
+      "user-intent-lock.md",
+      "upstream-input-translation.md",
+      "run-basis-and-stage-gates.md"
+    ],
+    "local-node-editing": [
+      "local-node-editing.md",
+      "causal-episode-writing.md",
+      "chinese-dialogue-craft.md"
+    ],
+    "emotional-spine": [
+      "emotional-spine-state-graph.md"
+    ],
+    "story-treatment": [
+      "story-treatment-and-decomposition.md",
+      "genre-direction.md",
+      "run-basis-and-stage-gates.md"
+    ],
+    "topology": [
+      "emotional-spine-state-graph.md",
+      "story-treatment-and-decomposition.md",
+      "run-basis-and-stage-gates.md"
+    ],
+    "synopsis-decomposition": [
+      "story-treatment-and-decomposition.md",
+      "run-basis-and-stage-gates.md"
+    ],
+    "episode-writing": [
+      "causal-episode-writing.md",
+      "chinese-dialogue-craft.md",
+      "genre-direction.md"
+    ],
+    "character-appearance": [
+      "character-appearance-validation.md"
+    ],
+    "dialogue-polish": [
+      "causal-episode-writing.md",
+      "chinese-dialogue-craft.md"
+    ],
+    "dramatization-completion": [
+      "dramatization-completion.md"
+    ],
+    "episode-quality-review": [
+      "episode-quality-review.md"
+    ],
+    "user-intent-review": [
+      "user-intent-lock.md"
+    ],
+    "business-output": [
+      "business-interface.md",
+      "episode-output-schema.md",
+      "run-basis-and-stage-gates.md"
+    ]
+  },
+  "profiles": {
+    "written-text": {
+      "episode-writing": [
+        "written-text-to-dialogue.md"
+      ],
+      "dialogue-polish": [
+        "written-text-to-dialogue.md"
+      ],
+      "episode-quality-review": [
+        "written-text-to-dialogue.md"
+      ]
+    }
+  }
+}
