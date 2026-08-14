@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900">
+  <rect width="1440" height="900" fill="#f4efe7"/>
+  <text x="72" y="82" font-family="Noto Sans CJK SC, Source Han Sans SC, sans-serif" font-size="42" font-weight="700" fill="#2b2420">互动影游字幕字体选择</text>
+  <text x="72" y="125" font-family="Noto Sans CJK SC, Source Han Sans SC, sans-serif" font-size="22" fill="#6f6259">示例仅用于比较气质；正式渲染前仍需检查真实字体文件与目标语言覆盖。</text>
+
+  <g transform="translate(60 175)">
+    <rect width="1320" height="190" rx="24" fill="#fffdf9" stroke="#c8b29e" stroke-width="3"/>
+    <rect width="210" height="190" rx="24" fill="#2e4b52"/>
+    <text x="32" y="72" font-family="Noto Sans CJK SC, Source Han Sans SC, sans-serif" font-size="34" font-weight="700" fill="#ffffff">思源黑体</text>
+    <text x="32" y="118" font-family="Noto Sans CJK SC, Source Han Sans SC, sans-serif" font-size="21" fill="#dce9eb">推荐默认</text>
+    <text x="250" y="78" font-family="Noto Sans CJK SC, Source Han Sans SC, sans-serif" font-size="38" font-weight="600" fill="#221d1a">先别放箭，它坏了，未必冲我们来的。</text>
+    <text x="250" y="125" font-family="Noto Sans CJK SC, Source Han Sans SC, sans-serif" font-size="24" fill="#60564f">清晰、中性、小字号可读性高｜适合对话字幕、中英双语、现代题材</text>
+    <text x="250" y="162" font-family="Noto Sans CJK SC, Source Han Sans SC, sans-serif" font-size="20" fill="#867970">Hold your fire. It may not be coming for us.</text>
+  </g>
+
+  <g transform="translate(60 390)">
+    <rect width="1320" height="190" rx="24" fill="#fffdf9" stroke="#c8b29e" stroke-width="3"/>
+    <rect width="210" height="190" rx="24" fill="#70493d"/>
+    <text x="32" y="72" font-family="Noto Serif CJK SC, Source Han Serif SC, serif" font-size="34" font-weight="700" fill="#ffffff">思源宋体</text>
+    <text x="32" y="118" font-family="Noto Serif CJK SC, Source Han Serif SC, serif" font-size="21" fill="#f0dfd7">正式叙事</text>
+    <text x="250" y="78" font-family="Noto Serif CJK SC, Source Han Serif SC, serif" font-size="38" font-weight="600" fill="#221d1a">架空王朝末年，雁回关外惊雷裂空。</text>
+    <text x="250" y="125" font-family="Noto Sans CJK SC, Source Han Sans SC, sans-serif" font-size="24" fill="#60564f">庄重、有仪式感｜适合古风、历史题材、世界观开场说明</text>
+    <text x="250" y="162" font-family="Noto Serif CJK SC, Source Han Serif SC, serif" font-size="20" fill="#867970">At the fall of an ancient dynasty, thunder tore open the sky.</text>
+  </g>
+
+  <g transform="translate(60 605)">
+    <rect width="1320" height="190" rx="24" fill="#fffdf9" stroke="#c8b29e" stroke-width="3"/>
+    <rect width="210" height="190" rx="24" fill="#65714b"/>
+    <text x="32" y="72" font-family="LXGW WenKai, Kaiti SC, serif" font-size="34" font-weight="700" fill="#ffffff">霞鹜文楷</text>
+    <text x="32" y="118" font-family="LXGW WenKai, Kaiti SC, serif" font-size="21" fill="#e7ecd7">温润人文</text>
+    <text x="250" y="78" font-family="LXGW WenKai, Kaiti SC, serif" font-size="38" fill="#221d1a">雁回关左指挥使　霍峥</text>
+    <text x="250" y="125" font-family="Noto Sans CJK SC, Source Han Sans SC, sans-serif" font-size="24" fill="#60564f">温暖、有书写感｜适合古风、日常、情感题材和人物介绍</text>
+    <text x="250" y="162" font-family="LXGW WenKai, Kaiti SC, serif" font-size="20" fill="#867970">Huo Zheng · Commander of Yanhui Pass</text>
+  </g>
+
+  <text x="72" y="850" font-family="Noto Sans CJK SC, Source Han Sans SC, sans-serif" font-size="21" fill="#6f6259">用户也可以指定其他字体；字体不可用时将自动选择同风格且覆盖目标语言的替代字体。</text>
+</svg>

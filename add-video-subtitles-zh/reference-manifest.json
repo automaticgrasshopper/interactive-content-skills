@@ -1,0 +1,55 @@
+{
+  "skill_version": "v0.8.0",
+  "phases": {
+    "input-freeze": [
+      "input-inheritance.md"
+    ],
+    "ask-user": [
+      "ask-user-flow.md",
+      "typography-and-placement.md"
+    ],
+    "content-and-timing": [
+      "subtitle-content-rules.md"
+    ],
+    "route-first-appearance": [
+      "route-first-appearance.md"
+    ],
+    "typography-and-placement": [
+      "typography-and-placement.md"
+    ],
+    "render-and-quality-check": [
+      "render-and-quality-check.md",
+      "delivery-and-versioning.md"
+    ],
+    "delivery-and-versioning": [
+      "delivery-and-versioning.md"
+    ]
+  },
+  "profiles": {
+    "dialogue-only": {
+      "content-and-timing": [
+        "subtitle-content-rules.md"
+      ]
+    },
+    "worldview": {
+      "content-and-timing": [
+        "input-inheritance.md",
+        "subtitle-content-rules.md",
+        "typography-and-placement.md"
+      ]
+    },
+    "character-intro": {
+      "content-and-timing": [
+        "input-inheritance.md",
+        "route-first-appearance.md",
+        "typography-and-placement.md"
+      ]
+    },
+    "multilingual": {
+      "content-and-timing": [
+        "subtitle-content-rules.md",
+        "typography-and-placement.md"
+      ]
+    }
+  }
+}
