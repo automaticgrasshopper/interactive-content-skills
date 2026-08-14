@@ -41,13 +41,19 @@ def supports_ass(ffmpeg: str) -> bool:
         text=True,
         capture_output=True,
     )
-    return bool(re.search(r"^\s*\.\.\.\s+ass\s+V->V", result.stdout, re.MULTILINE))
+    return bool(re.search(r"^\s*[A-Z.]{2,4}\s+ass\s+V->V", result.stdout, re.MULTILINE))
 
 
 def resolve_ffmpeg() -> str:
     system = shutil.which("ffmpeg")
     if system and supports_ass(system):
         return system
+    for candidate in (
+        Path("/opt/homebrew/opt/ffmpeg-full/bin/ffmpeg"),
+        Path("/usr/local/opt/ffmpeg-full/bin/ffmpeg"),
+    ):
+        if candidate.is_file() and supports_ass(str(candidate)):
+            return str(candidate)
     try:
         import imageio_ffmpeg  # type: ignore
         bundled = imageio_ffmpeg.get_ffmpeg_exe()
@@ -101,6 +107,7 @@ def probe(ffmpeg: str, source: Path) -> dict[str, Any]:
         "width": int(size.group(1)),
         "height": int(size.group(2)),
         "fps": float(fps.group(1)) if fps else None,
+        "has_audio": bool(re.search(r"Stream #.*Audio:", details)),
     }
 
 
@@ -179,6 +186,10 @@ def render_one(
     if source.resolve() == output.resolve():
         raise RuntimeError("Output must not overwrite the subtitle-free master")
     before = probe(ffmpeg, source)
+    title_card = video.get("title_card")
+    prepend_black = isinstance(title_card, dict) and title_card.get("mode") == "black_screen"
+    work_root = Path(tempfile.mkdtemp(prefix=f"nextplay-title-{safe_stem(video_id)}-"))
+    body_output = work_root / "body.mp4" if prepend_black else output
     render_process = run(
         [
             ffmpeg,
@@ -203,19 +214,73 @@ def render_one(
             "copy",
             "-movflags",
             "+faststart",
-            str(output),
+            str(body_output),
         ]
     )
     if re.search(r"Glyph 0x|failed to find any fallback with glyph", render_process.stderr):
         raise RuntimeError(f"Missing glyphs while rendering {video_id}")
+    if prepend_black:
+        duration_ms = int(title_card["duration_ms"])
+        title_ass = ass_path.with_name(f"{safe_stem(video_id)}.title.ass")
+        if not title_ass.is_file():
+            raise RuntimeError(f"Missing black title ASS for {video_id}")
+        card_output = work_root / "title-card.mp4"
+        fps = before["fps"] or 24.0
+        run(
+            [
+                ffmpeg,
+                "-y",
+                "-f",
+                "lavfi",
+                "-i",
+                f"color=c=black:s={before['width']}x{before['height']}:r={fps}:d={duration_ms / 1000}",
+                "-vf",
+                ass_filter(title_ass, font_file),
+                "-c:v",
+                "libx264",
+                "-crf",
+                "18",
+                "-preset",
+                "medium",
+                "-pix_fmt",
+                "yuv420p",
+                str(card_output),
+            ]
+        )
+        delay = str(duration_ms)
+        filter_complex = "[0:v][1:v]concat=n=2:v=1:a=0[v]"
+        command = [ffmpeg, "-y", "-i", str(card_output), "-i", str(body_output)]
+        if before["has_audio"]:
+            filter_complex += f";[1:a]adelay={delay}:all=1[a]"
+        command += ["-filter_complex", filter_complex, "-map", "[v]"]
+        if before["has_audio"]:
+            command += ["-map", "[a]", "-c:a", "aac", "-b:a", "192k"]
+        command += [
+            "-c:v",
+            "libx264",
+            "-crf",
+            "18",
+            "-preset",
+            "medium",
+            "-pix_fmt",
+            "yuv420p",
+            "-movflags",
+            "+faststart",
+            str(output),
+        ]
+        run(command)
+
     after = probe(ffmpeg, output)
     if before["width"] != after["width"] or before["height"] != after["height"]:
         raise RuntimeError(f"Frame size changed for {video_id}: {before} -> {after}")
-    if abs(before["duration_ms"] - after["duration_ms"]) > 120:
+    expected_duration = before["duration_ms"] + (
+        int(title_card["duration_ms"]) if prepend_black else 0
+    )
+    if abs(expected_duration - after["duration_ms"]) > 160:
         raise RuntimeError(f"Duration drift for {video_id}: {before} -> {after}")
     if not output.is_file() or output.stat().st_size == 0:
         raise RuntimeError(f"Rendered output is empty: {output}")
-    return {
+    receipt = {
         "video_id": video_id,
         "visible_name": video["visible_name"],
         "source": str(source),
@@ -224,6 +289,21 @@ def render_one(
         "source_probe": before,
         "result_probe": after,
     }
+    if prepend_black:
+        receipt["title_card"] = {
+            "mode": "black_screen",
+            "duration_ms": int(title_card["duration_ms"]),
+            "poster_frame_ms": int(title_card["poster_frame_ms"]),
+            "poster_frame_in_result_ms": int(title_card["poster_frame_ms"]),
+        }
+    else:
+        title_events = [event for event in video.get("events", []) if event.get("kind") == "title"]
+        if title_events:
+            receipt["title_card"] = {
+                "mode": "existing_empty_shot",
+                "poster_frame_in_result_ms": int(title_events[0]["poster_frame_ms"]),
+            }
+    return receipt
 
 
 def main() -> int:

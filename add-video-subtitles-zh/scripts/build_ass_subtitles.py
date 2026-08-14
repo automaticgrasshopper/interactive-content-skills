@@ -16,6 +16,7 @@ STYLE_KEYS = {
     "dialogue": "Dialogue",
     "worldview": "Worldview",
     "character_intro": "CharacterIntro",
+    "title": "Title",
 }
 
 
@@ -66,6 +67,8 @@ def event_text(event: dict[str, Any], language_mode: str) -> str:
             part for part in (translated_name, translated_identity) if part
         )
         return f"{chinese}\\N{ass_escape(translated)}"
+    if event.get("kind") == "title":
+        return ass_escape(text) if not translation else f"{ass_escape(text)}\\N{ass_escape(translation)}"
     if language_mode == "zh":
         return ass_escape(text)
     if language_mode == "other_only":
@@ -102,6 +105,7 @@ def build_ass(plan: dict[str, Any], video: dict[str, Any]) -> str:
     base_size = max(28, round(height * 0.052))
     worldview_size = max(26, round(base_size * 0.86))
     character_size = max(30, round(base_size * 0.95))
+    title_size = max(52, round(height * 0.09))
     default_margin_lr = max(24, round(width * 0.06))
     default_margin_v = max(24, round(height * 0.06))
 
@@ -142,6 +146,18 @@ def build_ass(plan: dict[str, Any], video: dict[str, Any]) -> str:
             shadow=0.0,
         ),
         style_line(
+            "Title",
+            font_name,
+            title_size,
+            5,
+            default_margin_lr,
+            default_margin_lr,
+            default_margin_v,
+            bold=1,
+            outline=2.0,
+            shadow=0.0,
+        ),
+        style_line(
             "CharacterIntro",
             font_name,
             character_size,
@@ -172,6 +188,27 @@ def build_ass(plan: dict[str, Any], video: dict[str, Any]) -> str:
         overrides = f"{{\\an{alignment}}}"
         if "x" in position and "y" in position:
             overrides += f"{{\\pos({int(position['x'])},{int(position['y'])})}}"
+        if event["kind"] == "title":
+            style = event.get("style", {})
+            title_overrides: list[str] = []
+            if style.get("font_name"):
+                title_overrides.append(f"\\fn{ass_escape(str(style['font_name']))}")
+            if style.get("font_size"):
+                title_overrides.append(f"\\fs{int(style['font_size'])}")
+            if style.get("bold") is not None:
+                title_overrides.append(f"\\b{1 if style['bold'] else 0}")
+            if style.get("italic") is not None:
+                title_overrides.append(f"\\i{1 if style['italic'] else 0}")
+            if style.get("spacing") is not None:
+                title_overrides.append(f"\\fsp{float(style['spacing'])}")
+            if style.get("outline") is not None:
+                title_overrides.append(f"\\bord{float(style['outline'])}")
+            if style.get("shadow") is not None:
+                title_overrides.append(f"\\shad{float(style['shadow'])}")
+            if style.get("primary_color"):
+                title_overrides.append(f"\\c{style['primary_color']}")
+            if title_overrides:
+                overrides += "{" + "".join(title_overrides) + "}"
         style = STYLE_KEYS[event["kind"]]
         text = event_text(event, language_mode)
         lines.append(
@@ -186,6 +223,26 @@ def build_ass(plan: dict[str, Any], video: dict[str, Any]) -> str:
         )
 
     return "\n".join(lines) + "\n"
+
+
+def build_title_card_ass(plan: dict[str, Any], video: dict[str, Any]) -> str | None:
+    card = video.get("title_card")
+    if not isinstance(card, dict) or card.get("mode") != "black_screen":
+        return None
+    synthetic = dict(video)
+    synthetic["events"] = [
+        {
+            "event_id": f"{video['video_id']}-black-title-card",
+            "kind": "title",
+            "start_ms": 0,
+            "end_ms": int(card["duration_ms"]),
+            "text": card["text"],
+            "translation": card.get("translation", ""),
+            "position": card["position"],
+            "style": card.get("style", {}),
+        }
+    ]
+    return build_ass(plan, synthetic)
 
 
 def main() -> int:
@@ -228,6 +285,11 @@ def main() -> int:
         destination = args.output_dir / f"{safe_name}.ass"
         destination.write_text(build_ass(plan, video), encoding="utf-8")
         print(destination)
+        title_ass = build_title_card_ass(plan, video)
+        if title_ass is not None:
+            title_destination = args.output_dir / f"{safe_name}.title.ass"
+            title_destination.write_text(title_ass, encoding="utf-8")
+            print(title_destination)
     return 0
 
 

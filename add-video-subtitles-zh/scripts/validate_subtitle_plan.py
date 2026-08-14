@@ -12,7 +12,7 @@ from typing import Any
 
 
 CONTRACT = "nextplay.video-subtitles.v1"
-KINDS = {"dialogue", "worldview", "character_intro"}
+KINDS = {"dialogue", "worldview", "character_intro", "title"}
 STATUSES = {"waiting_user", "in_progress", "failed", "skipped", "completed"}
 BACKGROUND_MODES = {"none"}
 WORLDVIEW_PLACEMENT_MODES = {
@@ -222,6 +222,63 @@ def validate_plan(plan: Any) -> list[str]:
             video.get("height"), f"{path}.height", errors, positive=True
         )
 
+        title_card = video.get("title_card")
+        if title_card is not None:
+            title_path = f"{path}.title_card"
+            if not isinstance(title_card, dict):
+                fail(errors, f"{title_path} must be an object")
+            else:
+                if title_card.get("mode") != "black_screen":
+                    fail(errors, f"{title_path}.mode must be black_screen")
+                require_nonempty_string(
+                    title_card.get("text"), f"{title_path}.text", errors
+                )
+                title_duration = require_nonnegative_int(
+                    title_card.get("duration_ms"),
+                    f"{title_path}.duration_ms",
+                    errors,
+                    positive=True,
+                )
+                if title_duration is not None and not 1000 <= title_duration <= 10000:
+                    fail(errors, f"{title_path}.duration_ms must be between 1000 and 10000")
+                poster_frame = require_nonnegative_int(
+                    title_card.get("poster_frame_ms"),
+                    f"{title_path}.poster_frame_ms",
+                    errors,
+                )
+                if (
+                    title_duration is not None
+                    and poster_frame is not None
+                    and poster_frame >= title_duration
+                ):
+                    fail(errors, f"{title_path}.poster_frame_ms must be inside title card")
+                require_nonempty_string(
+                    title_card.get("title_source"),
+                    f"{title_path}.title_source",
+                    errors,
+                )
+                position = title_card.get("position")
+                if not isinstance(position, dict):
+                    fail(errors, f"{title_path}.position must be an object")
+                else:
+                    alignment = position.get("alignment")
+                    if alignment not in range(1, 10):
+                        fail(errors, f"{title_path}.position.alignment must be 1..9")
+                    for margin_name in ("margin_l", "margin_r", "margin_v"):
+                        require_nonnegative_int(
+                            position.get(margin_name),
+                            f"{title_path}.position.{margin_name}",
+                            errors,
+                        )
+                    require_bbox(
+                        position.get("text_bbox"),
+                        f"{title_path}.position.text_bbox",
+                        errors,
+                        width=width,
+                        height=height,
+                        enforce_safe_area=True,
+                    )
+
         segments = video.get("segments")
         if not isinstance(segments, list) or not segments:
             fail(errors, f"{path}.segments must be a non-empty array")
@@ -350,7 +407,7 @@ def validate_plan(plan: Any) -> list[str]:
             require_nonempty_string(event.get("text"), f"{event_path}.text", errors)
             if (
                 language_mode in {"zh_en", "zh_other", "other_only"}
-                and kind != "character_intro"
+                and kind not in {"character_intro", "title"}
             ):
                 require_nonempty_string(
                     event.get("translation"), f"{event_path}.translation", errors
@@ -668,6 +725,37 @@ def validate_plan(plan: Any) -> list[str]:
                             start,
                             applies_set,
                         )
+            elif kind == "title" and start is not None and end is not None:
+                local_non_world_events.append(
+                    (start, end, applies_set, event_id or event_path, text_bbox)
+                )
+                if event.get("title_mode") != "existing_empty_shot":
+                    fail(errors, f"{event_path}.title_mode must be existing_empty_shot")
+                require_nonempty_string(
+                    event.get("title_source"), f"{event_path}.title_source", errors
+                )
+                require_nonempty_string(
+                    event.get("empty_shot_evidence"),
+                    f"{event_path}.empty_shot_evidence",
+                    errors,
+                )
+                require_nonempty_string(
+                    event.get("person_free_evidence"),
+                    f"{event_path}.person_free_evidence",
+                    errors,
+                )
+                require_nonempty_string(
+                    event.get("dialogue_free_evidence"),
+                    f"{event_path}.dialogue_free_evidence",
+                    errors,
+                )
+                poster_frame = require_nonnegative_int(
+                    event.get("poster_frame_ms"),
+                    f"{event_path}.poster_frame_ms",
+                    errors,
+                )
+                if poster_frame is not None and not start <= poster_frame < end:
+                    fail(errors, f"{event_path}.poster_frame_ms must be inside title interval")
 
         for left_index, left in enumerate(dialogue_by_routes):
             for right in dialogue_by_routes[left_index + 1 :]:

@@ -39,6 +39,15 @@
       "width": 1920,
       "height": 1080,
       "output_name": "EP01-S01-subtitled.mp4",
+      "title_card": {
+        "mode": "black_screen",
+        "text": "游戏标题",
+        "translation": "",
+        "title_source": "游戏企划.游戏名称",
+        "duration_ms": 3000,
+        "poster_frame_ms": 1500,
+        "position": {"alignment": 5, "margin_l": 120, "margin_r": 120, "margin_v": 80, "text_bbox": {"x1": 480, "y1": 390, "x2": 1440, "y2": 690}}
+      },
       "segments": [
         {
           "segment_id": "segment-01",
@@ -106,6 +115,7 @@ python3 scripts/build_ass_subtitles.py <plan.json> --output-dir <private-output-
 - `margin_l`、`margin_r`、`margin_v`使用像素。
 - 对话和世界观使用普通文本。
 - 人物介绍可通过`vertical_text`直接提供竖排文本；缺失时脚本把姓名与身份按字符换行。
+- 现有空镜标题使用 `kind: title`、`title_mode: existing_empty_shot`，并记录标题来源、空镜／无人／无对白证据和海报帧。黑屏标题使用 `video.title_card`，由渲染器生成并前置拼接。
 - 文本中的换行由`\N`表示。
 - 每个事件必须提供完整的 `text_bbox`。人物介绍还必须提供 `character_bbox`、`face_bbox`、`character_side`、`first_clear_visible_ms` 和 `first_clear_frame`。
 - 使用显式 `x/y` 时，ASS `alignment` 对应的锚点必须落在 `text_bbox` 的相应边或中心：4/5/6 的 `y` 是整块文字的垂直中心，不是首字位置。计划锚点与文字框矛盾时验证失败。
@@ -130,7 +140,7 @@ python3 scripts/build_ass_subtitles.py <plan.json> --output-dir <private-output-
 python3 scripts/render_subtitle_plan.py <plan.json> --output-dir <private-output-dir> [--font-file <font-file>]
 ```
 
-该脚本先调用计划验证和 ASS 生成，再逐视频执行 FFmpeg 烧录，最后校验宽高、时长漂移和非空输出，并打印 `nextplay.video-subtitles.render.v1` JSON 回执。`build_ass_subtitles.py` 只生成字幕轨，不能单独作为完成凭证。
+该脚本先调用计划验证和 ASS 生成，再逐视频执行 FFmpeg 烧录；黑屏标题卡会被真实生成并拼到入口视频前。最后校验宽高、预期时长、非空输出，并打印 `nextplay.video-subtitles.render.v1` JSON 回执。`build_ass_subtitles.py` 只生成字幕轨，不能单独作为完成凭证。
 
 只有运行环境提供的其他渲染能力能同样证明事件、字体、坐标、音频、时长和输出文件全部满足本合同，才允许替换该执行器；必须保存等价回执。音频复制不兼容时，使用无损或高质量音频编码并记录原因。
 
@@ -143,6 +153,7 @@ python3 scripts/render_subtitle_plan.py <plan.json> --output-dir <private-output
 - 输出文件存在且可解码。
 - 画面比例、宽高、帧率和总时长符合输入。
 - 音频轨仍存在，声画同步没有漂移。
+- 黑屏标题卡使总时长精确增加计划时长，原片音频整体后移；空镜标题不改变总时长。
 - 每个计划事件均落在视频持续时间内。
 - 每个文字框完整位于5%至95%安全区，不能只检查锚点。
 - 世界观事件只位于对应入口视频0至5000毫秒。
@@ -166,6 +177,7 @@ python3 scripts/render_subtitle_plan.py <plan.json> --output-dir <private-output
 - 中英或其他双语模式的人物姓名与身份译文存在，并与正确的中文人物介绍成组。
 - 人物介绍开始帧中本人已清晰出现；介绍文字与人物位于画面同一侧且距离足以建立对应关系。
 - 人物姓名通过至少两个独立身份锚点与画面人物匹配，不得把左右两人的姓名或身份对调。
+- 抽取标题 `poster_frame_ms` 对应帧；标题清晰、构图完整、来源正确。空镜标题的开始、中点、结束均无人且无对白，黑屏标题后第一帧与原片连续。
 
 位置失败只调整对应事件，不重写无关字幕。
 

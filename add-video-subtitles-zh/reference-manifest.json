@@ -1,5 +1,5 @@
 {
-  "skill_version": "v1.0.0",
+  "skill_version": "v1.1.0",
   "phases": {
     "input-freeze": [
       "input-inheritance.md"
@@ -19,6 +19,7 @@
     ],
     "render-and-quality-check": [
       "render-and-quality-check.md",
+      "title-card.md",
       "delivery-and-versioning.md"
     ],
     "delivery-and-versioning": [
@@ -42,6 +43,12 @@
       "content-and-timing": [
         "input-inheritance.md",
         "route-first-appearance.md",
+        "typography-and-placement.md"
+      ]
+    },
+    "title-card": {
+      "content-and-timing": [
+        "title-card.md",
         "typography-and-placement.md"
       ]
     },
