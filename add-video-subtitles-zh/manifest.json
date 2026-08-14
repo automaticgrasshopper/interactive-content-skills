@@ -1,10 +1,10 @@
 {
   "description": "为 NextPlay 互动影游中任何已经完成且可读取的视频规划并实际烧录对话、世界观、人物介绍或海报式游戏标题；标题支持黑屏艺术字卡和现有无人空镜，并可输出验收海报帧。",
   "id": "b462c824-84e8-468f-97d7-a522897376fc",
-  "name": "Add Video Subtitles Zh",
+  "name": "蚂蚱-后期设计师-0814",
   "scope": "business",
   "slug": "add-video-subtitles-zh",
-  "sourceName": "add-video-subtitles-zh-v1.1.0.zip",
+  "sourceName": "add-video-subtitles-zh-v1.1.1.zip",
   "sourceType": "folder",
-  "updatedAt": "2026-08-14T00:00:00Z"
+  "updatedAt": "2026-08-14T13:50:00+08:00"
 }
