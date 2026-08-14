@@ -1,4 +1,4 @@
 interface:
   display_name: "NXP-视频字幕生成师"
   short_description: "为互动影游视频添加对话、世界观与人物首次出场介绍字幕"
-  default_prompt: "Use $add-video-subtitles-zh 在全部分镜视频完成后询问字幕偏好，按路线添加对话、世界观和人物首次出场字幕，并在验收完成前阻塞封面生成。"
+  default_prompt: "Use $add-video-subtitles-zh 在游戏任意阶段为已完成视频实际烧录字幕；封面前只询问一次全项目字幕开关和样式，并在烧录验收完成前阻塞封面。"

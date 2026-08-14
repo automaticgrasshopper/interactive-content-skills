@@ -193,6 +193,10 @@ def main() -> int:
     parser.add_argument("plan", type=Path)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument(
+        "--font-name",
+        help="Override settings.font_name after validation with the resolved render font.",
+    )
+    parser.add_argument(
         "--skip-validation",
         action="store_true",
         help="Build without running validate_subtitle_plan.py first.",
@@ -213,6 +217,9 @@ def main() -> int:
     except (FileNotFoundError, json.JSONDecodeError) as exc:
         print(f"ERROR: cannot read plan: {exc}", file=sys.stderr)
         return 2
+
+    if args.font_name:
+        plan["settings"]["font_name"] = args.font_name
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
     for video in plan["videos"]:

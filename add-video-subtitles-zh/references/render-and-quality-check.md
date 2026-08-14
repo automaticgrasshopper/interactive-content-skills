@@ -124,14 +124,15 @@ python3 scripts/build_ass_subtitles.py <plan.json> --output-dir <private-output-
 
 ## 视频渲染路径
 
-1. 如果`video_render`在运行时明确声明支持字幕轨、字体文件、事件时间和坐标，优先使用它。
-2. 如果不支持或参数不可验证，使用可用 FFmpeg：
+验证计划后，使用随 Skill 交付的确定性执行器：
 
 ```text
-ffmpeg -i input.mp4 -vf "ass=subtitles.ass" -c:v libx264 -crf 18 -preset medium -c:a copy output.mp4
+python3 scripts/render_subtitle_plan.py <plan.json> --output-dir <private-output-dir> [--font-file <font-file>]
 ```
 
-实际命令需正确转义路径。音频复制不兼容时，改为无损或高质量音频编码并记录原因。
+该脚本先调用计划验证和 ASS 生成，再逐视频执行 FFmpeg 烧录，最后校验宽高、时长漂移和非空输出，并打印 `nextplay.video-subtitles.render.v1` JSON 回执。`build_ass_subtitles.py` 只生成字幕轨，不能单独作为完成凭证。
+
+只有运行环境提供的其他渲染能力能同样证明事件、字体、坐标、音频、时长和输出文件全部满足本合同，才允许替换该执行器；必须保存等价回执。音频复制不兼容时，使用无损或高质量音频编码并记录原因。
 
 不要原地覆盖输入。所有中间文件和证据必须留在非 Canvas 私有工作区；不能通过把它们放进 Canvas 子目录来规避此规则。
 不得使用 `drawtext` 的 `box=1`、ASS `BorderStyle=3` 或任何矩形底纹。默认

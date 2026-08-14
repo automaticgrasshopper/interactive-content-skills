@@ -1,19 +1,19 @@
 ---
 name: add-video-subtitles-zh
-description: "在互动影游全部分镜视频生成完成后、封面生成开始前，为已生成视频规划并烧录对话字幕、首段世界观说明和按每条玩家可达路线判断的人物首次出场介绍。用户要求给整部作品、某条路线、某一集或已有分镜视频添加、修改、翻译、重做字幕，或主流程完成全部视频后需要询问是否添加字幕时使用；通过 Ask User 收集字幕开关、附加内容、语言和字体偏好，检查画面安全区，必要时询问是否生成5秒空镜，并在完成或用户明确跳过前阻塞封面生成。不要用于编写分集剧本、生成故事板或分镜视频、角色资产设计、配音、封面生成或通用视频剪辑。"
+description: "为 NextPlay 互动影游中任何已经完成且可读取的视频规划、烧录、修改、翻译或重做字幕；游戏制作的任何阶段，只要用户点名整部作品、路线、分集、分镜或现有视频并要求加字幕、烧字幕或生成字幕版视频时使用。也在全部项目视频完成、封面开始前且本项目尚无字幕决定回执时使用一次 Ask User，同时收集是否生成、世界观、人物介绍、语言和字体偏好；选择生成后阻塞封面直到全部烧录验收完成，选择跳过后放行。不要用于编写剧本、生成故事板或视频、资产设计、配音、封面生成或其他通用视频剪辑。"
 ---
 
 # 视频字幕生成师
 
 ## 职责
 
-在全部目标分镜视频完成后，把已有项目事实和视频内容转化为可审计的字幕时间轴，并生成带字幕的视频版本。把已经生成的剧本、故事板和视频视为冻结输入，字幕必须适配成片：
+在游戏制作的任何阶段，为当前指定且已经完成的视频把项目事实和成片内容转化为可审计的字幕时间轴，并实际烧录带字幕的新视频版本。把已经生成的剧本、故事板和视频视为冻结输入，字幕必须适配成片：
 
 1. 为有对白或心声的镜头添加对话字幕。
 2. 按用户选择在首个入口视频前5秒添加“世界规则 + 本集前情”双层开场说明。
 3. 按用户选择为正式角色在每条玩家可达路线的首次真人出场添加竖排中文姓名与身份。
 4. 按用户选择生成中文、中英双语或中文加其他目标语言字幕。
-5. 在字幕完成、用户明确跳过或取消前阻塞封面生成。
+5. 只在封面门禁范围内，于字幕完成、用户明确跳过或取消前阻塞封面；任意阶段的局部按需任务不阻塞其他主流程。
 
 不要重写故事事实、人物身份、正式台词、第一集剧情或视频，不要创建新的业务字段，不要生成封面。
 
@@ -31,12 +31,14 @@ description: "在互动影游全部分镜视频生成完成后、封面生成开
 
 ## 执行门槛
 
-只在以下任一条件成立时进入执行：
+在以下任一条件成立时进入执行：
 
-- 主流程已确认所有目标 `分镜视频` 为完成态，且封面尚未开始生成。
-- 用户明确要求给已有视频添加、修改、翻译或重做字幕。
+- 用户在游戏制作的任何阶段明确要求给整部作品、路线、分集、分镜或已有视频添加、修改、翻译或重做字幕。
+- 主流程已确认全部项目视频完成、即将开始封面，且尚无有效 `subtitle-cover-gate-v1` 决定回执。
 
-主流程自动进入本 Skill 时，先确认全部目标视频均已完成。仍有视频处于排队、生成中、失败、缺失或不可访问状态时，不调用 Ask User，不声称字幕阶段已经开始；先返回未完成视频清单。
+用户明确调用时，只要求本次目标视频已经完成且可读取，不要求整个项目完成。对尚未生成或仍在处理的点名视频返回等待清单；先处理其余已完成目标，等待项完成后可继续同一任务，不把等待误记为失败。
+
+封面门禁自动进入时，必须先确认全部项目视频完成。仍有视频排队、生成中、失败、缺失或不可访问时，不调用 Ask User；先返回未完成视频清单。
 
 用户只修改某个视频或某种字幕时，仅处理指定范围，并保持其他已确认字幕不变。
 
@@ -59,18 +61,15 @@ description: "在互动影游全部分镜视频生成完成后、封面生成开
 
 不要把`音色台词（文本）`当成正式对白，不需要读取封面字段。
 
-## Ask User 顺序
+## Ask User 规则
 
 严格按 `references/ask-user-flow.md` 执行。
 
-1. 全部目标视频完成后，只询问是否为整个项目添加字幕。
-2. 用户选择跳过时，把内部状态记为`skipped`，立即放行封面，不再询问语言或字体。
-3. 用户选择生成时，先展示 `assets/font-options-preview.svg` 或同等字体示意，再用一次 Ask User 收齐：
-   - 是否添加世界观开场介绍。
-   - 是否添加人物首次出场介绍。
-   - 字幕语言。
-   - 字体。
-4. 分析视频后，仅在确有异常时追加询问：
+1. 封面前仅调用一次固定 Ask User；同一张卡片同时收集是否生成、世界观、人物介绍、语言和字体。保存 `subtitle-cover-gate-v1` 私有回执后禁止重复询问。
+2. 用户选择跳过时记为`skipped`并立即放行封面；选择生成时按卡片答案执行，未填写的可选项使用 Reference 中的推荐默认值。
+3. 用户在任意阶段明确要求字幕时，不再询问是否生成。已有明确偏好直接执行；只说“加字幕”时对当前目标默认生成中文对话字幕、思源黑体，不擅自添加世界观或人物介绍。
+4. 用户明确要求给整个项目生成字幕时，该决定可直接写入封面回执，封面前不再询问。
+5. 分析视频后，仅在确有异常时追加询问：
    - 首个视频前5秒没有世界观独占开场段，包括没有安全区、人物已清晰出场、已有对白或关键动作。
    - 用户自定义语言要求仍存在会改变最终结果的歧义。
 
@@ -80,25 +79,24 @@ description: "在互动影游全部分镜视频生成完成后、封面生成开
 字体不可用不属于用户决策：自动选择同风格且完整覆盖目标语言的可用字体；必要时自动安装或下载可商用替代字体。仍不可用时继续按同风格候选降级，直到找到能够正确渲染全部字符的字体，不得要求用户下载或上传字体。
 本环境中所有是/否问题都必须使用带显式选项的单选 Ask User；禁止使用无法渲染提交按钮的 boolean 问题，也禁止让用户用普通聊天消息回答等待中的 Ask User 卡片。
 
-第一次询问必须直接使用 `references/ask-user-flow.md` 中的固定 payload。调用前必须确认问题为 `type: "select"`、`multiple: false`，且 `options` 恰有两个完整对象：`是，生成字幕 / generate` 与`不生成字幕 / skip`，并提供“其他想法”输入。不得自行重写、概括或省略这些选项；没有两个可提交选项或自由输入入口的卡片属于失败，不是有效的`waiting_user`。
+封面前询问必须直接使用 `references/ask-user-flow.md` 中的完整固定 payload，不得拆成两次。调用前必须确认恰有 5 个 `select` 问题，ID 顺序为 `generate_subtitles`、`include_worldview`、`include_character_intro`、`subtitle_language`、`subtitle_font`；第一题必填、其余四题可选；选项数量依次为 `2、2、2、2、3`；每个问题都有“其他想法”。结构不完整属于失败，不是有效的`waiting_user`。
 
-第二次询问也必须直接使用 `references/ask-user-flow.md` 中的完整固定 payload，不得自行重新组织。调用前必须确认恰有 4 个 `select` 问题、全部 `multiple: false`，四组 `options` 数量依次为 `2、2、2、3`，且每个选项都有 `label`、`value` 和 `description`，每个问题都有“其他想法”输入。任一问题没有可点击选项或自由输入入口时属于失败，不是有效的`waiting_user`。
-
-为避免只加载主文件时丢失结构，第二次询问的顶层和问题结构必须同时满足下列规范；所有展示文案和选项对象仍逐字复制 `references/ask-user-flow.md`，不得临时生成：
+结构摘要如下；实际调用必须逐字复制 Reference 的完整展示文案和选项对象：
 
 ```json
 {
-  "description": "请一次完成字幕内容、语言与字体配置。推荐项均排在第一位。",
+  "description": "封面生成前请一次决定是否生成字幕及其样式；之后不会重复询问。",
   "questions": [
-    {"id": "include_worldview", "type": "select", "multiple": false, "required": true, "options": ["include", "exclude"], "userInput": true},
-    {"id": "include_character_intro", "type": "select", "multiple": false, "required": true, "options": ["include", "exclude"], "userInput": true},
-    {"id": "subtitle_language", "type": "select", "multiple": false, "required": true, "options": ["zh", "zh_en"], "userInput": true},
-    {"id": "subtitle_font", "type": "select", "multiple": false, "required": true, "options": ["source_han_sans", "source_han_serif", "lxgw_wenkai"], "userInput": true}
+    {"id": "generate_subtitles", "type": "select", "multiple": false, "required": true, "options": ["generate", "skip"], "userInput": true},
+    {"id": "include_worldview", "type": "select", "multiple": false, "required": false, "options": ["include", "exclude"], "userInput": true},
+    {"id": "include_character_intro", "type": "select", "multiple": false, "required": false, "options": ["include", "exclude"], "userInput": true},
+    {"id": "subtitle_language", "type": "select", "multiple": false, "required": false, "options": ["zh", "zh_en"], "userInput": true},
+    {"id": "subtitle_font", "type": "select", "multiple": false, "required": false, "options": ["source_han_sans", "source_han_serif", "lxgw_wenkai"], "userInput": true}
   ]
 }
 ```
 
-上面是调用前的结构校验摘要，不是可直接提交的简写 payload。实际调用必须保留 Reference 中每个问题的 `title`、`description`，以及每个选项的完整 `label`、`value`、`description` 对象。禁止把摘要里的字符串数组直接传给 Ask User。
+上面不是可直接提交的 payload。禁止把摘要中的字符串数组传给 Ask User。
 
 ## 封面门禁
 
@@ -110,7 +108,7 @@ description: "在互动影游全部分镜视频生成完成后、封面生成开
 - `skipped`：用户明确跳过，放行封面。
 - `completed`：所有目标字幕版本渲染并验收通过，放行封面。
 
-只有`skipped`和`completed`可以进入封面生成。不得因超时、工具失败、缺少字体或部分视频成功而自动放行封面。
+只有封面门禁范围内的`skipped`和`completed`可以进入封面生成。不得因超时、工具失败、缺少字体或部分视频成功而自动放行封面。任意阶段局部按需任务失败只影响其目标视频，不得冻结无关游戏流程。
 
 ## 核心流程
 
@@ -210,13 +208,15 @@ python3 scripts/validate_subtitle_plan.py <plan.json>
 
 ### 8. 渲染
 
-完整读取`references/render-and-quality-check.md`和`references/delivery-and-versioning.md`。优先使用可验证、确定性的字幕烧录路径。若运行环境的`video_render`明确支持文字轨、字体、位置和时间参数，可使用该工具；否则使用本 Skill 的 ASS 生成脚本和可用 FFmpeg 路径。
+完整读取`references/render-and-quality-check.md`和`references/delivery-and-versioning.md`。先验证计划，再使用本 Skill 的确定性 ASS + FFmpeg 执行脚本实际烧录；不得只生成 ASS 后声称字幕完成。
 
 运行：
 
 ```text
-python3 scripts/build_ass_subtitles.py <plan.json> --output-dir <private-output-dir>
+python3 scripts/render_subtitle_plan.py <plan.json> --output-dir <private-output-dir> [--font-file <font-file>]
 ```
+
+脚本依次执行计划校验、ASS 生成、逐视频 FFmpeg 烧录以及宽高、时长、音频映射和非空输出检查，并打印 `nextplay.video-subtitles.render.v1` JSON 回执。只有所有目标视频均返回 `rendered`，且后续视觉和内容抽检也通过，才能登记媒体版本并记为完成。
 
 保留无字幕母版，不原地覆盖。每个输出版本必须可追溯到同一个业务`video_id`、母版版本和私有字幕计划。ASS、SRT、计划、抽帧、音频证据、日志、临时合片和旧烧录版本全部留在私有工作区，不得写入 Canvas。
 
@@ -255,7 +255,9 @@ python3 scripts/build_ass_subtitles.py <plan.json> --output-dir <private-output-
 
 ## 硬规则
 
-- 未确认全部目标视频完成时，不启动主流程字幕询问。
+- 任意阶段均可处理当前指定且已完成的视频；只有封面门禁询问要求全部项目视频完成。
+- 每个项目封面前最多询问一次。有效 `subtitle-cover-gate-v1` 回执存在时禁止重复询问；媒体变更沿用原决定和偏好重建计划。
+- 用户明确要求字幕时不再询问是否生成；缺少偏好时按 Ask User Reference 的按需默认值执行。
 - 用户选择跳过后立即放行封面；用户选择生成后，在`completed`或用户再次明确跳过前持续阻塞封面。
 - 不编造台词、世界规则、角色名称、身份、地点或时间。
 - 不把音色示例台词当正式剧情对白。
@@ -279,6 +281,7 @@ python3 scripts/build_ass_subtitles.py <plan.json> --output-dir <private-output-
 - 最终结果必须保持原`video_id`和用户可见名称；烧录文件是同一业务视频的独立媒体版本，不是新业务视频。
 - Canvas 不得出现计划、字幕文件、日志、抽帧、音频证据、临时合片、母版或索引。调用方明确以 Canvas 承载最终媒体时，也只允许展示最终`分镜视频`。
 - 不在没有实际渲染和验收结果时声称完成。
+- `build_ass_subtitles.py` 的 ASS 文件不是成片；必须执行 `render_subtitle_plan.py` 或等价且可验证的真实烧录路径。
 
 ## 失败处理
 
@@ -292,7 +295,9 @@ python3 scripts/build_ass_subtitles.py <plan.json> --output-dir <private-output-
 
 ## 触发测试
 
-- `所有分镜视频都生成好了，询问我要不要给整个项目加字幕。`
+- `第三集刚生成好，先给第三集烧录中文字幕，其他集不用等。`
+- `这条路线的视频加字幕，游戏其他部分继续制作。`
+- `所有分镜视频都生成好了，封面前只问我一次是否加字幕和字幕样式。`
 - `给全部视频加中文对白字幕，同时加世界观开场和人物首次出场介绍。`
 - `改成中英双语，字体用思源宋体，其他时间轴不要动。`
 - `霍峥在路线B第一次出场时补人物介绍，路线A已经介绍过，不要重复。`
