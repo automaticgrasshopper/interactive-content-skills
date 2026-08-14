@@ -1,0 +1,46 @@
+{
+  "deployed_at": "2026-08-14T10:36:20Z",
+  "platform": "Maxwell",
+  "business_id": "ad3d5c4b-c7c9-4ed3-b15d-4f3556520263",
+  "version": "0.02",
+  "skills": [
+    {
+      "display_name": "蚂蚱-分支规划师-0814工程测试",
+      "slug": "episode-branch-planner-biz"
+    },
+    {
+      "display_name": "蚂蚱-剧本创作师-0814工程测试",
+      "slug": "episode-screenwriter-biz"
+    },
+    {
+      "display_name": "蚂蚱-剧本校验师-0814工程测试",
+      "slug": "episode-script-validator-biz"
+    }
+  ],
+  "test_preset": {
+    "name": "蚂蚱的字幕测试",
+    "preset_id": "49687b5d-6a04-49ed-a274-a8d1ce8afa57",
+    "enabled_slugs": [
+      "episode-branch-planner-biz",
+      "episode-screenwriter-biz",
+      "episode-script-validator-biz"
+    ],
+    "disabled_slug": "episode-generator-biz"
+  },
+  "end_to_end_test": {
+    "tested_at": "2026-08-14T10:36:20Z",
+    "story_id": "ff57a3dc-06dc-4be8-b272-2652f464cd0a",
+    "thread_id": "thr_01KZZW1BJGAQEBEX1P40ZDA5BF",
+    "result": "FAILED_BLOCKED",
+    "passed_checks": [
+      "online_skill_0_02_loaded",
+      "pipeline_guard_present",
+      "sub_agent_task_tool_invoked",
+      "no_same_context_episode_planning_fallback",
+      "no_route_projection_without_planning_handoff"
+    ],
+    "blocking_check": "planning_child_task_unavailable",
+    "project_effect": "outline_and_text_assets_saved; episode route and screenplays not generated or projected"
+  },
+  "original_skill_status": "unchanged"
+}

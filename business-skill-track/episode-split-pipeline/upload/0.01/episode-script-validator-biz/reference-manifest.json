@@ -1,0 +1,13 @@
+{
+  "skill_version": "episode-script-validator-biz/0.01",
+  "phases": {
+    "pipeline": ["split-pipeline-contract.md"],
+    "business-contract": ["business-interface.md", "episode-output-schema.md", "external-output-boundary.md"],
+    "enhancer": ["vimax-script-enhancer.md", "chinese-dialogue-craft.md"],
+    "localized-repair": ["vimax-local-repair.md"],
+    "structure": ["character-appearance-validation.md"],
+    "dramatization": ["dramatization-completion.md"],
+    "quality": ["episode-quality-review.md"],
+    "final-verification": ["user-intent-lock.md", "run-basis-and-stage-gates.md", "story-treatment-and-decomposition.md", "mainline-first-topology.md", "story-to-episode-synopsis.md", "emotional-spine-state-graph.md"]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "deployed_at": "2026-08-14T08:56:54Z",
+  "platform": "Maxwell",
+  "business_id": "ad3d5c4b-c7c9-4ed3-b15d-4f3556520263",
+  "version": "0.01",
+  "skills": [
+    {
+      "display_name": "蚂蚱-分支规划师-0814工程测试",
+      "slug": "episode-branch-planner-biz"
+    },
+    {
+      "display_name": "蚂蚱-剧本创作师-0814工程测试",
+      "slug": "episode-screenwriter-biz"
+    },
+    {
+      "display_name": "蚂蚱-剧本校验师-0814工程测试",
+      "slug": "episode-script-validator-biz"
+    }
+  ],
+  "test_preset": {
+    "name": "蚂蚱的字幕测试",
+    "preset_id": "49687b5d-6a04-49ed-a274-a8d1ce8afa57",
+    "enabled_slugs": [
+      "episode-branch-planner-biz",
+      "episode-screenwriter-biz",
+      "episode-script-validator-biz"
+    ],
+    "disabled_slug": "episode-generator-biz"
+  },
+  "original_skill_status": "unchanged"
+}

@@ -1,0 +1,12 @@
+{
+  "skill_version": "episode-screenwriter-biz/0.02",
+  "phases": {
+    "pipeline": ["split-pipeline-contract.md"],
+    "business-contract": ["business-interface.md", "episode-output-schema.md"],
+    "adaptation": ["episode-story-adapter.md"],
+    "screenwriter": ["vimax-screenwriter.md", "chinese-dialogue-craft.md"],
+    "conditional-writing": ["genre-direction.md", "written-text-to-dialogue.md"],
+    "character-introduction": ["character-appearance-validation.md"],
+    "local-editing": ["canvas-current-state.md", "local-node-editing.md"]
+  }
+}

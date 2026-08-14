@@ -1,0 +1,6 @@
+interface:
+  display_name: "蚂蚱-剧本校验师-0814工程测试"
+  short_description: "增强复写逐集剧本，完成结构、场面、冷读与正式交付校验"
+  default_prompt: "Use $episode-script-validator-biz only in a fresh STAGE_WORKER:validation child task with a valid ticket and accepted writing handoff; enhance, validate, and return the final deliverable without projecting it."
+policy:
+  allow_implicit_invocation: true

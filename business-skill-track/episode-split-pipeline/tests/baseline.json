@@ -1,0 +1,15 @@
+{
+  "baseline": "episode-generator-biz/0.46",
+  "repository_commit": "b0952cdb6931f80ec174bf7a5c408c6eb9fe26bb",
+  "git_tree": "c1303e12f529ecd84903aed48008f6ed6f951c66",
+  "files": {
+    "SKILL.md": "758fc8830f5e2b1b0ea18dbbfbc6b61472beaefba2f81f1b2a60fc137849b9f7",
+    "reference-manifest.json": "6d554d6199314653cf67f173cda6905cac91f707e10bfd93e44ed7b49875c63d",
+    "agents/openai.yaml": "e78ff52fb3fd7686bd621f0f331602e644f6fec5d63b2e7a441ecac6a76bba84"
+  },
+  "online_skill": {
+    "display_name": "蚂蚱-分集规划师-0813工程测试",
+    "slug": "episode-generator-biz",
+    "mutation_allowed": false
+  }
+}

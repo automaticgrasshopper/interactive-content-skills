@@ -1,0 +1,6 @@
+interface:
+  display_name: "蚂蚱-剧本创作师-0814工程测试"
+  short_description: "依据冻结规划逐集完成连续适配、编剧原稿和原稿回执"
+  default_prompt: "Use $episode-screenwriter-biz only in a fresh STAGE_WORKER:writing child task with a valid ticket and accepted planning handoff; write every episode draft and return the writing handoff."
+policy:
+  allow_implicit_invocation: true

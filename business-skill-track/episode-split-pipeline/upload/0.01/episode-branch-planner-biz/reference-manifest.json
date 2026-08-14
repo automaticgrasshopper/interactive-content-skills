@@ -1,0 +1,13 @@
+{
+  "skill_version": "episode-branch-planner-biz/0.01",
+  "phases": {
+    "pipeline": ["split-pipeline-contract.md"],
+    "business-contract": ["business-interface.md", "episode-output-schema.md"],
+    "stage-one": ["upstream-input-translation.md", "user-intent-lock.md", "run-basis-and-stage-gates.md"],
+    "emotional-spine": ["emotional-spine-state-graph.md"],
+    "mainline-story": ["mainline-story-writing.md"],
+    "story-and-topology": ["story-treatment-and-decomposition.md", "mainline-first-topology.md", "genre-direction.md"],
+    "synopses": ["story-to-episode-synopsis.md"],
+    "local-node-editing": ["canvas-current-state.md", "local-node-editing.md"]
+  }
+}
