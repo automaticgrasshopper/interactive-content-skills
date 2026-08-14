@@ -1,5 +1,5 @@
 {
-  "skill_version": "v1.1.1",
+  "skill_version": "v1.1.2",
   "phases": {
     "input-freeze": [
       "input-inheritance.md"

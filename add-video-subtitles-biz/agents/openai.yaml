@@ -1,0 +1,4 @@
+interface:
+  display_name: "蚂蚱-后期设计师-0814"
+  short_description: "烧录对话、世界观、人物介绍和海报式游戏标题"
+  default_prompt: "Use $add-video-subtitles-biz 在游戏任意阶段为已完成视频实际烧录字幕或游戏标题；标题可使用黑屏艺术字卡或现有无人空镜，并输出可验收海报帧。"
