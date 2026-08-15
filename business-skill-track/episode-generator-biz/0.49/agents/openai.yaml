@@ -1,0 +1,4 @@
+interface:
+  display_name: "分集规划师"
+  short_description: "生成互动分集，或按一集边界增删改已有分集节点"
+  default_prompt: "Use $episode-generator-biz：由当前任务持有唯一原子状态机，严格读取next_actions推进；创作和独立复检才派给材料隔离的子Agent。父子Thread默认不共享文件，最小输入正文与SHA随task消息发送，子Agent返回绑定哈希的结构化结果，父任务必须通过commit_child_result.py与动作输出合同落盘。每个门禁当步封存回执，单集Acceptance只汇总哈希、不重放门禁；租约可过期回收，编排失败与内容失败分开计数，已验收分集不得重写。正式业务结果只返回九字段分集列表JSON。"
