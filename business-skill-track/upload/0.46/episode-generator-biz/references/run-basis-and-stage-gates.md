@@ -89,10 +89,11 @@ stage-two-input.json
 → unnumbered-emotional-movement.json
 → mainline-story-input.json（只含六组可读故事材料）
 → mainline-story.json + mainline-story-review.json
+→ mainline-decomposition.json（冻结主线原文切片）
 → decision-fissure-audit.json + decision-fissure-review.json
 → story-treatment.json + story-treatment-review.json
 → topology-draft-1.md（必须丢弃的第一版）
-→ topology.md（与第一版形状不同的唯一正式第二版）
+→ topology.md + mainline-path.json（与第一版形状不同的唯一正式第二版）
 → route-duration.json
 → emotional-spine.json
 → episode-synopses/*.json + synopsis-set-review.json
@@ -115,8 +116,9 @@ python3 scripts/decision_fissure_gate.py verify CACHE_ROOT
 python3 scripts/story_treatment_gate.py packet CACHE_ROOT --output TREATMENT_PACKET.json
 python3 scripts/story_treatment_gate.py seal CACHE_ROOT TREATMENT_REVIEW.json
 python3 scripts/story_treatment_gate.py verify CACHE_ROOT
-python3 scripts/validate_topology.py CACHE_ROOT/topology.md --movement CACHE_ROOT/unnumbered-emotional-movement.json --expected-endings E --expected-formal F --expected-failure X
+python3 scripts/validate_mainline_projection.py CACHE_ROOT --decomposition-only
 python3 scripts/validate_topology_revision.py CACHE_ROOT/topology-draft-1.md CACHE_ROOT/topology.md
+python3 scripts/validate_topology.py CACHE_ROOT/topology.md --movement CACHE_ROOT/unnumbered-emotional-movement.json --expected-endings E --expected-formal F --expected-failure X
 python3 scripts/validate_story_topology.py CACHE_ROOT/story-treatment.json CACHE_ROOT/topology.md --expected-endings E
 python3 scripts/validate_route_duration.py CACHE_ROOT/route-duration.json CACHE_ROOT/topology.md CACHE_ROOT/stage-two-input.json
 python3 scripts/validate_emotional_spine.py CACHE_ROOT/emotional-spine.json
@@ -162,11 +164,54 @@ python3 scripts/synopsis_set_gate.py verify CACHE_ROOT
 → 必要时合并问题单并由Enhancer局部修复 → 单集验收回执 → 放行
 ```
 
+每集按以下命令链执行；`review_repair_gate.py`三条命令只在至少一项复检失败时运行，两项直接PASS时不得制造空修复：
+
+```bash
+python3 scripts/build_episode_adaptation_source.py CACHE_ROOT EPISODE_ID --output CACHE_ROOT/episode-adaptation-sources/EPISODE_ID.json
+python3 scripts/build_episode_writing_input.py ADAPTATION_SOURCE.json STORY_MATERIAL.json EPISODE_ID --output CACHE_ROOT/episode-writing-inputs/EPISODE_ID.txt
+python3 scripts/validate_screenwriter_draft.py CACHE_ROOT/screenplay-drafts/EPISODE_ID.md --episode-id EPISODE_ID --receipt CACHE_ROOT/screenwriter-receipts/EPISODE_ID.json
+python3 scripts/build_enhancer_input.py CACHE_ROOT/screenplay-drafts/EPISODE_ID.md --boundary "STOP_BOUNDARY" --enhancer-reference references/vimax-script-enhancer.md --dialogue-reference references/chinese-dialogue-craft.md --screenwriter-receipt CACHE_ROOT/screenwriter-receipts/EPISODE_ID.json --output CACHE_ROOT/enhancer-inputs/EPISODE_ID.txt
+python3 scripts/validate_episode.py CACHE_ROOT EPISODE_ID
+python3 scripts/dramatization_gate.py plan CACHE_ROOT EPISODE_ID
+python3 scripts/dramatization_gate.py packet CACHE_ROOT EPISODE_ID --output DRAMATIZATION_PACKET.json
+python3 scripts/dramatization_gate.py seal CACHE_ROOT EPISODE_ID DRAMATIZATION_REVIEW.json
+python3 scripts/dramatization_gate.py verify-one CACHE_ROOT EPISODE_ID
+python3 scripts/episode_quality_gate.py packet CACHE_ROOT EPISODE_ID --output QUALITY_PACKET.json
+python3 scripts/episode_quality_gate.py seal CACHE_ROOT EPISODE_ID QUALITY_REVIEW.json
+python3 scripts/episode_quality_gate.py verify-one CACHE_ROOT EPISODE_ID
+python3 scripts/review_repair_gate.py merge CACHE_ROOT EPISODE_ID CACHE_ROOT/review-findings/EPISODE_ID.dramatization.json CACHE_ROOT/review-findings/EPISODE_ID.cold-read.json --output CACHE_ROOT/merged-review-findings/EPISODE_ID.json
+python3 scripts/review_repair_gate.py input CACHE_ROOT EPISODE_ID CACHE_ROOT/merged-review-findings/EPISODE_ID.json --reference references/vimax-local-repair.md --output CACHE_ROOT/review-repair-inputs/EPISODE_ID.txt
+python3 scripts/review_repair_gate.py verify CACHE_ROOT EPISODE_ID CACHE_ROOT/repair-baselines/EPISODE_ID.md CACHE_ROOT/merged-review-findings/EPISODE_ID.json --receipt CACHE_ROOT/review-repair-receipts/EPISODE_ID.json
+python3 scripts/episode_acceptance.py CACHE_ROOT EPISODE_ID
+```
+
 Enhancer可以全面重写表达层，包括场面动作组织、全部对白、话轮、停顿和反应，不要求保留草稿原句；禁止改变剧情事实、行动结果、选择、结局和停止边界。场面复检和独立冷读都只判不改；问题按正文行号合并后仍由Enhancer在同一阶段局部修复，未命中内容逐字不变。任何覆盖整集的修改必须重新经过Screenwriter与完整Enhancer，不能借局部修复或验收生成第三版正文。
 
 ## 阶段四门禁
 
 阶段四先验证全局用户意图、全路径首次出场和所有当前回执，再调用唯一业务组装器。组装器从冻结拓扑和逐集正文确定性映射九字段JSON，并再次执行全部项目门禁。
+
+先运行全局门禁：
+
+```bash
+python3 scripts/validate_user_intent_lock.py project CACHE_ROOT
+python3 scripts/story_treatment_gate.py verify CACHE_ROOT
+python3 scripts/validate_story_topology.py CACHE_ROOT/story-treatment.json CACHE_ROOT/topology.md --expected-endings E
+python3 scripts/synopsis_set_gate.py verify CACHE_ROOT
+python3 scripts/validate_mainline_projection.py CACHE_ROOT
+python3 scripts/validate_character_appearances.py CACHE_ROOT --asset-catalog CACHE_ROOT/asset-catalog.json --introductions CACHE_ROOT/character-introductions.json
+python3 scripts/dramatization_gate.py verify CACHE_ROOT
+python3 scripts/episode_quality_gate.py verify CACHE_ROOT
+python3 scripts/episode_acceptance.py CACHE_ROOT --all
+```
+
+全部PASS后才能组装与验证正式交付：
+
+```bash
+python3 scripts/assemble_business_output.py CACHE_ROOT OUTPUT_ROOT/episode-business.json --completion-receipt OUTPUT_ROOT/completion-receipt.json --handoff OUTPUT_ROOT/episode-handoff.json --expected-endings E --expected-formal F --expected-failure X
+python3 scripts/validate_business_output.py OUTPUT_ROOT/episode-business.json --asset-catalog CACHE_ROOT/asset-catalog.json --expected-endings E --expected-formal F --expected-failure X
+python3 scripts/verify_deliverable.py CACHE_ROOT OUTPUT_ROOT/episode-business.json OUTPUT_ROOT/completion-receipt.json OUTPUT_ROOT/episode-handoff.json --expected-endings E --expected-formal F --expected-failure X
+```
 
 完成凭证使用`nextplay.episode-completion.v14`，绑定：
 
