@@ -147,4 +147,4 @@
 }
 ```
 
-`kind`只能是`dialogue`、`worldview`或`character_intro`。人物介绍额外记录`character_name`、`character_identity`和首次出场证据。
+`kind`可以是`dialogue`、`worldview`、`character_intro`或烧入现有空镜的`title`。人物介绍额外记录`character_name`、`character_identity`和首次出场证据；黑屏标题使用视频级`title_card`，完整合同见`title-card.md`和`render-and-quality-check.md`。
