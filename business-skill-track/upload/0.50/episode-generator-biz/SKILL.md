@@ -20,17 +20,7 @@ description: "当大纲生成师已经产出游戏企划，以及资产设计师
 3. `references/upstream-input-translation.md`
 4. `references/external-output-boundary.md`
 
-初次生成必须具备`游戏企划`、`角色描述`、`场景描述`和`道具描述`；缺少哪一项，只追问哪一项。正式输出顶层只有`分集列表`，每集严格使用以下九个一级字段，字段层级和类型以`business-interface.md`为唯一合同：
-
-1. `分集编号`
-2. `分集标题`
-3. `分集剧本`
-4. `剧本分析`
-5. `关联角色`
-6. `关联场景`
-7. `关联道具`
-8. `是否结局`
-9. `互动节点`
+初次生成必须具备`游戏企划`、`角色描述`、`场景描述`和`道具描述`；缺少哪一项，只追问哪一项。正式输出顶层只有`分集列表`，每集严格使用`business-interface.md`定义的九个一级字段，不在主文件重复维护字段合同。
 
 情绪脊、故事、拓扑、梗概、写作材料、回执、哈希、缓存和完成凭证均为私有运行材料，不进入正式结果。对外状态和询问边界遵守`external-output-boundary.md`。
 
@@ -47,18 +37,14 @@ description: "当大纲生成师已经产出游戏企划，以及资产设计师
 
 ## Reference 路由
 
-按阶段加载，避免把全部规则一次塞进工作上下文：
+按阶段加载，不一次读入全部规则：
 
-- 冻结用户要求和运行基础：读`user-intent-lock.md`及`run-basis-and-stage-gates.md`的阶段一。
-- 建立未编号情绪运动：读`emotional-spine-state-graph.md`。
-- 写第一版可读故事：情绪运动通过后读`mainline-story-writing.md`；写作隔离区只读取已通过的六组故事输入。
-- 分解主线、扫描裂缝、生成支线和两版拓扑：可读故事冷读通过后读`mainline-first-topology.md`、`story-treatment-and-decomposition.md`和`genre-direction.md`。
-- 生成全体分集梗概：读`story-to-episode-synopsis.md`。
-- 逐集适配、写作、增强、结构验收、场面复检、冷读和局部修复：读`atomic-run-orchestration.md`，并只按其中的动作读取`episode-story-adapter.md`、`vimax-screenwriter.md`、`vimax-script-enhancer.md`、`chinese-dialogue-craft.md`、`character-appearance-validation.md`、`dramatization-completion.md`、`episode-quality-review.md`和`vimax-local-repair.md`。
-- 当前集出现推动剧情的书面信息时，再读`written-text-to-dialogue.md`；题材标签命中时才读`genre-direction.md`。
-- 用户编辑已有节点：先读`canvas-current-state.md`完成当前全图定位，再读`local-node-editing.md`。
+- 阶段一读`user-intent-lock.md`和`run-basis-and-stage-gates.md`；阶段二依次读`emotional-spine-state-graph.md`、`mainline-story-writing.md`、`mainline-first-topology.md`、`story-treatment-and-decomposition.md`、`genre-direction.md`和`story-to-episode-synopsis.md`。
+- 阶段三、四先读`atomic-run-orchestration.md`，再只按当前动作读取其中指定的适配、Screenwriter、Enhancer、中文对白、首次出场、场面复检、冷读和局部修复 Reference。
+- 当前集确有推动剧情的书面信息时读`written-text-to-dialogue.md`；题材命中时读`genre-direction.md`。
+- 用户编辑已有节点时依次读`canvas-current-state.md`和`local-node-editing.md`。
 
-各阶段的文件合同、命令清单、顺序、修复边界和失效范围以`run-basis-and-stage-gates.md`为唯一总门禁合同；阶段三和阶段四的动作状态机以`atomic-run-orchestration.md`为唯一执行合同。
+文件合同、命令顺序、修复边界和失效范围以`run-basis-and-stage-gates.md`为总门禁合同；阶段三、四的状态机以`atomic-run-orchestration.md`为执行合同。
 
 ## 主流程
 
