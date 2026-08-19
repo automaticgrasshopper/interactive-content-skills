@@ -1,248 +1,43 @@
 #!/usr/bin/env python3
-"""Bind a completed Biz run to its private dependencies and business JSON."""
-
+"""Bind a completed Biz run to its frozen planning and screenplay closure."""
 from __future__ import annotations
-
-import hashlib
-import json
+import hashlib, json
 from pathlib import Path
 from typing import Any
 
+CONTRACT_VERSION="nextplay.episode-completion.v18"; HANDOFF_VERSION="nextplay.episode-handoff.v1"
+def sha_bytes(value: bytes)->str:return hashlib.sha256(value).hexdigest()
 
-CONTRACT_VERSION = "nextplay.episode-completion.v15"
-HANDOFF_VERSION = "nextplay.episode-handoff.v1"
-
-
-def sha256_bytes(value: bytes) -> str:
-    return hashlib.sha256(value).hexdigest()
-
-
-def dependency_files(
-    cache_root: Path,
-    business_path: Path,
-    asset_catalog_path: Path,
-    character_introductions_path: Path,
-    spine_path: Path,
-) -> dict[str, Path]:
-    result = {
-        "business-json": business_path,
-        "cache/run-basis.json": cache_root / "run-basis.json",
-        "cache/unnumbered-emotional-movement.json": cache_root / "unnumbered-emotional-movement.json",
-        "asset-catalog": asset_catalog_path,
-        "character-introductions": character_introductions_path,
-        "emotional-spine": spine_path,
-        "cache/stage-two-input.json": cache_root / "stage-two-input.json",
-        "cache/mainline-story-input.json": cache_root / "mainline-story-input.json",
-        "cache/mainline-decomposition.json": cache_root / "mainline-decomposition.json",
-        "cache/mainline-path.json": cache_root / "mainline-path.json",
-        "cache/stage-two-acceptance.json": cache_root / "stage-two-acceptance.json",
-        "cache/run-state.json": cache_root / "run-state.json",
-    }
-    for name in (
-        "mainline-story.json",
-        "mainline-story-review.json",
-        "decision-fissure-audit.json",
-        "decision-fissure-review.json",
-        "route-duration.json",
-        "story-treatment.json",
-        "story-treatment-review.json",
-        "topology-draft-1.md",
-        "topology.md",
-        "synopsis-set-review.json",
-        "user-request.md",
-        "user-intent-lock.json",
-        "user-intent-review.json",
-    ):
-        result[f"cache/{name}"] = cache_root / name
-    for directory, suffix in (
-        ("episode-synopses", ".json"),
-        ("episode-adaptation-sources", ".json"),
-        ("episode-story-materials", ".json"),
-        ("episode-writing-inputs", ".txt"),
-        ("enhancer-inputs", ".txt"),
-        ("screenplay-drafts", ".md"),
-        ("screenwriter-receipts", ".json"),
-        ("enhanced-screenplays", ".md"),
-        ("dramatization-plans", ".json"),
-        ("dramatization-receipts", ".json"),
-        ("episode-quality-receipts", ".json"),
-        ("episode-acceptance-receipts", ".json"),
-        ("repair-baselines", ".md"),
-        ("review-findings", ".json"),
-        ("merged-review-findings", ".json"),
-        ("review-repair-inputs", ".txt"),
-        ("review-repair-receipts", ".json"),
-        ("episodes", ".md"),
-    ):
-        folder = cache_root / directory
-        if folder.is_dir():
-            for path in sorted(folder.glob(f"*{suffix}")):
-                result[f"cache/{directory}/{path.name}"] = path
+def dependency_files(root:Path,business:Path,assets:Path,introductions:Path,spine:Path)->dict[str,Path]:
+    result={"business-json":business,"asset-catalog":assets,"character-introductions":introductions,"emotional-spine":spine,"cache/planning-acceptance.json":root/"planning-acceptance.json","cache/run-state.json":root/"run-state.json"}
+    for name in ("user-request.md","user-intent-lock.json","creative-brief.json","complete-story.json","complete-story-review.json","mainline-decomposition.json","mainline-path.json","decision-fissure-audit.json","decision-fissure-review.json","story-treatment.json","story-treatment-review.json","topology-draft-1.md","topology.md","route-duration.json","topology-review-a.json","topology-review-b.json","synopsis-set-review.json"):
+        result[f"cache/{name}"]=root/name
+    for directory,suffix in (("episode-synopses",".json"),("episode-adaptation-sources",".json"),("episode-story-materials",".json"),("episode-writing-inputs",".txt"),("compact-drafts",".md"),("compact-draft-receipts",".json"),("enhancer-inputs",".txt"),("enhanced-screenplays",".md"),("episode-structure-receipts",".json"),("episode-acceptance-receipts",".json"),("episodes",".md")):
+        for path in sorted((root/directory).glob(f"*{suffix}")):result[f"cache/{directory}/{path.name}"]=path
     return result
 
+def artifact_hashes(paths:dict[str,Path])->dict[str,str]:
+    result={}
+    for label,path in sorted(paths.items()):
+        if not path.is_file():raise ValueError(f"完成凭证缺少依赖：{label}")
+        result[label]=sha_bytes(path.read_bytes())
+    return result
 
-def artifact_hashes(paths: dict[str, Path]) -> dict[str, str]:
-    hashes: dict[str, str] = {}
-    for label, path in sorted(paths.items()):
-        if not path.is_file():
-            raise ValueError(f"完成凭证缺少依赖：{label}")
-        hashes[label] = sha256_bytes(path.read_bytes())
-    return hashes
+def validate_episode_artifact_closure(root:Path)->None:
+    ids=sorted(path.stem for path in (root/"episode-synopses").glob("episode-*.json"))
+    if not ids:raise ValueError("完成凭证缺少全体分集梗概")
+    required={"episode-adaptation-sources":".json","episode-story-materials":".json","episode-writing-inputs":".txt","compact-drafts":".md","compact-draft-receipts":".json","enhancer-inputs":".txt","enhanced-screenplays":".md","episode-structure-receipts":".json","episode-acceptance-receipts":".json","episodes":".md"}
+    for directory,suffix in required.items():
+        actual=sorted(path.stem for path in (root/directory).glob(f"episode-*{suffix}"))
+        if actual!=ids:raise ValueError(f"分集产物闭包不完整：{directory}")
 
-
-def validate_episode_artifact_closure(cache_root: Path) -> None:
-    synopsis_dir = cache_root / "episode-synopses"
-    episode_ids = sorted(path.stem for path in synopsis_dir.glob("episode-*.json"))
-    if not episode_ids:
-        raise ValueError("完成凭证缺少全体分集梗概")
-    required = {
-        "episode-adaptation-sources": ".json",
-        "episode-story-materials": ".json",
-        "episode-writing-inputs": ".txt",
-        "screenplay-drafts": ".md",
-        "screenwriter-receipts": ".json",
-        "enhancer-inputs": ".txt",
-        "enhanced-screenplays": ".md",
-        "dramatization-plans": ".json",
-        "dramatization-receipts": ".json",
-        "episode-quality-receipts": ".json",
-        "episode-acceptance-receipts": ".json",
-        "episodes": ".md",
-    }
-    for directory, suffix in required.items():
-        folder = cache_root / directory
-        actual = sorted(path.stem for path in folder.glob(f"episode-*{suffix}"))
-        if actual != episode_ids:
-            missing = sorted(set(episode_ids) - set(actual))
-            extra = sorted(set(actual) - set(episode_ids))
-            raise ValueError(f"分集产物闭包不完整：{directory} 缺少{missing}，多余{extra}")
-
-    repair_directories = {
-        "repair-baselines": ".md",
-        "merged-review-findings": ".json",
-        "review-repair-inputs": ".txt",
-        "review-repair-receipts": ".json",
-    }
-    repair_sets = {
-        directory: {path.stem for path in (cache_root / directory).glob(f"episode-*{suffix}")}
-        for directory, suffix in repair_directories.items()
-    }
-    finding_ids = {
-        path.name.split(".", 1)[0]
-        for path in (cache_root / "review-findings").glob("episode-*.json")
-    }
-    all_repair_ids = set().union(*repair_sets.values(), finding_ids)
-    for directory, ids in repair_sets.items():
-        if ids != all_repair_ids:
-            raise ValueError(f"局部修复产物闭包不完整：{directory}")
-    for episode_id in all_repair_ids:
-        actual_findings = {
-            path.name for path in (cache_root / "review-findings").glob(f"{episode_id}.*.json")
-        }
-        allowed_findings = {
-            f"{episode_id}.dramatization.json",
-            f"{episode_id}.cold-read.json",
-        }
-        if not actual_findings or not actual_findings <= allowed_findings:
-            raise ValueError(f"局部修复缺少有效原始问题单：{episode_id}")
-
-
-def make_receipt(
-    cache_root: Path,
-    business_path: Path,
-    asset_catalog_path: Path,
-    character_introductions_path: Path,
-    spine_path: Path,
-    skill_version: str,
-) -> dict[str, Any]:
-    return {
-        "contract_version": CONTRACT_VERSION,
-        "skill_version": skill_version,
-        "artifacts": artifact_hashes(
-            dependency_files(
-                cache_root,
-                business_path,
-                asset_catalog_path,
-                character_introductions_path,
-                spine_path,
-            )
-        ),
-    }
-
-
-def validate_receipt(
-    receipt_path: Path,
-    cache_root: Path,
-    business_path: Path,
-    asset_catalog_path: Path,
-    character_introductions_path: Path,
-    spine_path: Path,
-    skill_version: str,
-) -> list[str]:
-    try:
-        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
-        expected = make_receipt(
-            cache_root,
-            business_path,
-            asset_catalog_path,
-            character_introductions_path,
-            spine_path,
-            skill_version,
-        )
-    except (OSError, ValueError, json.JSONDecodeError) as error:
-        return [f"完成凭证不可用：{error}"]
-    if receipt != expected:
-        return ["完成凭证与当前冻结基础、剧本、复检材料或业务JSON不一致"]
-    return []
-
-
-def make_handoff(
-    cache_root: Path,
-    business_path: Path,
-    receipt_path: Path,
-    skill_version: str,
-) -> dict[str, Any]:
-    validate_episode_artifact_closure(cache_root)
-    business = json.loads(business_path.read_text(encoding="utf-8"))
-    topology_text = (cache_root / "topology.md").read_text(encoding="utf-8")
-    return {
-        "contract_version": HANDOFF_VERSION,
-        "capability_id": "episode-generator-biz",
-        "skill_version": skill_version,
-        "business_output": {
-            "path": str(business_path.resolve()),
-            "sha256": sha256_bytes(business_path.read_bytes()),
-        },
-        "completion_receipt": {
-            "path": str(receipt_path.resolve()),
-            "sha256": sha256_bytes(receipt_path.read_bytes()),
-            "contract_version": CONTRACT_VERSION,
-        },
-        "resolved_counts": {
-            "episodes": len(business.get("分集列表") or []),
-            "main_endings": topology_text.count("主要正式结局") + topology_text.count("主要失败结局"),
-            "minor_endings": topology_text.count("独立小结局"),
-        },
-        "status": {
-            "business_schema": "passed",
-            "skill_acceptance": "verified",
-            "project_projection": "not_performed",
-        },
-    }
-
-
-def validate_handoff(
-    handoff_path: Path,
-    cache_root: Path,
-    business_path: Path,
-    receipt_path: Path,
-    skill_version: str,
-) -> list[str]:
-    try:
-        actual = json.loads(handoff_path.read_text(encoding="utf-8"))
-        expected = make_handoff(cache_root, business_path, receipt_path, skill_version)
-    except (OSError, ValueError, json.JSONDecodeError) as error:
-        return [f"交接清单不可用：{error}"]
-    if actual != expected:
-        return ["交接清单与当前业务JSON、完成凭证或拓扑统计不一致"]
-    return []
+def make_receipt(root:Path,business:Path,assets:Path,introductions:Path,spine:Path,skill_version:str)->dict[str,Any]:return {"contract_version":CONTRACT_VERSION,"skill_version":skill_version,"artifacts":artifact_hashes(dependency_files(root,business,assets,introductions,spine))}
+def validate_receipt(receipt:Path,root:Path,business:Path,assets:Path,introductions:Path,spine:Path,skill_version:str)->list[str]:
+    try:return [] if json.loads(receipt.read_text(encoding="utf-8"))==make_receipt(root,business,assets,introductions,spine,skill_version) else ["完成凭证与当前冻结材料不一致"]
+    except (OSError,ValueError,json.JSONDecodeError) as error:return [f"完成凭证不可用：{error}"]
+def make_handoff(root:Path,business:Path,receipt:Path,skill_version:str)->dict[str,Any]:
+    validate_episode_artifact_closure(root); data=json.loads(business.read_text(encoding="utf-8")); topology=(root/"topology.md").read_text(encoding="utf-8")
+    return {"contract_version":HANDOFF_VERSION,"capability_id":"episode-generator-biz","skill_version":skill_version,"business_output":{"path":str(business.resolve()),"sha256":sha_bytes(business.read_bytes())},"completion_receipt":{"path":str(receipt.resolve()),"sha256":sha_bytes(receipt.read_bytes()),"contract_version":CONTRACT_VERSION},"resolved_counts":{"episodes":len(data.get("分集列表") or []),"main_endings":topology.count("主结局"),"expected_endings":topology.count("期望结局"),"failure_endings":topology.count("失败结局"),"small_endings":topology.count("小结局")},"status":{"business_schema":"passed","skill_acceptance":"verified","project_projection":"not_performed"}}
+def validate_handoff(path:Path,root:Path,business:Path,receipt:Path,skill_version:str)->list[str]:
+    try:return [] if json.loads(path.read_text(encoding="utf-8"))==make_handoff(root,business,receipt,skill_version) else ["交接清单不一致"]
+    except (OSError,ValueError,json.JSONDecodeError) as error:return [f"交接清单不可用：{error}"]

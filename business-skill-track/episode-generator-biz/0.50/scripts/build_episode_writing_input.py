@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate coherent story material and export the only input seen by Screenwriter."""
+"""Validate coherent story material and export the only compact-draft input."""
 
 from __future__ import annotations
 

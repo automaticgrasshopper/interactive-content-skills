@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the emotional spine before complete-story writing begins."""
+"""Validate the emotional spine projected after the formal topology exists."""
 
 from __future__ import annotations
 
@@ -39,7 +39,7 @@ def main() -> int:
         for issue in dict.fromkeys(issues):
             print(f"- {issue}")
         return 1
-    print(f"PASS: {len(node_ids)} emotional states are valid before story treatment")
+    print(f"PASS: {len(node_ids)} post-topology emotional states are valid")
     return 0
 
 

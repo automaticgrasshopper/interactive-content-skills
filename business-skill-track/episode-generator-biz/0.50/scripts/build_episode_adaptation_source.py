@@ -60,18 +60,12 @@ def compact_fact(name: str, value: str, *, identity: bool = False) -> str:
 
 def adaptation_character_card(card: dict[str, Any]) -> dict[str, Any]:
     name = str(card.get("name") or "").strip()
-    identity = str(card.get("public_role") or card.get("identity") or "").split("；", 1)[0]
+    description = str(card.get("description") or card.get("public_role") or card.get("identity") or "").strip()
+    identity = re.split(r"[。；]", description, maxsplit=1)[0]
     return {
         "name": name,
         "public_role": compact_fact(name, identity, identity=True),
-        "connections": [
-            compact_fact(name, str(value or ""))
-            for value in card.get("relationships") or []
-        ],
-        "current_want": card.get("current_desire"),
-        "knowledge_boundary": card.get("knowledge_boundary") or [],
-        "capability_boundary": card.get("capability_boundary") or [],
-        "speech_style": card.get("voice"),
+        "display_description": description,
     }
 
 
@@ -98,7 +92,7 @@ def build(cache_root: Path, episode_id: str) -> dict[str, Any]:
     if episode_id not in nodes:
         raise ValueError(f"冻结拓扑不存在分集：{episode_id}")
 
-    run_basis = read_json(cache_root / "run-basis.json", "运行基础")
+    creative_brief = read_json(cache_root / "creative-brief.json", "最小创作输入")
     assets = read_json(cache_root / "asset-catalog.json", "资产目录")
     intent = read_json(cache_root / "user-intent-lock.json", "用户意图合同")
     synopsis = read_json(
@@ -110,7 +104,8 @@ def build(cache_root: Path, episode_id: str) -> dict[str, Any]:
 
     current_corpus = json.dumps(synopsis, ensure_ascii=False)
     cast = []
-    for card in run_basis.get("characters") or []:
+    brief_assets = creative_brief.get("assets") if isinstance(creative_brief.get("assets"), dict) else {}
+    for card in brief_assets.get("characters") or []:
         if not isinstance(card, dict):
             continue
         name = str(card.get("name") or "").strip()
@@ -175,8 +170,8 @@ def build(cache_root: Path, episode_id: str) -> dict[str, Any]:
             "scenes": assets.get("scenes") or [],
             "props": assets.get("props") or [],
         },
-        "world_rules": run_basis.get("story", {}).get("world_rules") or [],
-        "continuity_constraints": run_basis.get("story", {}).get("consistency_constraints") or [],
+        "world_rules": [],
+        "continuity_constraints": [],
         "user_constraints": scoped_constraints,
     }
 

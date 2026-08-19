@@ -30,11 +30,10 @@ from validate_emotional_topology import validate_emotional_topology
 from validate_topology import parse
 from validate_topology_revision import validate_revision
 from validate_user_intent_lock import validate_user_intent_project
-from validate_run_basis import validate_basis
-from mainline_story_gate import verify as verify_mainline
+from complete_story_gate import verify as verify_complete_story
 from decision_fissure_gate import verify as verify_fissures
 from story_treatment_gate import verify as verify_treatment
-from stage_two_acceptance import ending_plan, verify as verify_stage_two
+from planning_acceptance import resolved_endings, verify as verify_planning
 from validate_route_duration import validate as validate_route_duration
 from episode_acceptance import verify_all as verify_episode_acceptance
 from run_state import status as run_status
@@ -45,28 +44,13 @@ BUSINESS_SKILL_VERSION = "episode-generator-biz/0.50"
 
 def resolve_ending_counts(
     cache_root: Path,
-    expected_endings: int | None,
-    expected_formal: int | None,
-    expected_failure: int | None,
-) -> tuple[int, int, int]:
-    """Resolve counts from run-basis and reject contradictory CLI input immediately."""
-    plan = ending_plan(cache_root)
-    supplied = {
-        "total": expected_endings,
-        "formal": expected_formal,
-        "failure": expected_failure,
-    }
-    if all(value is not None for value in supplied.values()):
-        assert expected_endings is not None
-        assert expected_formal is not None
-        assert expected_failure is not None
-        if expected_endings != expected_formal + expected_failure:
-            raise ValueError("参数错误：expected-endings 必须等于 expected-formal + expected-failure")
-    cli_names = {"total": "endings", "formal": "formal", "failure": "failure"}
-    for key, value in supplied.items():
-        if value is not None and value != plan[key]:
-            raise ValueError(f"参数错误：expected-{cli_names[key]}={value} 与 run-basis ending_plan.{key}={plan[key]} 不一致")
-    return plan["total"], plan["formal"], plan["failure"]
+    expected_major_endings: int | None,
+) -> int:
+    """Resolve actual ending counts and reject contradictory CLI input."""
+    plan = resolved_endings(cache_root)
+    if expected_major_endings is not None and expected_major_endings != plan["major"]:
+        raise ValueError(f"参数错误：expected-major-endings={expected_major_endings} 与当前故事图实际主要结局数 {plan['major']} 不一致")
+    return plan["major"]
 
 
 def ordered_asset_values(block: str) -> list[str]:
@@ -166,9 +150,7 @@ def build_business_output(
     asset_catalog_path: Path,
     character_introductions_path: Path,
     spine_path: Path,
-    expected_endings: int,
-    expected_formal: int | None,
-    expected_failure: int | None,
+    expected_major_endings: int,
     baseline: Any | None,
     baseline_root: Path | None,
     allowed_changed: set[str],
@@ -177,7 +159,8 @@ def build_business_output(
     topology_path = cache_root / "topology.md"
     nodes = parse(topology_path)
     catalog = load_asset_catalog(asset_catalog_path)
-    issues = verify_stage_two(cache_root)
+    issues = verify_planning(cache_root)
+    issues.extend(verify_complete_story(cache_root))
     issues.extend(verify_episode_acceptance(cache_root))
     try:
         if run_status(cache_root).get("status") != "READY_FOR_CLOSURE":
@@ -212,9 +195,7 @@ def build_business_output(
             validate_business_output(
                 data,
                 asset_catalog_path,
-                expected_endings,
-                expected_formal,
-                expected_failure,
+                expected_major_endings,
                 baseline,
                 allowed_changed,
                 change_scope,
@@ -232,9 +213,7 @@ def main() -> int:
     parser.add_argument("--asset-catalog", type=Path)
     parser.add_argument("--character-introductions", type=Path)
     parser.add_argument("--spine", type=Path)
-    parser.add_argument("--expected-endings", type=int)
-    parser.add_argument("--expected-formal", type=int)
-    parser.add_argument("--expected-failure", type=int)
+    parser.add_argument("--expected-major-endings", type=int)
     parser.add_argument("--baseline", type=Path)
     parser.add_argument("--baseline-root", type=Path)
     parser.add_argument("--allowed-changed", action="append", default=[])
@@ -260,12 +239,7 @@ def main() -> int:
         spine_path = (
             args.spine or cache_root / "emotional-spine.json"
         ).resolve()
-        expected_endings, expected_formal, expected_failure = resolve_ending_counts(
-            cache_root,
-            args.expected_endings,
-            args.expected_formal,
-            args.expected_failure,
-        )
+        expected_major_endings = resolve_ending_counts(cache_root, args.expected_major_endings)
         baseline = (
             json.loads(args.baseline.read_text(encoding="utf-8"))
             if args.baseline
@@ -276,9 +250,7 @@ def main() -> int:
             asset_catalog_path,
             character_introductions_path,
             spine_path,
-            expected_endings,
-            expected_formal,
-            expected_failure,
+            expected_major_endings,
             baseline,
             args.baseline_root.resolve() if args.baseline_root else None,
             set(args.allowed_changed),

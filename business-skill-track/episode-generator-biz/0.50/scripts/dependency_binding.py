@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Stable content bindings for stage-two and per-episode artifacts."""
+"""Stable content bindings for planning and per-episode artifacts."""
 
 from __future__ import annotations
 
@@ -18,27 +18,27 @@ def digest_value(value: Any) -> str:
 
 
 def load_leaves(cache_root: Path) -> dict[str, Any]:
-    receipt = json.loads((cache_root / "stage-two-acceptance.json").read_text(encoding="utf-8"))
+    receipt = json.loads((cache_root / "planning-acceptance.json").read_text(encoding="utf-8"))
     leaves = receipt.get("content_leaves")
     if not isinstance(leaves, dict) or not isinstance(leaves.get("episodes"), dict):
-        raise ValueError("阶段二回执缺少稳定内容叶")
+        raise ValueError("规划回执缺少稳定内容叶")
     return leaves
 
 
-def stage_two_content_sha256(cache_root: Path) -> str:
+def planning_content_sha256(cache_root: Path) -> str:
     value = str(load_leaves(cache_root).get("content_sha256") or "")
     if len(value) != 64:
-        raise ValueError("阶段二内容指纹无效")
+        raise ValueError("规划内容指纹无效")
     return value
 
 
 def episode_dependency_sha256(cache_root: Path, episode_id: str) -> str:
     leaves = load_leaves(cache_root)
-    synopsis = str((leaves.get("episodes") or {}).get(episode_id) or "")
-    if len(synopsis) != 64:
-        raise ValueError(f"阶段二缺少分集内容叶：{episode_id}")
+    episode_leaf = str((leaves.get("episodes") or {}).get(episode_id) or "")
+    if len(episode_leaf) != 64:
+        raise ValueError(f"规划缺少分集内容叶：{episode_id}")
     return digest_value({
         "global": leaves.get("global"),
         "episode_id": episode_id,
-        "synopsis_sha256": synopsis,
+        "episode_planning_sha256": episode_leaf,
     })

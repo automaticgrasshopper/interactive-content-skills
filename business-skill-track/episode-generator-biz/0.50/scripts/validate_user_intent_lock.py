@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the private user-intent contract and its independent review."""
+"""Validate the minimal user-intent lock used by episode-generator 0.50."""
 
 from __future__ import annotations
 
@@ -11,18 +11,25 @@ from pathlib import Path
 from typing import Any
 
 
-CONTRACT_VERSION = "nextplay.user-intent-lock.v1"
+CONTRACT_VERSION = "nextplay.user-intent-lock.v2"
 REVIEW_VERSION = "nextplay.user-intent-review.v1"
-EPISODE_ID = re.compile(r"episode-\d{3}")
-SHA256 = re.compile(r"[0-9a-f]{64}")
+ROOT_FIELDS = {
+    "contract_version", "source_sha256", "resolution_status",
+    "fixed_episode_count", "constraints", "conflicts", "resolutions",
+}
+CONSTRAINT_FIELDS = {
+    "constraint_id", "statement", "scope", "required", "forbidden_literals",
+}
+SCOPES = {"global", "topology"}
+FORBIDDEN_KEYS = {"node_count_hint", "node_count_suggestion", "episode_count_hint"}
 
 
-def sha256_bytes(data: bytes) -> str:
-    return hashlib.sha256(data).hexdigest()
+def canonical(value: Any) -> str:
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
 
 
-def sha256_text(text: str) -> str:
-    return sha256_bytes(text.encode("utf-8"))
+def sha256_bytes(value: bytes) -> str:
+    return hashlib.sha256(value).hexdigest()
 
 
 def load_json(path: Path, label: str) -> dict[str, Any]:
@@ -48,72 +55,113 @@ def artifact_digest(cache_root: Path) -> str:
     return digest.hexdigest()
 
 
+def contract_binding(cache_root: Path) -> tuple[str, str]:
+    contract, contract_sha, issues = validate_contract(cache_root)
+    if issues:
+        raise ValueError("；".join(issues))
+    return str(contract["source_sha256"]), contract_sha
+
+
 def validate_contract(cache_root: Path) -> tuple[dict[str, Any], str, list[str]]:
     issues: list[str] = []
-    source_path = cache_root / "user-request.md"
+    request_path = cache_root / "user-request.md"
     contract_path = cache_root / "user-intent-lock.json"
-    if not source_path.is_file() or not source_path.read_text(encoding="utf-8").strip():
-        return {}, "", ["缺少非空用户要求源文件：user-request.md"]
+    if not request_path.is_file():
+        return {}, "", ["缺少 user-request.md"]
+    if not contract_path.is_file():
+        return {}, "", ["缺少 user-intent-lock.json"]
     try:
-        contract = load_json(contract_path, "用户意图合同")
-    except (OSError, ValueError, json.JSONDecodeError) as error:
-        return {}, "", [str(error)]
-    source_sha = sha256_bytes(source_path.read_bytes())
+        contract = json.loads(contract_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        return {}, "", [f"用户意图合同不可读：{error}"]
+    if not isinstance(contract, dict) or set(contract) != ROOT_FIELDS:
+        return {}, "", ["用户意图合同根字段错误"]
     if contract.get("contract_version") != CONTRACT_VERSION:
-        issues.append("用户意图合同版本错误")
+        issues.append(f"用户意图合同版本错误：期望 {CONTRACT_VERSION}")
+    source_sha = sha256_bytes(request_path.read_bytes())
     if contract.get("source_sha256") != source_sha:
-        issues.append("用户意图合同未绑定当前用户要求源文件")
-    status = contract.get("resolution_status")
-    conflicts = contract.get("conflicts")
-    if status == "needs-user" or (isinstance(conflicts, list) and conflicts):
-        issues.append("ASK_USER_REQUIRED：用户前后明确要求存在未解决冲突")
-    elif status != "resolved":
-        issues.append("用户意图合同状态必须为 resolved 或 needs-user")
-    if not isinstance(conflicts, list):
-        issues.append("用户意图合同 conflicts 必须是列表")
-    if not isinstance(contract.get("resolutions"), list):
-        issues.append("用户意图合同 resolutions 必须是列表")
+        issues.append("用户意图合同未绑定当前 user-request.md")
+    if contract.get("resolution_status") not in {"resolved", "needs-user"}:
+        issues.append("用户意图 resolution_status 非法")
+    fixed = contract.get("fixed_episode_count")
+    if fixed is not None and (isinstance(fixed, bool) or not isinstance(fixed, int) or fixed < 1):
+        issues.append("fixed_episode_count 必须是正整数或 null")
+
+    serialized = canonical(contract)
+    if any(key in serialized for key in FORBIDDEN_KEYS):
+        issues.append("用户意图合同不得记录任何上游节点建议字段")
+
     constraints = contract.get("constraints")
     if not isinstance(constraints, list):
-        issues.append("用户意图合同 constraints 必须是列表")
+        issues.append("constraints 必须是数组")
         constraints = []
-    seen: set[str] = set()
-    for index, item in enumerate(constraints, start=1):
-        if not isinstance(item, dict):
-            issues.append(f"用户约束第{index}项必须是对象")
+    ids: set[str] = set()
+    fixed_statements = 0
+    for index, item in enumerate(constraints, 1):
+        if not isinstance(item, dict) or set(item) != CONSTRAINT_FIELDS:
+            issues.append(f"用户约束第{index}项字段错误")
             continue
         constraint_id = str(item.get("constraint_id") or "")
-        if not re.fullmatch(r"user-\d{3}", constraint_id) or constraint_id in seen:
-            issues.append(f"用户约束编号非法或重复：{constraint_id or index}")
-        seen.add(constraint_id)
-        if len(str(item.get("statement") or "").strip()) < 2:
-            issues.append(f"用户约束内容为空：{constraint_id}")
-        scope = item.get("scope")
-        if not isinstance(scope, list) or not scope:
-            issues.append(f"用户约束范围为空：{constraint_id}")
-        elif any(value not in {"global", "topology"} and EPISODE_ID.fullmatch(str(value)) is None for value in scope):
-            issues.append(f"用户约束范围非法：{constraint_id}")
-        if not isinstance(item.get("required"), bool):
-            issues.append(f"用户约束 required 必须是布尔值：{constraint_id}")
+        statement = str(item.get("statement") or "").strip()
+        if not constraint_id.startswith("user-") or constraint_id in ids:
+            issues.append(f"用户约束编号非法或重复：{constraint_id}")
+        ids.add(constraint_id)
+        if not statement:
+            issues.append(f"用户约束缺少 statement：{constraint_id}")
+        if item.get("required") is not True:
+            issues.append(f"constraints 只保留 required=true 的硬约束：{constraint_id}")
+        scopes = item.get("scope")
+        if not isinstance(scopes, list) or not scopes:
+            issues.append(f"用户约束 scope 非法：{constraint_id}")
+        else:
+            for scope in scopes:
+                if scope not in SCOPES and not re.fullmatch(r"episode-\d{3}", str(scope)):
+                    issues.append(f"用户约束 scope 非法：{constraint_id}/{scope}")
         forbidden = item.get("forbidden_literals")
-        if not isinstance(forbidden, list) or any(not isinstance(value, str) or not value for value in forbidden):
-            issues.append(f"用户约束 forbidden_literals 非法：{constraint_id}")
-    return contract, sha256_bytes(contract_path.read_bytes()), issues
+        if not isinstance(forbidden, list) or any(not isinstance(x, str) or not x.strip() for x in forbidden):
+            issues.append(f"forbidden_literals 必须是非空字符串数组：{constraint_id}")
+        if fixed is not None and str(fixed) in statement and any(word in statement for word in ("固定", "必须", "恰好")):
+            fixed_statements += 1
+    if fixed is not None and fixed_statements == 0:
+        issues.append("fixed_episode_count 缺少用户明确固定N集的约束原话")
+
+    conflicts = contract.get("conflicts")
+    resolutions = contract.get("resolutions")
+    if not isinstance(conflicts, list) or not isinstance(resolutions, list):
+        issues.append("conflicts 和 resolutions 必须是数组")
+    if contract.get("resolution_status") == "resolved" and conflicts:
+        issues.append("resolved 合同不得保留未解决 conflicts")
+    return contract, hashlib.sha256(canonical(contract).encode("utf-8")).hexdigest(), list(dict.fromkeys(issues))
 
 
 def validate_user_intent_project(cache_root: Path) -> list[str]:
+    """Recheck only explicit user locks against the frozen graph and episodes."""
     contract, contract_sha, issues = validate_contract(cache_root)
     if issues:
         return list(dict.fromkeys(issues))
     try:
         review = load_json(cache_root / "user-intent-review.json", "用户意图履约复检")
         artifact_sha = artifact_digest(cache_root)
+        topology_text = (cache_root / "topology.md").read_text(encoding="utf-8")
+        episode_texts = {
+            path.stem: path.read_text(encoding="utf-8")
+            for path in (cache_root / "episodes").glob("episode-*.md")
+        }
+        if contract.get("fixed_episode_count") is not None:
+            from validate_topology import parse
+
+            actual_count = len(parse(cache_root / "topology.md"))
+            if actual_count != contract["fixed_episode_count"]:
+                issues.append(
+                    "用户固定集数未满足："
+                    f"要求{contract['fixed_episode_count']}，实际{actual_count}"
+                )
     except (OSError, ValueError, json.JSONDecodeError) as error:
         return [str(error)]
-    source_sha = str(contract["source_sha256"])
+
     if review.get("review_version") != REVIEW_VERSION:
         issues.append("用户意图履约复检版本错误")
-    if review.get("source_sha256") != source_sha:
+    if review.get("source_sha256") != contract["source_sha256"]:
         issues.append("用户意图履约复检未绑定当前用户要求")
     if review.get("contract_sha256") != contract_sha:
         issues.append("用户意图履约复检未绑定当前合同")
@@ -121,6 +169,7 @@ def validate_user_intent_project(cache_root: Path) -> list[str]:
         issues.append("用户意图履约复检已失效：冻结拓扑或正文发生变化")
     if review.get("issues") != []:
         issues.append("用户意图履约复检仍有未解决问题")
+
     review_items = review.get("constraints")
     if not isinstance(review_items, list):
         issues.append("用户意图履约复检缺少逐项覆盖")
@@ -130,21 +179,16 @@ def validate_user_intent_project(cache_root: Path) -> list[str]:
         for item in review_items
         if isinstance(item, dict)
     }
-    active = [item for item in contract["constraints"] if item.get("required") is True]
-    expected_ids = {str(item["constraint_id"]) for item in active}
-    if set(by_id) != expected_ids:
+    active = list(contract["constraints"])
+    if set(by_id) != {str(item["constraint_id"]) for item in active}:
         issues.append("用户意图履约复检约束集合与当前合同不一致")
-    topology_text = (cache_root / "topology.md").read_text(encoding="utf-8")
-    episode_texts = {
-        path.stem: path.read_text(encoding="utf-8")
-        for path in (cache_root / "episodes").glob("episode-*.md")
-    }
+
     all_text = "\n".join([topology_text, *episode_texts.values()])
     for constraint in active:
         constraint_id = str(constraint["constraint_id"])
         item = by_id.get(constraint_id) or {}
         if item.get("satisfied") is not True:
-            issues.append(f"用户要求未通过独立复检：{constraint_id}")
+            issues.append(f"用户要求未通过履约复检：{constraint_id}")
         if len(str(item.get("explanation") or "").strip()) < 6:
             issues.append(f"用户要求缺少履约说明：{constraint_id}")
         evidence = item.get("evidence")
@@ -172,30 +216,22 @@ def validate_user_intent_project(cache_root: Path) -> list[str]:
     return list(dict.fromkeys(issues))
 
 
-def contract_binding(cache_root: Path) -> tuple[str, str]:
-    contract, contract_sha, issues = validate_contract(cache_root)
-    if issues:
-        raise ValueError("；".join(issues))
-    return str(contract["source_sha256"]), contract_sha
-
-
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("mode", choices=("contract", "project"))
+    parser.add_argument("command", choices=("contract", "project"))
     parser.add_argument("cache_root", type=Path)
     args = parser.parse_args()
-    try:
-        if args.mode == "contract":
-            _, _, issues = validate_contract(args.cache_root)
-        else:
-            issues = validate_user_intent_project(args.cache_root)
-    except (OSError, ValueError, json.JSONDecodeError) as error:
-        issues = [str(error)]
+    if args.command == "project":
+        issues = validate_user_intent_project(args.cache_root)
+    else:
+        contract, _, issues = validate_contract(args.cache_root)
+        if contract.get("resolution_status") == "needs-user":
+            issues.append("用户意图仍需用户解决冲突")
     if issues:
-        for issue in issues:
+        for issue in dict.fromkeys(issues):
             print(f"FAIL: {issue}")
         return 1
-    print(f"PASS: user intent {args.mode} verified")
+    print("PASS: minimal user intent lock verified")
     return 0
 
 

@@ -17,7 +17,7 @@ from validate_topology import parse
 
 ASSET_VERSION = "nextplay.episode-assets.v1"
 INTRODUCTION_VERSION = "nextplay.character-introductions.v1"
-RUN_BASIS_VERSION = "nextplay.episode-run-basis.v2"
+CREATIVE_BRIEF_VERSION = "nextplay.episode-creative-brief.v1"
 INTRODUCTION_FIELDS = (
     "identity_evidence",
     "relationship_evidence",
@@ -101,31 +101,25 @@ def mentioned_characters(text: str, catalog: dict[str, Any]) -> set[str]:
 
 def load_character_facts(path: Path) -> dict[str, dict[str, Any]]:
     data = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(data, dict) or data.get("contract_version") != RUN_BASIS_VERSION:
-        raise ValueError(f"run-basis.json 合同错误：期望 {RUN_BASIS_VERSION}")
-    characters = data.get("characters")
+    if not isinstance(data, dict) or data.get("contract_version") != CREATIVE_BRIEF_VERSION:
+        raise ValueError(f"creative-brief.json 合同错误：期望 {CREATIVE_BRIEF_VERSION}")
+    assets = data.get("assets") if isinstance(data.get("assets"), dict) else {}
+    characters = assets.get("characters")
     if not isinstance(characters, list):
-        raise ValueError("run-basis.json characters 必须是数组")
+        raise ValueError("creative-brief.json assets.characters 必须是数组")
     facts: dict[str, dict[str, Any]] = {}
     for index, card in enumerate(characters):
         if not isinstance(card, dict):
-            raise ValueError(f"run-basis.json 角色第{index + 1}项错误")
+            raise ValueError(f"creative-brief.json 角色第{index + 1}项错误")
         name = str(card.get("name") or "").strip()
-        identity = str(card.get("identity") or "").strip()
-        relationships = card.get("relationships")
-        if not name or not identity:
-            raise ValueError(f"run-basis.json 角色第{index + 1}项缺少名称或身份")
-        if (
-            not isinstance(relationships, list)
-            or not relationships
-            or any(not isinstance(item, str) or not item.strip() for item in relationships)
-        ):
-            raise ValueError(f"run-basis.json {name}/relationships 必须是非空字符串数组")
+        description = str(card.get("description") or "").strip()
+        if not name or not description:
+            raise ValueError(f"creative-brief.json 角色第{index + 1}项缺少名称或展示描述")
         if name in facts:
-            raise ValueError(f"run-basis.json 角色重名：{name}")
+            raise ValueError(f"creative-brief.json 角色重名：{name}")
         facts[name] = {
-            "identity": identity,
-            "relationships": [item.strip() for item in relationships],
+            "identity": re.split(r"[。；，,]", description, maxsplit=1)[0],
+            "relationships": [],
         }
     return facts
 
@@ -408,7 +402,7 @@ def validate_character_appearance_project(
 ) -> list[str]:
     issues, scripts, episode_characters = read_episode_character_state(cache_root, nodes, catalog)
     audit = load_introduction_audit(introduction_path, catalog)
-    character_facts = load_character_facts(cache_root / "run-basis.json")
+    character_facts = load_character_facts(cache_root / "creative-brief.json")
     issues.extend(
         validate_introduction_audit(
             audit,

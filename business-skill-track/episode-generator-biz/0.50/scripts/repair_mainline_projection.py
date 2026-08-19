@@ -100,7 +100,6 @@ def mapping_from_synopses(cache_root: Path, source: list[dict[str, str]]) -> lis
 
 def valid_route(cache_root: Path, mapping: list[dict[str, str]]) -> tuple[bool, list[str]]:
     nodes = parse(cache_root / "topology.md")
-    mainline = load(cache_root / "mainline-story.json")
     episode_ids = [item["episode_id"] for item in mapping]
     reasons: list[str] = []
     if not episode_ids or episode_ids[0] != "episode-001":
@@ -116,10 +115,8 @@ def valid_route(cache_root: Path, mapping: list[dict[str, str]]) -> tuple[bool, 
         final = nodes[episode_ids[-1]]
         if final["successors"]:
             reasons.append("主线路径没有在结局结束")
-        if "正式结局" not in str(final["interaction"]):
-            reasons.append("主线路径没有到达主要正式结局")
-        if str(final["title"]).strip() != str(mainline.get("expected_ending_title") or "").strip():
-            reasons.append("主线路径末节点不是冻结期待结局")
+        if "主结局" not in str(final["interaction"]):
+            reasons.append("主线路径没有到达冻结完整故事的主结局")
     return not reasons, reasons
 
 
@@ -221,7 +218,7 @@ def repair(cache_root: Path, apply: bool) -> tuple[dict[str, Any], int]:
 
     report["status"] = "PASS" if not report["changes"] else "REPAIRED"
     if apply:
-        if (cache_root / "stage-two-acceptance.json").exists():
+        if (cache_root / "planning-acceptance.json").exists():
             raise ValueError("阶段二已经冻结；不得原地修复，必须开始新的阶段二运行")
         semantic_issues = [
             issue for issue in topology_issues(cache_root)

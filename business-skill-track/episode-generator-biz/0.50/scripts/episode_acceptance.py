@@ -15,26 +15,12 @@ from action_contracts import expected_outputs
 from dependency_binding import episode_dependency_sha256
 from run_state import load as load_run_state
 
-
-VERSION = "nextplay.episode-acceptance.v3"
-BASE_ACTIONS = (
-    "ADAPT",
-    "WRITE_DRAFT",
-    "VALIDATE_DRAFT",
-    "ENHANCE",
-    "VALIDATE_STRUCTURE",
-    "PREPARE_REVIEWS",
-    "REVIEW_DRAMA",
-    "REVIEW_COLD_READ",
-)
-
-
-def sha_bytes(value: bytes) -> str:
-    return hashlib.sha256(value).hexdigest()
+VERSION = "nextplay.episode-acceptance.v6"
+ACTIONS = ("ADAPT", "WRITE_COMPACT_DRAFT", "VALIDATE_COMPACT_DRAFT", "ENHANCE", "VALIDATE_STRUCTURE")
 
 
 def digest(path: Path) -> str:
-    return sha_bytes(path.read_bytes())
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def atomic_write(path: Path, value: str) -> None:
@@ -54,12 +40,11 @@ def receipt_path(cache_root: Path, episode_id: str) -> Path:
 
 
 def verified_action_files(cache_root: Path, episode_id: str, action: str, record: dict[str, Any]) -> dict[str, str]:
-    outcome = str(record.get("outcome") or "PASS")
+    if record.get("outcome") != "PASS":
+        raise ValueError(f"动作未通过：{episode_id}/{action}")
     files = record.get("files")
-    if not isinstance(files, dict):
-        raise ValueError(f"运行状态缺少动作产物：{episode_id}/{action}")
-    required = expected_outputs(cache_root, action, episode_id, outcome)
-    if set(files) != {str(path) for path in required}:
+    required = expected_outputs(cache_root, action, episode_id)
+    if not isinstance(files, dict) or set(files) != {str(path) for path in required}:
         raise ValueError(f"运行状态动作产物集合错误：{episode_id}/{action}")
     verified: dict[str, str] = {}
     for path in required:
@@ -72,45 +57,26 @@ def verified_action_files(cache_root: Path, episode_id: str, action: str, record
 def build_receipt(cache_root: Path, episode_id: str) -> dict[str, Any]:
     state = load_run_state(cache_root)
     episode = (state.get("episodes") or {}).get(episode_id)
-    if not isinstance(episode, dict) or episode.get("state") not in {"REVIEWS_PASSED", "EPISODE_ACCEPTED"}:
-        raise ValueError(f"单集尚未到达可验收状态：{episode_id}")
-    active_actions = set((episode.get("leases") or {}).keys())
-    if active_actions - {"ACCEPT_EPISODE"}:
-        raise ValueError(f"单集仍有非验收活动租约：{episode_id}/{sorted(active_actions)}")
+    if not isinstance(episode, dict) or episode.get("state") not in {"STRUCTURE_VALIDATED", "EPISODE_ACCEPTED"}:
+        raise ValueError(f"单集尚未完成结构验收：{episode_id}")
+    if set((episode.get("leases") or {})) - {"ACCEPT_EPISODE"}:
+        raise ValueError(f"单集仍有非验收活动租约：{episode_id}")
     outputs = episode.get("outputs") or {}
-    actions = list(BASE_ACTIONS)
-    if "REPAIR" in outputs or "MERGE_FINDINGS" in outputs:
-        actions.extend(("MERGE_FINDINGS", "REPAIR"))
     artifacts: dict[str, str] = {}
-    action_outcomes: dict[str, str] = {}
-    for action in actions:
+    for action in ACTIONS:
         record = outputs.get(action)
         if not isinstance(record, dict):
-            raise ValueError(f"单集验收缺少已提交动作：{episode_id}/{action}")
-        outcome = str(record.get("outcome") or "PASS")
-        if action in {"REVIEW_DRAMA", "REVIEW_COLD_READ"} and outcome != "PASS":
-            raise ValueError(f"单集仍有未通过复检：{episode_id}/{action}")
+            raise ValueError(f"单集验收缺少动作：{episode_id}/{action}")
         artifacts.update(verified_action_files(cache_root, episode_id, action, record))
-        action_outcomes[action] = outcome
     return {
         "contract_version": VERSION,
         "episode_id": episode_id,
         "episode_dependency_sha256": episode_dependency_sha256(cache_root, episode_id),
         "run_id": state.get("run_id"),
-        "action_outcomes": action_outcomes,
+        "action_outcomes": {action: "PASS" for action in ACTIONS},
         "artifacts": artifacts,
         "status": "PASS",
     }
-
-
-def verify_one(cache_root: Path, episode_id: str) -> list[str]:
-    path = receipt_path(cache_root, episode_id)
-    try:
-        actual = json.loads(path.read_text(encoding="utf-8"))
-        expected = build_receipt(cache_root, episode_id)
-        return [] if actual == expected else [f"单集验收回执已失效：{episode_id}"]
-    except (OSError, ValueError, json.JSONDecodeError) as error:
-        return [str(error)]
 
 
 def verify_all(cache_root: Path) -> list[str]:
@@ -118,17 +84,16 @@ def verify_all(cache_root: Path) -> list[str]:
     errors: list[str] = []
     for episode_id in state.get("episode_order") or []:
         episode = state["episodes"][episode_id]
+        path = receipt_path(cache_root, episode_id)
         if episode.get("state") != "EPISODE_ACCEPTED":
             errors.append(f"分集状态尚未验收：{episode_id}")
-            continue
-        path = receipt_path(cache_root, episode_id)
-        if not path.is_file():
+        elif not path.is_file():
             errors.append(f"缺少单集验收回执：{episode_id}")
-            continue
-        recorded = ((episode.get("outputs") or {}).get("ACCEPT_EPISODE") or {}).get("files") or {}
-        if recorded.get(str(path.resolve())) != digest(path):
-            errors.append(f"状态机未绑定当前单集验收回执：{episode_id}")
-    return list(dict.fromkeys(errors))
+        else:
+            recorded = ((episode.get("outputs") or {}).get("ACCEPT_EPISODE") or {}).get("files") or {}
+            if recorded.get(str(path.resolve())) != digest(path):
+                errors.append(f"状态机未绑定当前单集验收回执：{episode_id}")
+    return errors
 
 
 def main() -> int:
@@ -142,20 +107,15 @@ def main() -> int:
             errors = verify_all(args.cache_root)
             if errors:
                 raise ValueError("；".join(errors))
-            print("PASS: all episode acceptance receipts verified by hashes")
-            return 0
-        if not args.episode_id:
-            raise ValueError("创建单集验收必须提供episode_id")
-        value = build_receipt(args.cache_root, args.episode_id)
-        atomic_write(
-            receipt_path(args.cache_root, args.episode_id),
-            json.dumps(value, ensure_ascii=False, indent=2) + "\n",
-        )
-        print(f"EPISODE_ACCEPTED: {args.episode_id}")
-        return 0
+        else:
+            if not args.episode_id:
+                raise ValueError("缺少episode_id")
+            atomic_write(receipt_path(args.cache_root, args.episode_id), json.dumps(build_receipt(args.cache_root, args.episode_id), ensure_ascii=False, indent=2) + "\n")
     except (OSError, ValueError, json.JSONDecodeError) as error:
         print(f"FAIL: {error}")
         return 1
+    print("PASS")
+    return 0
 
 
 if __name__ == "__main__":

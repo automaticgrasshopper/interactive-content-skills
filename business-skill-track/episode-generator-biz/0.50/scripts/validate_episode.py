@@ -89,7 +89,7 @@ def validate_one(cache_root: Path, episode_id: str) -> list[str]:
         issues.append(f"出现非正式角色资产：{episode_id}={sorted(unknown)}")
     listed_formal = listed & catalog["characters"]
     mentioned = mentioned_characters(full_script, catalog)
-    character_facts = load_character_facts(cache_root / "run-basis.json")
+    character_facts = load_character_facts(cache_root / "creative-brief.json")
     registry_hits = registry_style_introductions(full_script, catalog["characters"])
     if len(registry_hits) >= 2:
         issues.append(

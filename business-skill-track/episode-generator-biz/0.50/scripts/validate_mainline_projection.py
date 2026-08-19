@@ -29,17 +29,17 @@ def load(path: Path):
 
 def decomposition_issues(root: Path) -> tuple[list[str], dict, dict]:
     issues = []
-    mainline = load(root / "mainline-story.json")
+    complete_story = load(root / "complete-story.json")
     decomposition = load(root / "mainline-decomposition.json")
     if decomposition.get("contract_version") != DECOMPOSITION_VERSION:
         issues.append("主线分解合同错误")
-    if decomposition.get("mainline_sha256") != sha(canonical(mainline)):
-        issues.append("主线分解未绑定当前冻结主线")
+    if decomposition.get("complete_story_sha256") != sha(canonical(complete_story)):
+        issues.append("主线分解未绑定当前完整故事")
     segments = decomposition.get("segments")
     if not isinstance(segments, list) or not segments:
         issues.append("主线分解缺少segments")
-        return issues, mainline, decomposition
-    story = str(mainline.get("complete_story") or "")
+        return issues, complete_story, decomposition
+    story = str(complete_story.get("complete_story") or "")
     cursor = 0
     ids = set()
     for index, item in enumerate(segments, 1):
@@ -60,11 +60,11 @@ def decomposition_issues(root: Path) -> tuple[list[str], dict, dict]:
         cursor = found + len(source)
     if story[cursor:].strip():
         issues.append("主线分解末尾遗漏冻结故事原文")
-    return list(dict.fromkeys(issues)), mainline, decomposition
+    return list(dict.fromkeys(issues)), complete_story, decomposition
 
 
 def topology_issues(root: Path) -> list[str]:
-    issues, mainline, decomposition = decomposition_issues(root)
+    issues, complete_story, decomposition = decomposition_issues(root)
     path_data = load(root / "mainline-path.json")
     if path_data.get("contract_version") != PATH_VERSION or not isinstance(path_data.get("path"), list):
         return [*issues, "主线路径映射合同错误"]
@@ -99,8 +99,8 @@ def topology_issues(root: Path) -> list[str]:
             successors = set(nodes[episode_id]["successors"])
             if next_id not in successors:
                 issues.append(f"主线节点未直接连接下一主线节点：{episode_id}->{next_id}")
-        elif str(nodes[episode_id]["title"]).strip() != str(mainline.get("expected_ending_title") or "").strip():
-            issues.append("主线路径末节点不是冻结期待结局")
+        elif nodes[episode_id]["successors"]:
+            issues.append("主线路径末节点必须完整结算并终止")
     review_path = root / "mainline-projection-review.json"
     if not review_path.is_file():
         issues.append("缺少主线切片事件归属复检")

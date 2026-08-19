@@ -9,17 +9,16 @@ import json
 from pathlib import Path
 from typing import Any
 
-from mainline_story_gate import canonical, read_mainline, verify as verify_mainline
-from build_stage_two_input import validate_frozen as validate_stage_two_input
+from complete_story_gate import canonical, read_complete_story, verify as verify_complete_story
 
 
-CONTRACT_VERSION = "nextplay.decision-fissure-audit.v2"
+CONTRACT_VERSION = "nextplay.decision-fissure-audit.v3"
 RECEIPT_VERSION = "nextplay.decision-fissure-review.v2"
-ROOT_FIELDS = {"contract_version", "mainline_sha256", "core_goal", "core_goal_source_proof", "fissures"}
+ROOT_FIELDS = {"contract_version", "complete_story_sha256", "core_goal", "core_goal_source_proof", "fissures"}
 FISSURE_FIELDS = {"fissure_id", "mainline_position_proof", "decision_question", "actions", "disposition", "disposition_reason"}
 ACTION_FIELDS = {"action_id", "action_text", "immediate_consequence", "core_goal_status", "route_ended", "ending_scope", "ending_reason", "goal_status_explanation"}
 GOAL_STATES = {"continuing", "achieved", "failed", "abandoned", "unreachable"}
-ENDING_SCOPES = {"none", "main", "minor"}
+ENDING_SCOPES = {"none", "small"}
 DISPOSITIONS = {"adopt", "reject-causally-insufficient"}
 REQUIRED_CHECKS = [
     "从开场到结局完整扫描决定裂缝",
@@ -43,25 +42,23 @@ def all_text(value: Any) -> str:
 
 
 def read_audit(cache_root: Path) -> tuple[Path, dict[str, Any]]:
-    errors = verify_mainline(cache_root)
+    errors = verify_complete_story(cache_root)
     if errors:
         raise ValueError("冻结主线未通过：" + "；".join(errors))
-    _, mainline = read_mainline(cache_root)
-    story = str(mainline["complete_story"])
+    _, complete_story = read_complete_story(cache_root)
+    story = str(complete_story["complete_story"])
     path = cache_root / "decision-fissure-audit.json"
     if not path.is_file():
         raise ValueError("缺少决策裂缝审计：decision-fissure-audit.json")
     data = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(data, dict) or set(data) != ROOT_FIELDS:
         raise ValueError("决策裂缝审计根字段错误")
-    if data.get("contract_version") != CONTRACT_VERSION or data.get("mainline_sha256") != digest(mainline):
-        raise ValueError("决策裂缝审计合同或主线绑定错误")
-    stage_two = validate_stage_two_input(cache_root)
-    frozen_goal = str((stage_two.get("story") or {}).get("core_goal") or "").strip()
+    if data.get("contract_version") != CONTRACT_VERSION or data.get("complete_story_sha256") != digest(complete_story):
+        raise ValueError("决策裂缝审计合同或完整故事绑定错误")
     core_goal = str(data.get("core_goal") or "").strip()
     goal_proof = str(data.get("core_goal_source_proof") or "").strip()
-    if len(core_goal) < 12 or core_goal != frozen_goal or len(goal_proof) < 12 or goal_proof not in story:
-        raise ValueError("决策裂缝审计没有逐字冻结核心目标及主线证据")
+    if len(core_goal) < 12 or len(goal_proof) < 12 or goal_proof not in story:
+        raise ValueError("决策裂缝审计没有从完整故事归纳核心目标并提供逐字证据")
     fissures = data.get("fissures")
     if not isinstance(fissures, list) or not fissures:
         raise ValueError("决策裂缝审计至少需要一个候选")
@@ -103,10 +100,10 @@ def read_audit(cache_root: Path) -> tuple[Path, dict[str, Any]]:
                 raise ValueError(f"候选动作编号或文字非法：{fissure_id}/{action_id}")
             if len(consequence) < 10 or consequence in consequences or state not in GOAL_STATES or not isinstance(route_ended, bool):
                 raise ValueError(f"候选动作后果或目标状态非法：{fissure_id}/{action_id}")
-            if route_ended != (state != "continuing"):
-                raise ValueError(f"路线结束判断与核心目标状态矛盾：{fissure_id}/{action_id}")
             if ending_scope not in ENDING_SCOPES or (route_ended and ending_scope == "none") or (not route_ended and ending_scope != "none"):
                 raise ValueError(f"路线结束范围错误：{fissure_id}/{action_id}")
+            if route_ended and (state not in {"abandoned", "unreachable"} or ending_scope != "small"):
+                raise ValueError(f"裂缝审计中的提前结束只能是离开核心故事的小结局：{fissure_id}/{action_id}")
             loss_markers = ("永久丢失", "永久不可", "无法取得", "不能取得", "只剩", "擦除", "销毁")
             if state == "continuing" and "完整" in core_goal and any(marker in consequence for marker in loss_markers):
                 raise ValueError(f"即时后果已使冻结核心目标中的完整成果不可达，不得改判为继续：{fissure_id}/{action_id}")
@@ -124,18 +121,15 @@ def read_audit(cache_root: Path) -> tuple[Path, dict[str, Any]]:
         fissure_ids.add(fissure_id)
     if adopted == 0:
         raise ValueError("决策裂缝审计没有采用任何候选")
-    minor_actions = [
-        (str(fissure.get("fissure_id") or ""), action)
+    small_actions = [
+        action
         for fissure in fissures
         if fissure.get("disposition") == "adopt"
         for action in fissure.get("actions", [])
-        if action.get("route_ended") is True and action.get("ending_scope") == "minor"
+        if action.get("route_ended") is True and action.get("ending_scope") == "small"
     ]
-    if len(minor_actions) < 2:
-        raise ValueError(f"初次拓扑至少需要2个独立小结局动作，实际{len(minor_actions)}")
-    minor_fissures = {fissure_id for fissure_id, _ in minor_actions}
-    if len(minor_fissures) < 2:
-        raise ValueError("独立小结局必须从至少两个不同的真实决定裂缝自然产生，不得在同一裂缝内补数")
+    if not small_actions:
+        raise ValueError("初次拓扑至少需要一个由故事线自然产生的小结局动作")
     story_terms = ("交易", "交换", "要求", "命令", "停止追查", "交出")
     if any(term in story for term in story_terms):
         compliant = False
@@ -160,14 +154,14 @@ def read_audit(cache_root: Path) -> tuple[Path, dict[str, Any]]:
 
 def packet(cache_root: Path) -> dict[str, Any]:
     path, audit = read_audit(cache_root)
-    _, mainline = read_mainline(cache_root)
-    return {"packet_version": RECEIPT_VERSION, "audit_path": str(path), "audit_sha256": digest(audit), "mainline_sha256": digest(mainline), "required_checks": REQUIRED_CHECKS, "mainline": mainline, "audit": audit}
+    _, complete_story = read_complete_story(cache_root)
+    return {"packet_version": RECEIPT_VERSION, "audit_path": str(path), "audit_sha256": digest(audit), "complete_story_sha256": digest(complete_story), "required_checks": REQUIRED_CHECKS, "complete_story": complete_story, "audit": audit}
 
 
 def validate_review(packet_value: dict[str, Any], review: dict[str, Any]) -> list[str]:
     errors: list[str] = []
-    corpus = all_text(packet_value["mainline"]) + "\n" + all_text(packet_value["audit"])
-    for key in ("audit_sha256", "mainline_sha256"):
+    corpus = all_text(packet_value["complete_story"]) + "\n" + all_text(packet_value["audit"])
+    for key in ("audit_sha256", "complete_story_sha256"):
         if review.get(key) != packet_value.get(key): errors.append(f"决策裂缝复检未绑定当前材料：{key}")
     covered = review.get("covered_checks")
     if not isinstance(covered, list) or any(check not in covered for check in REQUIRED_CHECKS): errors.append("决策裂缝复检覆盖不完整")

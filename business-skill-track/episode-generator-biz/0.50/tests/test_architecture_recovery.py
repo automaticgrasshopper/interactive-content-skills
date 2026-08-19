@@ -19,7 +19,7 @@ class StableBindingTests(unittest.TestCase):
     def test_receipt_metadata_does_not_change_episode_dependency(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
-            receipt = root / "stage-two-acceptance.json"
+            receipt = root / "planning-acceptance.json"
             base = {
                 "content_leaves": {
                     "global": {"topology.md": "a" * 64},

@@ -32,7 +32,6 @@ def graph_paths(nodes: dict[str, dict[str, object]]) -> list[list[str]]:
 def validate(
     duration_path: Path,
     topology_path: Path,
-    stage_two_path: Path | None = None,
 ) -> list[str]:
     issues: list[str] = []
     try:
@@ -80,8 +79,8 @@ def validate(
     mainline = data.get("mainline_path")
     if not isinstance(mainline, list) or tuple(mainline) not in {tuple(path) for path in expected_paths}:
         issues.append("mainline_path必须是实际入口到结局路线")
-    elif "正式结局" not in str(nodes[str(mainline[-1])]["interaction"]):
-        issues.append("mainline_path必须到达正式结局")
+    elif "主结局" not in str(nodes[str(mainline[-1])]["interaction"]):
+        issues.append("mainline_path必须到达冻结完整故事的主结局")
     return list(dict.fromkeys(issues))
 
 
@@ -89,9 +88,8 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("duration", type=Path)
     parser.add_argument("topology", type=Path)
-    parser.add_argument("stage_two_input", type=Path, nargs="?")
     args = parser.parse_args()
-    issues = validate(args.duration, args.topology, args.stage_two_input)
+    issues = validate(args.duration, args.topology)
     if issues:
         print("FAIL")
         for issue in issues: print(f"- {issue}")

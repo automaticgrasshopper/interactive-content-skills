@@ -4,12 +4,15 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 
 from assemble_business_output import BUSINESS_SKILL_VERSION, assemble_snapshot, resolve_ending_counts
 from completion_gate import validate_handoff, validate_receipt
 from validate_business_output import validate as validate_business_output
+
+ACCEPTANCE_VERSION = "nextplay.delivery-accepted.v1"
 
 
 def main() -> int:
@@ -18,9 +21,8 @@ def main() -> int:
     parser.add_argument("business_output", type=Path)
     parser.add_argument("completion_receipt", type=Path)
     parser.add_argument("handoff", type=Path)
-    parser.add_argument("--expected-endings", type=int)
-    parser.add_argument("--expected-formal", type=int)
-    parser.add_argument("--expected-failure", type=int)
+    parser.add_argument("--expected-major-endings", type=int)
+    parser.add_argument("--acceptance-receipt", type=Path)
     args = parser.parse_args()
 
     cache_root = args.cache_root.resolve()
@@ -32,12 +34,7 @@ def main() -> int:
     spine = cache_root / "emotional-spine.json"
     issues: list[str] = []
     try:
-        expected_endings, expected_formal, expected_failure = resolve_ending_counts(
-            cache_root,
-            args.expected_endings,
-            args.expected_formal,
-            args.expected_failure,
-        )
+        expected_major_endings = resolve_ending_counts(cache_root, args.expected_major_endings)
         actual = json.loads(business_path.read_text(encoding="utf-8"))
         rebuilt = assemble_snapshot(cache_root)
         if actual != rebuilt:
@@ -45,9 +42,7 @@ def main() -> int:
         issues.extend(validate_business_output(
             actual,
             asset_catalog,
-            expected_endings,
-            expected_formal,
-            expected_failure,
+            expected_major_endings,
             None,
             set(),
             "any",
@@ -77,6 +72,15 @@ def main() -> int:
         for issue in issues:
             print(f"- {issue}")
         return 1
+    acceptance_path = args.acceptance_receipt or cache_root / "delivery-accepted.json"
+    acceptance = {
+        "contract_version": ACCEPTANCE_VERSION,
+        "business_output_sha256": hashlib.sha256(business_path.read_bytes()).hexdigest(),
+        "completion_receipt_sha256": hashlib.sha256(receipt_path.read_bytes()).hexdigest(),
+        "handoff_sha256": hashlib.sha256(handoff_path.read_bytes()).hexdigest(),
+        "status": "PASS",
+    }
+    acceptance_path.write_text(json.dumps(acceptance, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("DELIVERABLE_ACCEPTED")
     print("BUSINESS_SCHEMA=passed")
     print("SKILL_ACCEPTANCE=verified")

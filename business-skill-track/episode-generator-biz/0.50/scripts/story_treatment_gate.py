@@ -10,18 +10,17 @@ import re
 from pathlib import Path
 from typing import Any
 
-from build_stage_two_input import validate_frozen as validate_stage_two_input
-from mainline_story_gate import read_mainline, verify as verify_mainline
+from complete_story_gate import read_complete_story, verify as verify_complete_story
 from decision_fissure_gate import read_audit, verify as verify_fissures
-from validate_emotional_movement import validate as validate_emotional_movement
 from validate_user_intent_lock import contract_binding
+from validate_creative_brief import validate_frozen as validate_creative_brief
 
 
-CONTRACT_VERSION = "nextplay.episode-story-treatment.v4"
+CONTRACT_VERSION = "nextplay.episode-story-treatment.v5"
 RECEIPT_VERSION = "nextplay.episode-story-treatment-review.v6"
 TREATMENT_NAME = "story-treatment.json"
 RECEIPT_NAME = "story-treatment-review.json"
-ROOT_FIELDS = {"contract_version", "title", "mainline_sha256", "decision_fissure_audit_sha256", "complete_story", "endings", "minor_endings", "choices"}
+ROOT_FIELDS = {"contract_version", "title", "complete_story_sha256", "decision_fissure_audit_sha256", "complete_story", "endings", "small_endings", "choices"}
 COMPREHENSION_FIELDS = {
     "protagonist_goal": "主角目标",
     "causal_progression": "全篇因果推进",
@@ -78,12 +77,12 @@ def read_treatment(cache_root: Path) -> tuple[Path, dict[str, Any]]:
         raise ValueError("完整故事过短，尚不足以承载从开场到全部结局的连续因果")
     if EPISODE_ID.search(all_text(data)):
         raise ValueError("路线级完整故事不得提前出现分集编号")
-    mainline_errors = verify_mainline(cache_root)
-    if mainline_errors:
-        raise ValueError("冻结主线未通过：" + "；".join(mainline_errors))
-    _, mainline = read_mainline(cache_root)
-    if data.get("mainline_sha256") != sha256_text(canonical(mainline)):
-        raise ValueError("支线故事图未绑定当前冻结主线")
+    complete_story_errors = verify_complete_story(cache_root)
+    if complete_story_errors:
+        raise ValueError("冻结完整故事未通过：" + "；".join(complete_story_errors))
+    _, complete_story_source = read_complete_story(cache_root)
+    if data.get("complete_story_sha256") != sha256_text(canonical(complete_story_source)):
+        raise ValueError("支线故事图未绑定当前完整故事")
     fissure_errors = verify_fissures(cache_root)
     if fissure_errors:
         raise ValueError("决策裂缝审计未通过：" + "；".join(fissure_errors))
@@ -93,9 +92,9 @@ def read_treatment(cache_root: Path) -> tuple[Path, dict[str, Any]]:
 
     choices = data.get("choices")
     endings = data.get("endings")
-    minor_endings = data.get("minor_endings")
-    if not isinstance(choices, list) or not isinstance(endings, list) or not endings or not isinstance(minor_endings, list):
-        raise ValueError("完整故事的 choices/endings/minor_endings 必须为数组，且至少有一个主要结局")
+    small_endings = data.get("small_endings")
+    if not isinstance(choices, list) or not isinstance(endings, list) or not endings or not isinstance(small_endings, list):
+        raise ValueError("完整故事的 choices/endings/small_endings 必须为数组")
 
     choice_ids: set[str] = set()
     questions: set[str] = set()
@@ -145,7 +144,7 @@ def read_treatment(cache_root: Path) -> tuple[Path, dict[str, Any]]:
             raise ValueError(f"不同选项必须有不同的即时后果和持续差异：{choice_id}")
 
     ending_titles: set[str] = set()
-    formal = failure = 0
+    ending_counts = {"main": 0, "expected": 0, "failure": 0}
     for ending in endings:
         if not isinstance(ending, dict) or set(ending) != {"title", "kind", "causal_payoff"}:
             raise ValueError("结局记录字段错误")
@@ -153,46 +152,41 @@ def read_treatment(cache_root: Path) -> tuple[Path, dict[str, Any]]:
         kind = ending.get("kind")
         if not title or title in ending_titles:
             raise ValueError(f"结局标题为空或重复：{title}")
-        if kind not in {"formal", "failure"}:
+        if kind not in ending_counts:
             raise ValueError(f"结局类型非法：{title}")
         if len(str(ending.get("causal_payoff") or "").strip()) < 12:
             raise ValueError(f"结局缺少因果回收：{title}")
         ending_titles.add(title)
-        formal += kind == "formal"
-        failure += kind == "failure"
+        ending_counts[kind] += 1
 
-    minor_by_action: dict[str, dict[str, Any]] = {}
-    for ending in minor_endings:
+    if ending_counts["main"] != 1:
+        raise ValueError(f"冻结完整故事必须且只能投影一个主结局，实际{ending_counts['main']}")
+    if ending_counts["expected"] < 1 or ending_counts["failure"] < 1:
+        raise ValueError("支线故事必须至少包含一个期望结局和一个失败结局")
+
+    small_by_action: dict[str, dict[str, Any]] = {}
+    for ending in small_endings:
         if not isinstance(ending, dict) or set(ending) != {"title", "kind", "source_action_id", "causal_payoff"}:
-            raise ValueError("独立小结局记录字段错误")
+            raise ValueError("小结局记录字段错误")
         title = str(ending.get("title") or "").strip()
         source_action_id = str(ending.get("source_action_id") or "").strip()
-        if ending.get("kind") != "minor" or not title or title in ending_titles or not source_action_id:
-            raise ValueError(f"独立小结局类型、标题或来源动作非法：{title}")
-        if source_action_id in minor_by_action or len(str(ending.get("causal_payoff") or "").strip()) < 12:
-            raise ValueError(f"独立小结局来源重复或缺少回收：{title}")
+        if ending.get("kind") != "small" or not title or title in ending_titles or not source_action_id:
+            raise ValueError(f"小结局类型、标题或来源动作非法：{title}")
+        if source_action_id in small_by_action or len(str(ending.get("causal_payoff") or "").strip()) < 12:
+            raise ValueError(f"小结局来源重复或缺少回收：{title}")
         ending_titles.add(title)
-        minor_by_action[source_action_id] = ending
+        small_by_action[source_action_id] = ending
 
-    basis_path = cache_root / "run-basis.json"
-    if not basis_path.is_file():
-        raise ValueError("完整故事门禁缺少已通过的 run-basis.json")
-    basis = json.loads(basis_path.read_text(encoding="utf-8"))
-    plan = basis.get("ending_plan") if isinstance(basis, dict) else None
-    if not isinstance(plan, dict):
-        raise ValueError("run-basis.json 缺少 ending_plan")
-    if len(endings) != plan.get("total") or formal != plan.get("formal") or failure != plan.get("failure"):
-        raise ValueError("主要结局数量与冻结运行基础不一致；独立小结局不得占用主要结局预算")
-    required_minor_actions = {
+    required_small_actions = {
         str(action["action_id"])
         for fissure in audit["fissures"]
         for action in fissure["actions"]
-        if action.get("route_ended") is True and action.get("ending_scope") == "minor"
+        if action.get("route_ended") is True and action.get("ending_scope") == "small"
     }
-    if set(minor_by_action) != required_minor_actions:
-        missing = sorted(required_minor_actions - set(minor_by_action))
-        extra = sorted(set(minor_by_action) - required_minor_actions)
-        raise ValueError(f"独立小结局必须逐动作一一对应且不占主要预算：缺少{missing}，多余{extra}")
+    if set(small_by_action) != required_small_actions:
+        missing = sorted(required_small_actions - set(small_by_action))
+        extra = sorted(set(small_by_action) - required_small_actions)
+        raise ValueError(f"小结局必须逐动作对应真实离线动作：缺少{missing}，多余{extra}")
     adopted = {
         str(fissure["decision_question"]): fissure
         for fissure in audit["fissures"]
@@ -218,43 +212,30 @@ def read_treatment(cache_root: Path) -> tuple[Path, dict[str, Any]]:
 
 def packet(cache_root: Path) -> dict[str, Any]:
     path, treatment = read_treatment(cache_root)
-    stage_two_input = validate_stage_two_input(cache_root)
-    movement_path = cache_root / "unnumbered-emotional-movement.json"
-    movement_issues = validate_emotional_movement(movement_path)
-    if movement_issues:
-        raise ValueError("未编号情绪运动未通过：" + "；".join(movement_issues))
-    movement = json.loads(movement_path.read_text(encoding="utf-8"))
+    creative_brief = validate_creative_brief(cache_root)
     source_sha, contract_sha = contract_binding(cache_root)
-    basis_path = cache_root / "run-basis.json"
-    assets_path = cache_root / "asset-catalog.json"
-    if not assets_path.is_file():
-        raise ValueError("完整故事门禁缺少 asset-catalog.json")
-    _, mainline = read_mainline(cache_root)
+    _, complete_story = read_complete_story(cache_root)
     _, audit = read_audit(cache_root)
     return {
         "packet_version": RECEIPT_VERSION,
         "treatment_path": str(path),
         "treatment_sha256": sha256_text(canonical(treatment)),
-        "mainline_sha256": sha256_text(canonical(mainline)),
+        "complete_story_sha256": sha256_text(canonical(complete_story)),
         "decision_fissure_audit_sha256": sha256_text(canonical(audit)),
-        "emotional_movement_sha256": sha256_text(canonical(movement)),
-        "stage_two_input_sha256": sha256_text(canonical(stage_two_input)),
-        "run_basis_sha256": sha256_text(basis_path.read_text(encoding="utf-8")),
-        "asset_catalog_sha256": sha256_text(assets_path.read_text(encoding="utf-8")),
+        "creative_brief_sha256": sha256_text(canonical(creative_brief)),
         "user_intent_source_sha256": source_sha,
         "user_intent_contract_sha256": contract_sha,
         "required_comprehension": COMPREHENSION_FIELDS,
         "required_checks": REQUIRED_CHECKS,
-        "emotional_movement": movement,
         "treatment": treatment,
-        "mainline": mainline,
+        "complete_story": complete_story,
         "decision_fissure_audit": audit,
     }
 
 
 def validate_review(packet_value: dict[str, Any], review: dict[str, Any]) -> list[str]:
     errors: list[str] = []
-    corpus = all_text(packet_value["treatment"]) + "\n" + all_text(packet_value["mainline"]) + "\n" + all_text(packet_value["decision_fissure_audit"])
+    corpus = all_text(packet_value["treatment"]) + "\n" + all_text(packet_value["complete_story"]) + "\n" + all_text(packet_value["decision_fissure_audit"])
     comprehension = review.get("comprehension")
     if not isinstance(comprehension, dict):
         comprehension = {}
@@ -296,7 +277,7 @@ def validate_review(packet_value: dict[str, Any], review: dict[str, Any]) -> lis
     if review.get("issues") != []:
         errors.append("完整故事复检仍有未解决问题")
     for key in (
-        "treatment_sha256", "mainline_sha256", "decision_fissure_audit_sha256", "emotional_movement_sha256", "stage_two_input_sha256", "run_basis_sha256", "asset_catalog_sha256",
+        "treatment_sha256", "complete_story_sha256", "decision_fissure_audit_sha256", "creative_brief_sha256",
         "user_intent_source_sha256", "user_intent_contract_sha256",
     ):
         if review.get(key) != packet_value.get(key):
@@ -313,12 +294,9 @@ def seal(cache_root: Path, review_path: Path) -> Path:
     receipt = {
         "packet_version": packet_value["packet_version"],
         "treatment_sha256": packet_value["treatment_sha256"],
-        "mainline_sha256": packet_value["mainline_sha256"],
+        "complete_story_sha256": packet_value["complete_story_sha256"],
         "decision_fissure_audit_sha256": packet_value["decision_fissure_audit_sha256"],
-        "emotional_movement_sha256": packet_value["emotional_movement_sha256"],
-        "stage_two_input_sha256": packet_value["stage_two_input_sha256"],
-        "run_basis_sha256": packet_value["run_basis_sha256"],
-        "asset_catalog_sha256": packet_value["asset_catalog_sha256"],
+        "creative_brief_sha256": packet_value["creative_brief_sha256"],
         "user_intent_source_sha256": packet_value["user_intent_source_sha256"],
         "user_intent_contract_sha256": packet_value["user_intent_contract_sha256"],
         "comprehension": review["comprehension"],

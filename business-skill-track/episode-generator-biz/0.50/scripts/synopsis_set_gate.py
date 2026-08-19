@@ -34,6 +34,28 @@ def sha256_text(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
 
+def frozen_mainline_synopses(cache_root: Path) -> dict[str, str]:
+    """Map mainline episode ids to verbatim frozen source text."""
+    decomposition_path = cache_root / "mainline-decomposition.json"
+    mainline_path = cache_root / "mainline-path.json"
+    if not decomposition_path.is_file() and not mainline_path.is_file():
+        return {}
+    if not decomposition_path.is_file() or not mainline_path.is_file():
+        raise ValueError("冻结主线材料不完整")
+    decomposition = json.loads(decomposition_path.read_text(encoding="utf-8"))
+    path = json.loads(mainline_path.read_text(encoding="utf-8"))
+    segments = {
+        str(item.get("segment_id") or ""): str(item.get("source_text") or "").strip()
+        for item in decomposition.get("segments") or []
+        if isinstance(item, dict)
+    }
+    return {
+        str(item.get("episode_id") or ""): segments.get(str(item.get("segment_id") or ""), "")
+        for item in path.get("path") or []
+        if isinstance(item, dict)
+    }
+
+
 def read_synopsis_set(cache_root: Path) -> tuple[dict[str, dict[str, Any]], dict[str, dict[str, Any]]]:
     nodes = parse(cache_root / "topology.md")
     folder = cache_root / "episode-synopses"
@@ -51,6 +73,7 @@ def read_synopsis_set(cache_root: Path) -> tuple[dict[str, dict[str, Any]], dict
         "predecessors", "successors",
     }
     incoming = predecessors(nodes)
+    mainline = frozen_mainline_synopses(cache_root)
     conflicts: dict[str, list[str]] = {}
     for path in paths:
         data = json.loads(path.read_text(encoding="utf-8"))
@@ -60,8 +83,13 @@ def read_synopsis_set(cache_root: Path) -> tuple[dict[str, dict[str, Any]], dict
         if data.get("contract_version") != SYNOPSIS_VERSION or data.get("episode_id") != episode_id:
             raise ValueError(f"单集梗概合同或编号错误：{episode_id}")
         synopsis = str(data.get("synopsis") or "").strip()
-        if not 80 <= len(synopsis) <= 360:
-            raise ValueError(f"单集梗概应在80至360个字符内完整表达因果变化：{episode_id}")
+        if episode_id in mainline:
+            if synopsis != mainline[episode_id]:
+                raise ValueError(f"主线梗概必须逐字继承冻结原文：{episode_id}")
+            if not synopsis or len(synopsis) > 360:
+                raise ValueError(f"主线冻结切片为空或超过梗概上限：{episode_id}")
+        elif not 80 <= len(synopsis) <= 360:
+            raise ValueError(f"支线梗概应在80至360个字符内完整表达因果变化：{episode_id}")
         conflict = str(data.get("conflict") or "").strip()
         if len(conflict) < 6:
             raise ValueError(f"单集梗概缺少本集冲突：{episode_id}")

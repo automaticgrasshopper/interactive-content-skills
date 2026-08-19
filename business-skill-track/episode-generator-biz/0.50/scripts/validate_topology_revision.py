@@ -18,11 +18,15 @@ from validate_topology import parse
 def node_kind(node: dict[str, object]) -> str:
     interaction = str(node["interaction"])
     if bool(node["ending"]):
-        if "独立小结局" in interaction:
-            return "minor-ending"
-        if "主要失败结局" in interaction:
-            return "main-failure-ending"
-        return "main-formal-ending"
+        if "小结局" in interaction:
+            return "small-ending"
+        if "主结局" in interaction:
+            return "main-ending"
+        if "期望结局" in interaction:
+            return "expected-ending"
+        if "失败结局" in interaction:
+            return "failure-ending"
+        return "unclassified-ending"
     if "选择" in interaction and "结果" not in interaction:
         return "choice"
     return "story"

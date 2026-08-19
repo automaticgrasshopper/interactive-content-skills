@@ -88,10 +88,11 @@ def parse(path: Path) -> dict[str, dict[str, object]]:
 
 def validate(
     nodes: dict[str, dict[str, object]],
-    expected_endings: int | None = None,
-    expected_formal: int | None = None,
+    expected_major_endings: int | None = None,
+    expected_main: int | None = None,
+    expected_desired: int | None = None,
     expected_failure: int | None = None,
-    movement: dict[str, object] | None = None,
+    expected_small: int | None = None,
 ) -> list[str]:
     issues: list[str] = []
     expected_numbers = list(range(1, len(nodes) + 1))
@@ -125,18 +126,6 @@ def validate(
                 issues.append(f"选择出口不足两个不同目标：{node_id}")
             if targets != successors:
                 issues.append(f"选择目标与后继不一致：{node_id}")
-            direct_main_endings = [
-                target
-                for target in targets
-                if target in nodes
-                and bool(nodes[target]["ending"])
-                and "独立小结局" not in str(nodes[target]["interaction"])
-            ]
-            if direct_main_endings:
-                issues.append(
-                    f"主要结局前必须至少经过一个该路线独有的非结局发展节点："
-                    f"{node_id}->{direct_main_endings}"
-                )
             if len(targets) >= 3 and all(
                 target in nodes and bool(nodes[target]["ending"])
                 for target in targets
@@ -230,146 +219,56 @@ def validate(
         issues.append(f"存在无法到达结局的节点：{no_ending_path}")
 
     total_endings = len(ending_nodes)
-    minor = sum(1 for node in nodes.values() if node["ending"] and "独立小结局" in str(node["interaction"]))
-    formal = sum(1 for node in nodes.values() if node["ending"] and "主要正式结局" in str(node["interaction"]))
-    failure = sum(1 for node in nodes.values() if node["ending"] and "主要失败结局" in str(node["interaction"]))
-    main_ending_nodes = {
-        node_id
-        for node_id in ending_nodes
-        if "独立小结局" not in str(nodes[node_id]["interaction"])
-    }
-
-    reachable_main_memo: dict[str, frozenset[str]] = {}
-
-    def reachable_main_endings(node_id: str) -> frozenset[str]:
-        if node_id in reachable_main_memo:
-            return reachable_main_memo[node_id]
-        if node_id in main_ending_nodes:
-            result = frozenset({node_id})
-        else:
-            result = frozenset().union(
-                *(reachable_main_endings(target) for target in nodes[node_id]["successors"] if target in nodes)
-            )
-        reachable_main_memo[node_id] = result
-        return result
-
-    lock_choices_by_ending: dict[str, set[str]] = {
-        ending_id: set() for ending_id in main_ending_nodes
-    }
-    for choice_id, choice_node in nodes.items():
-        interaction = str(choice_node["interaction"])
-        if "选择" not in interaction or "结果" in interaction:
-            continue
-        before = reachable_main_endings(choice_id)
-        if len(before) < 2:
-            continue
-        for target in choice_node["successors"]:
-            after = reachable_main_endings(target) if target in nodes else frozenset()
-            if len(after) == 1:
-                ending_id = next(iter(after))
-                lock_choices_by_ending[ending_id].add(choice_id)
-    if len(main_ending_nodes) >= 2:
-        missing_locks = sorted(
-            ending_id for ending_id, choices in lock_choices_by_ending.items() if not choices
-        )
-        if missing_locks:
-            issues.append(f"主要结局缺少可识别的锁定选择：{missing_locks}")
-        distinct_lock_choices = set().union(*lock_choices_by_ending.values())
-        if not missing_locks and len(distinct_lock_choices) < 2:
-            only = next(iter(distinct_lock_choices))
-            issues.append(f"禁止由同一个选择节点一次性分配全部主要结局：{only}")
-    for ending_id in sorted(ending_nodes):
-        ending = nodes[ending_id]
-        if "独立小结局" in str(ending["interaction"]):
-            continue
-        predecessors = [
-            source for source, node in nodes.items() if ending_id in node["successors"]
-        ]
-        dedicated = [
-            source
-            for source in predecessors
-            if not bool(nodes[source]["ending"])
-            and not (
-                "选择" in str(nodes[source]["interaction"])
-                and "结果" not in str(nodes[source]["interaction"])
-            )
-            and incoming.get(source) == 1
-            and list(nodes[source]["successors"]) == [ending_id]
-        ]
-        if not dedicated:
-            issues.append(f"主要结局缺少该路线独有的非结局发展节点：{ending_id}")
-    if minor < 2:
-        issues.append(f"独立小结局少于固定下限：{minor}<2")
+    small = sum(1 for node in nodes.values() if node["ending"] and "小结局" in str(node["interaction"]))
+    main = sum(1 for node in nodes.values() if node["ending"] and "主结局" in str(node["interaction"]))
+    desired = sum(1 for node in nodes.values() if node["ending"] and "期望结局" in str(node["interaction"]))
+    failure = sum(1 for node in nodes.values() if node["ending"] and "失败结局" in str(node["interaction"]))
+    classified = small + main + desired + failure
+    if classified != total_endings:
+        issues.append(f"每个终点必须且只能标记为小结局、主结局、期望结局或失败结局：已分类{classified}/{total_endings}")
+    if small < 1:
+        issues.append("缺少由故事线自然产生的小结局")
+    if main != 1:
+        issues.append(f"主结局必须且只能有一个：{main}")
+    if desired < 1:
+        issues.append("缺少期望结局")
+    if failure < 1:
+        issues.append("缺少失败结局")
     if total_endings == 0:
         issues.append("没有可达结局")
-    if expected_endings is not None and expected_endings < 1:
-        issues.append("期望结局数必须大于 0")
-    elif expected_endings is not None and total_endings - minor != expected_endings:
-        issues.append(f"主要结局数量错误：期望{expected_endings}，实际{total_endings - minor}；独立小结局{minor}不计入预算")
-    if expected_formal is not None and formal != expected_formal:
-        issues.append(f"正式结局数量错误：期望{expected_formal}，实际{formal}")
+    major = main + desired + failure
+    if expected_major_endings is not None and major != expected_major_endings:
+        issues.append(f"主要结局数量与故事图不一致：故事图{expected_major_endings}，拓扑{major}")
+    if expected_main is not None and main != expected_main:
+        issues.append(f"主结局数量错误：期望{expected_main}，实际{main}")
+    if expected_desired is not None and desired != expected_desired:
+        issues.append(f"期望结局数量错误：期望{expected_desired}，实际{desired}")
     if expected_failure is not None and failure != expected_failure:
-        issues.append(f"失败小结局数量错误：期望{expected_failure}，实际{failure}")
+        issues.append(f"失败结局数量错误：期望{expected_failure}，实际{failure}")
+    if expected_small is not None and small != expected_small:
+        issues.append(f"小结局数量错误：期望{expected_small}，实际{small}")
 
-    if movement is not None and roots == ["episode-001"] and count == len(nodes):
-        scale = movement.get("scale") if isinstance(movement, dict) else None
-        if not isinstance(scale, dict):
-            issues.append("未编号情绪运动缺少scale")
-        else:
-            legal_path_min = scale.get("minimum_legal_path_length")
-            interaction_min = scale.get("interaction_min")
-            interaction_max = scale.get("interaction_max")
-            paths: list[list[str]] = []
-
-            def walk(node_id: str, path: list[str]) -> None:
-                current = path + [node_id]
-                successors = list(nodes[node_id]["successors"])
-                if not successors:
-                    paths.append(current)
-                    return
-                for target in successors:
-                    if target in nodes:
-                        walk(target, current)
-
-            walk("episode-001", [])
-            for path in paths:
-                ending = nodes[path[-1]]
-                if isinstance(legal_path_min, int) and len(path) < legal_path_min:
-                    issues.append(
-                        f"结局路径短于合法下限：{path[-1]}={len(path)}<{legal_path_min}"
-                    )
-            graph_choice_count = sum(
-                1
-                for node in nodes.values()
-                if "选择" in str(node["interaction"])
-                and "结果" not in str(node["interaction"])
-            )
-            if isinstance(interaction_min, int) and graph_choice_count < interaction_min:
-                issues.append(f"全图互动少于探索下限：{graph_choice_count}<{interaction_min}")
-            if isinstance(interaction_max, int) and graph_choice_count > interaction_max:
-                issues.append(f"全图互动多于探索上限：{graph_choice_count}>{interaction_max}")
     return issues
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("topology", type=Path)
-    parser.add_argument("--expected-endings", type=int)
-    parser.add_argument("--expected-formal", type=int)
+    parser.add_argument("--expected-major-endings", type=int)
+    parser.add_argument("--expected-main", type=int)
+    parser.add_argument("--expected-desired", type=int)
     parser.add_argument("--expected-failure", type=int)
-    parser.add_argument("--movement", type=Path)
+    parser.add_argument("--expected-small", type=int)
     args = parser.parse_args()
     try:
         nodes = parse(args.topology)
-        movement = None
-        if args.movement:
-            movement = json.loads(args.movement.read_text(encoding="utf-8"))
         issues = validate(
             nodes,
-            args.expected_endings,
-            args.expected_formal,
+            args.expected_major_endings,
+            args.expected_main,
+            args.expected_desired,
             args.expected_failure,
-            movement,
+            args.expected_small,
         )
     except (OSError, ValueError) as error:
         print(f"FAIL: {error}")

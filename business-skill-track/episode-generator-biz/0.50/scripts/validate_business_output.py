@@ -151,9 +151,7 @@ def validate_graph(order: list[str], successors: dict[str, list[str]], endings: 
 def validate(
     data: Any,
     catalog_path: Path | None,
-    expected_endings: int | None,
-    expected_formal: int | None,
-    expected_failure: int | None,
+    expected_major_endings: int | None,
     baseline: Any | None,
     allowed_changed: set[str],
     change_scope: str,
@@ -271,9 +269,9 @@ def validate(
         actual_prev = item["剧本分析"]["前置节点编号列表"] if isinstance(item.get("剧本分析"), dict) else []
         if actual_prev != predecessors.get(node_id, []):
             issues.append(f"{node_id}/前置节点与拓扑不一致")
-    if expected_endings is not None and len(endings) < expected_endings:
-        issues.append(f"终点总数少于主要结局预算：至少{expected_endings}，实际{len(endings)}")
-    # 主要／独立小结局与正式／失败分类属于私有拓扑字段，已由
+    if expected_major_endings is not None and len(endings) < expected_major_endings:
+        issues.append(f"业务结果终点少于故事图中的主要结局：故事图{expected_major_endings}，业务结果总终点{len(endings)}")
+    # 四类结局的细分类属于私有拓扑字段，已由
     # validate_emotional_topology.py 在业务组装前强验证；正式结果只含九字段
     # 只保留“是否结局”，这里不以标题猜测结局类型。
     if baseline is not None:
@@ -305,9 +303,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("input", type=Path)
     parser.add_argument("--asset-catalog", type=Path)
-    parser.add_argument("--expected-endings", type=int)
-    parser.add_argument("--expected-formal", type=int)
-    parser.add_argument("--expected-failure", type=int)
+    parser.add_argument("--expected-major-endings", type=int)
     parser.add_argument("--baseline", type=Path)
     parser.add_argument("--allowed-changed", action="append", default=[])
     parser.add_argument("--change-scope", choices=("any", "dialogue"), default="any")
@@ -318,7 +314,7 @@ def main() -> int:
     except (OSError, json.JSONDecodeError) as error:
         print(f"FAIL：{error}")
         return 1
-    issues = validate(data, args.asset_catalog, args.expected_endings, args.expected_formal, args.expected_failure, baseline, set(args.allowed_changed), args.change_scope)
+    issues = validate(data, args.asset_catalog, args.expected_major_endings, baseline, set(args.allowed_changed), args.change_scope)
     if issues:
         for issue in issues:
             print(f"FAIL：{issue}")

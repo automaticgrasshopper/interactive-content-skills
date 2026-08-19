@@ -2,7 +2,7 @@
 
 ## 原则
 
-`mainline-story.json/complete_story`是唯一主线事实文本。先把它切成一条有起承转合的纯直线路径，再在这条路径上扫描决定裂缝。支线长在主线节点上；支线不得先生成一篇全路线故事，再反向压缩或重写主线。
+`complete-story.json/complete_story`是主线的唯一来源文本，但完整故事本身还不是分集主线。先按自然戏剧运动把它切成一条纯直线路径，切分结果才是主线；再在主线上扫描决定裂缝。支线长在主线节点上，不得反向压缩或重写完整故事。
 
 ## 主线分解
 
@@ -11,7 +11,7 @@
 ```json
 {
   "contract_version": "nextplay.mainline-decomposition.v1",
-  "mainline_sha256": "mainline-story.json规范化SHA-256",
+  "complete_story_sha256": "complete-story.json规范化SHA-256",
   "segments": [
     {
       "segment_id": "mainline-001",
@@ -61,8 +61,8 @@
 }
 ```
 
-映射必须包含全部主线切片且一一对应，顺序等于`route-duration.json/mainline_path`。每个非末尾主线节点必须直接连到下一个主线节点；有选择时，至少一个选项必须指向下一个主线节点。最终主线节点必须是冻结期待结局。
+映射必须包含全部主线切片且一一对应，顺序等于`route-duration.json/mainline_path`。每个非末尾主线节点必须直接连到下一个主线节点；有选择时，至少一个选项必须指向下一个主线节点。最终主线节点必须完整结算冻结故事。
 
-拓扑与路线记账完成后立即运行`validate_mainline_projection.py --topology-only`。失败时运行`repair_mainline_projection.py --apply`：它只整理可以从当前文件唯一确定的映射顺序、实际路线记账和主线梗概逐字绑定，不添加边、不改故事。若返回`REPROJECT_REQUIRED`，只重建报告列出的正式第二版拓扑、主线路径或路线记账；不得回退重写主线故事。全体梗概完成后运行无参数的完整映射校验，再进入梗概集合复检。
+拓扑与路线记账完成后立即运行`validate_mainline_projection.py --topology-only`。失败时运行`repair_mainline_projection.py --apply`：它只整理可以从当前文件唯一确定的映射顺序、实际路线记账和主线梗概逐字绑定，不添加边、不改故事。若返回`REPROJECT_REQUIRED`，只重建报告列出的正式拓扑、主线路径或路线记账；不得回退重写完整故事。全体梗概完成后运行无参数的完整映射校验，再进入梗概集合复检。
 
 全体梗概生成后，主线`episode-synopses/<episode-id>.json/synopsis`必须逐字等于对应`source_text`。只有支线节点的梗概可以从支线事实另行生成。

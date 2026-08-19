@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate an emotional spine and the frozen topology derived from it."""
+"""Validate a frozen topology and its post-hoc emotional-spine projection."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ sys.dont_write_bytecode = True
 from validate_topology import parse, validate
 
 
-SPINE_VERSION = "nextplay.emotional-spine.v1"
+SPINE_VERSION = "nextplay.emotional-spine.v2"
 HASH_LINE = re.compile(
     r"^<!--\s*情绪脊校验：\s*(?:sha256:)?([a-f0-9]{64})\s*-->\s*$",
     re.MULTILINE,
@@ -68,12 +68,14 @@ def validate_spine(spine: Any, node_ids: list[str]) -> list[str]:
 def validate_emotional_topology(
     topology_path: Path,
     spine_path: Path,
-    expected_endings: int,
-    expected_formal: int | None,
+    expected_major: int,
+    expected_main: int | None,
+    expected_desired: int | None,
     expected_failure: int | None,
+    expected_small: int | None,
 ) -> list[str]:
     nodes = parse(topology_path)
-    issues = validate(nodes, expected_endings, expected_formal, expected_failure)
+    issues = validate(nodes, expected_major, expected_main, expected_desired, expected_failure, expected_small)
     spine = json.loads(spine_path.read_text(encoding="utf-8"))
     issues.extend(validate_spine(spine, list(nodes)))
     digest = hashlib.sha256(canonical_bytes(spine)).hexdigest()
@@ -82,12 +84,6 @@ def validate_emotional_topology(
         issues.append("拓扑缺少情绪脊校验哈希")
     elif match.group(1) != digest:
         issues.append(f"拓扑情绪脊校验哈希不一致：期望 {digest}")
-    choice_nodes = {node_id for node_id, node in nodes.items() if node["choices"]}
-    if isinstance(spine, dict) and isinstance(spine.get("nodes"), list):
-        turn_by_id = {item.get("episode_id"): item.get("turn") for item in spine["nodes"] if isinstance(item, dict)}
-        for node_id in sorted(choice_nodes):
-            if turn_by_id.get(node_id) is not True:
-                issues.append(f"选择节点没有对应情绪拐点：{node_id}")
     return issues
 
 
@@ -95,17 +91,21 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("topology", type=Path)
     parser.add_argument("--spine", type=Path, required=True)
-    parser.add_argument("--expected-endings", type=int, required=True)
-    parser.add_argument("--expected-formal", type=int)
+    parser.add_argument("--expected-major-endings", type=int, required=True)
+    parser.add_argument("--expected-main", type=int)
+    parser.add_argument("--expected-desired", type=int)
     parser.add_argument("--expected-failure", type=int)
+    parser.add_argument("--expected-small", type=int)
     args = parser.parse_args()
     try:
         issues = validate_emotional_topology(
             args.topology,
             args.spine,
-            args.expected_endings,
-            args.expected_formal,
+            args.expected_major_endings,
+            args.expected_main,
+            args.expected_desired,
             args.expected_failure,
+            args.expected_small,
         )
     except (OSError, ValueError, json.JSONDecodeError) as error:
         print(f"FAIL: {error}")
