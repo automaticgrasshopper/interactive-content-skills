@@ -1,0 +1,26 @@
+{
+  "skill_version": "episode-generator-biz/0.53",
+  "phases": {
+    "business-contract": ["business-interface.md", "episode-output-schema.md"],
+    "external-boundary": ["external-output-boundary.md", "execution-result-protocol.md"],
+    "atomic-orchestration": ["atomic-run-orchestration.md"],
+    "stage-one": ["user-intent-lock.md", "upstream-input-translation.md", "workflow-and-stage-gates.md"],
+    "local-node-editing": ["canvas-current-state.md", "local-node-editing.md", "compact-draft-writer.md", "chinese-dialogue-craft.md"],
+    "complete-story-writing": ["complete-story-writing.md"],
+    "story-treatment": ["mainline-first-topology.md", "story-treatment-and-decomposition.md", "genre-direction.md", "workflow-and-stage-gates.md"],
+    "topology": ["mainline-first-topology.md", "emotional-spine-state-graph.md", "story-treatment-and-decomposition.md", "topology-double-review.md", "workflow-and-stage-gates.md"],
+    "synopsis-decomposition": ["mainline-first-topology.md", "story-treatment-and-decomposition.md", "story-to-episode-synopsis.md", "workflow-and-stage-gates.md"],
+    "episode-story-adaptation": ["episode-story-adapter.md"],
+    "episode-writing": ["atomic-run-orchestration.md", "compact-draft-writer.md", "chinese-dialogue-craft.md", "genre-direction.md"],
+    "enhancer-rewrite": ["vimax-script-enhancer.md", "chinese-dialogue-craft.md"],
+    "character-appearance": ["character-appearance-validation.md"],
+    "user-intent-review": ["user-intent-lock.md"],
+    "business-output": ["atomic-run-orchestration.md", "business-interface.md", "episode-output-schema.md", "workflow-and-stage-gates.md"]
+  },
+  "profiles": {
+    "written-text": {
+      "episode-writing": ["written-text-to-dialogue.md"],
+      "enhancer-rewrite": ["written-text-to-dialogue.md"]
+    }
+  }
+}
