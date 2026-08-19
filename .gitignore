@@ -3,3 +3,5 @@ __pycache__/
 *.py[cod]
 .episode-generator-cache/
 .skill-runs/
+/dist/
+business-skill-track/episode-generator-biz/*/test-runs/
