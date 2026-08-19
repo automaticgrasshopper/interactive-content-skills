@@ -1,0 +1,4 @@
+interface:
+  display_name: "蚂蚱-分集规划师-0819工程测试"
+  short_description: "从完整故事自然展开互动分集，并校验业务交付"
+  default_prompt: "Use $episode-generator-biz to preserve explicit user requirements, write one complete story, then naturally split its mainline and grow real decision branches into validated interactive episodes."
