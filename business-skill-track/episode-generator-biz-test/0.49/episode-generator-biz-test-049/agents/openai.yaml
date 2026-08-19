@@ -1,0 +1,4 @@
+interface:
+  display_name: "Episode Generator Biz 测试专用"
+  short_description: "生成互动分集，或按一集边界增删改已有分集节点"
+  default_prompt: "Use $episode-generator-biz-test-049：读取持久化运行检查点，只推进next_episode_id和next_actions；保留完整故事、自然情绪脊、逐集Screenwriter、Enhancer、结构验收、场面复检、冷读和九字段正式交付。"
