@@ -1,0 +1,31 @@
+{
+  "baseline": "episode-generator-biz",
+  "route_skill": "episode-route-planner-biz/0.01",
+  "screenplay_skill": "episode-screenwriter-biz/0.01",
+  "original_required_fields": [
+    "分集编号",
+    "分集标题",
+    "分集剧本",
+    "剧本分析",
+    "关联角色",
+    "关联场景",
+    "关联道具",
+    "是否结局",
+    "互动节点"
+  ],
+  "ownership": {
+    "分集编号": {"route_write": true, "screenplay_write": false},
+    "分集标题": {"route_write": true, "screenplay_write": false},
+    "分集剧本.单集梗概": {"route_write": true, "screenplay_write": false},
+    "分集剧本.完整剧本": {"route_write": false, "screenplay_write": true},
+    "剧本分析.本集冲突": {"route_write": true, "screenplay_write": false},
+    "剧本分析.前置节点编号列表": {"route_write": true, "screenplay_write": false},
+    "剧本分析.后续节点编号列表": {"route_write": true, "screenplay_write": false},
+    "关联角色": {"route_write": false, "screenplay_write": true},
+    "关联场景": {"route_write": false, "screenplay_write": true},
+    "关联道具": {"route_write": false, "screenplay_write": true},
+    "是否结局": {"route_write": true, "screenplay_write": false},
+    "互动节点": {"route_write": true, "screenplay_write": false},
+    "剧本创作分析": {"route_write": false, "screenplay_write": true}
+  }
+}
