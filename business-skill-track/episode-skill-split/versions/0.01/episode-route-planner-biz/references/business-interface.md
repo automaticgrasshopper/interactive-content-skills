@@ -85,4 +85,4 @@
 
 ## 完成边界
 
-只有`workflow_state.py`逐步放行至`ACCEPT_PLANNING`、规划门禁对当前缓存根输出`PLANNING_ACCEPTED`，且`accept_route.py CACHE_ROOT FORMAL_ROUTE.json`随后输出`ROUTE_ACCEPTED`并写出正式路线后才算完成。规划阶段文件和回执均为内部数据，不进入正式路线对象。完成后立即交给 UI 展示并结束，不得自动进入剧本生成。
+只有`workflow_state.py`逐步放行并完成两版独立拓扑与匿名一次择优，随后到达`ACCEPT_PLANNING`、规划门禁对当前缓存根输出`PLANNING_ACCEPTED`，且`accept_route.py CACHE_ROOT FORMAL_ROUTE.json`输出`ROUTE_ACCEPTED`并写出正式路线后才算完成。规划阶段文件、匿名映射和回执均为内部数据，不进入正式路线对象。完成后立即交给 UI 展示并结束，不得自动进入剧本生成。

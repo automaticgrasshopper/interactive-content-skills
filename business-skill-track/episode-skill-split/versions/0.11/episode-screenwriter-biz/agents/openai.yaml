@@ -1,0 +1,4 @@
+interface:
+  display_name: "分集剧情编剧"
+  short_description: "读取已验收流程图并逐节点创作、冷读和验收正式剧本"
+  default_prompt: "Use $episode-screenwriter-biz to write and accept the screenplay for one specified node of an accepted route."

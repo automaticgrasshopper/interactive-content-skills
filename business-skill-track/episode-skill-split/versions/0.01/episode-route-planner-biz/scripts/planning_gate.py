@@ -13,6 +13,8 @@ from collections import deque
 from pathlib import Path
 from typing import Any
 
+from topology_selection import verify_root as verify_topology_selection
+
 
 CONTRACT_VERSION = "nextplay.route-planning-evidence.v1"
 RECEIPT_VERSION = "nextplay.route-planning-acceptance.v2"
@@ -46,6 +48,10 @@ REQUIRED_FILES = (
     "story-treatment.json",
     "story-treatment-review.json",
     "topology-draft-1.json",
+    "topology-draft-2.json",
+    "topology-comparison-packet.json",
+    "topology-comparison-verdict.json",
+    "topology-selection.json",
     "route-candidate.json",
     "topology-review-packet.json",
     "topology-review-a.json",
@@ -99,7 +105,9 @@ def load_planning_files(cache_root: Path) -> tuple[dict[str, Any], dict[str, Any
     movements = load_json(root / "mainline-emotional-movement.json")
     fissures = load_json(root / "decision-fissure-audit.json")
     treatment = load_json(root / "story-treatment.json")
-    draft = load_json(root / "topology-draft-1.json")
+    draft_1 = load_json(root / "topology-draft-1.json")
+    draft_2 = load_json(root / "topology-draft-2.json")
+    selection = load_json(root / "topology-selection.json")
     spine = load_json(root / "emotional-spine.json")
     review_a = load_json(root / "topology-review-a.json")
     review_b = load_json(root / "topology-review-b.json")
@@ -115,7 +123,9 @@ def load_planning_files(cache_root: Path) -> tuple[dict[str, Any], dict[str, Any
         "emotional_movements": movements.get("emotional_movements"),
         "decision_fissures": fissures.get("decision_fissures"),
         "story_treatment": treatment,
-        "topology_draft_1": draft,
+        "topology_draft_1": draft_1,
+        "topology_draft_2": draft_2,
+        "topology_selection": selection,
         "emotional_spine": spine.get("emotional_spine"),
         "reviews": [review_a, review_b],
     }
@@ -156,6 +166,10 @@ def graph_shape(nodes: list[dict[str, Any]]) -> str:
 
 
 def draft_shape(draft: Any) -> str:
+    if isinstance(draft, dict) and isinstance(draft.get("nodes"), list):
+        nodes = draft["nodes"]
+        if nodes and all(isinstance(node, dict) and "后续节点编号列表" in node for node in nodes):
+            return graph_shape(nodes)
     if not isinstance(draft, dict) or set(draft) != {"entry_node_id", "nodes"}:
         return ""
     nodes = draft.get("nodes")
@@ -215,7 +229,8 @@ def validate(candidate: Any, evidence: Any) -> list[str]:
     root_fields = {
         "contract_version", "project_id", "route_id", "route_version", "route_input_hash",
         "route_candidate_hash", "complete_story", "mainline_segments", "emotional_movements",
-        "decision_fissures", "story_treatment", "topology_draft_1", "emotional_spine", "reviews",
+        "decision_fissures", "story_treatment", "topology_draft_1", "topology_draft_2",
+        "topology_selection", "emotional_spine", "reviews",
     }
     if not exact_fields(evidence, root_fields, "规划证据根对象", errors):
         return errors
@@ -458,11 +473,29 @@ def validate(candidate: Any, evidence: Any) -> list[str]:
             errors.append(f"支线事实选项与正式拓扑不一致：{question}")
 
     first_shape = draft_shape(evidence.get("topology_draft_1"))
+    second_shape = draft_shape(evidence.get("topology_draft_2"))
     final_shape = graph_shape(nodes)
     if not first_shape:
         errors.append("第一版拓扑无效")
-    elif first_shape == final_shape:
-        errors.append("第一版与正式拓扑图形指纹相同")
+    if not second_shape:
+        errors.append("第二版拓扑无效")
+    elif first_shape == second_shape:
+        errors.append("两版拓扑图形指纹相同")
+    selection = evidence.get("topology_selection")
+    if not isinstance(selection, dict):
+        errors.append("缺少匿名拓扑选择回执")
+    else:
+        drafts = {
+            "draft-1": evidence.get("topology_draft_1"),
+            "draft-2": evidence.get("topology_draft_2"),
+        }
+        selected_source = selection.get("selected_source")
+        if selection.get("status") != "PASS" or selected_source not in drafts:
+            errors.append("匿名拓扑选择回执状态错误")
+        elif selection.get("selected_hash") != digest(drafts[selected_source]) or digest(candidate) != selection.get("selected_hash"):
+            errors.append("当前候选不是匿名比较胜出版")
+        elif graph_shape(candidate.get("nodes", [])) not in {first_shape, second_shape}:
+            errors.append("当前候选图形不属于两版独立拓扑")
 
     spine = evidence.get("emotional_spine")
     if not isinstance(spine, list) or len(spine) != len(nodes):
@@ -556,6 +589,9 @@ def verify_receipt(candidate: dict[str, Any], receipt: Any) -> list[str]:
 
 
 def build_from_root(cache_root: Path) -> dict[str, Any]:
+    selection_errors = verify_topology_selection(cache_root)
+    if selection_errors:
+        raise ValueError("拓扑匿名选择未通过：" + "；".join(selection_errors))
     candidate, evidence = load_planning_files(cache_root)
     files = {name: file_sha256(cache_root / name) for name in REQUIRED_FILES}
     return build_receipt(candidate, evidence, files)
@@ -563,6 +599,9 @@ def build_from_root(cache_root: Path) -> dict[str, Any]:
 
 def verify_root(cache_root: Path) -> list[str]:
     try:
+        selection_errors = verify_topology_selection(cache_root)
+        if selection_errors:
+            return ["拓扑匿名选择未通过：" + "；".join(selection_errors)]
         candidate, evidence = load_planning_files(cache_root)
         receipt = load_json(cache_root / "planning-acceptance.json")
         errors = verify_receipt(candidate, receipt)
