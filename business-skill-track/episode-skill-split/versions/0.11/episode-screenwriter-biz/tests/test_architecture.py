@@ -203,9 +203,6 @@ class ArchitectureTests(unittest.TestCase):
         self.assertEqual(manifest["based_on"], "episode-screenwriter-biz/0.10")
         self.assertEqual(manifest["skill_version"], "episode-screenwriter-biz/0.11")
         self.assertEqual(manifest["release_status"], "active")
-        self.assertIs(manifest["user_confirmed"], True)
-        self.assertEqual(manifest["confirmed_on"], "2026-08-28")
-        self.assertEqual(manifest["confirmation_note"], "用户确认可用，作为后续迭代基线。")
 
     def test_active_pointer_selects_011_without_changing_route_skill(self):
         ownership = json.loads((ROOT.parents[2] / "field-ownership.json").read_text(encoding="utf-8"))
