@@ -14,6 +14,7 @@ EXPECTED_SKILLS = {
     "nxp-episode-checker",
     "nxp-plan-storyboard-and-generate-episode-zh",
     "outline-generator",
+    "split-video",
     "互动影像资产图像提示词生成",
     "剧本实例化专家",
     "剧本转分镜图",
@@ -25,7 +26,7 @@ EXPECTED_SKILLS = {
 
 
 class RepositoryTests(unittest.TestCase):
-    def test_exactly_eleven_formal_skills_are_present(self) -> None:
+    def test_exactly_twelve_formal_skills_are_present(self) -> None:
         actual = {path.name for path in SKILLS_ROOT.iterdir() if path.is_dir()}
         self.assertEqual(actual, EXPECTED_SKILLS)
 
@@ -42,7 +43,7 @@ class RepositoryTests(unittest.TestCase):
             name = name_match.group(1).strip("\"'")
             self.assertNotIn(name, names, f"重复 Skill name：{name}")
             names.add(name)
-        self.assertEqual(len(names), 11)
+        self.assertEqual(len(names), 12)
 
     def test_internal_references_exist(self) -> None:
         pattern = re.compile(r"(?:references|scripts)/[^\s`，。；：）)]+")

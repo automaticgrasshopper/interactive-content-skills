@@ -1,0 +1,4 @@
+interface:
+  display_name: "分割视频"
+  short_description: "按固定时长精确拆分视频，保留末段并自动编号输出"
+  default_prompt: "Use $split-video 将指定视频按每段 9 秒精确拆分，保留不足 9 秒的末段和源文件，并按原名追加三位序号。"
