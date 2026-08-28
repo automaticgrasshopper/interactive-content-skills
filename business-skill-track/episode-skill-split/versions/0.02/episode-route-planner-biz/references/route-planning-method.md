@@ -1,0 +1,39 @@
+# 情绪脊分支图规范
+
+1. 只从用户明确要求和用户端可见标题、一句话、大纲正文、故事体量、角色、场景、道具建立创作简报。故事体量是完稿比较信号；只有用户明确固定N集时才成为硬数量合同。
+2. 先写一篇从开场连续到结局的单路线完整故事，补足欲望、触发事件、行动、阻力、反馈、调整、发现、关系变化、危机、高潮和结算。重要行动同时回答：外部发生了什么，人物把它理解成什么，因此做了什么，这一行动怎样改变人物或关系，并怎样影响后续行动。不得写节点、选择、拓扑或分支可能性。
+3. 按自然戏剧运动把冻结故事原文连续、无重叠、无遗漏切成纯直线主线。每段建立处境、完成行动变化并形成决定或结果；不得按字数或节点预算均分。
+4. 从主线已发生事件提取双因果运动：`fact_trigger`记录事实刺激，`felt_meaning`记录人物赋予它的意义，`resulting_action`记录因此发生的行动，`human_change`记录人物或关系变化，`later_effect`记录它怎样改变后续行为。不得用“愤怒、悲伤、信任下降”等标签代替行动约束。依据事实可行性与这条人物因果共同扫描真实决定裂缝。主线原行动保留为一个选项，其他互斥可执行动作才生成第一层支线。
+5. 为每个动作先写不同的即时后果和持续差异，并明确人物为何愿意这样做、会为哪段关系或哪种自我认同付出什么代价。选项若只是不同调查顺序、工具或地点而人物代价相同，不构成有效情感裂缝。再判断核心目标是否仍可达、人物是否仍在故事主要承诺内。未结束的新路线继续扫描自身事实与人物关系中的真实裂缝；重新面对同一可执行问题且有共同事实时才带差异回汇，回汇不得抹掉已经改变的行为方式。
+6. 主结局是冻结完整故事自然终点；期望结局是另一条最充分兑现核心目标与题材期待的路线；失败结局必须在核心故事内推进到主要验证后失败；小结局是未走完核心故事便永久离场。
+7. 从冻结故事、主线、双因果运动和支线事实生成第一版完整拓扑；不读取第一版，重新生成图形指纹不同的第二版完整拓扑。改名、换编号或改文案不算结构不同。两版完成后匿名呈现，只比较一次：“在同样忠实且不注水的前提下，哪一版的人物选择更明显由已经发生的感受和关系变化导致，并且选择反过来更持续地改变后续关系与行动？”有明显胜者时选择胜者；没有明显差距时选择第二版。比较后才废弃落选版，不打分、不计数、不生成第三版。
+8. 全图长成后按稳定广度优先顺序统一分配`episode-NNN`。汇合节点必须在全部直接前置之后；所有节点可达、无环且可抵达结局。
+9. 对同一封闭材料串行完成两遍完整复检：A侧重故事投影、决定因果、即时后果、持续差异和回汇基础；B侧重四类结局、戏剧单位必要性和是否被固定形状挤压。两遍都必须覆盖全图。
+10. 最后冻结所有节点梗概、冲突、连接、选择、结局、路线状态和停止边界。选择节点停在互斥动作成立但尚未执行处；选择首个后果由目标节点演出；结局节点完整结算。
+
+## 私有规划证据
+
+沿用已验证的逐文件顺序：
+
+```text
+user-request.md → user-intent-lock.json → creative-brief.json
+→ complete-story.json → complete-story-review.json
+→ mainline-decomposition.json → mainline-emotional-movement.json
+→ decision-fissure-audit.json → decision-fissure-review.json
+→ story-treatment.json → story-treatment-review.json
+→ topology-draft-1.json → topology-draft-2.json
+→ topology-comparison-packet.json → topology-comparison-verdict.json
+→ topology-selection.json → route-candidate.json
+→ topology-review-packet.json → topology-review-a.json → topology-review-b.json
+→ emotional-spine.json → route-material-review.json → planning-acceptance.json
+```
+
+首次进入本轮缓存以及每个安全提交点都运行`workflow_state.py`，只执行它返回的唯一动作。后续文件提前存在、跳步、先写正式图再补证据、或用临时脚本组装拓扑，均使本轮缓存无效。
+
+生成两版后运行`python3 scripts/topology_selection.py packet CACHE_ROOT --output CACHE_ROOT/topology-comparison-packet.json`。比较者只能读取该匿名包，不得读取文件名映射、生成顺序或其他规划材料；输出`topology-comparison-verdict.json`后运行`python3 scripts/topology_selection.py seal CACHE_ROOT CACHE_ROOT/topology-comparison-verdict.json`。只有`TOPOLOGY_SELECTED`才可运行`python3 scripts/topology_selection.py materialize CACHE_ROOT`，并以`SELECTED_TOPOLOGY_MATERIALIZED`生成唯一正式候选。
+
+正式路线验收前必须用`planning_gate.py create CACHE_ROOT`重新读取并绑定当前候选路线，证明完整故事、连续主线切分、拓扑前情绪运动、主线初始决定裂缝、支线事实登记中的全部正式选择、两版独立拓扑、匿名选择、节点级情绪脊以及A/B双复检均为当前版本。`decision-fissure-audit.json`只约束位于冻结主线的初始裂缝；`story-treatment.json`沿用`choice_id`、`dramatic_cause`、`question`、`options`和`merge_or_ending`，其中选项使用`option_id`、`option_text`、`immediate_consequence`、`lasting_difference`、`emotional_motive`和`human_cost`，负责主线及递归支线的全部正式选择。不得把`mainline_node_ids`当作全图分支源白名单。每个未结束选项必须登记不同的即时后果、持续差异及后续消费节点；多条继续路线回汇时必须登记共同事实。缺少当前有效`PLANNING_ACCEPTED`时不得运行路线正式保存。
+
+`mainline-emotional-movement.json`中的每项字段固定为`movement_id`、`segment_ids`、`source_proof`、`fact_trigger`、`felt_meaning`、`resulting_action`、`human_change`、`later_effect`、`payoff_node_ids`和`candidate_fissures`。除结局运动外必须提供至少一个后续可达消费节点；`later_effect`必须原样进入该节点路线材料。`decision-fissure-audit.json`每个动作在原字段外增加`emotional_basis`和互异的`human_cost`；`story-treatment.json`每个选项增加`emotional_motive`和互异的`human_cost`。`emotional-spine.json`每个节点增加`causal_movement_ids`，只检查相关双因果运动是否在正式图中保留。
+
+拓扑后的节点级情绪脊不得虚构或修改事件，但必须检查拓扑前冻结的双因果运动是否被保留。若删除`felt_meaning`后`resulting_action`仍会原样发生，或`human_change`没有在任何后续节点改变行为，该运动无效并退回完整故事或拓扑；不得交给分集编剧补救。类型表达只能调整已有场面的动作、反应、台词方向和后果强度，不新增节点、选择、结局、规则或资产。
