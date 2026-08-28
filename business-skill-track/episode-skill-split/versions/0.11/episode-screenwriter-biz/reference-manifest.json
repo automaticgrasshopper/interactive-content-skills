@@ -2,6 +2,9 @@
   "skill_version": "episode-screenwriter-biz/0.11",
   "based_on": "episode-screenwriter-biz/0.10",
   "release_status": "active",
+  "user_confirmed": true,
+  "confirmed_on": "2026-08-28",
+  "confirmation_note": "用户确认可用，作为后续迭代基线。",
   "baseline": "episode-generator-biz",
   "references": [
     "business-interface.md",
