@@ -1,7 +1,7 @@
 {
   "baseline": "episode-generator-biz",
   "route_skill": "episode-route-planner-biz/0.02",
-  "screenplay_skill": "episode-screenwriter-biz/0.12",
+  "screenplay_skill": "episode-screenwriter-biz/0.13",
   "original_required_fields": [
     "分集编号",
     "分集标题",
