@@ -1,0 +1,15 @@
+{
+  "skill_version": "episode-screenwriter-biz/0.14",
+  "based_on": "episode-screenwriter-biz/0.13",
+  "release_status": "superseded",
+  "baseline": "episode-generator-biz",
+  "references": [
+    "business-interface.md",
+    "compact-action-draft.md",
+    "full-scene-enhancer.md",
+    "node-screenwriting.md",
+    "dialogue-and-quality.md",
+    "user-visible-progress.md",
+    "post-acceptance-revision.md"
+  ]
+}

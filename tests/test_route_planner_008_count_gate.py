@@ -88,6 +88,7 @@ class RoutePlanner008CountGateTests(unittest.TestCase):
         )
 
     def test_formal_route_does_not_expose_skill_release_version(self) -> None:
+        self.assertFalse((MODULE_PATH.parents[1] / "reference-manifest.json").exists())
         self.assertNotIn("skill_version", route_contract.ROOT_FIELDS)
         self.assertFalse(hasattr(route_contract, "SKILL_VERSION"))
 

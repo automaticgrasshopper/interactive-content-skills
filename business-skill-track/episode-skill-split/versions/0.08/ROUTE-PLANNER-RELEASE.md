@@ -13,13 +13,14 @@
 ## 测试到正式的关系
 
 - 0.08 在线上回归期间曾临时使用名称`蚂蚱-分支-0901新测试`和 slug `episode-route-designer-biz`，目的是与 0.01 正式基线并存测试。
-- 短分支连续两次通过、开放长分支通过后，0.08 的 12 个运行文件已原位覆盖到正式`蚂蚱-分支设计师0831 / episode-route-planner-biz`。
+- 短分支连续两次通过、开放长分支通过后，0.08 已原位覆盖到正式`蚂蚱-分支设计师0831 / episode-route-planner-biz`。
 - `【线上环境】影游Agent工程测试`继续引用原正式 Skill ID；`蚂蚱的测试`也已改为引用该正式 Skill。
 - 后台临时`episode-route-designer-biz`已在确认无 Preset 引用后删除。它不是另一条产品线，其实现就是本目录保存的`episode-route-planner-biz/0.08`。
 
 ## 版本号边界
 
 - 版本号由 Git、版本目录和本说明维护。
+- Skill 目录不保存版本 manifest。
 - 线上 Skill 的名称、slug、主说明、脚本运行输出及正式路线合同不展示 0.08。
 - 后续修改从本目录或 Git 提交追溯，不恢复临时 designer slug；若需要并行灰度，应另建临时入口，但最终仍归档到 planner 的新版本目录。
 
