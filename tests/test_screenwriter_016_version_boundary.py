@@ -12,7 +12,20 @@ LOCAL_METADATA = {Path("reference-manifest.json")}
 INTENTIONAL_RUNTIME_CHANGES = {
     Path("SKILL.md"),
     Path("references/business-interface.md"),
+    Path("references/compact-action-draft.md"),
+    Path("references/dialogue-and-quality.md"),
+    Path("references/full-scene-enhancer.md"),
+    Path("references/node-screenwriting.md"),
+    Path("references/post-acceptance-revision.md"),
+    Path("scripts/accept_node_screenplay.py"),
+    Path("scripts/build_node_writing_packet.py"),
     Path("scripts/screenplay_contract.py"),
+    Path("scripts/stage_contract.py"),
+}
+INTENTIONAL_RUNTIME_ADDITIONS = {
+    Path("references/romance-scene-realization.md"),
+    Path("scripts/build_episode_plan_index.py"),
+    Path("scripts/episode_plan_index.py"),
 }
 
 
@@ -34,10 +47,11 @@ class ScreenwriterVersionBoundaryTests(unittest.TestCase):
         base_files = runtime_files(BASE_SKILL)
         current_files = runtime_files(CURRENT_SKILL)
 
-        self.assertEqual(set(current_files), set(base_files))
+        self.assertEqual(set(base_files) - set(current_files), set())
+        self.assertEqual(set(current_files) - set(base_files), INTENTIONAL_RUNTIME_ADDITIONS)
         changed_files = {
             relative_path
-            for relative_path in base_files
+            for relative_path in set(base_files) & set(current_files)
             if current_files[relative_path] != base_files[relative_path]
         }
         self.assertEqual(changed_files, INTENTIONAL_RUNTIME_CHANGES)

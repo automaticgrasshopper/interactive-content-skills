@@ -11,7 +11,7 @@ from pathlib import Path
 
 from build_enhancer_input import build as build_enhancer_input
 from screenplay_contract import seal
-from stage_contract import RECEIPT_VERSION, build_packet, digest
+from stage_contract import RECEIPT_VERSION, build_packet, context_dramatic_state, digest
 from validate_compact_draft import validate as validate_compact_draft
 
 
@@ -40,6 +40,7 @@ def main() -> int:
     parser.add_argument("node_draft", type=Path)
     parser.add_argument("node_patch", type=Path)
     parser.add_argument("--accepted-at")
+    parser.add_argument("--plan-index", type=Path)
     args = parser.parse_args()
     try:
         route = json.loads(args.formal_route.read_text(encoding="utf-8"))
@@ -50,8 +51,10 @@ def main() -> int:
         enhancer_input = args.enhancer_input.read_text(encoding="utf-8")
         enhanced = args.enhanced_screenplay.read_text(encoding="utf-8").strip()
         draft = json.loads(args.node_draft.read_text(encoding="utf-8"))
+        plan_index = json.loads(args.plan_index.read_text(encoding="utf-8")) if args.plan_index else None
 
-        expected_packet = build_packet(route, context, str(draft.get("node_id") or ""))
+        node_id = str(draft.get("node_id") or "")
+        expected_packet = build_packet(route, context, node_id, plan_index)
         if packet != expected_packet:
             raise ValueError("写作包不是由当前正式路线与上下文生成")
         compact_issues = validate_compact_draft(packet, compact)
@@ -71,7 +74,12 @@ def main() -> int:
         screenplay = ((draft.get("screenplay") or {}).get("分集剧本") or {}).get("完整剧本")
         if not enhanced or str(screenplay or "").strip() != enhanced:
             raise ValueError("正式正文必须逐字等于当前完整增强稿")
-        accepted = seal(route, draft, args.accepted_at)
+        accepted = seal(
+            route,
+            draft,
+            args.accepted_at,
+            prior_state=context_dramatic_state(route, context, node_id),
+        )
         atomic_json(args.node_patch, accepted)
     except (OSError, ValueError, json.JSONDecodeError) as error:
         print(f"NODE_SCREENPLAY_REJECTED: {error}")

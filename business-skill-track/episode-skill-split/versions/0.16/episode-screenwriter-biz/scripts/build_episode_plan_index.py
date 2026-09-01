@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the sole frozen input packet for one node."""
+"""Materialize one compact plan index from an accepted episode route."""
 
 from __future__ import annotations
 
@@ -7,32 +7,30 @@ import argparse
 import json
 from pathlib import Path
 
+from episode_plan_index import build_index, validate_index
 from screenplay_contract import formal_route_issues
-from stage_contract import build_packet
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("formal_route", type=Path)
-    parser.add_argument("node_context", type=Path)
-    parser.add_argument("node_id")
     parser.add_argument("output", type=Path)
-    parser.add_argument("--plan-index", type=Path)
     args = parser.parse_args()
     try:
         route = json.loads(args.formal_route.read_text(encoding="utf-8"))
-        context = json.loads(args.node_context.read_text(encoding="utf-8"))
-        plan_index = json.loads(args.plan_index.read_text(encoding="utf-8")) if args.plan_index else None
         issues = formal_route_issues(route)
         if issues:
             raise ValueError("；".join(issues))
-        value = build_packet(route, context, args.node_id, plan_index)
+        value = build_index(route)
+        issues = validate_index(route, value)
+        if issues:
+            raise ValueError("；".join(issues))
         args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(value, encoding="utf-8")
+        args.output.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     except (OSError, ValueError, json.JSONDecodeError) as error:
-        print(f"NODE_WRITING_PACKET_REJECTED: {error}")
+        print(f"EPISODE_PLAN_INDEX_REJECTED: {error}")
         return 1
-    print("NODE_WRITING_PACKET_ACCEPTED")
+    print("EPISODE_PLAN_INDEX_ACCEPTED")
     return 0
 
 

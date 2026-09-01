@@ -27,6 +27,26 @@ ANALYSIS_FIELDS = {
     "创作分析", "场景和段落展开计划", "连续性分析", "冷读与质量问题", "验收结论",
 }
 CHECK_FIELDS = {"check", "passed", "evidence"}
+DERIVED_DRAFT_FIELDS = {"character_deltas", "relationship_deltas", "shared_memories"}
+DERIVED_ACCEPTED_FIELDS = DERIVED_DRAFT_FIELDS | {"state_snapshot"}
+CHARACTER_DELTA_FIELDS = {
+    "character", "axis", "before", "after", "behavioral_effect", "authority", "evidence",
+}
+RELATIONSHIP_DELTA_FIELDS = {
+    "source", "target", "dimension", "before", "after", "behavioral_effect", "authority", "evidence",
+}
+MEMORY_FIELDS = {"participants", "memory", "future_use", "evidence"}
+STATE_FIELDS = {"characters", "relationships", "shared_memories"}
+CHARACTER_STATE_FIELDS = {"character", "axis", "current_state", "behavioral_effect", "source_node"}
+RELATIONSHIP_STATE_FIELDS = {
+    "source", "target", "dimension", "current_state", "behavioral_effect", "source_node",
+}
+MEMORY_STATE_FIELDS = {"participants", "memory", "future_use", "source_node"}
+CHARACTER_AXES = {"goal", "belief", "self_view", "strategy", "boundary"}
+RELATIONSHIP_DIMENSIONS = {
+    "trust", "openness", "alignment", "power", "attachment", "commitment", "boundary",
+}
+AUTHORITIES = {"route_locked", "screenplay_observed"}
 REQUIRED_CHECKS = {
     "route_fidelity", "stop_boundary", "continuity", "first_appearance",
     "spatial_continuity", "prose_dramatization", "asset_consistency",
@@ -90,6 +110,151 @@ def meaningful(value: Any) -> bool:
 def action_blocks(script: str) -> list[str]:
     blocks = [item.strip() for item in re.split(r"\n\s*\n", script.strip()) if item.strip()]
     return [item for item in blocks if SCENE.fullmatch(item) is None and DIALOGUE.fullmatch(item) is None]
+
+
+def empty_state_snapshot() -> dict[str, list[dict[str, Any]]]:
+    return {"characters": [], "relationships": [], "shared_memories": []}
+
+
+def state_snapshot_issues(value: Any, label: str = "state_snapshot") -> list[str]:
+    issues: list[str] = []
+    if not exact(value, STATE_FIELDS, label, issues):
+        return issues
+    for index, item in enumerate(value["characters"] if isinstance(value["characters"], list) else []):
+        if not exact(item, CHARACTER_STATE_FIELDS, f"{label}/characters/{index}", issues):
+            continue
+        if item["axis"] not in CHARACTER_AXES or not all(meaningful(item[field]) for field in CHARACTER_STATE_FIELDS):
+            issues.append(f"{label}/characters/{index}内容非法")
+    if not isinstance(value["characters"], list):
+        issues.append(f"{label}/characters必须为数组")
+    for index, item in enumerate(value["relationships"] if isinstance(value["relationships"], list) else []):
+        if not exact(item, RELATIONSHIP_STATE_FIELDS, f"{label}/relationships/{index}", issues):
+            continue
+        if item["source"] == item["target"] or item["dimension"] not in RELATIONSHIP_DIMENSIONS or not all(meaningful(item[field]) for field in RELATIONSHIP_STATE_FIELDS):
+            issues.append(f"{label}/relationships/{index}内容非法")
+    if not isinstance(value["relationships"], list):
+        issues.append(f"{label}/relationships必须为数组")
+    for index, item in enumerate(value["shared_memories"] if isinstance(value["shared_memories"], list) else []):
+        if not exact(item, MEMORY_STATE_FIELDS, f"{label}/shared_memories/{index}", issues):
+            continue
+        participants = item["participants"]
+        if (
+            not isinstance(participants, list) or not participants
+            or len(participants) != len(set(participants))
+            or not all(meaningful(name) for name in participants)
+            or not all(meaningful(item[field]) for field in ("memory", "future_use", "source_node"))
+        ):
+            issues.append(f"{label}/shared_memories/{index}内容非法")
+    if not isinstance(value["shared_memories"], list):
+        issues.append(f"{label}/shared_memories必须为数组")
+    return list(dict.fromkeys(issues))
+
+
+def derived_info_issues(
+    value: Any,
+    script: str,
+    allowed_characters: set[str],
+    *,
+    require_accepted: bool,
+) -> list[str]:
+    issues: list[str] = []
+    expected = DERIVED_ACCEPTED_FIELDS if require_accepted else DERIVED_DRAFT_FIELDS
+    if not exact(value, expected, "派生信息", issues):
+        return issues
+    for index, item in enumerate(value["character_deltas"] if isinstance(value["character_deltas"], list) else []):
+        if not exact(item, CHARACTER_DELTA_FIELDS, f"派生信息/character_deltas/{index}", issues):
+            continue
+        if item["character"] not in allowed_characters or item["axis"] not in CHARACTER_AXES:
+            issues.append(f"派生信息/character_deltas/{index}人物或轴非法")
+        if item["authority"] not in AUTHORITIES or item["before"] == item["after"]:
+            issues.append(f"派生信息/character_deltas/{index}变化无效")
+        if not all(meaningful(item[field]) for field in CHARACTER_DELTA_FIELDS):
+            issues.append(f"派生信息/character_deltas/{index}内容为空")
+        elif item["evidence"] not in script:
+            issues.append(f"派生信息/character_deltas/{index}证据不在正文")
+    if not isinstance(value["character_deltas"], list):
+        issues.append("派生信息/character_deltas必须为数组")
+    for index, item in enumerate(value["relationship_deltas"] if isinstance(value["relationship_deltas"], list) else []):
+        if not exact(item, RELATIONSHIP_DELTA_FIELDS, f"派生信息/relationship_deltas/{index}", issues):
+            continue
+        if item["source"] not in allowed_characters or item["target"] not in allowed_characters or item["source"] == item["target"]:
+            issues.append(f"派生信息/relationship_deltas/{index}人物非法")
+        if item["dimension"] not in RELATIONSHIP_DIMENSIONS or item["authority"] not in AUTHORITIES or item["before"] == item["after"]:
+            issues.append(f"派生信息/relationship_deltas/{index}变化无效")
+        if not all(meaningful(item[field]) for field in RELATIONSHIP_DELTA_FIELDS):
+            issues.append(f"派生信息/relationship_deltas/{index}内容为空")
+        elif item["evidence"] not in script:
+            issues.append(f"派生信息/relationship_deltas/{index}证据不在正文")
+    if not isinstance(value["relationship_deltas"], list):
+        issues.append("派生信息/relationship_deltas必须为数组")
+    for index, item in enumerate(value["shared_memories"] if isinstance(value["shared_memories"], list) else []):
+        if not exact(item, MEMORY_FIELDS, f"派生信息/shared_memories/{index}", issues):
+            continue
+        participants = item["participants"]
+        if (
+            not isinstance(participants, list) or not participants
+            or len(participants) != len(set(participants))
+            or not set(participants).issubset(allowed_characters)
+        ):
+            issues.append(f"派生信息/shared_memories/{index}人物非法")
+        if not all(meaningful(item[field]) for field in ("memory", "future_use", "evidence")):
+            issues.append(f"派生信息/shared_memories/{index}内容为空")
+        elif item["evidence"] not in script:
+            issues.append(f"派生信息/shared_memories/{index}证据不在正文")
+    if not isinstance(value["shared_memories"], list):
+        issues.append("派生信息/shared_memories必须为数组")
+    if require_accepted:
+        issues.extend(state_snapshot_issues(value["state_snapshot"], "派生信息/state_snapshot"))
+    return list(dict.fromkeys(issues))
+
+
+def fold_state_snapshot(
+    prior: dict[str, Any] | None,
+    derived: dict[str, Any],
+    node_id: str,
+) -> dict[str, list[dict[str, Any]]]:
+    base = deepcopy(prior) if prior is not None else empty_state_snapshot()
+    issues = state_snapshot_issues(base)
+    if issues:
+        raise ValueError("；".join(issues))
+    characters = {(item["character"], item["axis"]): item for item in base["characters"]}
+    relationships = {
+        (item["source"], item["target"], item["dimension"]): item
+        for item in base["relationships"]
+    }
+    memories = {
+        (tuple(item["participants"]), item["memory"]): item
+        for item in base["shared_memories"]
+    }
+    for item in derived["character_deltas"]:
+        characters[(item["character"], item["axis"])] = {
+            "character": item["character"],
+            "axis": item["axis"],
+            "current_state": item["after"],
+            "behavioral_effect": item["behavioral_effect"],
+            "source_node": node_id,
+        }
+    for item in derived["relationship_deltas"]:
+        relationships[(item["source"], item["target"], item["dimension"])] = {
+            "source": item["source"],
+            "target": item["target"],
+            "dimension": item["dimension"],
+            "current_state": item["after"],
+            "behavioral_effect": item["behavioral_effect"],
+            "source_node": node_id,
+        }
+    for item in derived["shared_memories"]:
+        memories[(tuple(item["participants"]), item["memory"])] = {
+            "participants": item["participants"],
+            "memory": item["memory"],
+            "future_use": item["future_use"],
+            "source_node": node_id,
+        }
+    return {
+        "characters": list(characters.values()),
+        "relationships": list(relationships.values()),
+        "shared_memories": list(memories.values()),
+    }
 
 
 def formal_route_issues(route: Any) -> list[str]:
@@ -196,8 +361,14 @@ def validate(route: Any, patch: Any, *, require_accepted: bool) -> list[str]:
         missing = [item for item in values if item not in script]
         if missing:
             issues.append(f"{field}未在正文逐字出现：{missing}")
-    if not isinstance(screenplay["派生信息"], dict):
-        issues.append("派生信息必须为对象")
+    issues.extend(
+        derived_info_issues(
+            screenplay["派生信息"],
+            script,
+            set(material.get("allowed_characters") or []),
+            require_accepted=require_accepted,
+        )
+    )
     checks = screenplay["quality_checks"]
     seen: set[str] = set()
     if not isinstance(checks, list):
@@ -248,11 +419,18 @@ def validate(route: Any, patch: Any, *, require_accepted: bool) -> list[str]:
     return list(dict.fromkeys(issues))
 
 
-def seal(route: dict[str, Any], candidate: dict[str, Any], accepted_at: str | None = None) -> dict[str, Any]:
+def seal(
+    route: dict[str, Any],
+    candidate: dict[str, Any],
+    accepted_at: str | None = None,
+    prior_state: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     issues = validate(route, candidate, require_accepted=False)
     if issues:
         raise ValueError("；".join(issues))
     patch = deepcopy(candidate)
+    derived = patch["screenplay"]["派生信息"]
+    derived["state_snapshot"] = fold_state_snapshot(prior_state, derived, patch["node_id"])
     patch["status"] = "accepted"
     patch["accepted_at"] = accepted_at or datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
     patch["screenplay_hash"] = screenplay_hash(patch)

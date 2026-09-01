@@ -8,8 +8,8 @@
 
 - 只消费流程图 Skill 已正式验收的路线对象，一次只处理一个指定`node_id`。
 - 路线版本、路线哈希或节点材料哈希不一致时立即返回依赖错误，不得自行重建路线。
-- 只读取当前节点、直接前情、入口状态、允许资产和`stop_boundary`。
-- 当前节点必须由`episode-route-planner-biz`生产。重要人物行动节点在`entry_state.dramatic_pressure`和`state_changes.dramatic_effect`中同时提供完整双因果；只出现其中一个时返回路线依赖错误。两者都未提供表示本节点是纯功能过桥，分集编剧不得为它补造情感转折。
+- 全图只在同一路线首次写作前整理一次计划索引；节点写作者只读取当前节点、直接前情、入口状态、允许资产、`stop_boundary`和从索引投影出的紧邻计划，不回读全图规划过程。
+- 当前节点必须由`episode-route-planner-biz`生产。`entry_state.dramatic_pressure`和`state_changes.dramatic_effect`只出现其中一个时返回路线依赖错误；两者都提供时作为不可改写的路线因果，两者都未提供时表示上游没有冻结持久情感变化，不表示人物没有本场动机、关系质感或正文可观察到的自然变化。
 - 输出只写入对应节点的剧本区域，不提交或覆盖整个路线。
 - 每个节点独立生成、验收和保存；当前节点失败不得影响路线或其他节点。
 
@@ -24,7 +24,7 @@
 | `route_output_hash` | string | 是 | 必须与正式路线一致。 |
 | `node_id` | string | 是 | 本轮唯一允许写入的节点。 |
 | `node_route_material_hash` | string | 是 | 必须与目标节点一致。 |
-| `直接前情节点` | list<object> | 是 | 只包含目标节点直接前驱的已冻结路线事实和必要结尾；入口节点允许为空。 |
+| `直接前情节点` | list<object> | 是 | 只包含目标节点直接前驱的必要结尾，以及已经验收的无证据状态快照；入口节点允许为空。 |
 | `当前节点停止边界` | string | 是 | 必须逐字等于目标节点`route_material.stop_boundary`。 |
 | `允许角色与资产` | object | 是 | 只能是目标节点路线材料中的白名单。 |
 
@@ -37,15 +37,16 @@ node_id / node_route_material_hash
 characters[] = {name, public_identity, identity_anchor, current_relevance, relationship_context?, speech_profile?}
 scenes[] = {name, public_description}
 props[] = {name, public_description}
-direct_predecessor_endings[] = {node_id, ending_excerpt}
+direct_predecessor_endings[] = {node_id, ending_excerpt, state_snapshot?}
 ```
 
 - 三类资产名称必须与当前节点白名单分别完全一致，不得多传或漏传。
 - `public_identity`说明观众可知的身份，`identity_anchor`是帮助写作者识别身份交代是否成立的最短语义锚（如“记者”“东闸现场负责人”），`current_relevance`说明人物为何与当前任务有关；三者缺一不得开始写作，不得只凭角色名猜职业、权限或关系。正文必须让普通观众理解同一身份事实，但不要求逐字复述`identity_anchor`，可以由正在做的事、权限、自然称呼和他人反应共同完成。
-- 入口节点的`direct_predecessor_endings`为空；其他节点必须与直接前置编号完全一致，并提供真实正文结尾。
+- 入口节点的`direct_predecessor_endings`为空；其他节点必须与直接前置编号完全一致，并提供真实正文结尾。前置节点已有正式状态快照时必须一并提供；多前置合流只投影各分支完全共有的状态，不把某条分支独有变化带入公共正文。
 - 场景与道具说明只提供冻结的可见属性和已知用法，不授权模型发明按钮、灯号、操作流程或审核字段。
-- 冻结写作包同时包含当前节点只读的`互动节点`合同，使分支来源节点能知道每个真实行动；不得把全图规划理由带入写作。
+- 冻结写作包同时包含当前节点只读的`互动节点`合同，以及由正式路线一次性整理出的轻量导航：全图只保留节点与连接，内容只保留直接后续计划和各方向最近的已有情感转折。它们只说明当前位置与铺垫方向，不是当前节点要复述或提前演出的证据。
 - `dramatic_pressure={fact_trigger, felt_meaning}`说明外部发生了什么及人物怎样理解；`dramatic_effect={resulting_action, human_change, later_effect}`说明因此采取的行动、人物或关系变化，以及该变化留下的后续行为约束。正文不照念这些字段，只把它们变成可见行动、回应、拒绝、隐瞒、承担或关系距离。
+- `state_snapshot`只含当前人物状态、定向关系状态和仍可用的共同记忆，不含原台词、验收证据或旧稿。写作包只投影当前白名单人物及其相互关系，共同记忆至多取最近的少量相关项；这些状态是人物行为基础，不是必须回忆或复述的剧情点。
 
 ## Skill 输出字段
 
@@ -72,6 +73,10 @@ direct_predecessor_endings[] = {node_id, ending_excerpt}
 │  ├─ 关联场景 list<string>
 │  ├─ 关联道具 list<string>
 │  ├─ 派生信息 object
+│  │  ├─ character_deltas list<object>
+│  │  ├─ relationship_deltas list<object>
+│  │  ├─ shared_memories list<object>
+│  │  └─ state_snapshot object（验收脚本生成）
 │  └─ quality_checks list<object>
 │     └─ {check, passed, evidence}
 ├─ screenplay_hash string
@@ -85,6 +90,10 @@ direct_predecessor_endings[] = {node_id, ending_excerpt}
 - 正文必须包含可拍摄场次和实际动作，并停在当前`stop_boundary`内。对白只在人物确有交流或自言需要时出现，不得为了合同验收强行开口。
 - 创作分析、展开计划、连续性、冷读问题和验收结论必须来自当前正式正文，禁止登记句、梗概复述和抽象占位文字。
 - `关联角色`、`关联场景`和`关联道具`只记录正文实际出现且属于路线白名单的正式名称。
+- 候选稿的`派生信息`只提交`character_deltas`、`relationship_deltas`和`shared_memories`三个数组，均允许为空。人物变化字段为`{character, axis, before, after, behavioral_effect, authority, evidence}`；定向关系变化字段为`{source, target, dimension, before, after, behavioral_effect, authority, evidence}`；共同记忆字段为`{participants, memory, future_use, evidence}`。
+- `axis`只允许`goal|belief|self_view|strategy|boundary`；关系`dimension`只允许`trust|openness|alignment|power|attachment|commitment|boundary`；`authority`只允许`route_locked|screenplay_observed`。只有“下次遇到相似处境时人物会因此采取不同做法”的变化才登记；场景内情绪、气氛和没有双方回应的单方理解不登记为持久关系变化。
+- `evidence`只引用本节点正文中自然存在的一处最小片段，供本次验收证明变化确实发生。验收脚本随后依据前情快照和三个变化数组生成`state_snapshot`；快照只保存当前状态、行为影响和来源节点，不保留`evidence`，后续节点不得读取质量证据或派生证据原句。
+- `state_snapshot.characters[]`为`{character, axis, current_state, behavioral_effect, source_node}`；`relationships[]`为`{source, target, dimension, current_state, behavioral_effect, source_node}`；`shared_memories[]`为`{participants, memory, future_use, source_node}`。同一人物轴或定向关系维度只保留最新状态，不累计旧解释。
 - `quality_checks`至少覆盖路线忠实、停止边界、连续性、首次出场、空间与动作连续、非台词场面化和资产一致性；路线材料提供双因果时再覆盖双因果，正文含对白时再覆盖对白，分支来源节点再覆盖`choice_readiness`，且每个冻结选项至少有一条不同的正文证据。每项只引用正文已经自然存在的最小证据；不得为了凑检查项扩写正文。
 - 补丁不得包含`nodes`、`edges`、`choices`、`endings`、标题、梗概、连接、互动节点、结局、路线状态变化或停止边界。
 
