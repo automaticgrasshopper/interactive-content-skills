@@ -9,16 +9,9 @@
 - 只消费流程图 Skill 已正式验收的路线对象，一次只处理一个指定`node_id`。
 - 路线版本、路线哈希或节点材料哈希不一致时立即返回依赖错误，不得自行重建路线。
 - 只读取当前节点、直接前情、入口状态、允许资产和`stop_boundary`。
-- 当前节点必须来自`episode-route-planner-biz`能力正式验收的兼容路线合同；Skill发布版本只作追溯，不参与运行时准入。重要人物行动节点在`entry_state.dramatic_pressure`和`state_changes.dramatic_effect`中同时提供完整双因果；只出现其中一个时返回路线依赖错误。两者都未提供表示本节点是纯功能过桥，分集编剧不得为它补造情感转折。
+- 当前节点必须由`episode-route-planner-biz`生产。重要人物行动节点在`entry_state.dramatic_pressure`和`state_changes.dramatic_effect`中同时提供完整双因果；只出现其中一个时返回路线依赖错误。两者都未提供表示本节点是纯功能过桥，分集编剧不得为它补造情感转折。
 - 输出只写入对应节点的剧本区域，不提交或覆盖整个路线。
 - 每个节点独立生成、验收和保存；当前节点失败不得影响路线或其他节点。
-
-## 机器材料与创作材料
-
-- 正式路线、上下文字段、路线修订号和哈希只用于脚本验证，不直接交给行动底稿或完整场景写作者。
-- 写作材料由脚本把已验证事实投影成自然中文，只保留本集剧情、人物行动因果、直接前情、人物与资产公开资料、互动边界和结束位置。
-- 完整场景复写入口只包含自然中文写作材料、已冻结行动底稿及当前写作规范，不包含绑定字段、合同头、哈希或验收回执。
-- 机器材料与创作材料仍由确定性哈希绑定；清理创作上下文不降低正式验收强度。
 
 ## Skill 输入字段
 
@@ -100,17 +93,6 @@ direct_predecessor_endings[] = {node_id, ending_excerpt}
 - 本 Skill 独占写入`分集剧本.完整剧本`及正文实际出现的`关联角色`、`关联场景`、`关联道具`。
 - `剧本创作分析`是剧本生成后产生的独立字段，不覆盖路线侧原`剧本分析`。
 - 路线侧的分集身份、标题、梗概、冲突、前后连接、结局和互动节点只读，不允许修改。
-
-## 执行入口
-
-依次生成单集写作材料、验收行动底稿、生成完整场景复写入口并保存正式节点结果：
-
-```bash
-python3 scripts/build_node_writing_packet.py FORMAL_ROUTE.json NODE_CONTEXT.json NODE_ID node-writing-packet.txt
-python3 scripts/validate_compact_draft.py node-writing-packet.txt compact-draft.md compact-draft-receipt.json
-python3 scripts/build_enhancer_input.py node-writing-packet.txt compact-draft.md compact-draft-receipt.json enhancer-input.txt
-python3 scripts/accept_node_screenplay.py FORMAL_ROUTE.json NODE_CONTEXT.json node-writing-packet.txt compact-draft.md compact-draft-receipt.json enhancer-input.txt enhanced-screenplay.md NODE_DRAFT.json NODE_PATCH.json
-```
 
 ## 完成边界
 

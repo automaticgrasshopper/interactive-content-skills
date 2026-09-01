@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a clean creative input from a machine-verified action draft."""
+"""Build the sole complete-rewrite input from a sealed action draft."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ import argparse
 import json
 from pathlib import Path
 
-from stage_contract import PACKET_HEADER, RECEIPT_VERSION, digest
+from stage_contract import RECEIPT_VERSION, digest
 
 
 def build(packet: str, draft: str, receipt: dict, enhancer_reference: str, quality_reference: str) -> str:
@@ -15,14 +15,16 @@ def build(packet: str, draft: str, receipt: dict, enhancer_reference: str, quali
         raise ValueError("缺少有效行动底稿回执")
     if receipt.get("writing_packet_sha256") != digest(packet) or receipt.get("compact_draft_sha256") != digest(draft):
         raise ValueError("行动底稿回执未绑定当前写作包或底稿")
-    packet_body = packet.removeprefix(PACKET_HEADER).lstrip()
     return (
-        "# 完整场景复写入口\n\n"
-        "只根据本页内容，把行动底稿完整重写为最终剧本。不要输出分析、合同、检查项或制作说明。\n\n"
-        "## 单集写作材料\n\n" + packet_body.strip() + "\n\n"
-        "## 已冻结的行动底稿\n\n" + draft.strip() + "\n\n"
-        "## 完整场景写作规范\n\n" + enhancer_reference.strip() + "\n\n"
-        "## 对白写作规范\n\n" + quality_reference.strip() + "\n"
+        "ENHANCER_INPUT_VERSION=nextplay.node-enhancer-input.v1\n"
+        f"WRITING_PACKET_SHA256={digest(packet)}\n"
+        f"COMPACT_DRAFT_SHA256={digest(draft)}\n"
+        f"ENHANCER_REFERENCE_SHA256={digest(enhancer_reference)}\n"
+        f"QUALITY_REFERENCE_SHA256={digest(quality_reference)}\n\n"
+        "# Frozen Node Writing Packet\n" + packet.strip() + "\n\n"
+        "# Full Scene Enhancer\n" + enhancer_reference.strip() + "\n\n"
+        "# Dialogue And Quality\n" + quality_reference.strip() + "\n\n"
+        "# Sealed Compact Action Draft\n" + draft.strip() + "\n"
     )
 
 

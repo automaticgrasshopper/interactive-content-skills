@@ -1,14 +1,19 @@
 from __future__ import annotations
 
+import importlib.util
 import unittest
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-BASE_SKILL = ROOT / "business-skill-track/episode-skill-split/versions/0.15/episode-screenwriter-biz"
+BASE_SKILL = ROOT / "business-skill-track/episode-skill-split/versions/0.12/episode-screenwriter-biz"
 CURRENT_SKILL = ROOT / "business-skill-track/episode-skill-split/versions/0.16/episode-screenwriter-biz"
 LOCAL_METADATA = {Path("reference-manifest.json")}
-INTENTIONAL_RUNTIME_CHANGES: set[Path] = set()
+INTENTIONAL_RUNTIME_CHANGES = {
+    Path("SKILL.md"),
+    Path("references/business-interface.md"),
+    Path("scripts/screenplay_contract.py"),
+}
 
 
 def runtime_files(root: Path) -> dict[Path, bytes]:
@@ -29,8 +34,13 @@ class ScreenwriterVersionBoundaryTests(unittest.TestCase):
         base_files = runtime_files(BASE_SKILL)
         current_files = runtime_files(CURRENT_SKILL)
 
-        self.assertEqual(set(current_files) - set(base_files), INTENTIONAL_RUNTIME_CHANGES)
-        self.assertEqual(set(base_files) - set(current_files), set())
+        self.assertEqual(set(current_files), set(base_files))
+        changed_files = {
+            relative_path
+            for relative_path in base_files
+            if current_files[relative_path] != base_files[relative_path]
+        }
+        self.assertEqual(changed_files, INTENTIONAL_RUNTIME_CHANGES)
         for relative_path in sorted(set(base_files) - INTENTIONAL_RUNTIME_CHANGES):
             self.assertEqual(current_files[relative_path], base_files[relative_path], str(relative_path))
 
@@ -41,9 +51,26 @@ class ScreenwriterVersionBoundaryTests(unittest.TestCase):
                 continue
             text = path.read_text(encoding="utf-8")
             self.assertNotIn("episode-screenwriter-biz/0.", text, str(path))
-            self.assertNotIn("0.15", text, str(path))
+            self.assertNotIn("episode-route-planner-biz/0.", text, str(path))
+            self.assertNotIn("0.12", text, str(path))
             self.assertNotIn("0.16", text, str(path))
             self.assertNotIn("SKILL_VERSION", text, str(path))
+            self.assertNotIn("ROUTE_SKILL_VERSION", text, str(path))
+            self.assertNotIn("skill_version", text, str(path))
+
+    def test_runtime_contract_keeps_business_identity_without_release_identity(self) -> None:
+        contract_path = CURRENT_SKILL / "scripts/screenplay_contract.py"
+        spec = importlib.util.spec_from_file_location("screenwriter_016_contract", contract_path)
+        self.assertIsNotNone(spec)
+        module = importlib.util.module_from_spec(spec)
+        assert spec is not None and spec.loader is not None
+        spec.loader.exec_module(module)
+
+        self.assertEqual(module.CAPABILITY_ID, "episode-screenwriter-biz")
+        self.assertEqual(module.ROUTE_CAPABILITY_ID, "episode-route-planner-biz")
+        self.assertNotIn("skill_version", module.PATCH_FIELDS)
+        self.assertFalse(hasattr(module, "SKILL_VERSION"))
+        self.assertFalse(hasattr(module, "ROUTE_SKILL_VERSION"))
 
 
 if __name__ == "__main__":

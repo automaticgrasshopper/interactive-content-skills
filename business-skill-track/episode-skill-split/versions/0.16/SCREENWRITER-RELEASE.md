@@ -5,8 +5,8 @@
 ## 版本关系
 
 - 当前研发版本：`episode-screenwriter-biz/0.16`
-- 研发起点：`episode-screenwriter-biz/0.15`
-- 可靠线上回退基线：`episode-screenwriter-biz/0.11`
+- 内容起点：线上 `episode-screenwriter-biz-tiantian` 稳定副本
+- 仓库对应基线：`episode-screenwriter-biz/0.12`（自身由 0.11 演进）
 
 ## 版本号边界
 
@@ -16,5 +16,6 @@
 
 ## 当前调整
 
-- 运行文件不得出现 `0.15`、`0.16`、带版号的 Skill 身份或 `SKILL_VERSION` 常量。
+- 运行文件不得出现发布版号、带版号的 Skill 身份、`skill_version`字段或发布版本常量。
 - 合同自身的 `contract_version`、项目路线的 `route_version` 等业务字段不属于研发版号，继续保留。
+- 不合入 0.13—0.15 的新增创作资料或脚本能力，避免稳定基线被混入其他版本能力。

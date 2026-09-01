@@ -8,7 +8,7 @@ import json
 import re
 from pathlib import Path
 
-from stage_contract import PACKET_HEADER, RECEIPT_VERSION, digest
+from stage_contract import PACKET_VERSION, RECEIPT_VERSION, digest
 
 SCENE = re.compile(r"(?m)^【[^【】\n]+·[^【】\n]+·(?:内|外)】\s*$")
 DIALOGUE = re.compile(r"^[^\s：:【】]{1,20}：\s*\S+$")
@@ -22,8 +22,8 @@ def action_blocks(text: str) -> list[str]:
 
 def validate(packet: str, draft: str) -> list[str]:
     issues: list[str] = []
-    if not packet.startswith(PACKET_HEADER):
-        issues.append("单集写作材料入口错误")
+    if not packet.startswith(f"WRITING_PACKET_VERSION={PACKET_VERSION}\n"):
+        issues.append("写作包版本错误")
     if not draft.strip():
         issues.append("行动底稿为空")
         return issues

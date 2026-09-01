@@ -99,7 +99,7 @@ def formal_route_issues(route: Any) -> list[str]:
     if route.get("contract_version") != ROUTE_VERSION:
         issues.append("ROUTE_DEPENDENCY_ERROR: 不支持的路线合同")
     if route.get("capability_id") != ROUTE_CAPABILITY_ID:
-        issues.append("ROUTE_DEPENDENCY_ERROR: 路线能力标识不受支持")
+        issues.append("ROUTE_DEPENDENCY_ERROR: 路线生产者不受支持")
     if route.get("route_status") != "accepted":
         issues.append("ROUTE_DEPENDENCY_ERROR: 路线未正式验收")
     if route.get("route_output_hash") != route_hash(route):
