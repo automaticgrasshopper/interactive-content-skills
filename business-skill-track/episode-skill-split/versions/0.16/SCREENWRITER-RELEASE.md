@@ -19,3 +19,10 @@
 - 运行文件不得出现发布版号、带版号的 Skill 身份、`skill_version`字段或发布版本常量。
 - 合同自身的 `contract_version`、项目路线的 `route_version` 等业务字段不属于研发版号，继续保留。
 - 不合入 0.13—0.15 的新增创作资料或脚本能力，避免稳定基线被混入其他版本能力。
+
+## 线上实验入口
+
+- 2026-09-01 起，0.16 另以临时名称`蚂蚱-编剧-0901新测试`和 slug `episode-testscreenwriter-biz`并行部署，用于在`蚂蚱的测试`预设中回归验证；该入口的运行内容与本目录正式 0.16 相同。
+- 临时入口只改变后台 Skill 入口身份，补丁合同仍使用正式业务能力标识`episode-screenwriter-biz`，避免测试 slug 污染项目数据或下游合同。
+- `蚂蚱的测试`预设仅以临时 Skill 替换原`蚂蚱-互动编剧-0831 / episode-screenwriter-biz`位置，其余 Skill 应与主链路预设保持一致。
+- 线上验证通过后，将测试预设切回正式`episode-screenwriter-biz`，再删除临时`episode-testscreenwriter-biz`；临时入口不形成独立产品版本。
