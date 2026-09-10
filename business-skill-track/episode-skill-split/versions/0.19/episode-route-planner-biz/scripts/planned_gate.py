@@ -36,9 +36,9 @@ def review(root,which):
         for ev in c['evidence']:
             n=byid.get(ev.get('node_id'))
             quote=ev.get('quote')
-            text=json.dumps(n,ensure_ascii=False) if n else ''
+            text='\n'.join(n['route_material'][k] for k in ('单集梗概','本集冲突','stop_boundary')) if n else ''
             if not isinstance(quote,str) or not quote.strip() or quote not in text:
-                raise ValueError('复检逐字证据不属于当前节点')
+                raise ValueError('复检须引用当前节点事件正文、冲突或停止边界，不能用标题代替因果证据')
     return data
 
 def synopsis_review(root,candidate):

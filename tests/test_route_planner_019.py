@@ -37,7 +37,7 @@ class PlannedTests(unittest.TestCase):
   self.freeze();self.put('route-ledger.json',t.ledger(self.r));p=pg.packet(self.r)
   for which in ('A','B'):
    self.put(f'topology-review-{which}.json',{'packet_hash':p['packet_hash'],'review_pass':which,'verdict':'PASS','issues':[],
-     'checks':[{'check':c,'passed':True,'explanation':'测试夹具，只验证回执协议','evidence':[{'node_id':'episode-001','quote':'人物取得具体证据'}]} for c in pg.CHECKS]})
+     'checks':[{'check':c,'passed':True,'explanation':'测试夹具，只验证回执协议','evidence':[{'node_id':'episode-001','quote':'人物在现场面对明确阻力'}]} for c in pg.CHECKS]})
   route=t.current(self.r)[2]
   self.put('episode-synopses.json',{'topology_hash':t.load(self.r)['revisions'][-1]['hash'],'nodes':[{'node_id':n['node_id'],**{k:n['route_material'][k] for k in ('单集梗概','本集冲突','stop_boundary')}} for n in route['nodes']]})
   route=t.materialize(self.r);self.put('route-candidate.json',route)
@@ -84,6 +84,9 @@ class PlannedTests(unittest.TestCase):
   with self.assertRaises(ValueError):self.freeze()
  def test_15_candidate_tamper_rejected(self):
   self.complete();d=t.read(self.r/'route-candidate.json');d['nodes'][1]['route_material']['state_changes']={};self.put('route-candidate.json',d);self.assertTrue(gate.verify_root(self.r))
+ def test_17_title_only_review_evidence_rejected(self):
+  self.complete();d=t.read(self.r/'topology-review-B.json');d['checks'][0]['evidence']=[{'node_id':'episode-001','quote':'人物取得具体证据'}];self.put('topology-review-B.json',d)
+  with self.assertRaisesRegex(ValueError,'不能用标题'):pg.review(self.r,'B')
  def test_16_end_to_end_handoff_still_accepted(self):
   self.complete();self.assertEqual(gate.verify_root(self.r),[])
   from route_contract import seal,validate
