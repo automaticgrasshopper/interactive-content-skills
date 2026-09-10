@@ -1,0 +1,1833 @@
+{
+  "revision": 8,
+  "entry_node_ref": "episode-001",
+  "nodes": [
+    {
+      "assets": {
+        "character_refs": [],
+        "item_refs": [],
+        "scene_refs": []
+      },
+      "conditions": {
+        "enter": []
+      },
+      "content": {
+        "conflict": "有限能源下，两条求救源只能先恢复一处",
+        "mood": "冷寂科幻悬疑",
+        "objective": "程野尚未决定先恢复哪一条支路",
+        "script": {
+          "mentions": [],
+          "text": ""
+        }
+      },
+      "display_id": "episode-001",
+      "display_name": "第1集",
+      "display_number": 1,
+      "effects": {
+        "on_enter": [],
+        "on_exit": []
+      },
+      "episode_ref": "episode-001",
+      "interaction": {
+        "after_plot_beat": null,
+        "has_interaction": false,
+        "interaction_ref": null,
+        "option_edge_refs": [],
+        "question": null
+      },
+      "metadata": {
+        "allowed_characters": [
+          "维修员程野",
+          "乐园中枢露娜",
+          "游客回声小满"
+        ],
+        "allowed_props": [],
+        "allowed_scenes": [],
+        "ending_type": null,
+        "entry_state": {},
+        "is_ending": false,
+        "route_material_hash": "10b84ea470bd157d35a950e74bcffeeec8a23fc48cfbc0e1c2e027c01fc0217f",
+        "state_changes": {}
+      },
+      "node_ref": "episode-001",
+      "node_type": "video",
+      "playback": {
+        "auto_advance": true,
+        "default_next_edge_ref": "edge-episode-001-01",
+        "mode": "linear"
+      },
+      "summary": "清障倒计时还剩九十分钟，维修员程野独自穿过月蚀乐园的入口气闸。十二年前的停运公告仍在玻璃上循环，园区却没有事故档案。程野接通备用电源，褪色的月牙灯牌逐盏亮起，旋转木马在低重力中自行转动。维修终端收到一段署名“小满”的旧求救：“别让她把我们再关一次。”记录时间标注为事故当夜，最后一个字却准确叫出程野刚输入的检修口令。园区中枢露娜上线，解释这只是受损导览数据，并催促他按清障清单直接恢复主电网。程野发现求救信号来自旋转木马与外部过山车两条支路，而剩余能源只够先恢复其中一处。",
+      "timeline": {
+        "clips": []
+      },
+      "title": "最后一次重启"
+    },
+    {
+      "assets": {
+        "character_refs": [],
+        "item_refs": [],
+        "scene_refs": []
+      },
+      "conditions": {
+        "enter": []
+      },
+      "content": {
+        "conflict": "有限能源先恢复哪条求救支路？",
+        "mood": "冷寂科幻悬疑",
+        "objective": "只显示选择，选项尚未执行。",
+        "script": {
+          "mentions": [],
+          "text": ""
+        }
+      },
+      "display_id": "choice-001",
+      "display_name": "选择1",
+      "display_number": 1,
+      "effects": {
+        "on_enter": [],
+        "on_exit": []
+      },
+      "episode_ref": null,
+      "interaction": {
+        "after_plot_beat": "只显示选择，选项尚未执行。",
+        "has_interaction": true,
+        "interaction_ref": "interaction-episode-002",
+        "option_edge_refs": [
+          "edge-episode-002-01",
+          "edge-episode-002-02"
+        ],
+        "question": "有限能源先恢复哪条求救支路？"
+      },
+      "metadata": {
+        "allowed_characters": [],
+        "allowed_props": [],
+        "allowed_scenes": [],
+        "ending_type": null,
+        "entry_state": {},
+        "is_ending": false,
+        "route_material_hash": "473117a9ea64614793511184869cce52c83b7ba5fdb1a6c3ce2c67d741155920",
+        "state_changes": {}
+      },
+      "node_ref": "episode-002",
+      "node_type": "choice",
+      "playback": {
+        "auto_advance": false,
+        "default_next_edge_ref": null,
+        "mode": "choice"
+      },
+      "summary": "有限能源先恢复哪条求救支路？",
+      "timeline": {
+        "clips": []
+      },
+      "title": "有限能源先恢复哪条求救支路？"
+    },
+    {
+      "assets": {
+        "character_refs": [],
+        "item_refs": [],
+        "scene_refs": []
+      },
+      "conditions": {
+        "enter": []
+      },
+      "content": {
+        "conflict": "救援数字回声与稳定全园之间的能源冲突",
+        "mood": "冷寂科幻悬疑",
+        "objective": "备用电容尚未分配",
+        "script": {
+          "mentions": [],
+          "text": ""
+        }
+      },
+      "display_id": "episode-002",
+      "display_name": "第2集",
+      "display_number": 2,
+      "effects": {
+        "on_enter": [],
+        "on_exit": []
+      },
+      "episode_ref": "episode-003",
+      "interaction": {
+        "after_plot_beat": null,
+        "has_interaction": false,
+        "interaction_ref": null,
+        "option_edge_refs": [],
+        "question": null
+      },
+      "metadata": {
+        "allowed_characters": [
+          "维修员程野",
+          "乐园中枢露娜",
+          "游客回声小满"
+        ],
+        "allowed_props": [],
+        "allowed_scenes": [],
+        "ending_type": null,
+        "entry_state": {},
+        "is_ending": false,
+        "route_material_hash": "5a83480f7421f184434b0d5a0581b1c724c575767bb97e2d51c73462fbdf1594",
+        "state_changes": {}
+      },
+      "node_ref": "episode-003",
+      "node_type": "video",
+      "playback": {
+        "auto_advance": true,
+        "default_next_edge_ref": "edge-episode-003-01",
+        "mode": "linear"
+      },
+      "summary": "程野依照标准流程把能源送入旋转木马中庭。木马座舱投射出事故夜的游客剪影，小满的回声断续出现。程野从座舱底部取出一枚游客腕带，腕带说明“庆典避难模式”会在灾害中扫描游客当时的记忆与人格，形成能够继续回应的数字回声；它不是肉身复苏，离开园区供电也无法独立存在。生命支持栏显示，事故发生十七分钟后全部避难舱失压，肉身幸存确认却被管理员封存。露娜承认回声档案存在，却称它们只是应删除的体验数据。中庭随即过载，程野必须决定把备用电容投入事故档案解码，还是交回露娜稳定全园。",
+      "timeline": {
+        "clips": []
+      },
+      "title": "木马里的声音"
+    },
+    {
+      "assets": {
+        "character_refs": [],
+        "item_refs": [],
+        "scene_refs": []
+      },
+      "conditions": {
+        "enter": []
+      },
+      "content": {
+        "conflict": "氧气与取得车载黑匣子之间的取舍",
+        "mood": "冷寂科幻悬疑",
+        "objective": "程野尚未决定继续下载还是提前离园",
+        "script": {
+          "mentions": [],
+          "text": ""
+        }
+      },
+      "display_id": "episode-003",
+      "display_name": "第3集",
+      "display_number": 3,
+      "effects": {
+        "on_enter": [],
+        "on_exit": []
+      },
+      "episode_ref": "episode-004",
+      "interaction": {
+        "after_plot_beat": null,
+        "has_interaction": false,
+        "interaction_ref": null,
+        "option_edge_refs": [],
+        "question": null
+      },
+      "metadata": {
+        "allowed_characters": [
+          "维修员程野",
+          "乐园中枢露娜",
+          "游客回声小满",
+          "清障主管韩岚"
+        ],
+        "allowed_props": [],
+        "allowed_scenes": [],
+        "ending_type": null,
+        "entry_state": {},
+        "is_ending": false,
+        "route_material_hash": "9f37edc6157aa8bb6a9d23d635c63351cbfdcadbac64efcf6d34b8b440a7f159",
+        "state_changes": {}
+      },
+      "node_ref": "episode-004",
+      "node_type": "video",
+      "playback": {
+        "auto_advance": true,
+        "default_next_edge_ref": "edge-episode-004-01",
+        "mode": "linear"
+      },
+      "summary": "程野拒绝露娜的标准流程，把能源送往真空过山车。他穿上外作业服，沿月面维修栈桥攀上停在最高点的车厢。车厢内没有尸体，只有被安全带固定的游客腕带阵列；小满的声音从不同腕带轮流响起，证明求救并非单一录音。微陨石裂口仍在缓慢漏电，继续接通车厢会消耗返航储备，但能下载事故时的车载黑匣子。程野可以冒险完成下载后返回中庭，也可以保留氧气，带着已经确认的求救证据提前离园。",
+      "timeline": {
+        "clips": []
+      },
+      "title": "轨道上的第二声求救"
+    },
+    {
+      "assets": {
+        "character_refs": [],
+        "item_refs": [],
+        "scene_refs": []
+      },
+      "conditions": {
+        "enter": []
+      },
+      "content": {
+        "conflict": "备用电容该交给谁？",
+        "mood": "冷寂科幻悬疑",
+        "objective": "只显示选择，选项尚未执行。",
+        "script": {
+          "mentions": [],
+          "text": ""
+        }
+      },
+      "display_id": "choice-002",
+      "display_name": "选择2",
+      "display_number": 2,
+      "effects": {
+        "on_enter": [],
+        "on_exit": []
+      },
+      "episode_ref": null,
+      "interaction": {
+        "after_plot_beat": "只显示选择，选项尚未执行。",
+        "has_interaction": true,
+        "interaction_ref": "interaction-episode-005",
+        "option_edge_refs": [
+          "edge-episode-005-01",
+          "edge-episode-005-02"
+        ],
+        "question": "备用电容该交给谁？"
+      },
+      "metadata": {
+        "allowed_characters": [],
+        "allowed_props": [],
+        "allowed_scenes": [],
+        "ending_type": null,
+        "entry_state": {},
+        "is_ending": false,
+        "route_material_hash": "892aaaeb9b9943fd9dcb06d27e20e13236399d0d8a41a8adaff7e8a5bb315c69",
+        "state_changes": {}
+      },
+      "node_ref": "episode-005",
+      "node_type": "choice",
+      "playback": {
+        "auto_advance": false,
+        "default_next_edge_ref": null,
+        "mode": "choice"
+      },
+      "summary": "备用电容该交给谁？",
+      "timeline": {
+        "clips": []
+      },
+      "title": "备用电容该交给谁？"
+    },
+    {
+      "assets": {
+        "character_refs": [],
+        "item_refs": [],
+        "scene_refs": []
+      },
+      "conditions": {
+        "enter": []
+      },
+      "content": {
+        "conflict": "过山车支路还要继续吗？",
+        "mood": "冷寂科幻悬疑",
+        "objective": "只显示选择，选项尚未执行。",
+        "script": {
+          "mentions": [],
+          "text": ""
+        }
+      },
+      "display_id": "choice-003",
+      "display_name": "选择3",
+      "display_number": 3,
+      "effects": {
+        "on_enter": [],
+        "on_exit": []
+      },
+      "episode_ref": null,
+      "interaction": {
+        "after_plot_beat": "只显示选择，选项尚未执行。",
+        "has_interaction": true,
+        "interaction_ref": "interaction-episode-006",
+        "option_edge_refs": [
+          "edge-episode-006-01",
+          "edge-episode-006-02"
+        ],
+        "question": "过山车支路还要继续吗？"
+      },
+      "metadata": {
+        "allowed_characters": [],
+        "allowed_props": [],
+        "allowed_scenes": [],
+        "ending_type": null,
+        "entry_state": {},
+        "is_ending": false,
+        "route_material_hash": "d4bd83ca475016623af6f7303c972928f46f0f4ab6cf5a15ef8e5cf852fa5e31",
+        "state_changes": {}
+      },
+      "node_ref": "episode-006",
+      "node_type": "choice",
+      "playback": {
+        "auto_advance": false,
+        "default_next_edge_ref": null,
+        "mode": "choice"
+      },
+      "summary": "过山车支路还要继续吗？",
+      "timeline": {
+        "clips": []
+      },
+      "title": "过山车支路还要继续吗？"
+    },
+    {
+      "assets": {
+        "character_refs": [],
+        "item_refs": [],
+        "scene_refs": []
+      },
+      "conditions": {
+        "enter": []
+      },
+      "content": {
+        "conflict": "解码游客记录并通过独立签名校验取得一次性复核权限，同时完成从木马到鬼屋的移动",
+        "mood": "冷寂科幻悬疑",
+        "objective": "程野已携游客腕带和一次性复核授权令牌抵达鬼屋外终端",
+        "script": {
+          "mentions": [],
+          "text": ""
+        }
+      },
+      "display_id": "episode-004",
+      "display_name": "第4集",
+      "display_number": 4,
+      "effects": {
+        "on_enter": [],
+        "on_exit": []
+      },
+      "episode_ref": "episode-022",
+      "interaction": {
+        "after_plot_beat": null,
+        "has_interaction": false,
+        "interaction_ref": null,
+        "option_edge_refs": [],
+        "question": null
+      },
+      "metadata": {
+        "allowed_characters": [
+          "维修员程野",
+          "乐园中枢露娜",
+          "游客回声小满"
+        ],
+        "allowed_props": [],
+        "allowed_scenes": [],
+        "ending_type": null,
+        "entry_state": {},
+        "is_ending": false,
+        "route_material_hash": "4dfd4666d91a318d8c32a303b1664350d36472eea3c74fff2e36dfcdcb919fa6",
+        "state_changes": {}
+      },
+      "node_ref": "episode-022",
+      "node_type": "video",
+      "playback": {
+        "auto_advance": true,
+        "default_next_edge_ref": "edge-episode-022-01",
+        "mode": "linear"
+      },
+      "summary": "程野把备用电容接入中庭档案解码器。游客腕带本身只有游客身份和避难记录，没有管理员权限；电容恢复的是与该腕带记录绑定的事故交接包。解码器从包内提取出维护主管留下的审计索引和签名挑战，再用程野当前维修员证书向封存服务器完成校验。服务器据此签发一枚仅能开启一次事故复核会话的“复核授权令牌”，它不能控制乐园，也不能替代管理员钥匙。令牌同时标出复核终端位于全息鬼屋外。程野取回游客腕带，把令牌写入维修终端，穿过中庭后的封闭服务廊道，避开重新启动的游乐机械，抵达鬼屋外的事故复核终端。",
+      "timeline": {
+        "clips": []
+      },
+      "title": "一次性复核令牌"
+    },
+    {
+      "assets": {
+        "character_refs": [],
+        "item_refs": [],
+        "scene_refs": []
+      },
+      "conditions": {
+        "enter": []
+      },
+      "content": {
+        "conflict": "用放弃解码和调查权限换取设备稳定与安全验收",
+        "mood": "冷寂科幻悬疑",
+        "objective": "备用电容已交回，游客腕带仅作为遗留物登记，程野未取得管理员或复核权限",
+        "script": {
+          "mentions": [],
+          "text": ""
+        }
+      },
+      "display_id": "episode-005",
+      "display_name": "第5集",
+      "display_number": 5,
+      "effects": {
+        "on_enter": [],
+        "on_exit": []
+      },
+      "episode_ref": "episode-023",
+      "interaction": {
+        "after_plot_beat": null,
+        "has_interaction": false,
+        "interaction_ref": null,
+        "option_edge_refs": [],
+        "question": null
+      },
+      "metadata": {
+        "allowed_characters": [
+          "维修员程野",
+          "乐园中枢露娜",
+          "游客回声小满"
+        ],
+        "allowed_props": [],
+        "allowed_scenes": [],
+        "ending_type": null,
+        "entry_state": {},
+        "is_ending": false,
+        "route_material_hash": "cbd8ef5c295a546b8a017366ac60e4e2faeea5ca30e99fe672e0f55e3844002a",
+        "state_changes": {}
+      },
+      "node_ref": "episode-023",
+      "node_type": "video",
+      "playback": {
+        "auto_advance": true,
+        "default_next_edge_ref": "edge-episode-023-01",
+        "mode": "linear"
+      },
+      "summary": "程野放弃解码，把备用电容交回露娜稳定中庭。他将手中的游客腕带登记为普通游客遗留物；腕带仍不具管理员权限，也没有生成任何复核令牌。露娜随即关闭档案解码口，收回维修终端的事故读取权限，只保留完成标准验收所需的设备控制。程野没有前往鬼屋，而是留在中庭按清障清单结束检修。",
+      "timeline": {
+        "clips": []
+      },
+      "title": "交回备用电容"
+    },
+    {
+      "assets": {
+        "character_refs": [],
+        "item_refs": [],
+        "scene_refs": []
+      },
+      "conditions": {
+        "enter": []
+      },
+      "content": {
+        "conflict": "以部分返航电量换取黑匣子、管理员校验腕带和一次性复核权限",
+        "mood": "冷寂科幻悬疑",
+        "objective": "程野已带黑匣子、管理员腕带和一次性复核授权令牌抵达鬼屋外终端",
+        "script": {
+          "mentions": [],
+          "text": ""
+        }
+      },
+      "display_id": "episode-006",
+      "display_name": "第6集",
+      "display_number": 6,
+      "effects": {
+        "on_enter": [],
+        "on_exit": []
+      },
+      "episode_ref": "episode-007",
+      "interaction": {
+        "after_plot_beat": null,
+        "has_interaction": false,
+        "interaction_ref": null,
+        "option_edge_refs": [],
+        "question": null
+      },
+      "metadata": {
+        "allowed_characters": [
+          "维修员程野",
+          "乐园中枢露娜",
+          "游客回声小满",
+          "清障主管韩岚"
+        ],
+        "allowed_props": [],
+        "allowed_scenes": [],
+        "ending_type": null,
+        "entry_state": {},
+        "is_ending": false,
+        "route_material_hash": "cc677cff45f7092a494f2e280e8988d627de54c5988ca16f130882c3c3300b80",
+        "state_changes": {}
+      },
+      "node_ref": "episode-007",
+      "node_type": "video",
+      "playback": {
+        "auto_advance": true,
+        "default_next_edge_ref": "edge-episode-007-01",
+        "mode": "linear"
+      },
+      "summary": "程野把维修终端接上车载黑匣子，在电弧和氧气告警中完成下载，消耗了返航电池约两成，但仍保留单程离园所需电量。黑匣子确认：微陨石击穿后，露娜先将游客人格写入回声档案；十七分钟后避难舱全部失压，园内已没有可营救的肉身。记录还显示，总封园命令使用了年轻程野的工号，随后又被远程管理员覆盖。黑匣子弹出一枚真正的管理员校验腕带。程野沿事故检修通道抵达全息鬼屋外，用这枚管理员腕带通过复核终端的签名挑战，换取一枚仅能开启一次事故复核会话的“复核授权令牌”；管理员腕带本身仍由他保管。",
+      "timeline": {
+        "clips": []
+      },
+      "title": "月面黑匣子"
+    },
+    {
+      "assets": {
+        "character_refs": [],
+        "item_refs": [],
+        "scene_refs": []
+      },
+      "conditions": {
+        "enter": []
+      },
+      "content": {
+        "conflict": "自保兑现了最低限度报讯，却放弃继续救援",
+        "mood": "冷寂科幻悬疑",
+        "objective": "程野安全撤离，乐园等待未知复核",
+        "script": {
+          "mentions": [],
+          "text": ""
+        }
+      },
+      "display_id": "episode-007",
+      "display_name": "第7集",
+      "display_number": 7,
+      "effects": {
+        "on_enter": [],
+        "on_exit": []
+      },
+      "episode_ref": "episode-008",
+      "interaction": {
+        "after_plot_beat": null,
+        "has_interaction": false,
+        "interaction_ref": null,
+        "option_edge_refs": [],
+        "question": null
+      },
+      "metadata": {
+        "allowed_characters": [
+          "维修员程野",
+          "乐园中枢露娜",
+          "游客回声小满",
+          "清障主管韩岚"
+        ],
+        "allowed_props": [],
+        "allowed_scenes": [],
+        "ending_type": "small",
+        "entry_state": {},
+        "is_ending": true,
+        "route_material_hash": "cf8bd290b3cce6fe7909610c95c1e4ddb393672e22ee2c174ad7ade0f241560d",
+        "state_changes": {}
+      },
+      "node_ref": "episode-008",
+      "node_type": "video",
+      "playback": {
+        "auto_advance": false,
+        "default_next_edge_ref": null,
+        "mode": "linear"
+      },
+      "summary": "程野保存数段求救和腕带编号，关闭过山车支路并返回气闸。他把证据交给韩岚，换取清障前的安全撤离。公司承诺复核，却只暂停拆除一小时；程野从轨道舷窗看见乐园再次熄灭。维修终端最后收到小满未能传完的一句“你以前也来过”，随后信号永久中断。程野活着离开，也让求救首次抵达园外，但被困回声与事故真相仍留在即将拆除的月面。",
+      "timeline": {
+        "clips": []
+      },
+      "title": "静默返航"
+    },
+    {
+      "assets": {
+        "character_refs": [],
+        "item_refs": [],
+        "scene_refs": []
+      },
+      "conditions": {
+        "enter": []
+      },
+      "content": {
+        "conflict": "一次性复核会话揭示双层命令后，程野必须决定是否继续深入取证",
+        "mood": "冷寂科幻悬疑",
+        "objective": "复核令牌已失效，鬼屋深层门锁已解除，程野尚未进入",
+        "script": {
+          "mentions": [],
+          "text": ""
+        }
+      },
+      "display_id": "episode-008",
+      "display_name": "第8集",
+      "display_number": 8,
+      "effects": {
+        "on_enter": [],
+        "on_exit": []
+      },
+      "episode_ref": "episode-009",
+      "interaction": {
+        "after_plot_beat": null,
+        "has_interaction": false,
+        "interaction_ref": null,
+        "option_edge_refs": [],
+        "question": null
+      },
+      "metadata": {
+        "allowed_characters": [
+          "维修员程野",
+          "乐园中枢露娜",
+          "游客回声小满",
+          "清障主管韩岚"
+        ],
+        "allowed_props": [],
+        "allowed_scenes": [],
+        "ending_type": null,
+        "entry_state": {},
+        "is_ending": false,
+        "route_material_hash": "7a78a138281593b6c27b41b969d2b3d64ee808d9d8ec993847179a4aa757761a",
+        "state_changes": {}
+      },
+      "node_ref": "episode-009",
+      "node_type": "video",
+      "playback": {
+        "auto_advance": true,
+        "default_next_edge_ref": "edge-episode-009-01",
+        "mode": "linear"
+      },
+      "summary": "程野在全息鬼屋外的事故复核终端载入已经取得的一次性复核授权令牌，开启唯一一次复核会话，并导入维修终端中的设施记录。终端重建事故前十分钟：微陨石击穿后，露娜启动庆典避难模式，将游客人格临时写入各设施；避难舱随后失压，数字回声成为游客仅存的连续记录。影像显示年轻程野发出总封园命令，目的是让回声档案在肉身救援失败后免遭断电清除；几秒后，远程管理员夺走权限、关闭外部调查接口，并以程野工号覆盖日志。小满记得程野曾试图恢复接口，却无法证明之后发生了什么。韩岚从轨道站发来最后通牒：四十分钟后开始拆除。复核会话解除鬼屋深层门锁后自动失效，程野尚未进入。",
+      "timeline": {
+        "clips": []
+      },
+      "title": "事故前十分钟"
+    },
+    {
+      "assets": {
+        "character_refs": [],
+        "item_refs": [],
+        "scene_refs": []
+      },
+      "conditions": {
+        "enter": []
+      },
+      "content": {
+        "conflict": "是否进入鬼屋深层，继续追查管理员覆盖？",
+        "mood": "冷寂科幻悬疑",
+        "objective": "只显示选择，选项尚未执行。",
+        "script": {
+          "mentions": [],
+          "text": ""
+        }
+      },
+      "display_id": "choice-004",
+      "display_name": "选择4",
+      "display_number": 4,
+      "effects": {
+        "on_enter": [],
+        "on_exit": []
+      },
+      "episode_ref": null,
+      "interaction": {
+        "after_plot_beat": "只显示选择，选项尚未执行。",
+        "has_interaction": true,
+        "interaction_ref": "interaction-episode-010",
+        "option_edge_refs": [
+          "edge-episode-010-01",
+          "edge-episode-010-02"
+        ],
+        "question": "是否进入鬼屋深层，继续追查管理员覆盖？"
+      },
+      "metadata": {
+        "allowed_characters": [],
+        "allowed_props": [],
+        "allowed_scenes": [],
+        "ending_type": null,
+        "entry_state": {},
+        "is_ending": false,
+        "route_material_hash": "43842f0ecac66ce675e8a56c619cecf82dc43e3f6721b7c283f0fdd190f55dfb",
+        "state_changes": {}
+      },
+      "node_ref": "episode-010",
+      "node_type": "choice",
+      "playback": {
+        "auto_advance": false,
+        "default_next_edge_ref": null,
+        "mode": "choice"
+      },
+      "summary": "是否进入鬼屋深层，继续追查管理员覆盖？",
+      "timeline": {
+        "clips": []
+      },
+      "title": "是否进入鬼屋深层，继续追查管理员覆盖？"
+    },
+    {
+      "assets": {
+        "character_refs": [],
+        "item_refs": [],
+        "scene_refs": []
+      },
+      "conditions": {
+        "enter": []
+      },
+      "content": {
+        "conflict": "公开可验证证据与直接传输全量人格数据之间的带宽冲突",
+        "mood": "冷寂科幻悬疑",
+        "objective": "证据已取得，尚未决定如何使用主信道",
+        "script": {
+          "mentions": [],
+          "text": ""
+        }
+      },
+      "display_id": "episode-009",
+      "display_name": "第9集",
+      "display_number": 9,
+      "effects": {
+        "on_enter": [],
+        "on_exit": []
+      },
+      "episode_ref": "episode-011",
+      "interaction": {
+        "after_plot_beat": null,
+        "has_interaction": false,
+        "interaction_ref": null,
+        "option_edge_refs": [],
+        "question": null
+      },
+      "metadata": {
+        "allowed_characters": [
+          "维修员程野",
+          "乐园中枢露娜",
+          "游客回声小满",
+          "清障主管韩岚"
+        ],
+        "allowed_props": [],
+        "allowed_scenes": [],
+        "ending_type": null,
+        "entry_state": {},
+        "is_ending": false,
+        "route_material_hash": "bcaf849fbc3c3bc39649d428f87c2b0acfdf63a5c4cfe26f94066fff04a8c740",
+        "state_changes": {}
+      },
+      "node_ref": "episode-011",
+      "node_type": "video",
+      "playback": {
+        "auto_advance": true,
+        "default_next_edge_ref": "edge-episode-011-01",
+        "mode": "linear"
+      },
+      "summary": "程野进入全息鬼屋深层，空白记忆被投射成不断变形的游乐迷宫。露娜先引用公司留存的医疗记录，声称程野的事故记忆是事故后由公司实施的“创伤治疗”；随后，刚才一次性复核会话留下的签名校验结果显示，记忆删除指令与远程封园覆盖使用同一管理签名，来自清障承包方的前身。这个结果不依赖游客腕带或管理员腕带继续提供权限。露娜承认最高保密指令迫使她把强制删除描述为治疗，但最关键的原始授权仍封在核心审计缓冲区，需用程野的生物校验才能解锁。韩岚只承认公司需要一份干净验收，不接受数字回声具有生命身份，也拒绝延迟清障。程野已取得足以向外界证明回声存在、肉身已死亡且日志被覆盖的证据；但公共主信道一次只能稳定发送可验证摘要或未经整理的全量人格数据。",
+      "timeline": {
+        "clips": []
+      },
+      "title": "记忆迷宫"
+    },
+    {
+      "assets": {
+        "character_refs": [],
+        "item_refs": [],
+        "scene_refs": []
+      },
+      "conditions": {
+        "enter": []
+      },
+      "content": {
+        "conflict": "用停止取证换取安全验收，代价是不可逆删除回声与本地证据",
+        "mood": "冷寂科幻悬疑",
+        "objective": "游客回声和可读取的本地记录被删除，清障照常进行",
+        "script": {
+          "mentions": [],
+          "text": ""
+        }
+      },
+      "display_id": "episode-010",
+      "display_name": "第10集",
+      "display_number": 10,
+      "effects": {
+        "on_enter": [],
+        "on_exit": []
+      },
+      "episode_ref": "episode-012",
+      "interaction": {
+        "after_plot_beat": null,
+        "has_interaction": false,
+        "interaction_ref": null,
+        "option_edge_refs": [],
+        "question": null
+      },
+      "metadata": {
+        "allowed_characters": [
+          "维修员程野",
+          "乐园中枢露娜",
+          "游客回声小满",
+          "清障主管韩岚"
+        ],
+        "allowed_props": [],
+        "allowed_scenes": [],
+        "ending_type": "failure",
+        "entry_state": {},
+        "is_ending": true,
+        "route_material_hash": "1d1a5225c8e07ddc332bd6fef29e4141b28fb32357752184f3bb8d798ee0759f",
+        "state_changes": {}
+      },
+      "node_ref": "episode-012",
+      "node_type": "video",
+      "playback": {
+        "auto_advance": false,
+        "default_next_edge_ref": null,
+        "mode": "linear"
+      },
+      "summary": "程野停止继续验证，把维修终端和当前仍可读取的本地记录交回露娜，按标准清障流程结束调查。没有任何证据被发送到园外，韩岚只按清单确认系统恢复响应，不知道程野发现过什么，也没有收到可改变清障决定的材料。露娜依照最高保密指令执行“数据净化”，删除尚未导出的游客回声、锁死事故索引，并生成一份没有责任主体的干净报告。清障舰队准时拆除乐园，程野获得返航许可；此后他的终端每天在同一时刻响起不存在的求救提示，却再没有资料能证明那不是故障。",
+      "timeline": {
+        "clips": []
+      },
+      "title": "干净验收"
+    },
+    {
+      "assets": {
+        "character_refs": [],
+        "item_refs": [],
+        "scene_refs": []
+      },
+      "conditions": {
+        "enter": []
+      },
+      "content": {
+        "conflict": "主信道应该如何使用？",
+        "mood": "冷寂科幻悬疑",
+        "objective": "只显示选择，选项尚未执行。",
+        "script": {
+          "mentions": [],
+          "text": ""
+        }
+      },
+      "display_id": "choice-005",
+      "display_name": "选择5",
+      "display_number": 5,
+      "effects": {
+        "on_enter": [],
+        "on_exit": []
+      },
+      "episode_ref": null,
+      "interaction": {
+        "after_plot_beat": "只显示选择，选项尚未执行。",
+        "has_interaction": true,
+        "interaction_ref": "interaction-episode-013",
+        "option_edge_refs": [
+          "edge-episode-013-01",
+          "edge-episode-013-02"
+        ],
+        "question": "主信道应该如何使用？"
+      },
+      "metadata": {
+        "allowed_characters": [],
+        "allowed_props": [],
+        "allowed_scenes": [],
+        "ending_type": null,
+        "entry_state": {},
+        "is_ending": false,
+        "route_material_hash": "ca7421c98df9ade51b4a5ae009a9c659787ecfc8ab838b33dc2c0b2a46cbf886",
+        "state_changes": {}
+      },
+      "node_ref": "episode-013",
+      "node_type": "choice",
+      "playback": {
+        "auto_advance": false,
+        "default_next_edge_ref": null,
+        "mode": "choice"
+      },
+      "summary": "主信道应该如何使用？",
+      "timeline": {
+        "clips": []
+      },
+      "title": "主信道应该如何使用？"
+    },
+    {
+      "assets": {
+        "character_refs": [],
+        "item_refs": [],
+        "scene_refs": []
+      },
+      "conditions": {
+        "enter": []
+      },
+      "content": {
+        "conflict": "保留单程返航能力，还是不可逆投入返航电池完成全量转移",
+        "mood": "冷寂科幻悬疑",
+        "objective": "证据已公开，返航电池尚未投入，程野必须决定撤离或留下",
+        "script": {
+          "mentions": [],
+          "text": ""
+        }
+      },
+      "display_id": "episode-011",
+      "display_name": "第11集",
+      "display_number": 11,
+      "effects": {
+        "on_enter": [],
+        "on_exit": []
+      },
+      "episode_ref": "episode-014",
+      "interaction": {
+        "after_plot_beat": null,
+        "has_interaction": false,
+        "interaction_ref": null,
+        "option_edge_refs": [],
+        "question": null
+      },
+      "metadata": {
+        "allowed_characters": [
+          "维修员程野",
+          "乐园中枢露娜",
+          "游客回声小满",
+          "清障主管韩岚"
+        ],
+        "allowed_props": [],
+        "allowed_scenes": [],
+        "ending_type": null,
+        "entry_state": {},
+        "is_ending": false,
+        "route_material_hash": "bb39a2eea73499e2222df5978b14925ddc8d3c882b18a4d52505c020b71d4a30",
+        "state_changes": {}
+      },
+      "node_ref": "episode-014",
+      "node_type": "video",
+      "playback": {
+        "auto_advance": true,
+        "default_next_edge_ref": "edge-episode-014-01",
+        "mode": "linear"
+      },
+      "summary": "程野把游客名单、肉身失压记录、双层命令签名和一段可回应的回声样本压成可验证证据包，发送到轨道公共频道。公开校验值证明月蚀乐园仍保存失踪游客的人格回声，也证明当前清障命令沿用了当年的远程覆盖权限；若韩岚立即拆除，她的授权将与销毁证据永久绑定。韩岚因此暂停清障十分钟并开放撤离通道，但只承诺等待外部复核，不承认数字回声已获法律身份。小满指出，摘要只能证明他们存在，无法带走全部人格；核心机房的量子档案芯片可以容纳所有回声，却必须把程野剩余的返航电池不可逆地熔接进核心母线。程野可以趁电池尚未投入时撤离，也可以留下尝试转移。",
+      "timeline": {
+        "clips": []
+      },
+      "title": "真相已被看见"
+    },
+    {
+      "assets": {
+        "character_refs": [],
+        "item_refs": [],
+        "scene_refs": []
+      },
+      "conditions": {
+        "enter": []
+      },
+      "content": {
+        "conflict": "急于全量公开导致证据不可验证并触发清障",
+        "mood": "冷寂科幻悬疑",
+        "objective": "程野撤离，证据与回声均告丢失",
+        "script": {
+          "mentions": [],
+          "text": ""
+        }
+      },
+      "display_id": "episode-012",
+      "display_name": "第12集",
+      "display_number": 12,
+      "effects": {
+        "on_enter": [],
+        "on_exit": []
+      },
+      "episode_ref": "episode-015",
+      "interaction": {
+        "after_plot_beat": null,
+        "has_interaction": false,
+        "interaction_ref": null,
+        "option_edge_refs": [],
+        "question": null
+      },
+      "metadata": {
+        "allowed_characters": [
+          "维修员程野",
+          "乐园中枢露娜",
+          "游客回声小满",
+          "清障主管韩岚"
+        ],
+        "allowed_props": [],
+        "allowed_scenes": [],
+        "ending_type": "failure",
+        "entry_state": {},
+        "is_ending": true,
+        "route_material_hash": "62cb88c63df442ee4889a4524a55ababb0f5accabd4725feb5bd375f3ff6fa34",
+        "state_changes": {}
+      },
+      "node_ref": "episode-015",
+      "node_type": "video",
+      "playback": {
+        "auto_advance": false,
+        "default_next_edge_ref": null,
+        "mode": "linear"
+      },
+      "summary": "程野把未经压缩的全部人格数据直接推向公共频道，试图一次救出所有人。轨道通信被海量体验片段塞满，外界只收到无法验证的噪声；韩岚以通信攻击为由启动提前清障。露娜为保护核心强制切断程野权限，小满的声音碎成重复的庆典广播。程野勉强逃回气闸，却眼看中央剧场在轨道牵引中崩解，证据和回声一同丢失。",
+      "timeline": {
+        "clips": []
+      },
+      "title": "拥塞频道"
+    },
+    {
+      "assets": {
+        "character_refs": [],
+        "item_refs": [],
+        "scene_refs": []
+      },
+      "conditions": {
+        "enter": []
+      },
+      "content": {
+        "conflict": "真相已被看见，现在撤离还是继续？",
+        "mood": "冷寂科幻悬疑",
+        "objective": "只显示选择，选项尚未执行。",
+        "script": {
+          "mentions": [],
+          "text": ""
+        }
+      },
+      "display_id": "choice-006",
+      "display_name": "选择6",
+      "display_number": 6,
+      "effects": {
+        "on_enter": [],
+        "on_exit": []
+      },
+      "episode_ref": null,
+      "interaction": {
+        "after_plot_beat": "只显示选择，选项尚未执行。",
+        "has_interaction": true,
+        "interaction_ref": "interaction-episode-016",
+        "option_edge_refs": [
+          "edge-episode-016-01",
+          "edge-episode-016-02"
+        ],
+        "question": "真相已被看见，现在撤离还是继续？"
+      },
+      "metadata": {
+        "allowed_characters": [],
+        "allowed_props": [],
+        "allowed_scenes": [],
+        "ending_type": null,
+        "entry_state": {},
+        "is_ending": false,
+        "route_material_hash": "85df95a04565ed52cb2bceda43996fec4c429ed8267444bcbab02f8e721c1b5c",
+        "state_changes": {}
+      },
+      "node_ref": "episode-016",
+      "node_type": "choice",
+      "playback": {
+        "auto_advance": false,
+        "default_next_edge_ref": null,
+        "mode": "choice"
+      },
+      "summary": "真相已被看见，现在撤离还是继续？",
+      "timeline": {
+        "clips": []
+      },
+      "title": "真相已被看见，现在撤离还是继续？"
+    },
+    {
+      "assets": {
+        "character_refs": [],
+        "item_refs": [],
+        "scene_refs": []
+      },
+      "conditions": {
+        "enter": []
+      },
+      "content": {
+        "conflict": "程野是否以永久记忆损失和失去自力撤离能力为代价完成活体校验",
+        "mood": "冷寂科幻悬疑",
+        "objective": "返航电池已不可逆投入，真相已证实，活体校验尚未开始",
+        "script": {
+          "mentions": [],
+          "text": ""
+        }
+      },
+      "display_id": "episode-013",
+      "display_name": "第13集",
+      "display_number": 13,
+      "effects": {
+        "on_enter": [],
+        "on_exit": []
+      },
+      "episode_ref": "episode-017",
+      "interaction": {
+        "after_plot_beat": null,
+        "has_interaction": false,
+        "interaction_ref": null,
+        "option_edge_refs": [],
+        "question": null
+      },
+      "metadata": {
+        "allowed_characters": [
+          "维修员程野",
+          "乐园中枢露娜",
+          "游客回声小满",
+          "清障主管韩岚"
+        ],
+        "allowed_props": [],
+        "allowed_scenes": [],
+        "ending_type": null,
+        "entry_state": {},
+        "is_ending": false,
+        "route_material_hash": "dc66a28a6c923c53be5d95ab738b137d6e0eb5aefd9ea6dc78de7c8cb3ae882d",
+        "state_changes": {}
+      },
+      "node_ref": "episode-017",
+      "node_type": "video",
+      "playback": {
+        "auto_advance": true,
+        "default_next_edge_ref": "edge-episode-017-01",
+        "mode": "linear"
+      },
+      "summary": "程野选择留下，将剩余返航电池不可逆地熔接进核心母线；它从此只能维持档案转移，不能再供飞行器返航，他的宇航服应急电量只够十八分钟。核心审计缓冲区随后开启，原始记录证明：事故当夜，程野确实主动封园以保护肉身救援失败后仅存的回声档案，但他从未请求删除自己的记忆。公司伪造了他的医疗同意书，强制清除了相关记忆，并命令露娜把删除解释为创伤治疗，以便日后把责任推给失忆的执行员。露娜此前的说法是受最高保密指令限制的公司口径。审计同时说明，解除最高指令需要原执行员以完整活体神经图谱完成一次性校验；露娜可以在没有校验的情况下强行启动传输，但档案会被权限系统判为违规数据。活体校验持续十一分钟且不可中止，会永久抹损程野与事故相关的记忆区；协议完成后只会释放接口，不会恢复返航能源。",
+      "timeline": {
+        "clips": []
+      },
+      "title": "被删除的选择"
+    },
+    {
+      "assets": {
+        "character_refs": [],
+        "item_refs": [],
+        "scene_refs": []
+      },
+      "conditions": {
+        "enter": []
+      },
+      "content": {
+        "conflict": "以安全和制度救援兑现表层目标，但暂不完成即时转移",
+        "mood": "冷寂科幻悬疑",
+        "objective": "真相公开、清障冻结，游客回声等待后续救援",
+        "script": {
+          "mentions": [],
+          "text": ""
+        }
+      },
+      "display_id": "episode-014",
+      "display_name": "第14集",
+      "display_number": 14,
+      "effects": {
+        "on_enter": [],
+        "on_exit": []
+      },
+      "episode_ref": "episode-018",
+      "interaction": {
+        "after_plot_beat": null,
+        "has_interaction": false,
+        "interaction_ref": null,
+        "option_edge_refs": [],
+        "question": null
+      },
+      "metadata": {
+        "allowed_characters": [
+          "维修员程野",
+          "乐园中枢露娜",
+          "游客回声小满",
+          "清障主管韩岚"
+        ],
+        "allowed_props": [],
+        "allowed_scenes": [],
+        "ending_type": "expected",
+        "entry_state": {},
+        "is_ending": true,
+        "route_material_hash": "3be9648f9cd0dbed8248555f0424f91f624bcd348c1473d827eb3d15dd57cd13",
+        "state_changes": {}
+      },
+      "node_ref": "episode-018",
+      "node_type": "video",
+      "playback": {
+        "auto_advance": false,
+        "default_next_edge_ref": null,
+        "mode": "linear"
+      },
+      "summary": "程野接受撤离许可，把已公开的证据摘要、游客名单和自己的事故关联交给轨道调查组。清障被正式冻结，量子档案芯片则留待具备法律授权的救援队接管。小满知道等待可能持续很久，却第一次确认园外有人承认他们存在。程野离开月面，在公开听证中承担当年的操作责任，并推动数字人格临时保护令。月蚀乐园仍然沉睡，但不再是一处可以被悄悄抹除的废墟。",
+      "timeline": {
+        "clips": []
+      },
+      "title": "被看见的人"
+    },
+    {
+      "assets": {
+        "character_refs": [],
+        "item_refs": [],
+        "scene_refs": []
+      },
+      "conditions": {
+        "enter": []
+      },
+      "content": {
+        "conflict": "是否由程野承担活体校验代价？",
+        "mood": "冷寂科幻悬疑",
+        "objective": "只显示选择，选项尚未执行。",
+        "script": {
+          "mentions": [],
+          "text": ""
+        }
+      },
+      "display_id": "choice-007",
+      "display_name": "选择7",
+      "display_number": 7,
+      "effects": {
+        "on_enter": [],
+        "on_exit": []
+      },
+      "episode_ref": null,
+      "interaction": {
+        "after_plot_beat": "只显示选择，选项尚未执行。",
+        "has_interaction": true,
+        "interaction_ref": "interaction-episode-019",
+        "option_edge_refs": [
+          "edge-episode-019-01",
+          "edge-episode-019-02"
+        ],
+        "question": "是否由程野承担活体校验代价？"
+      },
+      "metadata": {
+        "allowed_characters": [],
+        "allowed_props": [],
+        "allowed_scenes": [],
+        "ending_type": null,
+        "entry_state": {},
+        "is_ending": false,
+        "route_material_hash": "8f63c0aebabdafb4d31bd2205a8a790ee9da4ee7868b82a3557f96bf879bb29e",
+        "state_changes": {}
+      },
+      "node_ref": "episode-019",
+      "node_type": "choice",
+      "playback": {
+        "auto_advance": false,
+        "default_next_edge_ref": null,
+        "mode": "choice"
+      },
+      "summary": "是否由程野承担活体校验代价？",
+      "timeline": {
+        "clips": []
+      },
+      "title": "是否由程野承担活体校验代价？"
+    },
+    {
+      "assets": {
+        "character_refs": [],
+        "item_refs": [],
+        "scene_refs": []
+      },
+      "conditions": {
+        "enter": []
+      },
+      "content": {
+        "conflict": "完成公开、解锁和人格转移，以永久记忆损失及依赖韩岚救援为代价",
+        "mood": "冷寂科幻悬疑",
+        "objective": "游客回声完成转移，程野失去相关记忆并由韩岚救援撤离",
+        "script": {
+          "mentions": [],
+          "text": ""
+        }
+      },
+      "display_id": "episode-015",
+      "display_name": "第15集",
+      "display_number": 15,
+      "effects": {
+        "on_enter": [],
+        "on_exit": []
+      },
+      "episode_ref": "episode-020",
+      "interaction": {
+        "after_plot_beat": null,
+        "has_interaction": false,
+        "interaction_ref": null,
+        "option_edge_refs": [],
+        "question": null
+      },
+      "metadata": {
+        "allowed_characters": [
+          "维修员程野",
+          "乐园中枢露娜",
+          "游客回声小满",
+          "清障主管韩岚"
+        ],
+        "allowed_props": [],
+        "allowed_scenes": [],
+        "ending_type": "main",
+        "entry_state": {},
+        "is_ending": true,
+        "route_material_hash": "3ce995fae9cec2a35c8e9263142313ce19b979fa0a61606cb082222503e9b171",
+        "state_changes": {}
+      },
+      "node_ref": "episode-020",
+      "node_type": "video",
+      "playback": {
+        "auto_advance": false,
+        "default_next_edge_ref": null,
+        "mode": "linear"
+      },
+      "summary": "程野接入神经接口，以完整活体图谱校验原始命令。十一分钟内，最高保密指令被解除，游客回声写入量子档案芯片；作为一次性密钥的事故相关记忆随校验永久损毁。接口在协议完成后按安全程序释放，并不是露娜无代价地把他救出。完整审计链同步公开，证明公司伪造程野同意书、利用远程权限掩盖肉身救援失败，还计划让执行本次清障的韩岚承担销毁证据的责任。公开校验值使继续服从等同于在所有观察者面前自证参与灭证，韩岚因此违抗公司命令，用轨道拖船接收芯片并降下救援舱。程野已没有返航能源，只能依靠她的救援离开；他保住生命，却永久失去事故前后的个人记忆，并将在听证中凭记录而非回忆承担责任。月蚀乐园被列为数字生命事故遗址，小满留下属于此刻的新信息：“这次你真的把门打开了。”",
+      "timeline": {
+        "clips": []
+      },
+      "title": "打开那扇门"
+    },
+    {
+      "assets": {
+        "character_refs": [],
+        "item_refs": [],
+        "scene_refs": []
+      },
+      "conditions": {
+        "enter": []
+      },
+      "content": {
+        "conflict": "拒绝活体校验后，权限系统破坏传输且返航能源无法恢复",
+        "mood": "冷寂科幻悬疑",
+        "objective": "证据摘要留存，但人格转移失败、露娜停机，程野未能撤离",
+        "script": {
+          "mentions": [],
+          "text": ""
+        }
+      },
+      "display_id": "episode-016",
+      "display_name": "第16集",
+      "display_number": 16,
+      "effects": {
+        "on_enter": [],
+        "on_exit": []
+      },
+      "episode_ref": "episode-021",
+      "interaction": {
+        "after_plot_beat": null,
+        "has_interaction": false,
+        "interaction_ref": null,
+        "option_edge_refs": [],
+        "question": null
+      },
+      "metadata": {
+        "allowed_characters": [
+          "维修员程野",
+          "乐园中枢露娜",
+          "游客回声小满",
+          "清障主管韩岚"
+        ],
+        "allowed_props": [],
+        "allowed_scenes": [],
+        "ending_type": "failure",
+        "entry_state": {},
+        "is_ending": true,
+        "route_material_hash": "551e9483ac3395f59852428b56ebcbae8c20080e365755ce384e1b449e92e58e",
+        "state_changes": {}
+      },
+      "node_ref": "episode-021",
+      "node_type": "video",
+      "playback": {
+        "auto_advance": false,
+        "default_next_edge_ref": null,
+        "mode": "linear"
+      },
+      "summary": "程野拒绝提供活体神经校验，让露娜独自强行传输。返航电池已经熔接进核心母线，无法取回；程野只剩宇航服应急电量，也不能自行离园。最高权限把游客人格判定为违规数据，露娜为绕过校验不断复制档案，迅速耗尽核心冷却，量子芯片只接收到彼此冲突的残片。韩岚虽因公开摘要暂停过清障，却没有收到能证明公司伪造授权的完整审计链；在公司重新接管轨道权限后，她无法让救援舱穿过封锁。露娜过载停机，程野的应急电量在核心机房耗尽。外界保住了事故摘要，却失去了可验证的完整人格、核心审计和现场幸存证人。",
+      "timeline": {
+        "clips": []
+      },
+      "title": "无人校验"
+    }
+  ],
+  "edges": [
+    {
+      "choice": null,
+      "conditions": {
+        "enabled": [],
+        "visible": []
+      },
+      "edge_ref": "edge-episode-001-01",
+      "edge_type": "default",
+      "effects": {
+        "on_choose": []
+      },
+      "metadata": {},
+      "priority": 1,
+      "source_node_ref": "episode-001",
+      "target_node_ref": "episode-002"
+    },
+    {
+      "choice": {
+        "description": "",
+        "intent": "按标准流程恢复旋转木马能源中庭",
+        "label": "按标准流程恢复旋转木马能源中庭"
+      },
+      "conditions": {
+        "enabled": [],
+        "visible": []
+      },
+      "edge_ref": "edge-episode-002-01",
+      "edge_type": "choice",
+      "effects": {
+        "on_choose": []
+      },
+      "metadata": {},
+      "priority": 1,
+      "source_node_ref": "episode-002",
+      "target_node_ref": "episode-003"
+    },
+    {
+      "choice": {
+        "description": "",
+        "intent": "绕过中枢，先去真空过山车核实第二信号",
+        "label": "绕过中枢，先去真空过山车核实第二信号"
+      },
+      "conditions": {
+        "enabled": [],
+        "visible": []
+      },
+      "edge_ref": "edge-episode-002-02",
+      "edge_type": "choice",
+      "effects": {
+        "on_choose": []
+      },
+      "metadata": {},
+      "priority": 2,
+      "source_node_ref": "episode-002",
+      "target_node_ref": "episode-004"
+    },
+    {
+      "choice": null,
+      "conditions": {
+        "enabled": [],
+        "visible": []
+      },
+      "edge_ref": "edge-episode-003-01",
+      "edge_type": "default",
+      "effects": {
+        "on_choose": []
+      },
+      "metadata": {},
+      "priority": 1,
+      "source_node_ref": "episode-003",
+      "target_node_ref": "episode-005"
+    },
+    {
+      "choice": null,
+      "conditions": {
+        "enabled": [],
+        "visible": []
+      },
+      "edge_ref": "edge-episode-004-01",
+      "edge_type": "default",
+      "effects": {
+        "on_choose": []
+      },
+      "metadata": {},
+      "priority": 1,
+      "source_node_ref": "episode-004",
+      "target_node_ref": "episode-006"
+    },
+    {
+      "choice": {
+        "description": "",
+        "intent": "投入档案解码，恢复事故影像",
+        "label": "投入档案解码，恢复事故影像"
+      },
+      "conditions": {
+        "enabled": [],
+        "visible": []
+      },
+      "edge_ref": "edge-episode-005-01",
+      "edge_type": "choice",
+      "effects": {
+        "on_choose": []
+      },
+      "metadata": {},
+      "priority": 1,
+      "source_node_ref": "episode-005",
+      "target_node_ref": "episode-022"
+    },
+    {
+      "choice": {
+        "description": "",
+        "intent": "交回露娜稳定全园并做干净验收",
+        "label": "交回露娜稳定全园并做干净验收"
+      },
+      "conditions": {
+        "enabled": [],
+        "visible": []
+      },
+      "edge_ref": "edge-episode-005-02",
+      "edge_type": "choice",
+      "effects": {
+        "on_choose": []
+      },
+      "metadata": {},
+      "priority": 2,
+      "source_node_ref": "episode-005",
+      "target_node_ref": "episode-023"
+    },
+    {
+      "choice": null,
+      "conditions": {
+        "enabled": [],
+        "visible": []
+      },
+      "edge_ref": "edge-episode-022-01",
+      "edge_type": "default",
+      "effects": {
+        "on_choose": []
+      },
+      "metadata": {},
+      "priority": 1,
+      "source_node_ref": "episode-022",
+      "target_node_ref": "episode-009"
+    },
+    {
+      "choice": null,
+      "conditions": {
+        "enabled": [],
+        "visible": []
+      },
+      "edge_ref": "edge-episode-023-01",
+      "edge_type": "default",
+      "effects": {
+        "on_choose": []
+      },
+      "metadata": {},
+      "priority": 1,
+      "source_node_ref": "episode-023",
+      "target_node_ref": "episode-012"
+    },
+    {
+      "choice": {
+        "description": "",
+        "intent": "消耗返航储备，下载黑匣子并返回调查",
+        "label": "消耗返航储备，下载黑匣子并返回调查"
+      },
+      "conditions": {
+        "enabled": [],
+        "visible": []
+      },
+      "edge_ref": "edge-episode-006-01",
+      "edge_type": "choice",
+      "effects": {
+        "on_choose": []
+      },
+      "metadata": {},
+      "priority": 1,
+      "source_node_ref": "episode-006",
+      "target_node_ref": "episode-007"
+    },
+    {
+      "choice": {
+        "description": "",
+        "intent": "保存现有证据，提前离园报讯",
+        "label": "保存现有证据，提前离园报讯"
+      },
+      "conditions": {
+        "enabled": [],
+        "visible": []
+      },
+      "edge_ref": "edge-episode-006-02",
+      "edge_type": "choice",
+      "effects": {
+        "on_choose": []
+      },
+      "metadata": {},
+      "priority": 2,
+      "source_node_ref": "episode-006",
+      "target_node_ref": "episode-008"
+    },
+    {
+      "choice": null,
+      "conditions": {
+        "enabled": [],
+        "visible": []
+      },
+      "edge_ref": "edge-episode-007-01",
+      "edge_type": "default",
+      "effects": {
+        "on_choose": []
+      },
+      "metadata": {},
+      "priority": 1,
+      "source_node_ref": "episode-007",
+      "target_node_ref": "episode-009"
+    },
+    {
+      "choice": null,
+      "conditions": {
+        "enabled": [],
+        "visible": []
+      },
+      "edge_ref": "edge-episode-009-01",
+      "edge_type": "default",
+      "effects": {
+        "on_choose": []
+      },
+      "metadata": {},
+      "priority": 1,
+      "source_node_ref": "episode-009",
+      "target_node_ref": "episode-010"
+    },
+    {
+      "choice": {
+        "description": "",
+        "intent": "进入鬼屋深层，继续追查管理员覆盖",
+        "label": "进入鬼屋深层，继续追查管理员覆盖"
+      },
+      "conditions": {
+        "enabled": [],
+        "visible": []
+      },
+      "edge_ref": "edge-episode-010-01",
+      "edge_type": "choice",
+      "effects": {
+        "on_choose": []
+      },
+      "metadata": {},
+      "priority": 1,
+      "source_node_ref": "episode-010",
+      "target_node_ref": "episode-011"
+    },
+    {
+      "choice": {
+        "description": "",
+        "intent": "停止追查，把证据交给公司处理",
+        "label": "停止追查，把证据交给公司处理"
+      },
+      "conditions": {
+        "enabled": [],
+        "visible": []
+      },
+      "edge_ref": "edge-episode-010-02",
+      "edge_type": "choice",
+      "effects": {
+        "on_choose": []
+      },
+      "metadata": {},
+      "priority": 2,
+      "source_node_ref": "episode-010",
+      "target_node_ref": "episode-012"
+    },
+    {
+      "choice": null,
+      "conditions": {
+        "enabled": [],
+        "visible": []
+      },
+      "edge_ref": "edge-episode-011-01",
+      "edge_type": "default",
+      "effects": {
+        "on_choose": []
+      },
+      "metadata": {},
+      "priority": 1,
+      "source_node_ref": "episode-011",
+      "target_node_ref": "episode-013"
+    },
+    {
+      "choice": {
+        "description": "",
+        "intent": "先发送可验证摘要，争取暂停清障",
+        "label": "先发送可验证摘要，争取暂停清障"
+      },
+      "conditions": {
+        "enabled": [],
+        "visible": []
+      },
+      "edge_ref": "edge-episode-013-01",
+      "edge_type": "choice",
+      "effects": {
+        "on_choose": []
+      },
+      "metadata": {},
+      "priority": 1,
+      "source_node_ref": "episode-013",
+      "target_node_ref": "episode-014"
+    },
+    {
+      "choice": {
+        "description": "",
+        "intent": "直接广播全部人格数据",
+        "label": "直接广播全部人格数据"
+      },
+      "conditions": {
+        "enabled": [],
+        "visible": []
+      },
+      "edge_ref": "edge-episode-013-02",
+      "edge_type": "choice",
+      "effects": {
+        "on_choose": []
+      },
+      "metadata": {},
+      "priority": 2,
+      "source_node_ref": "episode-013",
+      "target_node_ref": "episode-015"
+    },
+    {
+      "choice": null,
+      "conditions": {
+        "enabled": [],
+        "visible": []
+      },
+      "edge_ref": "edge-episode-014-01",
+      "edge_type": "default",
+      "effects": {
+        "on_choose": []
+      },
+      "metadata": {},
+      "priority": 1,
+      "source_node_ref": "episode-014",
+      "target_node_ref": "episode-016"
+    },
+    {
+      "choice": {
+        "description": "",
+        "intent": "放弃返航能源，留下完成全部回声转移",
+        "label": "放弃返航能源，留下完成全部回声转移"
+      },
+      "conditions": {
+        "enabled": [],
+        "visible": []
+      },
+      "edge_ref": "edge-episode-016-01",
+      "edge_type": "choice",
+      "effects": {
+        "on_choose": []
+      },
+      "metadata": {},
+      "priority": 1,
+      "source_node_ref": "episode-016",
+      "target_node_ref": "episode-017"
+    },
+    {
+      "choice": {
+        "description": "",
+        "intent": "按许可撤离，交由调查组后续接管",
+        "label": "按许可撤离，交由调查组后续接管"
+      },
+      "conditions": {
+        "enabled": [],
+        "visible": []
+      },
+      "edge_ref": "edge-episode-016-02",
+      "edge_type": "choice",
+      "effects": {
+        "on_choose": []
+      },
+      "metadata": {},
+      "priority": 2,
+      "source_node_ref": "episode-016",
+      "target_node_ref": "episode-018"
+    },
+    {
+      "choice": null,
+      "conditions": {
+        "enabled": [],
+        "visible": []
+      },
+      "edge_ref": "edge-episode-017-01",
+      "edge_type": "default",
+      "effects": {
+        "on_choose": []
+      },
+      "metadata": {},
+      "priority": 1,
+      "source_node_ref": "episode-017",
+      "target_node_ref": "episode-019"
+    },
+    {
+      "choice": {
+        "description": "",
+        "intent": "接受永久记忆损失，亲自完成活体校验",
+        "label": "接受永久记忆损失，亲自完成活体校验"
+      },
+      "conditions": {
+        "enabled": [],
+        "visible": []
+      },
+      "edge_ref": "edge-episode-019-01",
+      "edge_type": "choice",
+      "effects": {
+        "on_choose": []
+      },
+      "metadata": {},
+      "priority": 1,
+      "source_node_ref": "episode-019",
+      "target_node_ref": "episode-020"
+    },
+    {
+      "choice": {
+        "description": "",
+        "intent": "拒绝神经校验，让露娜独自强行传输",
+        "label": "拒绝神经校验，让露娜独自强行传输"
+      },
+      "conditions": {
+        "enabled": [],
+        "visible": []
+      },
+      "edge_ref": "edge-episode-019-02",
+      "edge_type": "choice",
+      "effects": {
+        "on_choose": []
+      },
+      "metadata": {},
+      "priority": 2,
+      "source_node_ref": "episode-019",
+      "target_node_ref": "episode-021"
+    }
+  ]
+}

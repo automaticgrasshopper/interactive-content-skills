@@ -1,0 +1,138 @@
+{
+  "status": 200,
+  "contentType": "application/json",
+  "data": {
+    "status": "PASS",
+    "failures": [],
+    "checks": {
+      "ending_types": {
+        "status": "PASS",
+        "evidence": {
+          "expected": [
+            "n10"
+          ],
+          "failure": [
+            "n9"
+          ],
+          "main": [
+            "n6"
+          ],
+          "small": [
+            "n8"
+          ]
+        },
+        "exemption": null
+      },
+      "small": {
+        "status": "PASS",
+        "evidence": [
+          "n8"
+        ],
+        "exemption": null
+      },
+      "crossing": {
+        "status": "PASS",
+        "evidence": [
+          {
+            "choice": "c1",
+            "merge": "n3",
+            "paths": [
+              [
+                "n2",
+                "n3"
+              ],
+              [
+                "n7",
+                "n3"
+              ]
+            ]
+          }
+        ],
+        "exemption": null
+      },
+      "depth": {
+        "status": "PASS",
+        "evidence": {
+          "depth": 3,
+          "choices": [
+            "c1",
+            "c2",
+            "c3"
+          ]
+        },
+        "exemption": null
+      },
+      "immediate_result": {
+        "status": "PASS",
+        "evidence": [],
+        "exemption": null
+      },
+      "ending_distribution": {
+        "status": "PASS",
+        "evidence": {
+          "n10": [
+            "c3"
+          ],
+          "n6": [
+            "c3"
+          ],
+          "n9": [
+            "c2"
+          ]
+        },
+        "exemption": null
+      },
+      "progressive_ending": {
+        "status": "PASS",
+        "evidence": [
+          {
+            "choice": "c3",
+            "expected_arm": "n10",
+            "true_arm": "n5"
+          }
+        ],
+        "exemption": null
+      }
+    },
+    "counts": {
+      "episode_count": 10,
+      "choice_node_count": 3,
+      "ending_count": 4,
+      "total_node_count": 13
+    },
+    "path_count": 7,
+    "option_count": 7,
+    "order": [
+      "n1",
+      "c1",
+      "n2",
+      "n7",
+      "n8",
+      "n3",
+      "c2",
+      "n4",
+      "n9",
+      "c3",
+      "n10",
+      "n5",
+      "n6"
+    ],
+    "topology_hash": "37ecc1c16231e6ea971f179568f4acdd4832175f2d45792ed066178594402a60",
+    "revision": 1,
+    "node_id_map": {
+      "n1": "episode-001",
+      "c1": "episode-002",
+      "n2": "episode-003",
+      "n7": "episode-004",
+      "n8": "episode-005",
+      "n3": "episode-006",
+      "c2": "episode-007",
+      "n4": "episode-008",
+      "n9": "episode-009",
+      "c3": "episode-010",
+      "n10": "episode-011",
+      "n5": "episode-012",
+      "n6": "episode-013"
+    }
+  }
+}

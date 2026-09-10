@@ -1,0 +1,126 @@
+{
+  "status": "PASS",
+  "failures": [],
+  "checks": {
+    "ending_types": {
+      "status": "PASS",
+      "evidence": {
+        "expected": [
+          "episode-011"
+        ],
+        "failure": [
+          "episode-009"
+        ],
+        "main": [
+          "episode-013"
+        ],
+        "small": [
+          "episode-005"
+        ]
+      },
+      "exemption": null
+    },
+    "small": {
+      "status": "PASS",
+      "evidence": [
+        "episode-005"
+      ],
+      "exemption": null
+    },
+    "crossing": {
+      "status": "PASS",
+      "evidence": [
+        {
+          "choice": "episode-002",
+          "merge": "episode-018",
+          "paths": [
+            [
+              "episode-003",
+              "episode-006",
+              "episode-018"
+            ],
+            [
+              "episode-004",
+              "episode-014",
+              "episode-018"
+            ]
+          ]
+        }
+      ],
+      "exemption": null
+    },
+    "depth": {
+      "status": "PASS",
+      "evidence": {
+        "depth": 4,
+        "choices": [
+          "episode-002",
+          "episode-007",
+          "episode-010",
+          "episode-015"
+        ]
+      },
+      "exemption": null
+    },
+    "immediate_result": {
+      "status": "PASS",
+      "evidence": [],
+      "exemption": null
+    },
+    "ending_distribution": {
+      "status": "PASS",
+      "evidence": {
+        "episode-009": [
+          "episode-007"
+        ],
+        "episode-011": [
+          "episode-010"
+        ],
+        "episode-013": [
+          "episode-010"
+        ]
+      },
+      "exemption": null
+    },
+    "progressive_ending": {
+      "status": "PASS",
+      "evidence": [
+        {
+          "choice": "episode-010",
+          "expected_arm": "episode-011",
+          "true_arm": "episode-012"
+        }
+      ],
+      "exemption": null
+    }
+  },
+  "counts": {
+    "episode_count": 14,
+    "choice_node_count": 4,
+    "ending_count": 4,
+    "total_node_count": 18
+  },
+  "path_count": 9,
+  "option_count": 9,
+  "order": [
+    "episode-001",
+    "episode-002",
+    "episode-003",
+    "episode-004",
+    "episode-005",
+    "episode-006",
+    "episode-014",
+    "episode-018",
+    "episode-007",
+    "episode-008",
+    "episode-009",
+    "episode-010",
+    "episode-011",
+    "episode-012",
+    "episode-015",
+    "episode-016",
+    "episode-017",
+    "episode-013"
+  ],
+  "saved_revision": 8
+}

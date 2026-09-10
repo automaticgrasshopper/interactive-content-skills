@@ -1,0 +1,27 @@
+{
+  "scope": "NexPlay现有测试预设，平台代码和预设不修改",
+  "cases": {
+    "bridge": {
+      "before_revision": 2,
+      "after_delete_revision": 3,
+      "removed_nodes": [
+        "episode-004"
+      ],
+      "inspect_exactly_unchanged": true,
+      "hold_exactly_unchanged": true,
+      "restore_all_nodes_equal": true,
+      "restore_all_edges_equal": true
+    },
+    "moon": {
+      "before_revision": 3,
+      "after_delete_revision": 4,
+      "removed_nodes": [
+        "episode-007"
+      ],
+      "inspect_exactly_unchanged": true,
+      "hold_exactly_unchanged": true,
+      "restore_all_nodes_equal": true,
+      "restore_all_edges_equal": true
+    }
+  }
+}

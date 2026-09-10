@@ -1,0 +1,144 @@
+{
+  "status": "PASS",
+  "failures": [],
+  "checks": {
+    "ending_types": {
+      "status": "PASS",
+      "evidence": {
+        "expected": [
+          "episode-018"
+        ],
+        "failure": [
+          "episode-012",
+          "episode-015",
+          "episode-021"
+        ],
+        "main": [
+          "episode-020"
+        ],
+        "small": [
+          "episode-008"
+        ]
+      },
+      "exemption": null
+    },
+    "small": {
+      "status": "PASS",
+      "evidence": [
+        "episode-008"
+      ],
+      "exemption": null
+    },
+    "crossing": {
+      "status": "PASS",
+      "evidence": [
+        {
+          "choice": "episode-002",
+          "merge": "episode-009",
+          "paths": [
+            [
+              "episode-003",
+              "episode-005",
+              "episode-022",
+              "episode-009"
+            ],
+            [
+              "episode-004",
+              "episode-006",
+              "episode-007",
+              "episode-009"
+            ]
+          ]
+        }
+      ],
+      "exemption": null
+    },
+    "depth": {
+      "status": "PASS",
+      "evidence": {
+        "depth": 6,
+        "choices": [
+          "episode-002",
+          "episode-005",
+          "episode-010",
+          "episode-013",
+          "episode-016",
+          "episode-019"
+        ]
+      },
+      "exemption": null
+    },
+    "immediate_result": {
+      "status": "PASS",
+      "evidence": [],
+      "exemption": null
+    },
+    "ending_distribution": {
+      "status": "PASS",
+      "evidence": {
+        "episode-020": [
+          "episode-019"
+        ],
+        "episode-012": [
+          "episode-005",
+          "episode-010"
+        ],
+        "episode-015": [
+          "episode-013"
+        ],
+        "episode-021": [
+          "episode-019"
+        ],
+        "episode-018": [
+          "episode-016"
+        ]
+      },
+      "exemption": null
+    },
+    "progressive_ending": {
+      "status": "PASS",
+      "evidence": [
+        {
+          "choice": "episode-016",
+          "expected_arm": "episode-018",
+          "true_arm": "episode-017"
+        }
+      ],
+      "exemption": null
+    }
+  },
+  "counts": {
+    "episode_count": 16,
+    "choice_node_count": 7,
+    "ending_count": 6,
+    "total_node_count": 23
+  },
+  "path_count": 12,
+  "option_count": 14,
+  "order": [
+    "episode-001",
+    "episode-002",
+    "episode-003",
+    "episode-004",
+    "episode-005",
+    "episode-006",
+    "episode-022",
+    "episode-023",
+    "episode-007",
+    "episode-008",
+    "episode-009",
+    "episode-010",
+    "episode-011",
+    "episode-012",
+    "episode-013",
+    "episode-014",
+    "episode-015",
+    "episode-016",
+    "episode-017",
+    "episode-018",
+    "episode-019",
+    "episode-020",
+    "episode-021"
+  ],
+  "saved_revision": 8
+}
