@@ -1,6 +1,6 @@
 # 分集 Skill 拆分版本
 
-流程图测试版本更新：[`0.19`](versions/0.19/ROUTE-PLANNER-RELEASE.md) 恢复全图分支规划、状态记账与 A/B 复检；编剧版本与正式资源声明保持原样。此版本仅更新指定 Maxwell 测试 Skill，不代表正式同步。
+流程图测试版本更新：[`0.19`](versions/0.19/ROUTE-PLANNER-RELEASE.md) 完整故事原文切片、主线冻结、全图分支规划与强图形校验；编剧版本与正式资源声明保持原样。此版本仅更新指定 Maxwell 测试 Skill，不代表正式同步。
 
 
 本目录保存从 `episode-generator-biz` 拆分出的两项业务 Skill 及其版本历史：

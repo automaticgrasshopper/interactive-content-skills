@@ -1,0 +1,167 @@
+{
+  "receipt": {
+    "contract_version": "route-019.planning.v1",
+    "status": "PLANNING_ACCEPTED",
+    "accepted_at": "2026-09-10T12:03:38.297299+00:00",
+    "scope": "graph-and-projection-only; plot is author responsibility",
+    "files": {
+      "mainline-lock.json": "4f00e88f43d9f3ff75e28373e8d166e4e718077efe9ea14bc4a6f32c46127038",
+      "topology-state.json": "a7a0e06ab4de8a3202feb7668791744f57e7722bc99c603a583fba75eae1bd61",
+      "graph-report.json": "9ea1396fbdf037f959aa4e66f0955609a550097591dcd243504f13bd31d103d9",
+      "route-candidate.json": "b9ca1b31a53f94361ccbd3d62c93140a7a28280f28384ca9236851188dcfb25f"
+    }
+  },
+  "graph_report": {
+    "status": "PASS",
+    "failures": [],
+    "checks": {
+      "ending_types": {
+        "status": "PASS",
+        "evidence": {
+          "expected": [
+            "z4"
+          ],
+          "failure": [
+            "z2",
+            "z3",
+            "z5"
+          ],
+          "main": [
+            "n7"
+          ],
+          "small": [
+            "z1"
+          ]
+        },
+        "exemption": null
+      },
+      "small": {
+        "status": "PASS",
+        "evidence": [
+          "z1"
+        ],
+        "exemption": null
+      },
+      "crossing": {
+        "status": "PASS",
+        "evidence": [
+          {
+            "choice": "c1",
+            "merge": "n4",
+            "paths": [
+              [
+                "n2",
+                "c2",
+                "n3",
+                "n4"
+              ],
+              [
+                "x1",
+                "c6",
+                "x2",
+                "n4"
+              ]
+            ]
+          },
+          {
+            "choice": "c6",
+            "merge": "n4",
+            "paths": [
+              [
+                "x2",
+                "n4"
+              ],
+              [
+                "x3",
+                "n4"
+              ]
+            ]
+          }
+        ],
+        "exemption": null
+      },
+      "depth": {
+        "status": "PASS",
+        "evidence": {
+          "depth": 5,
+          "choices": [
+            "c1",
+            "c2",
+            "c3",
+            "c4",
+            "c5"
+          ]
+        },
+        "exemption": null
+      },
+      "immediate_result": {
+        "status": "PASS",
+        "evidence": [],
+        "exemption": null
+      },
+      "ending_distribution": {
+        "status": "PASS",
+        "evidence": {
+          "n7": [
+            "c5"
+          ],
+          "z3": [
+            "c3"
+          ],
+          "z4": [
+            "c4"
+          ],
+          "z5": [
+            "c5"
+          ],
+          "z2": [
+            "c2"
+          ]
+        },
+        "exemption": null
+      },
+      "progressive_ending": {
+        "status": "PASS",
+        "evidence": [
+          {
+            "choice": "c4",
+            "expected_arm": "z4",
+            "true_arm": "n6"
+          }
+        ],
+        "exemption": null
+      }
+    },
+    "counts": {
+      "episode_count": 15,
+      "choice_node_count": 6,
+      "ending_count": 6,
+      "total_node_count": 21
+    },
+    "path_count": 14,
+    "option_count": 13,
+    "order": [
+      "n1",
+      "c1",
+      "n2",
+      "x1",
+      "z1",
+      "c2",
+      "c6",
+      "n3",
+      "z2",
+      "x2",
+      "x3",
+      "n4",
+      "c3",
+      "n5",
+      "z3",
+      "c4",
+      "z4",
+      "n6",
+      "c5",
+      "n7",
+      "z5"
+    ]
+  }
+}

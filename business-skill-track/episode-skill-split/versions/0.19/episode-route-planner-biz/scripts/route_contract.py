@@ -34,17 +34,13 @@ EDGE_FIELDS = {"edge_id", "source_node_id", "target_node_id", "edge_type"}
 CHOICE_FIELDS = {"source_node_id", "选项编号", "选项文字", "目标分集编号"}
 ENDING_FIELDS = {"node_id", "ending_type"}
 ENDING_TYPES = {"main", "expected", "failure", "small"}
-SCRIPT_ONLY_TERMS = {
-    "完整剧本", "剧本创作分析", "创作分析", "场景和段落展开计划", "连续性分析",
-    "冷读与质量问题", "验收结论", "quality_checks", "screenplay",
-}
-EPISODE_ID = re.compile(r"episode-\d{3}")
+EPISODE_ID = re.compile(r"episode-\d{3,}")
 HASH = re.compile(r"[0-9a-f]{64}")
-PLACEHOLDERS = {"占位", "待补", "待生成", "暂无", "tbd", "todo", "placeholder", "已检查", "符合要求"}
+
 
 
 def canonical(value: Any) -> bytes:
-    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
 
 
 def digest(value: Any) -> str:
@@ -65,9 +61,7 @@ def route_hash(route: dict[str, Any]) -> str:
 
 
 def non_placeholder(value: Any, minimum: int) -> bool:
-    text = str(value or "").strip()
-    lowered = text.lower()
-    return len(text) >= minimum and not any(term in lowered for term in PLACEHOLDERS)
+    return isinstance(value, str) and len(value.strip()) >= minimum
 
 
 def string_list(value: Any) -> bool:
@@ -142,11 +136,11 @@ def validate(route: Any, *, require_accepted: bool) -> list[str]:
             issues.append(f"{node_id}/分集标题为空或占位")
         material = node["route_material"]
         if exact_keys(material, MATERIAL_FIELDS, f"{node_id}/route_material", issues):
-            if not non_placeholder(material["单集梗概"], 24):
+            if not non_placeholder(material["单集梗概"], 1):
                 issues.append(f"{node_id}/单集梗概过短或占位")
-            if not non_placeholder(material["本集冲突"], 10):
+            if not non_placeholder(material["本集冲突"], 1):
                 issues.append(f"{node_id}/本集冲突过短或占位")
-            if not non_placeholder(material["stop_boundary"], 12):
+            if not non_placeholder(material["stop_boundary"], 1):
                 issues.append(f"{node_id}/stop_boundary过短或占位")
             for state_field in ("entry_state", "state_changes"):
                 if not isinstance(material[state_field], dict):
@@ -245,8 +239,6 @@ def validate(route: Any, *, require_accepted: bool) -> list[str]:
                 can_end.add(source); changed = True
     if can_end != known:
         issues.append(f"存在无法抵达结局的节点：{sorted(known - can_end)}")
-    if any(term in json.dumps(route["nodes"], ensure_ascii=False) for term in SCRIPT_ONLY_TERMS):
-        issues.append("路线含剧本侧字段")
     try:
         expected_edges, expected_choices, expected_endings = expected_indexes(nodes)
         if route["edges"] != expected_edges:

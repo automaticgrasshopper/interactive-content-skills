@@ -1,0 +1,139 @@
+{
+  "status": "PASS",
+  "failures": [],
+  "checks": {
+    "ending_types": {
+      "status": "PASS",
+      "evidence": {
+        "expected": [
+          "e_expected"
+        ],
+        "failure": [
+          "e_fail"
+        ],
+        "main": [
+          "n5"
+        ],
+        "small": [
+          "e_small"
+        ]
+      },
+      "exemption": null
+    },
+    "small": {
+      "status": "PASS",
+      "evidence": [
+        "e_small"
+      ],
+      "exemption": null
+    },
+    "crossing": {
+      "status": "PASS",
+      "evidence": [
+        {
+          "choice": "c1",
+          "merge": "n3",
+          "paths": [
+            [
+              "n2",
+              "c2",
+              "n3"
+            ],
+            [
+              "s1",
+              "c4",
+              "s2",
+              "n3"
+            ]
+          ]
+        }
+      ],
+      "exemption": null
+    },
+    "depth": {
+      "status": "PASS",
+      "evidence": {
+        "depth": 3,
+        "choices": [
+          "c1",
+          "c2",
+          "c3"
+        ]
+      },
+      "exemption": null
+    },
+    "immediate_result": {
+      "status": "PASS",
+      "evidence": [],
+      "exemption": null
+    },
+    "ending_distribution": {
+      "status": "PASS",
+      "evidence": {
+        "e_fail": [
+          "c2"
+        ],
+        "n5": [
+          "c3"
+        ],
+        "e_expected": [
+          "c3"
+        ]
+      },
+      "exemption": null
+    },
+    "progressive_ending": {
+      "status": "PASS",
+      "evidence": [
+        {
+          "choice": "c3",
+          "expected_arm": "e_expected",
+          "true_arm": "n4"
+        }
+      ],
+      "exemption": null
+    }
+  },
+  "counts": {
+    "episode_count": 10,
+    "choice_node_count": 4,
+    "ending_count": 4,
+    "total_node_count": 14
+  },
+  "path_count": 6,
+  "option_count": 8,
+  "order": [
+    "n1",
+    "c1",
+    "n2",
+    "s1",
+    "c2",
+    "c4",
+    "e_fail",
+    "s2",
+    "e_small",
+    "n3",
+    "c3",
+    "e_expected",
+    "n4",
+    "n5"
+  ],
+  "topology_hash": "b492b3e29b227c02340dcddd9581dfac872d57646c5826f83e21a37cdbfbccd9",
+  "revision": 1,
+  "node_id_map": {
+    "n1": "episode-001",
+    "c1": "episode-002",
+    "n2": "episode-003",
+    "s1": "episode-004",
+    "c2": "episode-005",
+    "c4": "episode-006",
+    "e_fail": "episode-007",
+    "s2": "episode-008",
+    "e_small": "episode-009",
+    "n3": "episode-010",
+    "c3": "episode-011",
+    "e_expected": "episode-012",
+    "n4": "episode-013",
+    "n5": "episode-014"
+  }
+}

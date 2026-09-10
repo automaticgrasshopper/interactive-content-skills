@@ -1,0 +1,135 @@
+{
+  "receipt": {
+    "contract_version": "route-019.planning.v1",
+    "status": "PLANNING_ACCEPTED",
+    "accepted_at": "2026-09-10T12:07:08.780032+00:00",
+    "scope": "graph-and-projection-only; plot is author responsibility",
+    "files": {
+      "mainline-lock.json": "ac81436f9d3c309f551bfce34c73e6c2716b07d847ef9392ad93796f89e64a17",
+      "topology-state.json": "ef72d9c4fa536b2f2a495b1bd4d5b2cc7e05a0d9fddf4fe916a9caa2b96e7d93",
+      "graph-report.json": "80067e055966b5aba23f3af2d45a58f1e9a720577606febedac626e844e8aac0",
+      "route-candidate.json": "4668ae32a1d01d35017deb89fdec2603ff031db1d9b7f2418626c6a6dbe24519"
+    }
+  },
+  "graph_report": {
+    "status": "PASS",
+    "failures": [],
+    "checks": {
+      "ending_types": {
+        "status": "PASS",
+        "evidence": {
+          "expected": [
+            "e_expected"
+          ],
+          "failure": [
+            "e_fail"
+          ],
+          "main": [
+            "n5"
+          ],
+          "small": [
+            "e_small"
+          ]
+        },
+        "exemption": null
+      },
+      "small": {
+        "status": "PASS",
+        "evidence": [
+          "e_small"
+        ],
+        "exemption": null
+      },
+      "crossing": {
+        "status": "PASS",
+        "evidence": [
+          {
+            "choice": "c1",
+            "merge": "n3",
+            "paths": [
+              [
+                "n2",
+                "c2",
+                "n3"
+              ],
+              [
+                "s1",
+                "c4",
+                "s2",
+                "n3"
+              ]
+            ]
+          }
+        ],
+        "exemption": null
+      },
+      "depth": {
+        "status": "PASS",
+        "evidence": {
+          "depth": 3,
+          "choices": [
+            "c1",
+            "c2",
+            "c3"
+          ]
+        },
+        "exemption": null
+      },
+      "immediate_result": {
+        "status": "PASS",
+        "evidence": [],
+        "exemption": null
+      },
+      "ending_distribution": {
+        "status": "PASS",
+        "evidence": {
+          "e_fail": [
+            "c2"
+          ],
+          "n5": [
+            "c3"
+          ],
+          "e_expected": [
+            "c3"
+          ]
+        },
+        "exemption": null
+      },
+      "progressive_ending": {
+        "status": "PASS",
+        "evidence": [
+          {
+            "choice": "c3",
+            "expected_arm": "e_expected",
+            "true_arm": "n4"
+          }
+        ],
+        "exemption": null
+      }
+    },
+    "counts": {
+      "episode_count": 10,
+      "choice_node_count": 4,
+      "ending_count": 4,
+      "total_node_count": 14
+    },
+    "path_count": 6,
+    "option_count": 8,
+    "order": [
+      "n1",
+      "c1",
+      "n2",
+      "s1",
+      "c2",
+      "c4",
+      "e_fail",
+      "s2",
+      "e_small",
+      "n3",
+      "c3",
+      "e_expected",
+      "n4",
+      "n5"
+    ]
+  }
+}

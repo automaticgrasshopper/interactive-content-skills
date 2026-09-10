@@ -1,94 +1,114 @@
-"""Behavioral contract tests; fixture PASS labels are not model quality evidence."""
-import sys, json, tempfile, unittest
+"""Behavioral tests of graph checks, exact projection and scoped recovery."""
+import sys, tempfile, unittest
 from copy import deepcopy
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'business-skill-track/episode-skill-split/versions/0.19/episode-route-planner-biz/scripts'))
-import topology_plan as t, planned_gate as pg, planning_gate as gate, user_constraints as uc, workflow_state as wf
+import graph_check as g
+import route_plan as r
+import route_contract as h
 
-class PlannedTests(unittest.TestCase):
+
+def scene(i,nxt,kind='scene',ending=None):
+ return dict(id=i,kind=kind,source=i,next=nxt,ending_type=ending)
+def choice(i,targets):
+ return dict(id=i,kind='choice',question='现在如何行动？',options=[dict(text='采取动作'+str(k),target=t) for k,t in enumerate(targets)])
+def part(i):
+ return dict(id=i,title='事件'+i,text='人物在'+i+'经历当前事件并承受后果。',conflict='必须解决眼前阻力',stop_boundary='当前后果已经发生，下一动作尚未开始')
+def story(parts):return dict(complete_story=''.join(p['text'] for p in parts),episodes=parts)
+def fixture():
+ nodes=[scene('a',['c1']),choice('c1',['l','r']),scene('l',['c2']),scene('r',['f']),choice('c2',['e','small']),scene('e',['j']),scene('f',['j']),scene('small',[],'ending','small'),scene('j',['c3']),choice('c3',['expected','k']),scene('expected',[],'ending','expected'),scene('k',['c4']),choice('c4',['true','bad']),scene('true',[],'ending','main'),scene('bad',[],'ending','failure')]
+ return dict(nodes=nodes,mainline_path=['a','c1','l','c2','e','j','c3','k','c4','true'])
+
+class GraphTests(unittest.TestCase):
  def setUp(self):
-  self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup);self.r=Path(self.tmp.name)
-  self.text='人物停在两条路前。人物取得录音。人物携带证据进入共同任务。人物完成交证结算。'
-  parts=['人物停在两条路前。','人物取得录音。','人物携带证据进入共同任务。','人物完成交证结算。']
-  values={'user-request.md':'互动影视游戏','user-intent-lock.json':{'hard_counts':uc.parse_explicit_counts('互动影视游戏'),'shape_mode':'open'},
-  'creative-brief.json':{'project_id':'test-019','title':'两路交证','characters':[],'scenes':[],'props':[],'initial_state':{}},
-  'complete-story.json':{'contract_version':'nextplay.episode-complete-story.v1','title':'两路交证','complete_story':self.text},
-  'mainline-decomposition.json':{'mainline_segments':[{'segment_id':f's{i}','source_text':p} for i,p in enumerate(parts)]},
-  'mainline-emotional-movement.json':{'emotional_movements':[dict(movement_id='m1',segment_ids=[f's{i}' for i in range(4)],pressure='证据将消失',desired_state='取得证据',reality_shift='两路只能选一',control_change='必须决定',unresolved_task='证明真相',candidate_fissures=[])]},
-  'decision-fissure-audit.json':{'decision_fissures':[]},'story-treatment.json':{'choices':[],'endings':[]}}
-  for name,v in values.items():
-   if isinstance(v,str):(self.r/name).write_text(v)
-   else:self.put(name,v)
-  self.plan={'nodes':[self.node('a','choice','s0'),self.node('b','scene','s1'),self.node('c'),self.node('d','scene','s2'),self.node('e','ending','s3')],
-             'edges':[self.edge('a','b',0),self.edge('a','c',1),self.edge('b','d'),self.edge('c','d'),self.edge('d','e')]}
-  self.plan['nodes'][1]['route_material']['state_changes']={'proof':'recording','debt':'A'}
-  self.plan['nodes'][2]['route_material']['state_changes']={'proof':'witness','debt':'B'}
-  self.plan['nodes'][3]['route_material']['entry_state']={'proof':{'one_of':['recording','witness']}}
- def put(self,name,v): (self.r/name).write_text(json.dumps(v,ensure_ascii=False))
- def edge(self,a,b,i=None):return dict(source_node_id=a,target_node_id=b,option_index=i)
- def node(self,id,kind='scene',seg=None):
-  n=dict(node_id=id,kind=kind,title='人物取得具体证据',ending_type='main' if kind=='ending' else None,emotional_movement_ids=['m1'],mainline_segment_id=seg,
-    route_material={'单集梗概':'人物在现场面对明确阻力，确认眼前事件和已知事实，采取当前行动后承受直接后果。','本集冲突':'人物必须在明确阻力下取得眼前证据。','entry_state':{},'state_changes':{},'allowed_characters':[],'allowed_scenes':[],'allowed_props':[],'stop_boundary':'人物确认当前事实并停在新的行动开始之前。'})
-  if kind=='choice':n.update(question='人物此刻从哪里取得证据？',options=['前往寻找录音','前往寻找目击者'])
-  return n
- def freeze(self,hash=None):return t.freeze(self.r,{'expected_topology_hash':hash,'reason':'创建或修正当前节点事实','plan':self.plan})
- def complete(self):
-  self.freeze();self.put('route-ledger.json',t.ledger(self.r));p=pg.packet(self.r)
-  for which in ('A','B'):
-   self.put(f'topology-review-{which}.json',{'packet_hash':p['packet_hash'],'review_pass':which,'verdict':'PASS','issues':[],
-     'checks':[{'check':c,'passed':True,'explanation':'测试夹具，只验证回执协议','evidence':[{'node_id':'episode-001','quote':'人物在现场面对明确阻力'}]} for c in pg.CHECKS]})
-  route=t.current(self.r)[2]
-  self.put('episode-synopses.json',{'topology_hash':t.load(self.r)['revisions'][-1]['hash'],'nodes':[{'node_id':n['node_id'],**{k:n['route_material'][k] for k in ('单集梗概','本集冲突','stop_boundary')}} for n in route['nodes']]})
-  route=t.materialize(self.r);self.put('route-candidate.json',route)
-  self.put('synopsis-review.json',{'candidate_hash':t.digest(route),'verdict':'PASS','issues':[], 'nodes':[{'node_id':n['node_id'],'consistent':True,'choice_pending':True,'quote':'人物在现场面对明确阻力','explanation':'测试夹具'} for n in route['nodes']]})
-  self.put('emotional-spine.json',{'emotional_spine':[{'node_id':n['node_id'],'valence':0,'arousal':0,'dominance':0,'turn':False,'turn_reason':''} for n in route['nodes']]})
-  self.put('planning-acceptance.json',gate.build_from_root(self.r))
- def test_01_natural_counts(self):
-  c=uc.parse_explicit_counts('我要12个剧情节点、3个结局。');self.assertEqual(c['episode_count'],12);self.assertEqual(c['ending_count'],3)
- def test_02_merge_retains_each_branch_state(self):
-  self.freeze();p=t.ledger(self.r);self.assertEqual(p['path_count'],2);self.assertEqual({x['exit_state']['debt'] for x in p['paths']},{'A','B'})
- def test_03_merge_rejects_other_branch_exclusive_fact(self):
-  self.plan['nodes'][3]['route_material']['entry_state']={'proof':'recording'};self.freeze()
-  with self.assertRaisesRegex(ValueError,'前提不满足'):t.ledger(self.r)
- def test_04_future_target_not_limited_by_creation_order(self):
-  self.plan['nodes'][2],self.plan['nodes'][3]=self.plan['nodes'][3],self.plan['nodes'][2]
-  self.freeze();self.assertEqual(t.ledger(self.r)['path_count'],2)
- def test_05_no_four_ending_minimum(self):
-  req='4个剧情节点、1个结局';(self.r/'user-request.md').write_text(req);self.put('user-intent-lock.json',{'hard_counts':uc.parse_explicit_counts(req),'shape_mode':'open'});self.freeze()
- def test_06_fixed_count_mismatch_never_freezes(self):
-  req='12个剧情节点、3个结局';(self.r/'user-request.md').write_text(req);self.put('user-intent-lock.json',{'hard_counts':uc.parse_explicit_counts(req),'shape_mode':'open'})
-  with self.assertRaisesRegex(ValueError,'硬数量'):self.freeze()
-  self.assertFalse((self.r/'topology-state.json').exists())
- def test_07_exploration_cannot_invalidate_receipt(self):
-  self.complete();(self.r/'topology-exploration.md').write_text('任意不完整草图');self.assertEqual(gate.verify_root(self.r),[])
- def test_08_spine_no_backwrite_or_ab_invalidation(self):
-  self.complete();before=(self.r/'topology-state.json').read_bytes();p=pg.packet(self.r)['packet_hash'];d=t.read(self.r/'emotional-spine.json');d['emotional_spine'][0]['valence']=0.5;self.put('emotional-spine.json',d)
-  self.assertEqual(before,(self.r/'topology-state.json').read_bytes());self.assertEqual(p,pg.packet(self.r)['packet_hash']);pg.review(self.r,'A');self.assertTrue(gate.verify_root(self.r));self.put('planning-acceptance.json',gate.build_from_root(self.r));self.assertEqual(gate.verify_root(self.r),[])
- def test_09_choice_already_executed_review_rejected(self):
-  self.complete();d=t.read(self.r/'synopsis-review.json');d['nodes'][0]['choice_pending']=False;self.put('synopsis-review.json',d);self.assertTrue(gate.verify_root(self.r))
- def test_10_synopsis_cannot_add_edge_or_state(self):
-  self.complete();d=t.read(self.r/'episode-synopses.json');d['nodes'][0]['edges']=[];self.put('episode-synopses.json',d)
-  with self.assertRaisesRegex(ValueError,'字段错误'):t.materialize(self.r)
- def test_11_a_does_not_require_b(self):
-  self.complete();(self.r/'topology-review-B.json').unlink();pg.review(self.r,'A');self.assertEqual(wf.status(self.r)['next_actions'][0]['action'],'REVIEW_TOPOLOGY_B')
- def test_12_local_revision_preserves_others_and_invalidates(self):
-  self.complete();before=t.load(self.r);self.plan['nodes'][2]['title']='修正此节点的具体事实';self.freeze(before['revisions'][-1]['hash']);after=t.load(self.r)
-  self.assertEqual(before['revisions'],after['revisions'][:-1]);self.assertEqual(before['revisions'][-1]['plan']['nodes'][0],after['revisions'][-1]['plan']['nodes'][0]);self.assertFalse((self.r/'planning-acceptance.json').exists());self.assertTrue((self.r/'repair-history/2/planning-acceptance.json').exists());self.assertEqual(wf.status(self.r)['next_actions'][0]['action'],'DERIVE_ROUTE_LEDGER')
- def test_13_stale_revision_rejected_without_mutation(self):
-  self.freeze();before=(self.r/'topology-state.json').read_bytes()
-  with self.assertRaisesRegex(ValueError,'陈旧'):self.freeze()
-  self.assertEqual(before,(self.r/'topology-state.json').read_bytes())
- def test_14_cycle_rejected(self):
-  self.plan['edges'].append(self.edge('e','a'))
-  with self.assertRaises(ValueError):self.freeze()
- def test_15_candidate_tamper_rejected(self):
-  self.complete();d=t.read(self.r/'route-candidate.json');d['nodes'][1]['route_material']['state_changes']={};self.put('route-candidate.json',d);self.assertTrue(gate.verify_root(self.r))
- def test_17_title_only_review_evidence_rejected(self):
-  self.complete();d=t.read(self.r/'topology-review-B.json');d['checks'][0]['evidence']=[{'node_id':'episode-001','quote':'人物取得具体证据'}];self.put('topology-review-B.json',d)
-  with self.assertRaisesRegex(ValueError,'不能用标题'):pg.review(self.r,'B')
- def test_16_end_to_end_handoff_still_accepted(self):
-  self.complete();self.assertEqual(gate.verify_root(self.r),[])
-  from route_contract import seal,validate
-  accepted=seal(t.read(self.r/'route-candidate.json'));self.assertEqual(validate(accepted,require_accepted=True),[])
+  self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup);self.root=Path(self.tmp.name)
+  (self.root/'user-request.md').write_text('我要一个40分钟的互动影视游戏。')
+  r.write(self.root/'brief.json',dict(project_id='test',title='测试',summary='测试',duration_minutes=40))
+  self.plan=fixture(); ids=['a','l','e','j','k','true']
+  r.write(self.root/'mainline.json',story([part(i) for i in ids]));r.freeze(self.root)
+  (self.root/'exploration.md').write_text('废弃草图，仅作探索。')
+  self.branches=dict(stories=[story([part(n['id'])]) for n in self.plan['nodes'] if n['kind']!='choice' and n['id'] not in ids])
+ def sub(self,old=None,affected=()):return dict(expected_hash=old['hash'] if old else None,reason='修复具体支线问题',affected_nodes=list(affected),plan=self.plan,branches=self.branches)
+ def policy(self):return r.frozen(self.root)['policy']
+ def test_complex_graph_has_witnesses(self):
+  a=g.inspect(self.plan,self.policy());self.assertEqual(a['status'],'PASS');self.assertGreaterEqual(a['checks']['depth']['evidence']['depth'],2);self.assertTrue(a['checks']['crossing']['evidence']);self.assertTrue(a['checks']['progressive_ending']['evidence'])
+ def test_episode_counts_exclude_choices(self):
+  a=g.inspect(self.plan,self.policy());self.assertEqual(a['counts'],dict(episode_count=11,choice_node_count=4,ending_count=4,total_node_count=15))
+ def test_paths_count_matches_enumeration(self):
+  self.assertEqual(g.inspect(self.plan,self.policy())['path_count'],len(list(g.paths(self.plan))))
+ def test_missing_small_fails(self):
+  next(n for n in self.plan['nodes'] if n['id']=='small')['ending_type']='failure';self.assertIn('small',g.inspect(self.plan,self.policy())['failures'])
+ def test_missing_fourth_type_fails_even_short(self):
+  p=self.policy();p['long_story']=False;next(n for n in self.plan['nodes'] if n['id']=='true')['ending_type']='expected';self.assertIn('ending_types',g.inspect(self.plan,p)['failures'])
+ def test_crossing_needs_independent_plot_nodes(self):
+  p=dict(nodes=[scene('a',['c']),choice('c',['b','m']),scene('b',['m']),scene('m',['z']),scene('z',[],'ending','main')])
+  self.assertEqual(g.inspect(p,self.policy())['checks']['crossing']['status'],'FAIL')
+ def test_sequential_diamonds_are_not_nested(self):
+  p=dict(nodes=[scene('a',['c1']),choice('c1',['b','c']),scene('b',['d']),scene('c',['d']),scene('d',['c2']),choice('c2',['e','f']),scene('e',['z']),scene('f',['z']),scene('z',[],'ending','main')])
+  self.assertEqual(g.inspect(p,self.policy())['checks']['depth']['status'],'FAIL')
+ def test_disconnected_graph_rejected(self):
+  self.plan['nodes'].append(scene('isolated',[],'ending','small'))
+  with self.assertRaises(ValueError):g.structure(self.plan)
+ def test_cycle_rejected(self):
+  next(n for n in self.plan['nodes'] if n['id']=='e')['next']=['l']
+  with self.assertRaises(ValueError):g.structure(self.plan)
+ def test_ending_cannot_continue(self):
+  next(n for n in self.plan['nodes'] if n['id']=='small')['next']=['j']
+  with self.assertRaises(ValueError):g.structure(self.plan)
+ def test_empty_merge_rejected(self):
+  self.plan['nodes'][1]['options'][1]['target']='l'
+  with self.assertRaises(ValueError):g.structure(self.plan)
+ def test_last_question_menu_rejected(self):
+  p=dict(nodes=[scene('a',['c']),choice('c',['s','x','w','t'])]+[scene(i,[],'ending',k) for i,k in [('s','small'),('x','expected'),('w','failure'),('t','main')]])
+  self.assertIn('ending_distribution',g.inspect(p,self.policy())['failures'])
+ def test_source_projection_exact(self):
+  state=r.submit(self.root,self.sub());route,mapping=r.materialize(self.root,state)
+  for n in route['nodes']:
+   if n['node_id']==mapping['a']:self.assertEqual(n['route_material']['单集梗概'],part('a')['text'])
+  r.accept(self.root);r.verify(self.root)
+ def test_rewrite_source_not_allowed(self):
+  self.branches['stories'][0]['episodes'][0]['text']='另外编出的摘要'
+  with self.assertRaisesRegex(ValueError,'PROJECTION'):r.submit(self.root,self.sub())
+ def test_mainline_text_locked(self):
+  (self.root/'mainline.json').write_text('{}')
+  with self.assertRaisesRegex(ValueError,'MAINLINE_LOCK'):r.frozen(self.root)
+ def test_mainline_graph_locked_on_repair(self):
+  old=r.submit(self.root,self.sub());self.plan['nodes'][1]['question']='换了主线抉择'
+  with self.assertRaisesRegex(ValueError,'MAINLINE_LOCK'):r.submit(self.root,self.sub(old,['c1']))
+ def test_local_branch_repair_preserves_mainline(self):
+  old=r.submit(self.root,self.sub());before=(self.root/'mainline.json').read_bytes()
+  b=self.branches['stories'][0];b['episodes'][0]['text']+='人物承担新的实际代价。';b['complete_story']=b['episodes'][0]['text']
+  new=r.submit(self.root,self.sub(old,[b['episodes'][0]['id']]));self.assertEqual(new['revision'],2);self.assertEqual(before,(self.root/'mainline.json').read_bytes());self.assertTrue((self.root/'history/revision-001.json').exists())
+ def test_failed_crossing_repairs_without_rewriting_mainline(self):
+  f=next(n for n in self.plan['nodes'] if n['id']=='f');f['next']=['small']
+  old=r.submit(self.root,self.sub());self.assertIn('crossing',old['graph_report']['failures'])
+  before=(self.root/'mainline.json').read_bytes();f['next']=['j']
+  new=r.submit(self.root,self.sub(old,['f']));self.assertEqual(new['graph_report']['status'],'PASS')
+  self.assertEqual((self.root/'mainline.json').read_bytes(),before)
+  r.accept(self.root);r.verify(self.root)
+ def test_stale_revision_rejected(self):
+  r.submit(self.root,self.sub())
+  with self.assertRaisesRegex(ValueError,'STALE'):r.submit(self.root,self.sub())
+ def test_scope_enforced(self):
+  old=r.submit(self.root,self.sub());b=self.branches['stories'][0];b['episodes'][0]['text']+='改变。';b['complete_story']=b['episodes'][0]['text']
+  with self.assertRaisesRegex(ValueError,'REPAIR_SCOPE'):r.submit(self.root,self.sub(old))
+ def test_passed_check_cannot_regress(self):
+  old=r.submit(self.root,self.sub());next(n for n in self.plan['nodes'] if n['id']=='small')['ending_type']='failure'
+  with self.assertRaisesRegex(ValueError,'REPAIR_REGRESSION'):r.submit(self.root,self.sub(old,['small']))
+ def test_receipt_rejects_tampered_candidate(self):
+  r.submit(self.root,self.sub());r.accept(self.root);p=r.read(self.root/'route-candidate.json');p['nodes'][0]['route_material']['单集梗概']='换故事';r.write(self.root/'route-candidate.json',p)
+  with self.assertRaisesRegex(ValueError,'RECEIPT'):r.verify(self.root)
+ def test_user_three_endings_not_forced_to_four(self):
+  (self.root/'user-request.md').write_text('我要40分钟、3个结局的互动影视游戏。');p=r.policy(self.root);self.assertEqual(p['required_endings'],[]);self.assertEqual(p['hard_counts']['ending_count'],3)
+ def test_duration_threshold(self):
+  (self.root/'user-request.md').write_text('互动故事');b=r.read(self.root/'brief.json')
+  for duration,expected in [(14.9,False),(15,True)]:
+   b['duration_minutes']=duration;r.write(self.root/'brief.json',b);self.assertEqual(r.policy(self.root)['long_story'],expected)
+ def test_fabricated_exemption_rejected(self):
+  b=r.read(self.root/'brief.json');b['user_overrides']={'exemptions':[{'rule':'depth','quote':'不要复杂','reason':'难写'}]};r.write(self.root/'brief.json',b)
+  with self.assertRaisesRegex(ValueError,'USER_CONSTRAINT'):r.policy(self.root)
+ def test_formal_handoff_still_valid(self):
+  r.submit(self.root,self.sub());r.accept(self.root,self.root/'formal.json');self.assertEqual(h.validate(r.read(self.root/'formal.json'),require_accepted=True),[])
+
 if __name__=='__main__':unittest.main()

@@ -1,0 +1,28 @@
+{
+  "contract_version": "route-019.mainline-lock.v1",
+  "created_at": "2026-09-10T12:02:07.635383+00:00",
+  "policy": {
+    "hard_counts": {
+      "episode_count": null,
+      "choice_node_count": null,
+      "ending_count": null,
+      "total_node_count": null
+    },
+    "duration_minutes": 60,
+    "long_story": true,
+    "required_endings": [
+      "expected",
+      "failure",
+      "main",
+      "small"
+    ],
+    "forbidden_endings": [],
+    "ending_override": false,
+    "exemptions": {}
+  },
+  "files": {
+    "user-request.md": "2d5c52b01728e018f58f2c25525a0710fe06cd81cf29a0d90dfd43e25c46c12f",
+    "brief.json": "db0fdea14096c8e7994acc119b7d5692585ad60a9387d8715926a36687538ae9",
+    "mainline.json": "e9c53e027806ba11b379630ed1c398f994431c65291618d9efef1f1981cd00af"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "contract_version": "route-019.planning.v1",
+  "status": "PLANNING_ACCEPTED",
+  "accepted_at": "2026-09-10T12:03:38.297299+00:00",
+  "scope": "graph-and-projection-only; plot is author responsibility",
+  "files": {
+    "mainline-lock.json": "4f00e88f43d9f3ff75e28373e8d166e4e718077efe9ea14bc4a6f32c46127038",
+    "topology-state.json": "a7a0e06ab4de8a3202feb7668791744f57e7722bc99c603a583fba75eae1bd61",
+    "graph-report.json": "9ea1396fbdf037f959aa4e66f0955609a550097591dcd243504f13bd31d103d9",
+    "route-candidate.json": "b9ca1b31a53f94361ccbd3d62c93140a7a28280f28384ca9236851188dcfb25f"
+  }
+}

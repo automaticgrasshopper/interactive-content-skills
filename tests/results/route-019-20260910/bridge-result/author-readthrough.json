@@ -1,0 +1,99 @@
+{
+  "reviewed_at": "2026-09-10T12:07:08.575567+00:00",
+  "review_scope": "作者沿全部真实路线顺读完整故事切片与所选动作；此复核独立于机器图形PASS。",
+  "path_count_reviewed": 6,
+  "paths": [
+    {
+      "path": [
+        "n1",
+        "c1",
+        "n2",
+        "c2",
+        "n3",
+        "c3",
+        "e_expected"
+      ],
+      "ending_type": "expected",
+      "result": "连续可读；选择均先显示动作、后继剧集演出后果。"
+    },
+    {
+      "path": [
+        "n1",
+        "c1",
+        "n2",
+        "c2",
+        "n3",
+        "c3",
+        "n4",
+        "n5"
+      ],
+      "ending_type": "main",
+      "result": "连续可读；选择均先显示动作、后继剧集演出后果。"
+    },
+    {
+      "path": [
+        "n1",
+        "c1",
+        "n2",
+        "c2",
+        "e_fail"
+      ],
+      "ending_type": "failure",
+      "result": "连续可读；选择均先显示动作、后继剧集演出后果。"
+    },
+    {
+      "path": [
+        "n1",
+        "c1",
+        "s1",
+        "c4",
+        "s2",
+        "n3",
+        "c3",
+        "e_expected"
+      ],
+      "ending_type": "expected",
+      "result": "连续可读；选择均先显示动作、后继剧集演出后果。"
+    },
+    {
+      "path": [
+        "n1",
+        "c1",
+        "s1",
+        "c4",
+        "s2",
+        "n3",
+        "c3",
+        "n4",
+        "n5"
+      ],
+      "ending_type": "main",
+      "result": "连续可读；选择均先显示动作、后继剧集演出后果。"
+    },
+    {
+      "path": [
+        "n1",
+        "c1",
+        "s1",
+        "c4",
+        "e_small"
+      ],
+      "ending_type": "small",
+      "result": "连续可读；选择均先显示动作、后继剧集演出后果。"
+    }
+  ],
+  "checks": {
+    "episodes_expandable": "PASS：全部非选择节点提供可直接扩写的处境、行动、阻力、变化和停止位置。",
+    "choices_not_preexecuted": "PASS：四张选择卡前均停在动作未执行处，八个选项先落到独立剧情节点。",
+    "merge_continuity": "PASS：两条初始救援路线在n3回汇；共同成立的是许澄已获稳定和记录器可取，红漆箭头与侧梯信息仅在其来路保留，不要求另一支路拥有。",
+    "ending_settlement": "PASS：small为安全撤离但旧案封存；expected为救援成功并启动复查但真相不全；failure为救援与证据双重重创；main为完整证据公开并承担关系与伤亡代价。",
+    "user_constraints": "PASS：台风夜、跨海大桥、救援牵出十二年前失踪案贯穿全部路线；40分钟仅用于非短故事分类。"
+  },
+  "author_found_story_issues": [],
+  "author_decision": "无剧情问题需要修改，允许重新执行accept并以新回执覆盖先前时序无效回执。",
+  "recovery": {
+    "reason": "首次作者顺读脚本误把临时拓扑ID当作投影episode ID，KeyError后shell未启用-e导致accept先执行；未改故事、图形、冻结主线或验收标准。",
+    "count": 1,
+    "action": "在同缓存按临时拓扑ID重做作者顺读，随后重新accept并verify。"
+  }
+}
