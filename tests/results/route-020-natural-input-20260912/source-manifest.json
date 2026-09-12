@@ -1,0 +1,22 @@
+{
+  "version": "0.20",
+  "formal_slug": "episode-route-planner-biz",
+  "test_slug": "episode-route-designer-biz",
+  "test_remote_updated_at": "2026-09-12T05:27:00Z",
+  "files": {
+    "SKILL.md": "2c63922e9be8e88ed75279f48a203e7c5058584160c6521e668cc8e0462c906d",
+    "agents/openai.yaml": "865fab0d24066b99347015a8b7c132a8c033314d0f5d5df90611b91ed2daedfb",
+    "references/acceptance.md": "7f61e96e1d2cd57eb50e4f83787a9200313cca4b6492e49eff525b985bb15e7e",
+    "references/business-interface.md": "3bb99548a6abf13642c034ddbd7058834ffe296bffca121570558bcc002128d5",
+    "references/canvas-writing-contract.md": "5f1eed48848d34d931557b56fffa52d68749c26b1086daa51b2c15f1f8c031a9",
+    "references/current-canvas-editing.md": "d3c9b620666249b88fe8ca0fb2c86d483d2e6016b251fd0e6d2822a57631eebd",
+    "references/graph-contract.md": "d64a466eebd47b31a5ff9cc551ad5b61a6d32060b19c879dbe64102bea048d77",
+    "references/story-development.md": "06dcac4c6077ebb1fd1c5a4deb22f4a7f3659e87d437204a359a646fbfd1e883",
+    "references/story-planning.md": "c364b91a4075a5a57a11ee1432d9a4b139b4998453824c8433f26e97f1827e37",
+    "scripts/canvas_writing.py": "81e4a0c1f14401c13ed1ee616c0db21264cd6d64125c06482cbae59ecb130a28",
+    "scripts/graph_check.py": "677e0475dfb8a5006c5e06b10bfefeeae21a09f18fde9517032bc9c30df7e879",
+    "scripts/route_contract.py": "8b59b6df0635e59cad2b181e94900875e089ef53b995bac38bbd72b55c7f6682",
+    "scripts/route_plan.py": "80cbbdd8e4b7d6561df5c4530ff4811e975016734523f868ba3d6b60484b167d",
+    "scripts/user_constraints.py": "5c973e17111a67d6301c1d630f7c78a265bfba4f1b93745c25a8fca6054cacd9"
+  }
+}

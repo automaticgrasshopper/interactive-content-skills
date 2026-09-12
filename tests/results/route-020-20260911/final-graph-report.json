@@ -1,0 +1,2579 @@
+{
+  "status": "PASS",
+  "failures": [],
+  "checks": {
+    "ending_types": {
+      "status": "PASS",
+      "evidence": {
+        "expected": [
+          "episode-046",
+          "episode-049",
+          "episode-056"
+        ],
+        "failure": [
+          "episode-053"
+        ],
+        "main": [
+          "episode-055"
+        ],
+        "small": [
+          "episode-041"
+        ]
+      },
+      "exemption": null
+    },
+    "small": {
+      "status": "PASS",
+      "evidence": [
+        "episode-041"
+      ],
+      "exemption": null
+    },
+    "crossing": {
+      "status": "PASS",
+      "evidence": [
+        {
+          "choice": "episode-002",
+          "merge": "episode-029",
+          "paths": [
+            [
+              "episode-003",
+              "episode-005",
+              "episode-008",
+              "episode-012",
+              "episode-018",
+              "episode-024",
+              "episode-029"
+            ],
+            [
+              "episode-004",
+              "episode-006",
+              "episode-009",
+              "episode-013",
+              "episode-019",
+              "episode-025",
+              "episode-029"
+            ]
+          ],
+          "arms": [
+            "episode-003",
+            "episode-004"
+          ],
+          "arm_choices": [
+            [
+              "episode-005",
+              "episode-011",
+              "episode-012",
+              "episode-021",
+              "episode-023",
+              "episode-024"
+            ],
+            [
+              "episode-006",
+              "episode-013",
+              "episode-014",
+              "episode-025",
+              "episode-026"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-002",
+          "merge": "episode-030",
+          "paths": [
+            [
+              "episode-003",
+              "episode-005",
+              "episode-008",
+              "episode-012",
+              "episode-018",
+              "episode-024",
+              "episode-030"
+            ],
+            [
+              "episode-004",
+              "episode-006",
+              "episode-009",
+              "episode-013",
+              "episode-019",
+              "episode-025",
+              "episode-030"
+            ]
+          ],
+          "arms": [
+            "episode-003",
+            "episode-004"
+          ],
+          "arm_choices": [
+            [
+              "episode-005",
+              "episode-012",
+              "episode-023",
+              "episode-024"
+            ],
+            [
+              "episode-006",
+              "episode-013",
+              "episode-014",
+              "episode-025",
+              "episode-026"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-002",
+          "merge": "episode-037",
+          "paths": [
+            [
+              "episode-003",
+              "episode-005",
+              "episode-008",
+              "episode-012",
+              "episode-018",
+              "episode-024",
+              "episode-029",
+              "episode-031",
+              "episode-033",
+              "episode-037"
+            ],
+            [
+              "episode-004",
+              "episode-006",
+              "episode-009",
+              "episode-013",
+              "episode-019",
+              "episode-025",
+              "episode-030",
+              "episode-032",
+              "episode-035",
+              "episode-037"
+            ]
+          ],
+          "arms": [
+            "episode-003",
+            "episode-004"
+          ],
+          "arm_choices": [
+            [
+              "episode-005",
+              "episode-011",
+              "episode-012",
+              "episode-021",
+              "episode-023",
+              "episode-024"
+            ],
+            [
+              "episode-006",
+              "episode-013",
+              "episode-014",
+              "episode-025",
+              "episode-026"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-002",
+          "merge": "episode-038",
+          "paths": [
+            [
+              "episode-003",
+              "episode-005",
+              "episode-007",
+              "episode-011",
+              "episode-015",
+              "episode-021",
+              "episode-061",
+              "episode-038"
+            ],
+            [
+              "episode-004",
+              "episode-006",
+              "episode-009",
+              "episode-013",
+              "episode-019",
+              "episode-025",
+              "episode-029",
+              "episode-031",
+              "episode-033",
+              "episode-037",
+              "episode-038"
+            ]
+          ],
+          "arms": [
+            "episode-003",
+            "episode-004"
+          ],
+          "arm_choices": [
+            [
+              "episode-005",
+              "episode-011",
+              "episode-021",
+              "episode-022"
+            ],
+            [
+              "episode-006",
+              "episode-013",
+              "episode-014",
+              "episode-025",
+              "episode-026"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-005",
+          "merge": "episode-029",
+          "paths": [
+            [
+              "episode-007",
+              "episode-011",
+              "episode-015",
+              "episode-021",
+              "episode-062",
+              "episode-029"
+            ],
+            [
+              "episode-008",
+              "episode-012",
+              "episode-018",
+              "episode-024",
+              "episode-029"
+            ]
+          ],
+          "arms": [
+            "episode-007",
+            "episode-008"
+          ],
+          "arm_choices": [
+            [
+              "episode-011",
+              "episode-021"
+            ],
+            [
+              "episode-012",
+              "episode-023",
+              "episode-024"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-005",
+          "merge": "episode-037",
+          "paths": [
+            [
+              "episode-007",
+              "episode-011",
+              "episode-015",
+              "episode-021",
+              "episode-062",
+              "episode-029",
+              "episode-031",
+              "episode-033",
+              "episode-037"
+            ],
+            [
+              "episode-008",
+              "episode-012",
+              "episode-018",
+              "episode-024",
+              "episode-030",
+              "episode-032",
+              "episode-035",
+              "episode-037"
+            ]
+          ],
+          "arms": [
+            "episode-007",
+            "episode-008"
+          ],
+          "arm_choices": [
+            [
+              "episode-011",
+              "episode-021"
+            ],
+            [
+              "episode-012",
+              "episode-023",
+              "episode-024",
+              "episode-032"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-005",
+          "merge": "episode-038",
+          "paths": [
+            [
+              "episode-007",
+              "episode-011",
+              "episode-015",
+              "episode-021",
+              "episode-061",
+              "episode-038"
+            ],
+            [
+              "episode-008",
+              "episode-012",
+              "episode-018",
+              "episode-024",
+              "episode-029",
+              "episode-031",
+              "episode-033",
+              "episode-037",
+              "episode-038"
+            ]
+          ],
+          "arms": [
+            "episode-007",
+            "episode-008"
+          ],
+          "arm_choices": [
+            [
+              "episode-011",
+              "episode-021",
+              "episode-022"
+            ],
+            [
+              "episode-012",
+              "episode-023",
+              "episode-024",
+              "episode-032"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-006",
+          "merge": "episode-019",
+          "paths": [
+            [
+              "episode-009",
+              "episode-013",
+              "episode-019"
+            ],
+            [
+              "episode-010",
+              "episode-014",
+              "episode-019"
+            ]
+          ],
+          "arms": [
+            "episode-009",
+            "episode-010"
+          ],
+          "arm_choices": [
+            [
+              "episode-013"
+            ],
+            [
+              "episode-014"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-006",
+          "merge": "episode-020",
+          "paths": [
+            [
+              "episode-009",
+              "episode-013",
+              "episode-020"
+            ],
+            [
+              "episode-010",
+              "episode-014",
+              "episode-020"
+            ]
+          ],
+          "arms": [
+            "episode-009",
+            "episode-010"
+          ],
+          "arm_choices": [
+            [
+              "episode-013"
+            ],
+            [
+              "episode-014"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-006",
+          "merge": "episode-029",
+          "paths": [
+            [
+              "episode-009",
+              "episode-013",
+              "episode-019",
+              "episode-025",
+              "episode-029"
+            ],
+            [
+              "episode-010",
+              "episode-014",
+              "episode-020",
+              "episode-026",
+              "episode-059",
+              "episode-029"
+            ]
+          ],
+          "arms": [
+            "episode-009",
+            "episode-010"
+          ],
+          "arm_choices": [
+            [
+              "episode-013"
+            ],
+            [
+              "episode-014"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-006",
+          "merge": "episode-030",
+          "paths": [
+            [
+              "episode-009",
+              "episode-013",
+              "episode-019",
+              "episode-025",
+              "episode-030"
+            ],
+            [
+              "episode-010",
+              "episode-014",
+              "episode-020",
+              "episode-026",
+              "episode-060",
+              "episode-030"
+            ]
+          ],
+          "arms": [
+            "episode-009",
+            "episode-010"
+          ],
+          "arm_choices": [
+            [
+              "episode-013"
+            ],
+            [
+              "episode-014"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-006",
+          "merge": "episode-037",
+          "paths": [
+            [
+              "episode-009",
+              "episode-013",
+              "episode-019",
+              "episode-025",
+              "episode-029",
+              "episode-031",
+              "episode-033",
+              "episode-037"
+            ],
+            [
+              "episode-010",
+              "episode-014",
+              "episode-020",
+              "episode-026",
+              "episode-060",
+              "episode-030",
+              "episode-032",
+              "episode-035",
+              "episode-037"
+            ]
+          ],
+          "arms": [
+            "episode-009",
+            "episode-010"
+          ],
+          "arm_choices": [
+            [
+              "episode-013"
+            ],
+            [
+              "episode-014"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-011",
+          "merge": "episode-038",
+          "paths": [
+            [
+              "episode-015",
+              "episode-021",
+              "episode-061",
+              "episode-038"
+            ],
+            [
+              "episode-016",
+              "episode-022",
+              "episode-027",
+              "episode-038"
+            ]
+          ],
+          "arms": [
+            "episode-015",
+            "episode-016"
+          ],
+          "arm_choices": [
+            [
+              "episode-021",
+              "episode-031"
+            ],
+            [
+              "episode-022"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-012",
+          "merge": "episode-029",
+          "paths": [
+            [
+              "episode-017",
+              "episode-023",
+              "episode-057",
+              "episode-029"
+            ],
+            [
+              "episode-018",
+              "episode-024",
+              "episode-029"
+            ]
+          ],
+          "arms": [
+            "episode-017",
+            "episode-018"
+          ],
+          "arm_choices": [
+            [
+              "episode-023"
+            ],
+            [
+              "episode-024"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-012",
+          "merge": "episode-030",
+          "paths": [
+            [
+              "episode-017",
+              "episode-023",
+              "episode-058",
+              "episode-030"
+            ],
+            [
+              "episode-018",
+              "episode-024",
+              "episode-030"
+            ]
+          ],
+          "arms": [
+            "episode-017",
+            "episode-018"
+          ],
+          "arm_choices": [
+            [
+              "episode-023"
+            ],
+            [
+              "episode-024"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-012",
+          "merge": "episode-037",
+          "paths": [
+            [
+              "episode-017",
+              "episode-023",
+              "episode-058",
+              "episode-030",
+              "episode-032",
+              "episode-035",
+              "episode-037"
+            ],
+            [
+              "episode-018",
+              "episode-024",
+              "episode-029",
+              "episode-031",
+              "episode-033",
+              "episode-037"
+            ]
+          ],
+          "arms": [
+            "episode-017",
+            "episode-018"
+          ],
+          "arm_choices": [
+            [
+              "episode-023"
+            ],
+            [
+              "episode-024"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-013",
+          "merge": "episode-029",
+          "paths": [
+            [
+              "episode-019",
+              "episode-025",
+              "episode-029"
+            ],
+            [
+              "episode-020",
+              "episode-026",
+              "episode-059",
+              "episode-029"
+            ]
+          ],
+          "arms": [
+            "episode-019",
+            "episode-020"
+          ],
+          "arm_choices": [
+            [
+              "episode-025"
+            ],
+            [
+              "episode-026"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-013",
+          "merge": "episode-030",
+          "paths": [
+            [
+              "episode-019",
+              "episode-025",
+              "episode-030"
+            ],
+            [
+              "episode-020",
+              "episode-026",
+              "episode-060",
+              "episode-030"
+            ]
+          ],
+          "arms": [
+            "episode-019",
+            "episode-020"
+          ],
+          "arm_choices": [
+            [
+              "episode-025"
+            ],
+            [
+              "episode-026"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-013",
+          "merge": "episode-037",
+          "paths": [
+            [
+              "episode-019",
+              "episode-025",
+              "episode-029",
+              "episode-031",
+              "episode-033",
+              "episode-037"
+            ],
+            [
+              "episode-020",
+              "episode-026",
+              "episode-060",
+              "episode-030",
+              "episode-032",
+              "episode-035",
+              "episode-037"
+            ]
+          ],
+          "arms": [
+            "episode-019",
+            "episode-020"
+          ],
+          "arm_choices": [
+            [
+              "episode-025"
+            ],
+            [
+              "episode-026"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-014",
+          "merge": "episode-029",
+          "paths": [
+            [
+              "episode-019",
+              "episode-025",
+              "episode-029"
+            ],
+            [
+              "episode-020",
+              "episode-026",
+              "episode-059",
+              "episode-029"
+            ]
+          ],
+          "arms": [
+            "episode-019",
+            "episode-020"
+          ],
+          "arm_choices": [
+            [
+              "episode-025"
+            ],
+            [
+              "episode-026"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-014",
+          "merge": "episode-030",
+          "paths": [
+            [
+              "episode-019",
+              "episode-025",
+              "episode-030"
+            ],
+            [
+              "episode-020",
+              "episode-026",
+              "episode-060",
+              "episode-030"
+            ]
+          ],
+          "arms": [
+            "episode-019",
+            "episode-020"
+          ],
+          "arm_choices": [
+            [
+              "episode-025"
+            ],
+            [
+              "episode-026"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-014",
+          "merge": "episode-037",
+          "paths": [
+            [
+              "episode-019",
+              "episode-025",
+              "episode-029",
+              "episode-031",
+              "episode-033",
+              "episode-037"
+            ],
+            [
+              "episode-020",
+              "episode-026",
+              "episode-060",
+              "episode-030",
+              "episode-032",
+              "episode-035",
+              "episode-037"
+            ]
+          ],
+          "arms": [
+            "episode-019",
+            "episode-020"
+          ],
+          "arm_choices": [
+            [
+              "episode-025"
+            ],
+            [
+              "episode-026"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-021",
+          "merge": "episode-038",
+          "paths": [
+            [
+              "episode-061",
+              "episode-038"
+            ],
+            [
+              "episode-062",
+              "episode-029",
+              "episode-031",
+              "episode-033",
+              "episode-037",
+              "episode-038"
+            ]
+          ],
+          "arms": [
+            "episode-061",
+            "episode-062"
+          ],
+          "arm_choices": [
+            [],
+            [
+              "episode-031"
+            ]
+          ],
+          "shape": "single_deep"
+        },
+        {
+          "choice": "episode-023",
+          "merge": "episode-037",
+          "paths": [
+            [
+              "episode-057",
+              "episode-029",
+              "episode-031",
+              "episode-033",
+              "episode-037"
+            ],
+            [
+              "episode-058",
+              "episode-030",
+              "episode-032",
+              "episode-035",
+              "episode-037"
+            ]
+          ],
+          "arms": [
+            "episode-057",
+            "episode-058"
+          ],
+          "arm_choices": [
+            [
+              "episode-031"
+            ],
+            [
+              "episode-032"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-024",
+          "merge": "episode-037",
+          "paths": [
+            [
+              "episode-029",
+              "episode-031",
+              "episode-033",
+              "episode-037"
+            ],
+            [
+              "episode-030",
+              "episode-032",
+              "episode-035",
+              "episode-037"
+            ]
+          ],
+          "arms": [
+            "episode-029",
+            "episode-030"
+          ],
+          "arm_choices": [
+            [
+              "episode-031"
+            ],
+            [
+              "episode-032"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-025",
+          "merge": "episode-037",
+          "paths": [
+            [
+              "episode-029",
+              "episode-031",
+              "episode-033",
+              "episode-037"
+            ],
+            [
+              "episode-030",
+              "episode-032",
+              "episode-035",
+              "episode-037"
+            ]
+          ],
+          "arms": [
+            "episode-029",
+            "episode-030"
+          ],
+          "arm_choices": [
+            [
+              "episode-031"
+            ],
+            [
+              "episode-032"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-026",
+          "merge": "episode-037",
+          "paths": [
+            [
+              "episode-059",
+              "episode-029",
+              "episode-031",
+              "episode-033",
+              "episode-037"
+            ],
+            [
+              "episode-060",
+              "episode-030",
+              "episode-032",
+              "episode-035",
+              "episode-037"
+            ]
+          ],
+          "arms": [
+            "episode-059",
+            "episode-060"
+          ],
+          "arm_choices": [
+            [
+              "episode-031"
+            ],
+            [
+              "episode-032"
+            ]
+          ],
+          "shape": "double_wing"
+        },
+        {
+          "choice": "episode-039",
+          "merge": "episode-047",
+          "paths": [
+            [
+              "episode-044",
+              "episode-045",
+              "episode-047"
+            ],
+            [
+              "episode-040",
+              "episode-042",
+              "episode-043",
+              "episode-047"
+            ]
+          ],
+          "arms": [
+            "episode-044",
+            "episode-040"
+          ],
+          "arm_choices": [
+            [],
+            [
+              "episode-042"
+            ]
+          ],
+          "shape": "single_deep"
+        },
+        {
+          "choice": "episode-042",
+          "merge": "episode-047",
+          "paths": [
+            [
+              "episode-043",
+              "episode-047"
+            ],
+            [
+              "episode-044",
+              "episode-045",
+              "episode-047"
+            ]
+          ],
+          "arms": [
+            "episode-043",
+            "episode-044"
+          ],
+          "arm_choices": [
+            [],
+            [
+              "episode-045"
+            ]
+          ],
+          "shape": "single_deep"
+        }
+      ],
+      "exemption": null
+    },
+    "woven": {
+      "status": "PASS",
+      "evidence": [
+        {
+          "choice": "episode-002",
+          "shared_stages": [
+            "episode-029",
+            "episode-030"
+          ],
+          "converges": "episode-037"
+        },
+        {
+          "choice": "episode-006",
+          "shared_stages": [
+            "episode-019",
+            "episode-020"
+          ],
+          "converges": "episode-029"
+        },
+        {
+          "choice": "episode-006",
+          "shared_stages": [
+            "episode-029",
+            "episode-030"
+          ],
+          "converges": "episode-037"
+        },
+        {
+          "choice": "episode-012",
+          "shared_stages": [
+            "episode-029",
+            "episode-030"
+          ],
+          "converges": "episode-037"
+        },
+        {
+          "choice": "episode-013",
+          "shared_stages": [
+            "episode-029",
+            "episode-030"
+          ],
+          "converges": "episode-037"
+        },
+        {
+          "choice": "episode-014",
+          "shared_stages": [
+            "episode-029",
+            "episode-030"
+          ],
+          "converges": "episode-037"
+        }
+      ],
+      "exemption": null
+    },
+    "branch_shapes": {
+      "status": "PASS",
+      "evidence": {
+        "single_deep": [
+          {
+            "choice": "episode-021",
+            "merge": "episode-038",
+            "paths": [
+              [
+                "episode-061",
+                "episode-038"
+              ],
+              [
+                "episode-062",
+                "episode-029",
+                "episode-031",
+                "episode-033",
+                "episode-037",
+                "episode-038"
+              ]
+            ],
+            "arms": [
+              "episode-061",
+              "episode-062"
+            ],
+            "arm_choices": [
+              [],
+              [
+                "episode-031"
+              ]
+            ],
+            "shape": "single_deep"
+          },
+          {
+            "choice": "episode-039",
+            "merge": "episode-047",
+            "paths": [
+              [
+                "episode-044",
+                "episode-045",
+                "episode-047"
+              ],
+              [
+                "episode-040",
+                "episode-042",
+                "episode-043",
+                "episode-047"
+              ]
+            ],
+            "arms": [
+              "episode-044",
+              "episode-040"
+            ],
+            "arm_choices": [
+              [],
+              [
+                "episode-042"
+              ]
+            ],
+            "shape": "single_deep"
+          },
+          {
+            "choice": "episode-042",
+            "merge": "episode-047",
+            "paths": [
+              [
+                "episode-043",
+                "episode-047"
+              ],
+              [
+                "episode-044",
+                "episode-045",
+                "episode-047"
+              ]
+            ],
+            "arms": [
+              "episode-043",
+              "episode-044"
+            ],
+            "arm_choices": [
+              [],
+              [
+                "episode-045"
+              ]
+            ],
+            "shape": "single_deep"
+          }
+        ],
+        "double_wing": [
+          {
+            "choice": "episode-002",
+            "merge": "episode-029",
+            "paths": [
+              [
+                "episode-003",
+                "episode-005",
+                "episode-008",
+                "episode-012",
+                "episode-018",
+                "episode-024",
+                "episode-029"
+              ],
+              [
+                "episode-004",
+                "episode-006",
+                "episode-009",
+                "episode-013",
+                "episode-019",
+                "episode-025",
+                "episode-029"
+              ]
+            ],
+            "arms": [
+              "episode-003",
+              "episode-004"
+            ],
+            "arm_choices": [
+              [
+                "episode-005",
+                "episode-011",
+                "episode-012",
+                "episode-021",
+                "episode-023",
+                "episode-024"
+              ],
+              [
+                "episode-006",
+                "episode-013",
+                "episode-014",
+                "episode-025",
+                "episode-026"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-002",
+            "merge": "episode-030",
+            "paths": [
+              [
+                "episode-003",
+                "episode-005",
+                "episode-008",
+                "episode-012",
+                "episode-018",
+                "episode-024",
+                "episode-030"
+              ],
+              [
+                "episode-004",
+                "episode-006",
+                "episode-009",
+                "episode-013",
+                "episode-019",
+                "episode-025",
+                "episode-030"
+              ]
+            ],
+            "arms": [
+              "episode-003",
+              "episode-004"
+            ],
+            "arm_choices": [
+              [
+                "episode-005",
+                "episode-012",
+                "episode-023",
+                "episode-024"
+              ],
+              [
+                "episode-006",
+                "episode-013",
+                "episode-014",
+                "episode-025",
+                "episode-026"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-002",
+            "merge": "episode-037",
+            "paths": [
+              [
+                "episode-003",
+                "episode-005",
+                "episode-008",
+                "episode-012",
+                "episode-018",
+                "episode-024",
+                "episode-029",
+                "episode-031",
+                "episode-033",
+                "episode-037"
+              ],
+              [
+                "episode-004",
+                "episode-006",
+                "episode-009",
+                "episode-013",
+                "episode-019",
+                "episode-025",
+                "episode-030",
+                "episode-032",
+                "episode-035",
+                "episode-037"
+              ]
+            ],
+            "arms": [
+              "episode-003",
+              "episode-004"
+            ],
+            "arm_choices": [
+              [
+                "episode-005",
+                "episode-011",
+                "episode-012",
+                "episode-021",
+                "episode-023",
+                "episode-024"
+              ],
+              [
+                "episode-006",
+                "episode-013",
+                "episode-014",
+                "episode-025",
+                "episode-026"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-002",
+            "merge": "episode-038",
+            "paths": [
+              [
+                "episode-003",
+                "episode-005",
+                "episode-007",
+                "episode-011",
+                "episode-015",
+                "episode-021",
+                "episode-061",
+                "episode-038"
+              ],
+              [
+                "episode-004",
+                "episode-006",
+                "episode-009",
+                "episode-013",
+                "episode-019",
+                "episode-025",
+                "episode-029",
+                "episode-031",
+                "episode-033",
+                "episode-037",
+                "episode-038"
+              ]
+            ],
+            "arms": [
+              "episode-003",
+              "episode-004"
+            ],
+            "arm_choices": [
+              [
+                "episode-005",
+                "episode-011",
+                "episode-021",
+                "episode-022"
+              ],
+              [
+                "episode-006",
+                "episode-013",
+                "episode-014",
+                "episode-025",
+                "episode-026"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-005",
+            "merge": "episode-029",
+            "paths": [
+              [
+                "episode-007",
+                "episode-011",
+                "episode-015",
+                "episode-021",
+                "episode-062",
+                "episode-029"
+              ],
+              [
+                "episode-008",
+                "episode-012",
+                "episode-018",
+                "episode-024",
+                "episode-029"
+              ]
+            ],
+            "arms": [
+              "episode-007",
+              "episode-008"
+            ],
+            "arm_choices": [
+              [
+                "episode-011",
+                "episode-021"
+              ],
+              [
+                "episode-012",
+                "episode-023",
+                "episode-024"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-005",
+            "merge": "episode-037",
+            "paths": [
+              [
+                "episode-007",
+                "episode-011",
+                "episode-015",
+                "episode-021",
+                "episode-062",
+                "episode-029",
+                "episode-031",
+                "episode-033",
+                "episode-037"
+              ],
+              [
+                "episode-008",
+                "episode-012",
+                "episode-018",
+                "episode-024",
+                "episode-030",
+                "episode-032",
+                "episode-035",
+                "episode-037"
+              ]
+            ],
+            "arms": [
+              "episode-007",
+              "episode-008"
+            ],
+            "arm_choices": [
+              [
+                "episode-011",
+                "episode-021"
+              ],
+              [
+                "episode-012",
+                "episode-023",
+                "episode-024",
+                "episode-032"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-005",
+            "merge": "episode-038",
+            "paths": [
+              [
+                "episode-007",
+                "episode-011",
+                "episode-015",
+                "episode-021",
+                "episode-061",
+                "episode-038"
+              ],
+              [
+                "episode-008",
+                "episode-012",
+                "episode-018",
+                "episode-024",
+                "episode-029",
+                "episode-031",
+                "episode-033",
+                "episode-037",
+                "episode-038"
+              ]
+            ],
+            "arms": [
+              "episode-007",
+              "episode-008"
+            ],
+            "arm_choices": [
+              [
+                "episode-011",
+                "episode-021",
+                "episode-022"
+              ],
+              [
+                "episode-012",
+                "episode-023",
+                "episode-024",
+                "episode-032"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-006",
+            "merge": "episode-019",
+            "paths": [
+              [
+                "episode-009",
+                "episode-013",
+                "episode-019"
+              ],
+              [
+                "episode-010",
+                "episode-014",
+                "episode-019"
+              ]
+            ],
+            "arms": [
+              "episode-009",
+              "episode-010"
+            ],
+            "arm_choices": [
+              [
+                "episode-013"
+              ],
+              [
+                "episode-014"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-006",
+            "merge": "episode-020",
+            "paths": [
+              [
+                "episode-009",
+                "episode-013",
+                "episode-020"
+              ],
+              [
+                "episode-010",
+                "episode-014",
+                "episode-020"
+              ]
+            ],
+            "arms": [
+              "episode-009",
+              "episode-010"
+            ],
+            "arm_choices": [
+              [
+                "episode-013"
+              ],
+              [
+                "episode-014"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-006",
+            "merge": "episode-029",
+            "paths": [
+              [
+                "episode-009",
+                "episode-013",
+                "episode-019",
+                "episode-025",
+                "episode-029"
+              ],
+              [
+                "episode-010",
+                "episode-014",
+                "episode-020",
+                "episode-026",
+                "episode-059",
+                "episode-029"
+              ]
+            ],
+            "arms": [
+              "episode-009",
+              "episode-010"
+            ],
+            "arm_choices": [
+              [
+                "episode-013"
+              ],
+              [
+                "episode-014"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-006",
+            "merge": "episode-030",
+            "paths": [
+              [
+                "episode-009",
+                "episode-013",
+                "episode-019",
+                "episode-025",
+                "episode-030"
+              ],
+              [
+                "episode-010",
+                "episode-014",
+                "episode-020",
+                "episode-026",
+                "episode-060",
+                "episode-030"
+              ]
+            ],
+            "arms": [
+              "episode-009",
+              "episode-010"
+            ],
+            "arm_choices": [
+              [
+                "episode-013"
+              ],
+              [
+                "episode-014"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-006",
+            "merge": "episode-037",
+            "paths": [
+              [
+                "episode-009",
+                "episode-013",
+                "episode-019",
+                "episode-025",
+                "episode-029",
+                "episode-031",
+                "episode-033",
+                "episode-037"
+              ],
+              [
+                "episode-010",
+                "episode-014",
+                "episode-020",
+                "episode-026",
+                "episode-060",
+                "episode-030",
+                "episode-032",
+                "episode-035",
+                "episode-037"
+              ]
+            ],
+            "arms": [
+              "episode-009",
+              "episode-010"
+            ],
+            "arm_choices": [
+              [
+                "episode-013"
+              ],
+              [
+                "episode-014"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-011",
+            "merge": "episode-038",
+            "paths": [
+              [
+                "episode-015",
+                "episode-021",
+                "episode-061",
+                "episode-038"
+              ],
+              [
+                "episode-016",
+                "episode-022",
+                "episode-027",
+                "episode-038"
+              ]
+            ],
+            "arms": [
+              "episode-015",
+              "episode-016"
+            ],
+            "arm_choices": [
+              [
+                "episode-021",
+                "episode-031"
+              ],
+              [
+                "episode-022"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-012",
+            "merge": "episode-029",
+            "paths": [
+              [
+                "episode-017",
+                "episode-023",
+                "episode-057",
+                "episode-029"
+              ],
+              [
+                "episode-018",
+                "episode-024",
+                "episode-029"
+              ]
+            ],
+            "arms": [
+              "episode-017",
+              "episode-018"
+            ],
+            "arm_choices": [
+              [
+                "episode-023"
+              ],
+              [
+                "episode-024"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-012",
+            "merge": "episode-030",
+            "paths": [
+              [
+                "episode-017",
+                "episode-023",
+                "episode-058",
+                "episode-030"
+              ],
+              [
+                "episode-018",
+                "episode-024",
+                "episode-030"
+              ]
+            ],
+            "arms": [
+              "episode-017",
+              "episode-018"
+            ],
+            "arm_choices": [
+              [
+                "episode-023"
+              ],
+              [
+                "episode-024"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-012",
+            "merge": "episode-037",
+            "paths": [
+              [
+                "episode-017",
+                "episode-023",
+                "episode-058",
+                "episode-030",
+                "episode-032",
+                "episode-035",
+                "episode-037"
+              ],
+              [
+                "episode-018",
+                "episode-024",
+                "episode-029",
+                "episode-031",
+                "episode-033",
+                "episode-037"
+              ]
+            ],
+            "arms": [
+              "episode-017",
+              "episode-018"
+            ],
+            "arm_choices": [
+              [
+                "episode-023"
+              ],
+              [
+                "episode-024"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-013",
+            "merge": "episode-029",
+            "paths": [
+              [
+                "episode-019",
+                "episode-025",
+                "episode-029"
+              ],
+              [
+                "episode-020",
+                "episode-026",
+                "episode-059",
+                "episode-029"
+              ]
+            ],
+            "arms": [
+              "episode-019",
+              "episode-020"
+            ],
+            "arm_choices": [
+              [
+                "episode-025"
+              ],
+              [
+                "episode-026"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-013",
+            "merge": "episode-030",
+            "paths": [
+              [
+                "episode-019",
+                "episode-025",
+                "episode-030"
+              ],
+              [
+                "episode-020",
+                "episode-026",
+                "episode-060",
+                "episode-030"
+              ]
+            ],
+            "arms": [
+              "episode-019",
+              "episode-020"
+            ],
+            "arm_choices": [
+              [
+                "episode-025"
+              ],
+              [
+                "episode-026"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-013",
+            "merge": "episode-037",
+            "paths": [
+              [
+                "episode-019",
+                "episode-025",
+                "episode-029",
+                "episode-031",
+                "episode-033",
+                "episode-037"
+              ],
+              [
+                "episode-020",
+                "episode-026",
+                "episode-060",
+                "episode-030",
+                "episode-032",
+                "episode-035",
+                "episode-037"
+              ]
+            ],
+            "arms": [
+              "episode-019",
+              "episode-020"
+            ],
+            "arm_choices": [
+              [
+                "episode-025"
+              ],
+              [
+                "episode-026"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-014",
+            "merge": "episode-029",
+            "paths": [
+              [
+                "episode-019",
+                "episode-025",
+                "episode-029"
+              ],
+              [
+                "episode-020",
+                "episode-026",
+                "episode-059",
+                "episode-029"
+              ]
+            ],
+            "arms": [
+              "episode-019",
+              "episode-020"
+            ],
+            "arm_choices": [
+              [
+                "episode-025"
+              ],
+              [
+                "episode-026"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-014",
+            "merge": "episode-030",
+            "paths": [
+              [
+                "episode-019",
+                "episode-025",
+                "episode-030"
+              ],
+              [
+                "episode-020",
+                "episode-026",
+                "episode-060",
+                "episode-030"
+              ]
+            ],
+            "arms": [
+              "episode-019",
+              "episode-020"
+            ],
+            "arm_choices": [
+              [
+                "episode-025"
+              ],
+              [
+                "episode-026"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-014",
+            "merge": "episode-037",
+            "paths": [
+              [
+                "episode-019",
+                "episode-025",
+                "episode-029",
+                "episode-031",
+                "episode-033",
+                "episode-037"
+              ],
+              [
+                "episode-020",
+                "episode-026",
+                "episode-060",
+                "episode-030",
+                "episode-032",
+                "episode-035",
+                "episode-037"
+              ]
+            ],
+            "arms": [
+              "episode-019",
+              "episode-020"
+            ],
+            "arm_choices": [
+              [
+                "episode-025"
+              ],
+              [
+                "episode-026"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-023",
+            "merge": "episode-037",
+            "paths": [
+              [
+                "episode-057",
+                "episode-029",
+                "episode-031",
+                "episode-033",
+                "episode-037"
+              ],
+              [
+                "episode-058",
+                "episode-030",
+                "episode-032",
+                "episode-035",
+                "episode-037"
+              ]
+            ],
+            "arms": [
+              "episode-057",
+              "episode-058"
+            ],
+            "arm_choices": [
+              [
+                "episode-031"
+              ],
+              [
+                "episode-032"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-024",
+            "merge": "episode-037",
+            "paths": [
+              [
+                "episode-029",
+                "episode-031",
+                "episode-033",
+                "episode-037"
+              ],
+              [
+                "episode-030",
+                "episode-032",
+                "episode-035",
+                "episode-037"
+              ]
+            ],
+            "arms": [
+              "episode-029",
+              "episode-030"
+            ],
+            "arm_choices": [
+              [
+                "episode-031"
+              ],
+              [
+                "episode-032"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-025",
+            "merge": "episode-037",
+            "paths": [
+              [
+                "episode-029",
+                "episode-031",
+                "episode-033",
+                "episode-037"
+              ],
+              [
+                "episode-030",
+                "episode-032",
+                "episode-035",
+                "episode-037"
+              ]
+            ],
+            "arms": [
+              "episode-029",
+              "episode-030"
+            ],
+            "arm_choices": [
+              [
+                "episode-031"
+              ],
+              [
+                "episode-032"
+              ]
+            ],
+            "shape": "double_wing"
+          },
+          {
+            "choice": "episode-026",
+            "merge": "episode-037",
+            "paths": [
+              [
+                "episode-059",
+                "episode-029",
+                "episode-031",
+                "episode-033",
+                "episode-037"
+              ],
+              [
+                "episode-060",
+                "episode-030",
+                "episode-032",
+                "episode-035",
+                "episode-037"
+              ]
+            ],
+            "arms": [
+              "episode-059",
+              "episode-060"
+            ],
+            "arm_choices": [
+              [
+                "episode-031"
+              ],
+              [
+                "episode-032"
+              ]
+            ],
+            "shape": "double_wing"
+          }
+        ],
+        "woven": [
+          {
+            "choice": "episode-002",
+            "shared_stages": [
+              "episode-029",
+              "episode-030"
+            ],
+            "converges": "episode-037"
+          },
+          {
+            "choice": "episode-006",
+            "shared_stages": [
+              "episode-019",
+              "episode-020"
+            ],
+            "converges": "episode-029"
+          },
+          {
+            "choice": "episode-006",
+            "shared_stages": [
+              "episode-029",
+              "episode-030"
+            ],
+            "converges": "episode-037"
+          },
+          {
+            "choice": "episode-012",
+            "shared_stages": [
+              "episode-029",
+              "episode-030"
+            ],
+            "converges": "episode-037"
+          },
+          {
+            "choice": "episode-013",
+            "shared_stages": [
+              "episode-029",
+              "episode-030"
+            ],
+            "converges": "episode-037"
+          },
+          {
+            "choice": "episode-014",
+            "shared_stages": [
+              "episode-029",
+              "episode-030"
+            ],
+            "converges": "episode-037"
+          }
+        ],
+        "simple_merges": [
+          {
+            "choice": "episode-022",
+            "merge": "episode-038",
+            "paths": [
+              [
+                "episode-027",
+                "episode-038"
+              ],
+              [
+                "episode-028",
+                "episode-038"
+              ]
+            ],
+            "arms": [
+              "episode-027",
+              "episode-028"
+            ],
+            "arm_choices": [
+              [],
+              []
+            ]
+          },
+          {
+            "choice": "episode-031",
+            "merge": "episode-037",
+            "paths": [
+              [
+                "episode-033",
+                "episode-037"
+              ],
+              [
+                "episode-034",
+                "episode-037"
+              ]
+            ],
+            "arms": [
+              "episode-033",
+              "episode-034"
+            ],
+            "arm_choices": [
+              [],
+              []
+            ]
+          },
+          {
+            "choice": "episode-032",
+            "merge": "episode-037",
+            "paths": [
+              [
+                "episode-035",
+                "episode-037"
+              ],
+              [
+                "episode-036",
+                "episode-037"
+              ]
+            ],
+            "arms": [
+              "episode-035",
+              "episode-036"
+            ],
+            "arm_choices": [
+              [],
+              []
+            ]
+          }
+        ]
+      },
+      "exemption": null
+    },
+    "depth": {
+      "status": "PASS",
+      "evidence": {
+        "depth": 6,
+        "choices": [
+          "episode-039",
+          "episode-042",
+          "episode-045",
+          "episode-048",
+          "episode-051",
+          "episode-054"
+        ]
+      },
+      "exemption": null
+    },
+    "immediate_result": {
+      "status": "PASS",
+      "evidence": [],
+      "exemption": null
+    },
+    "ending_distribution": {
+      "status": "PASS",
+      "evidence": {
+        "episode-056": [
+          "episode-054"
+        ],
+        "episode-049": [
+          "episode-048"
+        ],
+        "episode-046": [
+          "episode-045"
+        ],
+        "episode-055": [
+          "episode-054"
+        ],
+        "episode-053": [
+          "episode-051"
+        ]
+      },
+      "exemption": null
+    },
+    "progressive_ending": {
+      "status": "PASS",
+      "evidence": [
+        {
+          "choice": "episode-045",
+          "expected_arm": "episode-046",
+          "true_arm": "episode-047"
+        },
+        {
+          "choice": "episode-048",
+          "expected_arm": "episode-049",
+          "true_arm": "episode-050"
+        }
+      ],
+      "exemption": null
+    },
+    "sustained_growth": {
+      "status": "PASS",
+      "evidence": {
+        "choices": [
+          "episode-002",
+          "episode-005",
+          "episode-006",
+          "episode-011",
+          "episode-012",
+          "episode-013",
+          "episode-014",
+          "episode-021",
+          "episode-023",
+          "episode-024",
+          "episode-025",
+          "episode-026",
+          "episode-039",
+          "episode-042"
+        ],
+        "arms": {
+          "episode-002": [
+            "episode-003",
+            "episode-004"
+          ],
+          "episode-005": [
+            "episode-007",
+            "episode-008"
+          ],
+          "episode-006": [
+            "episode-009",
+            "episode-010"
+          ],
+          "episode-011": [
+            "episode-015",
+            "episode-016"
+          ],
+          "episode-012": [
+            "episode-017",
+            "episode-018"
+          ],
+          "episode-013": [
+            "episode-019",
+            "episode-020"
+          ],
+          "episode-014": [
+            "episode-019",
+            "episode-020"
+          ],
+          "episode-021": [
+            "episode-061",
+            "episode-062"
+          ],
+          "episode-023": [
+            "episode-057",
+            "episode-058"
+          ],
+          "episode-024": [
+            "episode-029",
+            "episode-030"
+          ],
+          "episode-025": [
+            "episode-029",
+            "episode-030"
+          ],
+          "episode-026": [
+            "episode-059",
+            "episode-060"
+          ],
+          "episode-039": [
+            "episode-044",
+            "episode-040"
+          ],
+          "episode-042": [
+            "episode-043",
+            "episode-044"
+          ]
+        },
+        "next_decisions": {
+          "episode-002": [
+            "episode-005",
+            "episode-006"
+          ],
+          "episode-005": [
+            "episode-011",
+            "episode-012"
+          ],
+          "episode-006": [
+            "episode-013",
+            "episode-014"
+          ],
+          "episode-011": [
+            "episode-021",
+            "episode-022"
+          ],
+          "episode-012": [
+            "episode-023",
+            "episode-024"
+          ],
+          "episode-013": [
+            "episode-025",
+            "episode-026"
+          ],
+          "episode-014": [
+            "episode-025",
+            "episode-026"
+          ],
+          "episode-021": [
+            "episode-039",
+            "episode-031"
+          ],
+          "episode-023": [
+            "episode-031",
+            "episode-032"
+          ],
+          "episode-024": [
+            "episode-031",
+            "episode-032"
+          ],
+          "episode-025": [
+            "episode-031",
+            "episode-032"
+          ],
+          "episode-026": [
+            "episode-031",
+            "episode-032"
+          ],
+          "episode-039": [
+            "episode-045",
+            "episode-042"
+          ],
+          "episode-042": [
+            "episode-048",
+            "episode-045"
+          ]
+        },
+        "successive_choices": [
+          "episode-002",
+          "episode-005",
+          "episode-011",
+          "episode-021",
+          "episode-039",
+          "episode-042"
+        ],
+        "minimum_choices": 4,
+        "minimum_stages": 3
+      },
+      "exemption": null
+    },
+    "ending_ladder": {
+      "status": "PASS",
+      "evidence": [
+        {
+          "choices": [
+            "episode-045",
+            "episode-048"
+          ],
+          "between_scene": "episode-047",
+          "expected_endings": [
+            [
+              "episode-046"
+            ],
+            [
+              "episode-049"
+            ]
+          ],
+          "continues_scene": "episode-050"
+        }
+      ],
+      "exemption": null
+    },
+    "continuation_balance": {
+      "status": "PASS",
+      "evidence": {
+        "choices": [
+          "episode-002",
+          "episode-005",
+          "episode-006",
+          "episode-011",
+          "episode-012",
+          "episode-013",
+          "episode-014",
+          "episode-021",
+          "episode-022",
+          "episode-023",
+          "episode-024",
+          "episode-025",
+          "episode-026",
+          "episode-031",
+          "episode-032",
+          "episode-039",
+          "episode-042",
+          "episode-051"
+        ],
+        "continuing_options": 35,
+        "options": 37,
+        "settlement_choices": [
+          "episode-045",
+          "episode-048"
+        ],
+        "closing_choices": [
+          "episode-054"
+        ]
+      },
+      "exemption": null
+    }
+  },
+  "counts": {
+    "episode_count": 41,
+    "choice_node_count": 21,
+    "ending_count": 6,
+    "total_node_count": 62
+  },
+  "path_count": 435,
+  "option_count": 43,
+  "order": [
+    "episode-001",
+    "episode-002",
+    "episode-003",
+    "episode-004",
+    "episode-005",
+    "episode-006",
+    "episode-007",
+    "episode-008",
+    "episode-009",
+    "episode-010",
+    "episode-011",
+    "episode-012",
+    "episode-013",
+    "episode-014",
+    "episode-015",
+    "episode-016",
+    "episode-017",
+    "episode-018",
+    "episode-019",
+    "episode-020",
+    "episode-021",
+    "episode-022",
+    "episode-023",
+    "episode-024",
+    "episode-025",
+    "episode-026",
+    "episode-061",
+    "episode-062",
+    "episode-027",
+    "episode-028",
+    "episode-057",
+    "episode-058",
+    "episode-059",
+    "episode-060",
+    "episode-029",
+    "episode-030",
+    "episode-031",
+    "episode-032",
+    "episode-033",
+    "episode-034",
+    "episode-035",
+    "episode-036",
+    "episode-037",
+    "episode-038",
+    "episode-039",
+    "episode-040",
+    "episode-041",
+    "episode-042",
+    "episode-043",
+    "episode-044",
+    "episode-045",
+    "episode-046",
+    "episode-047",
+    "episode-048",
+    "episode-049",
+    "episode-050",
+    "episode-051",
+    "episode-052",
+    "episode-053",
+    "episode-054",
+    "episode-055",
+    "episode-056"
+  ]
+}

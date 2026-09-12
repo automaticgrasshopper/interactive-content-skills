@@ -1,0 +1,32 @@
+{
+  "created_at": "2026-09-12T05:29:00.205238+00:00",
+  "remote_updated_at": "2026-09-12T05:27:00Z",
+  "skill_id": "06e9a31d-b667-4124-948b-fcc2e79accf0",
+  "preset_id": "d81b8b2a-6f75-4168-ba5d-b4e0e744a67e",
+  "cases": {
+    "A": {
+      "input": "我想做一个四十分钟左右的民国冒险悬疑影游，主角是个在旧火车站修钟的年轻姑娘，某天收到失踪父亲寄来的行李票。其他你觉得怎么好看怎么来。",
+      "project_id": "dc601dd1-c3b1-4c9f-9e14-5ecdd9021f7b",
+      "status": "saved_content_failed",
+      "route_request": "我不要图片，先给我做故事路线我看看。",
+      "plot_guidance": false,
+      "title": "十二点零七码",
+      "route_elapsed_display": "8m39s",
+      "graph_recheck": "PASS",
+      "content_acceptance": "FAIL",
+      "images_generated": false
+    },
+    "B": {
+      "input": "我想做一个四十分钟左右的武侠影游，主角是个替人送信的年轻镖师，路上发现收信人三年前已经死了，其他你觉得怎么好看怎么来。",
+      "project_id": "2c7aae9c-5e1c-4b3d-9653-9c218cd88754",
+      "status": "saved_content_failed",
+      "route_request": "我不要图片，先给我做故事路线我看看。",
+      "plot_guidance": false,
+      "title": "寄往黄泉的镖",
+      "route_elapsed_display": "11m41s",
+      "graph_recheck": "PASS",
+      "content_acceptance": "FAIL",
+      "images_generated": false
+    }
+  }
+}

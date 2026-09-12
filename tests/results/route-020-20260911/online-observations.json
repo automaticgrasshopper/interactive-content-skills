@@ -1,0 +1,86 @@
+{
+  "first_generation": {
+    "outline_seconds": 373,
+    "route_seconds": 413,
+    "planning_accepted": true,
+    "graph_revision": 1,
+    "graph_exemptions": {},
+    "manual_story_repairs": 0,
+    "content_status": "FAIL",
+    "findings": [
+      "救人选项落到反向发电报剧情",
+      "查孔序选项落到抢发报纸剧情",
+      "原票交出后无追回过程却在共享段重新持有",
+      "共享正文出现路线说明而非具体事件",
+      "另一半怀表和提前听到录音缺少来源"
+    ]
+  },
+  "repair_1": {
+    "seconds": 305,
+    "counts_preserved": {
+      "nodes": 56,
+      "edges": 72,
+      "choices": 21,
+      "endings": 6
+    },
+    "content_status": "FAIL",
+    "findings": [
+      "直接保全证据路线未画油印却依赖油印追车",
+      "从保全证据直接登车未学三齿一停开门顺序",
+      "守门直接登车跳过取证却继承已保全名册状态",
+      "部分救人选项落点已救出，动作仍未演出",
+      "已取得打票钳又声称尚锁在柜中",
+      "周伯反复被抓再救以统一状态"
+    ]
+  },
+  "repair_2": {
+    "status": "saved",
+    "seconds": 151,
+    "added_episodes": 4,
+    "counts": {
+      "nodes": 60,
+      "edges": 76,
+      "choices": 21,
+      "endings": 6
+    },
+    "remaining_findings": [
+      "共享段仍包含两条来路并列说明",
+      "部分共同证据取得过程未落实",
+      "后段赶赴货栈与移交打票钳缺动作"
+    ]
+  },
+  "repair_3": {
+    "status": "saved",
+    "seconds": 201,
+    "counts_unchanged": true,
+    "remaining_findings": [
+      "顾持有原票的叙述不适用于所有来路",
+      "暗号线未取得电报复写联",
+      "携带货单选择尚缺动作承接"
+    ]
+  },
+  "repair_4": {
+    "status": "saved",
+    "seconds": 94,
+    "added_episodes": 2,
+    "counts": {
+      "nodes": 62,
+      "episodes": 41,
+      "choices": 21,
+      "edges": 78,
+      "endings": 6
+    },
+    "final_text_cleanup_needed": true
+  },
+  "text_cleanup": {
+    "status": "saved_and_read_back",
+    "seconds": 50,
+    "edges_unchanged": true
+  },
+  "independent_final_graph_check": {
+    "status": "PASS",
+    "report": "final-graph-report.json",
+    "paths": 435
+  },
+  "limitation": "One actual initial-generation sample. Plot required four manually prompted repairs and a text cleanup; graph PASS is not semantic acceptance."
+}

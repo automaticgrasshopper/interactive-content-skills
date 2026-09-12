@@ -1,0 +1,696 @@
+{
+  "source": "NexPlay actual canvas AX edge labels, node kinds, and ending classes. Content omitted: this is a graph-only projection.",
+  "plan": {
+    "nodes": [
+      {
+        "id": "episode-001",
+        "kind": "scene",
+        "source": "episode-001",
+        "next": [
+          "episode-002"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-002",
+        "kind": "choice",
+        "question": "episode-002",
+        "options": [
+          {
+            "text": "0",
+            "target": "episode-003"
+          },
+          {
+            "text": "1",
+            "target": "episode-004"
+          }
+        ]
+      },
+      {
+        "id": "episode-003",
+        "kind": "scene",
+        "source": "episode-003",
+        "next": [
+          "episode-005"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-004",
+        "kind": "scene",
+        "source": "episode-004",
+        "next": [
+          "episode-006"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-005",
+        "kind": "choice",
+        "question": "episode-005",
+        "options": [
+          {
+            "text": "0",
+            "target": "episode-007"
+          },
+          {
+            "text": "1",
+            "target": "episode-008"
+          }
+        ]
+      },
+      {
+        "id": "episode-006",
+        "kind": "choice",
+        "question": "episode-006",
+        "options": [
+          {
+            "text": "0",
+            "target": "episode-009"
+          },
+          {
+            "text": "1",
+            "target": "episode-010"
+          }
+        ]
+      },
+      {
+        "id": "episode-007",
+        "kind": "scene",
+        "source": "episode-007",
+        "next": [
+          "episode-011"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-008",
+        "kind": "scene",
+        "source": "episode-008",
+        "next": [
+          "episode-012"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-009",
+        "kind": "scene",
+        "source": "episode-009",
+        "next": [
+          "episode-013"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-010",
+        "kind": "scene",
+        "source": "episode-010",
+        "next": [
+          "episode-014"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-011",
+        "kind": "choice",
+        "question": "episode-011",
+        "options": [
+          {
+            "text": "0",
+            "target": "episode-015"
+          },
+          {
+            "text": "1",
+            "target": "episode-016"
+          }
+        ]
+      },
+      {
+        "id": "episode-012",
+        "kind": "choice",
+        "question": "episode-012",
+        "options": [
+          {
+            "text": "0",
+            "target": "episode-017"
+          },
+          {
+            "text": "1",
+            "target": "episode-018"
+          }
+        ]
+      },
+      {
+        "id": "episode-013",
+        "kind": "choice",
+        "question": "episode-013",
+        "options": [
+          {
+            "text": "0",
+            "target": "episode-019"
+          },
+          {
+            "text": "1",
+            "target": "episode-020"
+          }
+        ]
+      },
+      {
+        "id": "episode-014",
+        "kind": "choice",
+        "question": "episode-014",
+        "options": [
+          {
+            "text": "0",
+            "target": "episode-019"
+          },
+          {
+            "text": "1",
+            "target": "episode-020"
+          }
+        ]
+      },
+      {
+        "id": "episode-015",
+        "kind": "scene",
+        "source": "episode-015",
+        "next": [
+          "episode-021"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-016",
+        "kind": "scene",
+        "source": "episode-016",
+        "next": [
+          "episode-022"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-017",
+        "kind": "scene",
+        "source": "episode-017",
+        "next": [
+          "episode-023"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-018",
+        "kind": "scene",
+        "source": "episode-018",
+        "next": [
+          "episode-024"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-019",
+        "kind": "scene",
+        "source": "episode-019",
+        "next": [
+          "episode-025"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-020",
+        "kind": "scene",
+        "source": "episode-020",
+        "next": [
+          "episode-026"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-021",
+        "kind": "choice",
+        "question": "episode-021",
+        "options": [
+          {
+            "text": "0",
+            "target": "episode-061"
+          },
+          {
+            "text": "1",
+            "target": "episode-062"
+          }
+        ]
+      },
+      {
+        "id": "episode-022",
+        "kind": "choice",
+        "question": "episode-022",
+        "options": [
+          {
+            "text": "0",
+            "target": "episode-027"
+          },
+          {
+            "text": "1",
+            "target": "episode-028"
+          }
+        ]
+      },
+      {
+        "id": "episode-023",
+        "kind": "choice",
+        "question": "episode-023",
+        "options": [
+          {
+            "text": "0",
+            "target": "episode-057"
+          },
+          {
+            "text": "1",
+            "target": "episode-058"
+          }
+        ]
+      },
+      {
+        "id": "episode-024",
+        "kind": "choice",
+        "question": "episode-024",
+        "options": [
+          {
+            "text": "0",
+            "target": "episode-029"
+          },
+          {
+            "text": "1",
+            "target": "episode-030"
+          }
+        ]
+      },
+      {
+        "id": "episode-025",
+        "kind": "choice",
+        "question": "episode-025",
+        "options": [
+          {
+            "text": "0",
+            "target": "episode-029"
+          },
+          {
+            "text": "1",
+            "target": "episode-030"
+          }
+        ]
+      },
+      {
+        "id": "episode-026",
+        "kind": "choice",
+        "question": "episode-026",
+        "options": [
+          {
+            "text": "0",
+            "target": "episode-059"
+          },
+          {
+            "text": "1",
+            "target": "episode-060"
+          }
+        ]
+      },
+      {
+        "id": "episode-027",
+        "kind": "scene",
+        "source": "episode-027",
+        "next": [
+          "episode-038"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-028",
+        "kind": "scene",
+        "source": "episode-028",
+        "next": [
+          "episode-038"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-029",
+        "kind": "scene",
+        "source": "episode-029",
+        "next": [
+          "episode-031"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-030",
+        "kind": "scene",
+        "source": "episode-030",
+        "next": [
+          "episode-032"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-031",
+        "kind": "choice",
+        "question": "episode-031",
+        "options": [
+          {
+            "text": "0",
+            "target": "episode-033"
+          },
+          {
+            "text": "1",
+            "target": "episode-034"
+          }
+        ]
+      },
+      {
+        "id": "episode-032",
+        "kind": "choice",
+        "question": "episode-032",
+        "options": [
+          {
+            "text": "0",
+            "target": "episode-035"
+          },
+          {
+            "text": "1",
+            "target": "episode-036"
+          }
+        ]
+      },
+      {
+        "id": "episode-033",
+        "kind": "scene",
+        "source": "episode-033",
+        "next": [
+          "episode-037"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-034",
+        "kind": "scene",
+        "source": "episode-034",
+        "next": [
+          "episode-037"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-035",
+        "kind": "scene",
+        "source": "episode-035",
+        "next": [
+          "episode-037"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-036",
+        "kind": "scene",
+        "source": "episode-036",
+        "next": [
+          "episode-037"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-037",
+        "kind": "scene",
+        "source": "episode-037",
+        "next": [
+          "episode-038"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-038",
+        "kind": "scene",
+        "source": "episode-038",
+        "next": [
+          "episode-039"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-039",
+        "kind": "choice",
+        "question": "episode-039",
+        "options": [
+          {
+            "text": "0",
+            "target": "episode-044"
+          },
+          {
+            "text": "1",
+            "target": "episode-040"
+          },
+          {
+            "text": "2",
+            "target": "episode-041"
+          }
+        ]
+      },
+      {
+        "id": "episode-040",
+        "kind": "scene",
+        "source": "episode-040",
+        "next": [
+          "episode-042"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-041",
+        "kind": "ending",
+        "source": "episode-041",
+        "next": [],
+        "ending_type": "small"
+      },
+      {
+        "id": "episode-042",
+        "kind": "choice",
+        "question": "episode-042",
+        "options": [
+          {
+            "text": "0",
+            "target": "episode-043"
+          },
+          {
+            "text": "1",
+            "target": "episode-044"
+          }
+        ]
+      },
+      {
+        "id": "episode-043",
+        "kind": "scene",
+        "source": "episode-043",
+        "next": [
+          "episode-047"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-044",
+        "kind": "scene",
+        "source": "episode-044",
+        "next": [
+          "episode-045"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-045",
+        "kind": "choice",
+        "question": "episode-045",
+        "options": [
+          {
+            "text": "0",
+            "target": "episode-046"
+          },
+          {
+            "text": "1",
+            "target": "episode-047"
+          }
+        ]
+      },
+      {
+        "id": "episode-046",
+        "kind": "ending",
+        "source": "episode-046",
+        "next": [],
+        "ending_type": "expected"
+      },
+      {
+        "id": "episode-047",
+        "kind": "scene",
+        "source": "episode-047",
+        "next": [
+          "episode-048"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-048",
+        "kind": "choice",
+        "question": "episode-048",
+        "options": [
+          {
+            "text": "0",
+            "target": "episode-049"
+          },
+          {
+            "text": "1",
+            "target": "episode-050"
+          }
+        ]
+      },
+      {
+        "id": "episode-049",
+        "kind": "ending",
+        "source": "episode-049",
+        "next": [],
+        "ending_type": "expected"
+      },
+      {
+        "id": "episode-050",
+        "kind": "scene",
+        "source": "episode-050",
+        "next": [
+          "episode-051"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-051",
+        "kind": "choice",
+        "question": "episode-051",
+        "options": [
+          {
+            "text": "0",
+            "target": "episode-052"
+          },
+          {
+            "text": "1",
+            "target": "episode-053"
+          }
+        ]
+      },
+      {
+        "id": "episode-052",
+        "kind": "scene",
+        "source": "episode-052",
+        "next": [
+          "episode-054"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-053",
+        "kind": "ending",
+        "source": "episode-053",
+        "next": [],
+        "ending_type": "failure"
+      },
+      {
+        "id": "episode-054",
+        "kind": "choice",
+        "question": "episode-054",
+        "options": [
+          {
+            "text": "0",
+            "target": "episode-055"
+          },
+          {
+            "text": "1",
+            "target": "episode-056"
+          }
+        ]
+      },
+      {
+        "id": "episode-055",
+        "kind": "ending",
+        "source": "episode-055",
+        "next": [],
+        "ending_type": "main"
+      },
+      {
+        "id": "episode-056",
+        "kind": "ending",
+        "source": "episode-056",
+        "next": [],
+        "ending_type": "expected"
+      },
+      {
+        "id": "episode-057",
+        "kind": "scene",
+        "source": "episode-057",
+        "next": [
+          "episode-029"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-058",
+        "kind": "scene",
+        "source": "episode-058",
+        "next": [
+          "episode-030"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-059",
+        "kind": "scene",
+        "source": "episode-059",
+        "next": [
+          "episode-029"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-060",
+        "kind": "scene",
+        "source": "episode-060",
+        "next": [
+          "episode-030"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-061",
+        "kind": "scene",
+        "source": "episode-061",
+        "next": [
+          "episode-038"
+        ],
+        "ending_type": null
+      },
+      {
+        "id": "episode-062",
+        "kind": "scene",
+        "source": "episode-062",
+        "next": [
+          "episode-029"
+        ],
+        "ending_type": null
+      }
+    ]
+  },
+  "policy": {
+    "long_story": true,
+    "exemptions": {},
+    "hard_counts": {},
+    "forbidden_endings": [],
+    "required_endings": [
+      "expected",
+      "failure",
+      "main",
+      "small"
+    ],
+    "ending_override": false
+  }
+}
