@@ -1,51 +1,114 @@
-# 输入输出合同
+# 业务接口声明
 
-初次读取用户原话、正式项目身份、游戏企划和相关角色/场景/道具文字资产；没有的创意信息由作者在授权范围内生成。测试身份可按用户要求建立并明确标为测试。剧情与图形均由本Skill负责；完整剧本属于独立编剧Skill。
+本文件是流程图 Skill 与调用方之间的唯一字段合同。故事与内部规划材料见[故事切片与拓扑展开](story-planning.md)，图形与恢复规则见[图形合同](graph-contract.md)和[验收与局部恢复](acceptance.md)；本文件只声明输入、输出和写入边界。
 
-## 本轮输入
+## 接口规则
 
-先在独立 CACHE_ROOT 按故事规划写story-core.md，重整主角经历；这份草稿不新增机器合同。再写用户原话、brief和独立故事原文，作者重读通过后才生成切片文件，随后freeze；四份文件从此不变。
+- 初次生成读取正式项目身份、`游戏企划`、`角色描述`、`场景描述`和`道具描述`。
+- 正式输出是可立即展示、编辑和保存的路线对象，不依赖任何节点剧本。
+- 节点、边、选择和结局均由本 Skill 生产；调用方不得用剧本补丁反向覆盖这些事实。
+- 角色、场景和道具只使用上游正式名称或已登记别名，不输出资产工程 ID。
+- 哈希、验收时间和路线状态是交接字段；规划草稿、复检记录和修复过程是内部数据，不进入正式输出。
+- 用户所说的“集数/剧情节点数”只统计非选择的剧情内容卡；选择卡独立统计。只有用户明确说总卡数包含选择卡时，才额外锁定`nodes`总数。
+- 任一路线门禁失败时不得返回可被当作正式流程图的对象。
 
-`user-request.md`：逐字复制用户实际发出的创作要求，不改写、不补句。企划自己建议的数量、形状和结局，不因用户笼统点击“符合预期，继续”变成硬约束；不能自行写出“我确认了包含四个结局的游戏设置”之类用户没说过的话，再拿它申请豁免。只有用户原话或明确针对该数量/形状的选择，才能作为覆盖默认规则的依据。没有可引用的真实要求就保留默认门禁，不为适配已画好的图制造用户意图。不混入测试执行指令。
+## Skill 输入字段
 
-`brief.json`：
+| 字段 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `manifest.json` | object | 是 | 正式或测试项目身份；至少提供唯一`project_id`及本轮可读资产范围。测试时可由调用方依据用户输入构造，但不得冒充已有线上项目。 |
+| `游戏企划` | object | 是 | 包含标题、目标、冲突、世界观、体量、完整故事和结局方向；节点数量建议不作为固定约束。 |
+| `角色描述` | list<object> | 是 | 至少包含主角及路线必需角色。 |
+| `场景描述` | list<object> | 是 | 无正式场景时允许为空列表。 |
+| `道具描述` | list<object> | 是 | 无关键道具时允许为空列表。 |
+| `用户要求` | string | 否 | 本轮用户逐字要求；优先于企划软建议和默认复杂度。只有用户自身要求冲突或缺少用户独占信息时才询问。 |
 
-```json
-{"project_id":"真实或明确测试身份","title":"标题","summary":"一句话","duration_minutes":40,"characters":["正式角色名"],"scenes":["正式场景名"],"props":["正式道具名"],"creative_brief":"目标、人物关系、世界规则、必保事实、禁区及情绪和结局走向"}
+## Skill 输出字段
+
+```text
+路线对象 object
+├─ contract_version string
+├─ capability_id string
+├─ project_id string
+├─ route_id string
+├─ route_version string
+├─ route_status "accepted"
+├─ route_input_hash string
+├─ route_output_hash string
+├─ accepted_at string
+├─ nodes list<object>
+│  └─ 节点对象
+│     ├─ node_id string
+│     ├─ node_type "episode"
+│     ├─ 分集标题 string
+│     ├─ route_material object
+│     │  ├─ 单集梗概 string
+│     │  ├─ 本集冲突 string
+│     │  ├─ entry_state object
+│     │  ├─ state_changes object
+│     │  ├─ allowed_characters list<string>
+│     │  ├─ allowed_scenes list<string>
+│     │  ├─ allowed_props list<string>
+│     │  └─ stop_boundary string
+│     ├─ 前置节点编号列表 list<string>
+│     ├─ 后续节点编号列表 list<string>
+│     ├─ 是否结局 boolean
+│     ├─ ending_type string | null
+│     ├─ 互动节点 object
+│     │  ├─ 是否为分支节点 boolean
+│     │  ├─ 是否有选择问题 boolean
+│     │  ├─ 选择问题 string
+│     │  ├─ 选项列表 list<object>
+│     │  │  └─ {选项编号, 选项文字, 目标分集编号}
+│     │  └─ 默认下一分集编号 string
+│     └─ node_route_material_hash string
+├─ edges list<object>
+│  └─ {edge_id: string, source_node_id: string, target_node_id: string, edge_type: "choice" | "default"}
+├─ choices list<object>
+│  └─ {source_node_id: string, 选项编号: string, 选项文字: string, 目标分集编号: string}
+└─ endings list<object>
+   └─ {node_id: string, ending_type: "main" | "expected" | "failure" | "small"}
 ```
 
-duration_minutes 只作短/非短分类。用户给出时照用，没有时从企划确定；冻结后不得改变。用户原话硬数量由脚本解析，软建议不变成硬限制。
+## 输出约束
 
-用户明确要求与默认图形冲突时，brief可增加 user_overrides：
+- 以上字段为正式交接对象的完整字段集，候选与内部草稿不能作为已验收输出交给调用方。
+- `route_version`是路线内容修订标识；`contract_version`是工程协议标识，均不是 Skill 发布版本。Skill 发布版本只在 Git、留底目录和目录外发布说明维护，不写入运行说明、脚本输出、路线标识或业务内容；协议与绑定字段只交工程消费，不展示给玩家。普通 Skill 或脚本维护不修改这些协议标识，不新增发布版本一致性门禁；有效性根据实际字段、内容哈希和当前快照判断。已有路线恢复保留其身份，不因维护而重编号或换身份。
+- 全部节点为兼容合同标记`node_type="episode"`；选择卡由`互动节点.是否为分支节点`和`是否有选择问题`同为`true`识别，不计入集数。结局属于非选择剧集，计入集数。
+- 剧集`单集梗概`逐字取已完成故事切片，选择卡材料仅含问题，不承载独立剧情；状态填有依据的事实，资产使用实际出现的正式名称，不能编造状态。
 
-```json
-{"required_endings":["expected"],"forbidden_endings":["failure"],"ending_quote":"用户关于结局的逐字要求","exemptions":[{"rule":"depth","quote":"用户逐字要求","reason":"该要求为何与默认分岔深度冲突"}]}
-```
+- `contract_version`固定为`nextplay.episode-route-handoff.v1`，`capability_id`固定为`episode-route-planner-biz`。
+- `route_status`必须为`accepted`；节点从`episode-001`开始连续编号，且只有一个入口。
+- 图必须可达、无环并最终抵达结局；边、选择和结局索引必须与节点内事实完全一致。
+- 有选择的节点至少提供两个不同目标；普通节点只有一个默认后继；结局节点后继为空且默认后继为`无`。
+- `ending_type`只允许`main`、`expected`、`failure`和`small`；非结局为`null`。真结局映射`main`，不新增平台枚举；默认类型与图形要求见图形合同，用户明确要求优先。
+- `route_material`必须足以支持下游写作，并明确当前节点的状态变化、资产白名单和`stop_boundary`。
+- 输出不得包含完整剧本、创作分析、对白、冷读、质量结论或占位正文。
 
-没有相关用户要求时不填覆盖项。required_endings表示用户明确必需类型，不用来凭空选默认类型。规则名只允许 small、crossing、woven、depth、ending_types、ending_distribution、immediate_result、sustained_growth、continuation_balance、ending_ladder。程序检查引用来自原话，作者负责正确解释，不能引用无关原话豁免。数量不足容纳四类时用户数量优先；无选择按单线生成；完整锁图用逐条对应要求约束正式图，不豁免无关基础合法性。
+## 九字段兼容投影
 
-`mainline-story.md`：按[故事整理](story-development.md)先独立完成的连续主线正文，包含交代清楚第一集的开场及一直到结局的实际事件。无节点编号、路线说明或字段表；作者读过并整理清楚后才切分。新建规划冻结时必须存在，且与mainline.json.complete_story一致（只忽略空白）。旧缓存按原冻结依赖核验，不回填原文冒充曾执行新流程。
+- 路线独占写入`分集编号`、`分集标题`、`分集剧本.单集梗概`、`剧本分析.本集冲突`、`剧本分析.前置节点编号列表`、`剧本分析.后续节点编号列表`、`是否结局`和`互动节点`。
+- `分集剧本.完整剧本`及正文实际出现的`关联角色`、`关联场景`、`关联道具`由分集剧情 Skill 写入。
+- 分集剧情 Skill 可以读取路线字段，但不得修改；调用方组合两个正式产物时不得产生第二套拓扑事实源。
 
-`mainline.json`：
+## 工程交接与完成边界
 
-```json
-{"complete_story":"一条从开场到结局的完整故事原文","episodes":[{"id":"m1","title":"剧集标题","text":"从完整故事逐字切出的连续段落","conflict":"本段实际冲突","stop_boundary":"最后已经发生的事，下一动作尚未执行","characters":["角色名"],"scenes":[],"props":[],"entry_state":{},"state_changes":{}}]}
-```
+`route_plan.py`从已冻结故事和正式图确定性派生节点、边、选择、结局与材料，不由调用方另写一套拓扑。完成图形与投影检查后，作者审读实际各条来路的因果、选择和回汇；图形通过不代表故事审读通过。只有`route_plan.py accept CACHE_ROOT FORMAL_ROUTE.json`成功输出`PLANNING_ACCEPTED`并写出`route_status="accepted"`的对象，才将该对象交给调用方。
 
-所有episodes.text按序拼接必须覆盖complete_story（只忽略空白）。id在主线与支线全局唯一。人物/资产引用与状态对象由作者填写，状态只读传给下游，不参与机器剧情判断；接口保留可选字段空集合的兼容性，但本轮生成时必须填写正文实际出现的人物、场景和道具，不能以缺省代替整理；未建立的状态不编造。每段对应一个非选择剧集。
+上述路线对象是 Skill 交接合同，不是平台项目 route 文件的直接替代品。调用方按现有适配及写入网关完成九字段投影、平台节点与边映射、保存校验、并发控制和写后读回，再交 UI 展示。不得把内部 brief、主线切片文件、图形报告或规划回执直接写入平台业务字段。工程 ID 由现有适配层维护，不把临时规划 ID 当作已有画布稳定 ID。
 
-## 正式输出
+用户只要求停在规划验收时，执行`route_plan.py accept CACHE_ROOT`，不写项目。要求路线保存展示时完成交接后停止，不自动生成完整剧本、图片或视频。失败按验收与局部恢复规则处理，保留冻结主线和已通过部分，不退回旧的规划或验收脚本。
 
-继续使用 nextplay.episode-route-handoff.v1 与 capability_id=episode-route-planner-biz。真结局映射已有 main，不新增平台结局枚举。编剧和平台文件不改。
+## 已有画布输入与单集交接
 
-route_plan.py确定性生成nodes/edges/choices/endings、稳定遍历编号、前后关系及route_material。剧集的单集梗概逐字取源text；选择卡材料只取问题，不含剧情正文。兼容合同所有节点仍标node_type=episode，是否选择由互动节点布尔区分，不能据这个共同字段计集数。
+| 字段 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| 当前画布 | object | 是 | 完整读取的当前平台路线及 revision；以当前节点和有效连接为准。 |
+| 用户要求 | string | 是 | 本轮检查、修改或生成目标；用户删除已经是决定。 |
+| 目标节点 | string | 单集生成时 | 从当前集号或唯一标题解析的稳定 node_ref，不重新编号已有节点。 |
+| 编辑确认记录 | object | 绑定材料时 | 对本批删改的真实处理选择及修复后读回指纹；暂停时停止相关处理。 |
+| 当前节点材料 | object | 绑定材料时 | 与 route_material 同字段，仅使用当前节点、有效前情和资产文字。 |
 
-一集 = 一个slot = 一个非选择剧集节点；结局计入集数，选择另计。用户说12集或12个剧情节点就是12个非选择节点；明确包含选择的总卡数才同时锁nodes总数。
+删改交互遵守[当前画布与用户编辑](current-canvas-editing.md)，材料准备和命令遵守[当前单集材料绑定](canvas-writing-contract.md)。选择“接顺现有剧情／补写新的过渡／暂不处理”，不默认恢复旧图，不过滤错误节点绕过基础校验。
 
-正式对象包含项目/路线身份、状态、输入与输出哈希、验收时间及节点材料。材料包含完整故事切片、本集冲突、入口/变化状态、资产白名单、停止边界。内部故事、图形报告、修订历史、用户覆盖说明不写入正式业务字段。正式输出无完整剧本、创作分析或占位正文。
-
-默认完成规划后交接保存；用户仅要求停在PLANNING_ACCEPTED时不写项目；同时明确要求保存到当前项目并展示画布时，只交接已验收路线并完成展示，不扩展到完整剧本。图形验收不证明作者剧情正确，不宣称完成编剧或全剧内容验收。
-
-## 用户编辑后的单集交接
-
-当前画布的删改确认与单集写作材料准备见[当前单集材料绑定](canvas-writing-contract.md)。该模式先完成用户确认的删后接缝整理和当前图基础校验，再绑定当前材料；不回写旧规划哈希，不恢复已删除对象，不放松原保存规则。
+`writing-route.json`是传给编剧的当前材料快照；`canvas-writing-receipt.json`只记录授权范围、当前画布指纹及材料绑定。这里的 accepted 仅指当前材料冻结，不是新一轮 PLANNING_ACCEPTED。不得用写作快照替换平台画布、回写上游正式哈希或覆盖旧规划回执。保存目标剧本前再次核对当前画布，按当前 revision 写入目标补丁，保留其他节点、连接和媒体。

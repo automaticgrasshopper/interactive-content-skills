@@ -1,4 +1,4 @@
-"""0.20: frozen mainline, scoped branch repair, graph inspection and exact story projection."""
+"""Frozen mainline, scoped branch repair, graph inspection and exact story projection."""
 import argparse
 import hashlib
 import json
@@ -117,7 +117,7 @@ def freeze(root):
     story_parts(story)
     if not source.strip() or re.sub(r'\s+', '', source) != re.sub(r'\s+', '', story['complete_story']):
         raise ValueError('PROJECTION: mainline slices must preserve the independently written mainline-story.md')
-    lock = {'contract_version': 'route-020.mainline-lock.v1', 'created_at': stamp(), 'policy': value,
+    lock = {'contract_version': 'route.mainline-lock.v1', 'created_at': stamp(), 'policy': value,
             'files': {name: sha(root/name) for name in ('user-request.md', 'brief.json', 'mainline-story.md', 'mainline.json')}}
     write(root/'mainline-lock.json', lock)
     return lock
@@ -201,7 +201,7 @@ def submit(root, submission):
         regressed = [k for k, v in prior['checks'].items() if v['status'] == 'PASS' and report['checks'][k]['status'] == 'FAIL']
         if regressed:
             raise ValueError('REPAIR_REGRESSION: repair broke passed checks '+','.join(regressed))
-    state = {'contract_version': 'route-020.topology.v1', 'revision': old['revision']+1 if old else 1,
+    state = {'contract_version': 'route.topology.v1', 'revision': old['revision']+1 if old else 1,
              'hash': handoff.digest(bundle), 'bundle': bundle, 'reason': submission.get('reason', 'initial graph'),
              'affected_nodes': submission.get('affected_nodes', []), 'created_at': stamp(), 'graph_report': report}
     write(root/'topology-state.json', state)
@@ -238,10 +238,21 @@ def materialize(root, state):
                       '默认下一分集编号': nxt[0] if nxt else '无'}, 'node_route_material_hash': ''})
     edges, choices, endings = handoff.expected_indexes(nodes)
     brief = read(root/'brief.json')
+    input_hash = handoff.digest(frozen(root)['files'])
+    route_id = brief.get('route_id')
+    if route_id is None:
+        # Preserve an existing identity when resuming the same frozen input.
+        # Release labels never select a code path or invalidate a receipt.
+        candidate_path = root/'route-candidate.json'
+        previous = read(candidate_path) if candidate_path.exists() else {}
+        if previous.get('project_id') == brief['project_id'] and previous.get('route_input_hash') == input_hash:
+            route_id = previous.get('route_id')
+        if not isinstance(route_id, str) or not route_id.strip():
+            route_id = 'route-' + input_hash[:16]
     route = {'contract_version': handoff.CONTRACT_VERSION, 'capability_id': handoff.CAPABILITY_ID,
-             'project_id': brief['project_id'], 'route_id': brief.get('route_id', 'route-020'),
+             'project_id': brief['project_id'], 'route_id': route_id,
              'route_version': str(state['revision']), 'route_status': 'draft',
-             'route_input_hash': handoff.digest(frozen(root)['files']), 'route_output_hash': '', 'accepted_at': None,
+             'route_input_hash': input_hash, 'route_output_hash': '', 'accepted_at': None,
              'nodes': nodes, 'edges': edges, 'choices': choices, 'endings': endings}
     errors = handoff.validate(route, require_accepted=False)
     if errors:
@@ -263,7 +274,7 @@ def accept(root, output=None):
     report = check(root)
     if report['status'] != 'PASS':
         raise ValueError('GRAPH_REPAIR_REQUIRED: '+','.join(report['failures']))
-    receipt = {'contract_version': 'route-020.planning.v1', 'status': 'PLANNING_ACCEPTED',
+    receipt = {'contract_version': 'route.planning.v1', 'status': 'PLANNING_ACCEPTED',
                'accepted_at': stamp(), 'scope': 'graph-and-projection-only; plot is author responsibility',
                'files': {n: sha(root/n) for n in ('mainline-lock.json', 'topology-state.json', 'graph-report.json', 'route-candidate.json')}}
     write(root/'planning-acceptance.json', receipt)
