@@ -76,7 +76,7 @@ B双翼与C交织贯穿主要发展：重要选择至少两边都有继续发展
 {"project_id":"真实或明确测试身份","title":"标题","summary":"一句话","duration_minutes":40,"characters":["正式角色名"],"scenes":["正式场景名"],"props":["正式道具名"],"creative_brief":"目标、人物关系、世界规则、必保事实、禁区及情绪和结局走向"}
 ```
 
-duration_minutes 在机器检查中只作短/非短分类，故事体量仍须按故事整理要求匹配用户意图。用户给出时照用，没有时从企划确定；冻结前发现不匹配须先询问并按用户明确意见处理，冻结后不得改变。用户原话硬数量由脚本解析，软建议不变成硬限制。
+duration_minutes 在机器检查中只作短/非短分类，故事体量仍须按故事整理要求匹配用户意图。用户给出时照用，没有时按故事实际展开需要确定，企划默认短篇不是用户硬要求；冻结前发现不匹配须先询问并按用户明确意见处理，冻结后不得改变。用户原话硬数量由脚本解析，软建议不变成硬限制。
 
 用户明确要求与默认图形冲突时，brief可增加 user_overrides：
 
@@ -84,7 +84,7 @@ duration_minutes 在机器检查中只作短/非短分类，故事体量仍须�
 {"required_endings":["expected"],"forbidden_endings":["failure"],"ending_quote":"用户关于结局的逐字要求","exemptions":[{"rule":"depth","quote":"用户逐字要求","reason":"该要求为何与默认分岔深度冲突"}]}
 ```
 
-没有相关用户要求时不填覆盖项。required_endings表示用户明确必需类型，不用来凭空选默认类型。规则名只允许 small、crossing、woven、depth、ending_types、ending_distribution、immediate_result、sustained_growth、continuation_balance、ending_ladder。程序检查引用来自原话，作者负责正确解释，不能引用无关原话豁免。数量不足容纳四类时用户数量优先；无选择按单线生成；完整锁图用逐条对应要求约束正式图，不豁免无关基础合法性。
+没有相关用户要求时不填覆盖项。“结尾不一定每次都团圆”不等于禁止小结局，也不等于指定结局数量；不能据此排除small或放松无关图形门禁。required_endings表示用户明确必需类型，不用来凭空选默认类型。规则名只允许 small、crossing、woven、depth、ending_types、ending_distribution、immediate_result、sustained_growth、continuation_balance、ending_ladder。程序检查引用来自原话，作者负责正确解释，不能引用无关原话豁免。数量不足容纳四类时用户数量优先；无选择按单线生成；完整锁图用逐条对应要求约束正式图，不豁免无关基础合法性。
 
 `mainline-story.md`：按[故事整理](story-development.md)先独立完成的连续主线正文，包含交代清楚第一集的开场及一直到结局的实际事件。无节点编号、路线说明或字段表；作者读过并整理清楚后才切分。新建规划冻结时必须存在，且与mainline.json.complete_story一致（只忽略空白）。旧缓存按原冻结依赖核验，不回填原文冒充曾执行新流程。
 
