@@ -67,5 +67,12 @@
       },
       "revision": "interaction-chain-20260916-r24"
     }
-  ]
+  ],
+  "formalGit": {
+    "commit": "5b1ca7f",
+    "branch": "codex/postproduction-skill-r24",
+    "mainUpdated": false,
+    "reason": "GH013: Changes must be made through a pull request",
+    "newPrCreated": false
+  }
 }
