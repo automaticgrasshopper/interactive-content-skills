@@ -4,7 +4,7 @@
 
 | 目录 | Maxwell Skill ID | 当前修订 |
 |---|---|---|
-| `video-editing-subtitles-music-biz` | `504c21de-f3e4-4ce0-bb72-b5e73e87fbe6` | `interaction-chain-20260916-r24` |
+| `video-editing-subtitles-music-biz` | `504c21de-f3e4-4ce0-bb72-b5e73e87fbe6` | `interaction-chain-20260916-r25` |
 | `video-editing-subtitles-music-test-biz` | `5e20600a-a4cc-4414-81d6-a5d31cd5fe6e` | `interaction-chain-20260916-r24` |
 
 每个目录包含完整的 SKILL.md 与 references，可独立对照 Maxwell 发布内容。Git 历史保存后续修订，不把运行项目、凭据、接口响应或测试媒体提交到本目录。
@@ -24,3 +24,5 @@
 本次结构校验通过。发布后的文件一致性结果见 release.json；未执行播放器实测，不将规则更新当作实际无溢出证明。
 
 2026-09-16：原 timeline 测试资源原地更名为 `video-editing-subtitles-music-biz`，保留 UUID `504c21de-f3e4-4ce0-bb72-b5e73e87fbe6`；规则仍为 r24。此次更名未挂载主预设，正式团队资源仍需走 PR 发布。
+
+r25：按镜头效果与戏剧功能剪辑，允许完整删去不承担必要功能的对白；保留句子完整、问答指代、剧情与情绪衔接。入口、剪辑、对白、字幕和验收五处规则统一；保留原 UUID。正式 PR：https://github.com/world-sim-dev/nextplay-fe/pull/27 。另一测试资源仍保留 r24。
