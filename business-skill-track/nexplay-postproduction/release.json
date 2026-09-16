@@ -73,6 +73,7 @@
     "branch": "codex/postproduction-skill-r24",
     "mainUpdated": false,
     "reason": "GH013: Changes must be made through a pull request",
-    "newPrCreated": false
+    "newPrCreated": true,
+    "prUrl": "https://github.com/world-sim-dev/nextplay-fe/pull/32"
   }
 }
