@@ -17,6 +17,7 @@ HARD_COUNT_FIELDS = {
     "total_node_count",
 }
 _NUMBER = r"(?:\d+|[零〇一二两三四五六七八九十百]+)"
+_COUNT = rf"(?<![第\d零〇一二两三四五六七八九十百])(?P<count>{_NUMBER})"
 
 
 def _number(value: str) -> int:
@@ -53,6 +54,15 @@ def parse_explicit_counts(text: str) -> dict[str, int | None]:
     """Return only counts stated in the user text; never infer missing counts."""
     if not isinstance(text, str):
         raise ValueError("user-request.md必须是文本")
+    # Episode/node labels describe positions, not cardinality. Mask the whole
+    # ordinal so a multi-digit label cannot be matched again from its suffix.
+    text = re.sub(rf"第\s*{_NUMBER}\s*(?:集|个\s*(?:节点|结局|选择节点))", " ", text)
+    # A node followed by branching describes a local source, not the total
+    # number of narrative episodes. Do not infer a choice-card count from it.
+    text = re.sub(
+        rf"{_COUNT}\s*个\s*节点(?=\s*[，,、]?\s*(?:再)?(?:选择出|分出|分成|分为))",
+        " ", text,
+    )
     total_node_count = _unique_count(
         text,
         (
@@ -64,23 +74,23 @@ def parse_explicit_counts(text: str) -> dict[str, int | None]:
     episode_count = _unique_count(
         text,
         (
-            rf"(?P<count>{_NUMBER})\s*集(?:剧情|内容)?",
-            rf"(?P<count>{_NUMBER})\s*个\s*(?:剧情|内容)(?:节点|卡)",
-            rf"(?P<count>{_NUMBER})\s*张\s*(?:剧情|内容)卡",
-            rf"(?P<count>{_NUMBER})\s*个\s*节点(?![^。；;\n]{{0,18}}(?:包含|含|包括)[^。；;\n]{{0,12}}(?:选择卡|选择节点|抉择点|选择点))",
+            rf"{_COUNT}\s*集(?:剧情|内容)?",
+            rf"{_COUNT}\s*个\s*(?:剧情|内容)(?:节点|卡)",
+            rf"{_COUNT}\s*张\s*(?:剧情|内容)卡",
+            rf"{_COUNT}\s*个\s*节点(?![^。；;\n]{{0,18}}(?:包含|含|包括)[^。；;\n]{{0,12}}(?:选择卡|选择节点|抉择点|选择点))",
         ),
         "剧情内容节点",
     )
     choice_node_count = _unique_count(
         text,
         (
-            rf"(?P<count>{_NUMBER})\s*个?\s*(?:抉择点|选择点|决策点|分支选择|选择节点|分支节点|抉择节点|决策节点|分支点)",
+            rf"{_COUNT}\s*个?\s*(?:抉择点|选择点|决策点|分支选择|选择节点|分支节点|抉择节点|决策节点|分支点)",
         ),
         "选择节点",
     )
     ending_count = _unique_count(
         text,
-        (rf"(?P<count>{_NUMBER})\s*个?\s*结局",),
+        (rf"{_COUNT}\s*个?\s*结局",),
         "结局",
     )
     if re.search(r"(?:不要|不设|不需要|没有|无)(?:任何)?(?:选择(?:节点|点)?|抉择点|分支(?:节点)?)", text):
