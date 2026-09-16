@@ -4,7 +4,7 @@
 
 | 目录 | Maxwell Skill ID | 当前修订 |
 |---|---|---|
-| `video-editing-subtitles-music-biz` | `504c21de-f3e4-4ce0-bb72-b5e73e87fbe6` | `interaction-chain-20260916-r26` |
+| `video-editing-subtitles-music-biz` | `504c21de-f3e4-4ce0-bb72-b5e73e87fbe6` | `interaction-chain-20260916-r27` |
 | `video-editing-subtitles-music-test-biz` | `5e20600a-a4cc-4414-81d6-a5d31cd5fe6e` | `interaction-chain-20260916-r24` |
 
 每个目录包含完整的 SKILL.md 与 references，可独立对照 Maxwell 发布内容。Git 历史保存后续修订，不把运行项目、凭据、接口响应或测试媒体提交到本目录。
@@ -28,3 +28,5 @@
 r25：按镜头效果与戏剧功能剪辑，允许完整删去不承担必要功能的对白；保留句子完整、问答指代、剧情与情绪衔接。入口、剪辑、对白、字幕和验收五处规则统一；保留原 UUID。正式 PR：https://github.com/world-sim-dev/nextplay-fe/pull/27 。另一测试资源仍保留 r24。
 
 r26：仅对白／旁白与人物介绍（含译文）清理句号，写前逐条扫描、写后query全量读回校验，残留须修正。世界观及其译文允许保留句号，不纳入清理；保留其原有规则。
+
+r27：普通加字幕仅对白／旁白，不追问或自动附加介绍。世界观／前情与人物介绍均须明确要求；世界观未指定集数默认仅首集一次，明确某集前情则遵从。世界观实际文字框不相交，人物以剪后预览起始帧和整段可识别性决定位置、时长，可参照半身，不硬凑三秒。本次用户明确授权直接推送正式 main，不新建 PR；不自行修改线上预设或平台代码。世界观句号仍保留。
