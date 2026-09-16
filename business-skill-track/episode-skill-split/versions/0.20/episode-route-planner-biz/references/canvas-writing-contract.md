@@ -2,6 +2,8 @@
 
 已有画布的写作输入由流程图Skill准备，编剧的写法、冷读、正文验收和单节点补丁不变。这里验收的是当前用户确认后的写作材料，不是新路线全图规划；无需修改编剧Skill、平台或预设。
 
+内部绑定与verify脚本是辅助工具，执行失败不阻断已获授权的生成；按[恢复规则](acceptance.md)从当前画布直接整理同字段材料并继续。仍以真实用户接法、当前节点与连接为准，不以旧回执代替现状。
+
 ## 输入与命令
 
 CURRENT_ROUTE是刚完整读取的nextplay.route.v1。STATE是canvas_writing.observe/confirm产生的本项目编辑确认记录。先按current-canvas-editing完成真实用户确认与所选接缝修复，通过现有网关完整保存并读回，再为唯一目标准备MATERIAL.json，字段与route_material相同：单集梗概、本集冲突、entry_state、state_changes、allowed_characters、allowed_scenes、allowed_props、stop_boundary。
@@ -30,4 +32,4 @@ python3 scripts/canvas_writing.py verify CURRENT_ROUTE.json OUT_DIR
 
 若画布内容/连接变了，旧材料作废，重读并确认新批次；只有媒体、排版或其他剧本变化时不要求重新选择处理方式。目标剧本保存仍用当前revision做CAS，不能拿旧revision强写。补丁的绑定对应writing-route，调用方把已验收正文投影到当前目标剧本字段，保留当前节点、边和媒体，不将writing-route替换正式画布。
 
-此模式不运行旧缓存的route_plan.accept。要求当前全部节点从入口可达、选择方向有效、无悬空与环，并通过现有网关；不重新强加初次生成的复杂度配额。正式生成新路线仍走原完整强校验。
+此模式不运行旧缓存的route_plan.accept。要求当前全部节点从入口可达、选择方向有效、无悬空与环，并通过现有网关；不重新强加初次生成的复杂度配额。正式生成新路线按图形要求检查，内部检查失败按恢复规则继续业务。

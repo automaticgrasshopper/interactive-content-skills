@@ -40,6 +40,33 @@ def stamp():
     return datetime.now(timezone.utc).isoformat()
 
 
+def project_id(root):
+    binding = root/'project-binding.json'
+    value = read(binding).get('project_id') if binding.exists() else read(root/'brief.json').get('project_id')
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError('PROJECT_ID: bind-project with the current project manifest; frozen story need not change')
+    return value.strip()
+
+
+def bind_project(root, manifest_path):
+    """Attach runtime identity without rewriting frozen creative inputs."""
+    manifest = read(manifest_path)
+    values = [manifest.get('project_id'), manifest.get('identity', {}).get('story_id')]
+    values = {v.strip() for v in values if isinstance(v, str) and v.strip()}
+    if len(values) != 1:
+        raise ValueError('PROJECT_ID: current manifest must identify exactly one project')
+    value = values.pop()
+    for name in ('brief.json', 'project-binding.json', 'route-candidate.json'):
+        if (root/name).exists():
+            prior = read(root/name).get('project_id')
+            if isinstance(prior, str) and prior.strip() and prior.strip() != value:
+                raise ValueError('PROJECT_ID: existing identity differs; inspect current project before using these materials')
+    binding = {'project_id': value, 'source': str(Path(manifest_path).resolve()),
+               'source_hash': sha(manifest_path)}
+    write(root/'project-binding.json', binding)
+    return {'status': 'PROJECT_BOUND', 'project_id': value, 'next': 'CHECK_EXISTING_CANDIDATE'}
+
+
 def policy(root):
     text = (root/'user-request.md').read_text()
     brief = read(root/'brief.json')
@@ -238,6 +265,7 @@ def materialize(root, state):
                       '默认下一分集编号': nxt[0] if nxt else '无'}, 'node_route_material_hash': ''})
     edges, choices, endings = handoff.expected_indexes(nodes)
     brief = read(root/'brief.json')
+    identity = project_id(root)
     input_hash = handoff.digest(frozen(root)['files'])
     route_id = brief.get('route_id')
     if route_id is None:
@@ -245,12 +273,12 @@ def materialize(root, state):
         # Release labels never select a code path or invalidate a receipt.
         candidate_path = root/'route-candidate.json'
         previous = read(candidate_path) if candidate_path.exists() else {}
-        if previous.get('project_id') == brief['project_id'] and previous.get('route_input_hash') == input_hash:
+        if previous.get('project_id') == identity and previous.get('route_input_hash') == input_hash:
             route_id = previous.get('route_id')
         if not isinstance(route_id, str) or not route_id.strip():
             route_id = 'route-' + input_hash[:16]
     route = {'contract_version': handoff.CONTRACT_VERSION, 'capability_id': handoff.CAPABILITY_ID,
-             'project_id': brief['project_id'], 'route_id': route_id,
+             'project_id': identity, 'route_id': route_id,
              'route_version': str(state['revision']), 'route_status': 'draft',
              'route_input_hash': input_hash, 'route_output_hash': '', 'accepted_at': None,
              'nodes': nodes, 'edges': edges, 'choices': choices, 'endings': endings}
@@ -313,13 +341,15 @@ def status(root):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument('action', choices=['freeze', 'submit', 'check', 'accept', 'verify', 'status', 'paths'])
+    p.add_argument('action', choices=['freeze', 'submit', 'check', 'accept', 'verify', 'status', 'paths', 'bind-project'])
     p.add_argument('cache_root', type=Path)
     p.add_argument('file', nargs='?', type=Path)
     args = p.parse_args()
     root = args.cache_root.resolve()
     try:
-        if args.action == 'submit':
+        if args.action == 'bind-project':
+            result = bind_project(root, args.file)
+        elif args.action == 'submit':
             result = submit(root, read(args.file))
             result = {'hash': result['hash'], 'revision': result['revision'], 'graph_report': result['graph_report']}
         elif args.action == 'paths':
@@ -338,18 +368,20 @@ def main():
         if args.action in ('accept', 'verify'):
             print('PLANNING_ACCEPTED')
         return 0
-    except (OSError, ValueError, KeyError, TypeError) as error:
-        # Only known candidate-validation failures are normal author iteration.
-        # Missing/corrupt files, locks, receipts and unexpected exceptions remain errors.
+    except Exception as error:
+        # CLI diagnostics assist the author; they never gate the business flow.
+        # Preserve error truth without emitting an acceptance receipt or token.
         code = str(error).partition(':')[0]
         if (isinstance(error, ValueError) and args.action != 'verify'
                 and code in {'STRUCTURE', 'PROJECTION', 'GRAPH_REPAIR_REQUIRED', 'REPAIR_REGRESSION'}):
             print(json.dumps({'status': 'NEEDS_REPAIR', 'accepted': False,
-                              'next': 'REPAIR_FAILED_BRANCHES', 'code': code,
+                              'next': 'AUTHOR_CONTINUE_FROM_CURRENT_MATERIAL', 'code': code,
                               'issues': [str(error)]}, ensure_ascii=False))
             return 0
-        print(json.dumps({'status': 'FAIL', 'error': str(error)}, ensure_ascii=False))
-        return 1
+        print(json.dumps({'status': 'INTERNAL_ERROR', 'accepted': False,
+                          'next': 'AUTHOR_CONTINUE_FROM_CURRENT_MATERIAL',
+                          'error_type': type(error).__name__, 'error': str(error)}, ensure_ascii=False))
+        return 0
 
 
 if __name__ == '__main__':
