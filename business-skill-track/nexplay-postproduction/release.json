@@ -1,0 +1,66 @@
+{
+  "revision": "interaction-chain-20260916-r24",
+  "maxwellReadbackVerified": true,
+  "structureValidation": "passed",
+  "playerTestPerformed": false,
+  "skills": [
+    {
+      "slug": "timeline-video-editing-subtitles-music-test-biz",
+      "skillId": "504c21de-f3e4-4ce0-bb72-b5e73e87fbe6",
+      "updatedAt": "2026-09-16T07:28:41Z",
+      "fileCount": 21,
+      "sha256": {
+        "SKILL.md": "c686a7edfa3e84be981c21c5e926120f3d6c88dd165111ef7ce87cb0a4bebd6e",
+        "references/background-music.md": "dd8945bfbf4af1122c8efbdbfab2c0bcd6f1b1559c6f8f4dba15a15f57e2a94c",
+        "references/branch-aware-editing.md": "bdece2bdbaa69348b44abec27a449f056b521b5d607f88a0b38d06d344e5b60d",
+        "references/business-interface.md": "bef9a81cb8247ccd250ec1b4b48517ea945e387acb752aa6a95dfee5c1a250f8",
+        "references/character-appearance-algorithm.md": "268417120fc0b891fd1c7257ee40de8fba904e05f63d5f6d929e380d30994cc4",
+        "references/dialogue-editing.md": "25585acabc99f5fcecdc304cfd9692682ee1aa972d4d87c3b8333320b5bba85a",
+        "references/editing-workflow.md": "b21c5ada0627fd79ad150ef1d3a41a2fb5eefc8b5afa3ac609b009a0c3e4b455",
+        "references/first-episode-onboarding.md": "d5bc832e4da1f724e2b7adc5f8597510832ed06966744b4c226316a6c427b8b4",
+        "references/game-title-frame.md": "eafcda04b0a0aaed1de67bc30d0de95d3075092fb08073cdb7d018463241c8e1",
+        "references/intro-layout.md": "9cff2f1159449ac2e7eac31b3ebd2325603fc478398925328b873507d9738f2a",
+        "references/opening-continuity.md": "39b56183ea9e7f95351e00345c3868ee6136edb72cd8f610a3496e5ab9a1a88f",
+        "references/prepublish-introductions.md": "5f1c00f5e47ea30262df2678f1bb17e6fa575fa76a9d524c81ff0b88bef17139",
+        "references/render-plan-and-media-versions.md": "894719343d94561883e18ea87ae27de3323b309481864b65818457ab1a64ebe0",
+        "references/subtitle-interaction.md": "9f2dab90cd82cdbf79ff55f5478f61e69e0c2978fd1d8ea2ba5786574fc56221",
+        "references/subtitle-layout-handoff.md": "c15b848dc74fcc30a45bceadafe934d692ad8a8e0ec83c86dfe6bc66626589e9",
+        "references/subtitles.md": "c3da06a647f1da7bdff0dfba589d359db5a9c9db8aacde53298110bb3dba8c22",
+        "references/timeline-and-timecode.md": "1dfabc90e0b84fa35613b85ed2e3b96682570693b0e3a0e7486ccc8dbce3d3cb",
+        "references/timeline-mcp.md": "fc13d9f0ef17d487d2e58f1c83a3b33a30a9f6fdcf09126ed94072e72fa5ff12",
+        "references/titles-and-posters.md": "f9fba62c8359f5ad7fa55200bd98db5fd2e84fa9a19016d9185c1993c71aab64",
+        "references/verification-and-versioning.md": "a5834e67c27696bd484de7c41f65b0a2f88e0e49a674ee82561e8953e2788a5e",
+        "references/worldview-opening.md": "923a24140540a0b0800c6461ccb8d2bc2c396ff3afb3614ad2e91555317f9281"
+      }
+    },
+    {
+      "slug": "video-editing-subtitles-music-test-biz",
+      "skillId": "5e20600a-a4cc-4414-81d6-a5d31cd5fe6e",
+      "updatedAt": "2026-09-16T07:29:35Z",
+      "fileCount": 21,
+      "sha256": {
+        "SKILL.md": "257a6b0e20866b218b38443e05a50c2d0481d4e2035cf3649f86af59490223f6",
+        "references/background-music.md": "dd8945bfbf4af1122c8efbdbfab2c0bcd6f1b1559c6f8f4dba15a15f57e2a94c",
+        "references/branch-aware-editing.md": "bdece2bdbaa69348b44abec27a449f056b521b5d607f88a0b38d06d344e5b60d",
+        "references/business-interface.md": "bef9a81cb8247ccd250ec1b4b48517ea945e387acb752aa6a95dfee5c1a250f8",
+        "references/character-appearance-algorithm.md": "268417120fc0b891fd1c7257ee40de8fba904e05f63d5f6d929e380d30994cc4",
+        "references/dialogue-editing.md": "25585acabc99f5fcecdc304cfd9692682ee1aa972d4d87c3b8333320b5bba85a",
+        "references/editing-workflow.md": "b21c5ada0627fd79ad150ef1d3a41a2fb5eefc8b5afa3ac609b009a0c3e4b455",
+        "references/first-episode-onboarding.md": "d5bc832e4da1f724e2b7adc5f8597510832ed06966744b4c226316a6c427b8b4",
+        "references/game-title-frame.md": "eafcda04b0a0aaed1de67bc30d0de95d3075092fb08073cdb7d018463241c8e1",
+        "references/intro-layout.md": "9cff2f1159449ac2e7eac31b3ebd2325603fc478398925328b873507d9738f2a",
+        "references/opening-continuity.md": "39b56183ea9e7f95351e00345c3868ee6136edb72cd8f610a3496e5ab9a1a88f",
+        "references/prepublish-introductions.md": "5f1c00f5e47ea30262df2678f1bb17e6fa575fa76a9d524c81ff0b88bef17139",
+        "references/render-plan-and-media-versions.md": "894719343d94561883e18ea87ae27de3323b309481864b65818457ab1a64ebe0",
+        "references/subtitle-interaction.md": "9f2dab90cd82cdbf79ff55f5478f61e69e0c2978fd1d8ea2ba5786574fc56221",
+        "references/subtitle-layout-handoff.md": "c15b848dc74fcc30a45bceadafe934d692ad8a8e0ec83c86dfe6bc66626589e9",
+        "references/subtitles.md": "c3da06a647f1da7bdff0dfba589d359db5a9c9db8aacde53298110bb3dba8c22",
+        "references/timeline-and-timecode.md": "1dfabc90e0b84fa35613b85ed2e3b96682570693b0e3a0e7486ccc8dbce3d3cb",
+        "references/timeline-mcp.md": "fc13d9f0ef17d487d2e58f1c83a3b33a30a9f6fdcf09126ed94072e72fa5ff12",
+        "references/titles-and-posters.md": "f9fba62c8359f5ad7fa55200bd98db5fd2e84fa9a19016d9185c1993c71aab64",
+        "references/verification-and-versioning.md": "a5834e67c27696bd484de7c41f65b0a2f88e0e49a674ee82561e8953e2788a5e",
+        "references/worldview-opening.md": "923a24140540a0b0800c6461ccb8d2bc2c396ff3afb3614ad2e91555317f9281"
+      }
+    }
+  ]
+}
