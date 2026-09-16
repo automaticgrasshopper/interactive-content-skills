@@ -1,5 +1,5 @@
 {
-  "revision": "interaction-chain-20260916-r25",
+  "revision": "interaction-chain-20260916-r26",
   "maxwellReadbackVerified": true,
   "structureValidation": "passed",
   "playerTestPerformed": false,
@@ -7,10 +7,10 @@
     {
       "slug": "video-editing-subtitles-music-biz",
       "skillId": "504c21de-f3e4-4ce0-bb72-b5e73e87fbe6",
-      "updatedAt": "2026-09-16T11:43:01Z",
+      "updatedAt": "2026-09-16T12:15:30Z",
       "fileCount": 21,
       "sha256": {
-        "SKILL.md": "5ff2107cfe0fd1700d5edbd93d7158b2e7daf551a675ae9b3da5c0f08ffc0fde",
+        "SKILL.md": "eea37a486987e717ee45a8ef2fdcbd8e0589e3e539fce4b4f5a372161f666f38",
         "references/background-music.md": "dd8945bfbf4af1122c8efbdbfab2c0bcd6f1b1559c6f8f4dba15a15f57e2a94c",
         "references/branch-aware-editing.md": "bdece2bdbaa69348b44abec27a449f056b521b5d607f88a0b38d06d344e5b60d",
         "references/business-interface.md": "bef9a81cb8247ccd250ec1b4b48517ea945e387acb752aa6a95dfee5c1a250f8",
@@ -24,18 +24,18 @@
         "references/prepublish-introductions.md": "5f1c00f5e47ea30262df2678f1bb17e6fa575fa76a9d524c81ff0b88bef17139",
         "references/render-plan-and-media-versions.md": "894719343d94561883e18ea87ae27de3323b309481864b65818457ab1a64ebe0",
         "references/subtitle-interaction.md": "9f2dab90cd82cdbf79ff55f5478f61e69e0c2978fd1d8ea2ba5786574fc56221",
-        "references/subtitle-layout-handoff.md": "c15b848dc74fcc30a45bceadafe934d692ad8a8e0ec83c86dfe6bc66626589e9",
-        "references/subtitles.md": "5573e929d3d76e17ad52df1e0e954e1664772d9eac4b020732f5214d2d8d4a2a",
+        "references/subtitle-layout-handoff.md": "ceaf8ea2d8a7d0fae263349005e5205c6b569defc36bcbb50fb6fc4802fd9908",
+        "references/subtitles.md": "e88a79f2d9a4d75970f4f1d0ac574c29cb836956dc5e975bb352b94f8a5635bd",
         "references/timeline-and-timecode.md": "1dfabc90e0b84fa35613b85ed2e3b96682570693b0e3a0e7486ccc8dbce3d3cb",
         "references/timeline-mcp.md": "fc13d9f0ef17d487d2e58f1c83a3b33a30a9f6fdcf09126ed94072e72fa5ff12",
         "references/titles-and-posters.md": "f9fba62c8359f5ad7fa55200bd98db5fd2e84fa9a19016d9185c1993c71aab64",
-        "references/verification-and-versioning.md": "5e6410bfed432fc350fd1eee2280c1582219cabc9124732c944f081efb448337",
+        "references/verification-and-versioning.md": "b0f57d423e6e0b69557e41443c74991e1f20fc09a821548d59df704fadca02ee",
         "references/worldview-opening.md": "923a24140540a0b0800c6461ccb8d2bc2c396ff3afb3614ad2e91555317f9281"
       },
       "displayName": "蚂蚱-后期设计师-0916",
       "description": "当第一集全部正式镜头的视频均已成功生成、正式保存并读回，且尚未发送首集后期提示时，使用本 Skill 提供一次剪辑、字幕和配乐能力引导，告知用户可按需提出「一键剪辑」「添加字幕」「添加配乐」；仅提示，不自动执行后期、不等待用户回复或阻塞已授权的后续生成。用户在任何制作阶段主动要求字幕、裁剪、台词剪辑、配乐入轨、组装、替换、标题文字或后期检查时，也使用本 Skill，支持指定镜头、整集及全项目逐集处理；独立作曲和音乐入库不要求已有视频。字幕按用户选定范围处理，不自动补齐分支介绍；不改写剧情、不重做原分镜，也不生成世界观补充视频。",
       "displayDescription": "当第一集全部正式镜头的视频均已成功生成、正式保存并读回，且尚未发送首集后期提示时，使用本 Skill 提供一次剪辑、字幕和配乐能力引导，告知用户可按需提出「一键剪辑」「添加字幕」「添加配乐」；仅提示，不自动执行后期、不等待用户回复或阻塞已授权的后续生成。用户在任何制作阶段主动要求字幕、裁剪、台词剪辑、配乐入轨、组装、替换、标题文字或后期检查时，也使用本 Skill，支持指定镜头、整集及全项目逐集处理；独立作曲和音乐入库不要求已有视频。字幕按用户选定范围处理，不自动补齐分支介绍；不改写剧情、不重做原分镜，也不生成世界观补充视频。",
-      "revision": "interaction-chain-20260916-r25"
+      "revision": "interaction-chain-20260916-r26"
     },
     {
       "slug": "video-editing-subtitles-music-test-biz",
