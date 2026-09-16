@@ -4,7 +4,7 @@
 
 | 目录 | Maxwell Skill ID | 当前修订 |
 |---|---|---|
-| `timeline-video-editing-subtitles-music-test-biz` | `504c21de-f3e4-4ce0-bb72-b5e73e87fbe6` | `interaction-chain-20260916-r24` |
+| `video-editing-subtitles-music-biz` | `504c21de-f3e4-4ce0-bb72-b5e73e87fbe6` | `interaction-chain-20260916-r24` |
 | `video-editing-subtitles-music-test-biz` | `5e20600a-a4cc-4414-81d6-a5d31cd5fe6e` | `interaction-chain-20260916-r24` |
 
 每个目录包含完整的 SKILL.md 与 references，可独立对照 Maxwell 发布内容。Git 历史保存后续修订，不把运行项目、凭据、接口响应或测试媒体提交到本目录。
@@ -22,3 +22,5 @@
 今后在本目录维护并同步提交至本仓库。更新 Maxwell 时先读取远端保留无关字段，上传后逐文件读回比对，再记录发布结果；未经用户授权不运行实际项目测试。
 
 本次结构校验通过。发布后的文件一致性结果见 release.json；未执行播放器实测，不将规则更新当作实际无溢出证明。
+
+2026-09-16：原 timeline 测试资源原地更名为 `video-editing-subtitles-music-biz`，保留 UUID `504c21de-f3e4-4ce0-bb72-b5e73e87fbe6`；规则仍为 r24。此次更名未挂载主预设，正式团队资源仍需走 PR 发布。

@@ -5,12 +5,12 @@
   "playerTestPerformed": false,
   "skills": [
     {
-      "slug": "timeline-video-editing-subtitles-music-test-biz",
+      "slug": "video-editing-subtitles-music-biz",
       "skillId": "504c21de-f3e4-4ce0-bb72-b5e73e87fbe6",
-      "updatedAt": "2026-09-16T07:28:41Z",
+      "updatedAt": "2026-09-16T09:55:41Z",
       "fileCount": 21,
       "sha256": {
-        "SKILL.md": "c686a7edfa3e84be981c21c5e926120f3d6c88dd165111ef7ce87cb0a4bebd6e",
+        "SKILL.md": "ac1add894e013b60678331330ef4858832381b9573191fcd248e6824dd09c62b",
         "references/background-music.md": "dd8945bfbf4af1122c8efbdbfab2c0bcd6f1b1559c6f8f4dba15a15f57e2a94c",
         "references/branch-aware-editing.md": "bdece2bdbaa69348b44abec27a449f056b521b5d607f88a0b38d06d344e5b60d",
         "references/business-interface.md": "bef9a81cb8247ccd250ec1b4b48517ea945e387acb752aa6a95dfee5c1a250f8",

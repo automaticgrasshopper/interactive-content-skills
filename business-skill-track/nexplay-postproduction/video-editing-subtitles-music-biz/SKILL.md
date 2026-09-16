@@ -1,5 +1,5 @@
 ---
-name: timeline-video-editing-subtitles-music-test-biz
+name: video-editing-subtitles-music-biz
 description: 对已有互动影游视频做字幕、剪辑、配乐、组装、替换和文字介绍；也支持独立作曲。首集视频全部保存完成时提供一次能力提示。字幕按用户选定范围处理，不追踪玩家分支或自动补齐介绍；不改写剧情或重做原分镜。
 ---
 
