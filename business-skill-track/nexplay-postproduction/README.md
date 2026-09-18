@@ -4,7 +4,7 @@
 
 | 目录 | Maxwell Skill ID | 当前修订 |
 |---|---|---|
-| `video-editing-subtitles-music-biz` | `504c21de-f3e4-4ce0-bb72-b5e73e87fbe6` | `interaction-chain-20260916-r27` |
+| `video-editing-subtitles-music-biz` | `504c21de-f3e4-4ce0-bb72-b5e73e87fbe6` | `stepwise-execution-20260918-r28`（待 PR 发布） |
 | `video-editing-subtitles-music-test-biz` | `5e20600a-a4cc-4414-81d6-a5d31cd5fe6e` | `interaction-chain-20260916-r24` |
 
 每个目录包含完整的 SKILL.md 与 references，可独立对照 Maxwell 发布内容。Git 历史保存后续修订，不把运行项目、凭据、接口响应或测试媒体提交到本目录。
@@ -34,3 +34,6 @@ r27：普通加字幕仅对白／旁白，不追问或自动附加介绍。世�
 本次正式 main 直接推送被 GitHub GH013 拒绝（必须通过 PR）。修订提交 `5b1ca7f` 保存于 `codex/postproduction-skill-r24` 分支，main 尚未更新；遵照本次要求未新建 PR。Maxwell 已更新并读回一致。
 
 用户随后授权提交 PR，已创建正式 PR #32：https://github.com/world-sim-dev/nextplay-fe/pull/32 ，等待审核合并。
+
+
+r28：统一查询留底入口，新增执行目录、首次失败修复及同一问题两次实际失败后的异常处理参考；逐步记录与验收，复用已验证成果，最终只补查衔接与受影响部分；首集引导补齐配乐并明确对白字幕。正式 PR #35：https://github.com/world-sim-dev/nextplay-fe/pull/35 。按用户最新决定取消测试版发布和四步／八步项目实测，本次不直接更新 Maxwell，也不改预设绑定；合并上线后由用户验证。另一测试资源仍保留原快照，避免把未发布稿冒充线上测试版。历史 r27 PR #32 已合并。

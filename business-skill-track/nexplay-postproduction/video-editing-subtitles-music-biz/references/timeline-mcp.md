@@ -70,7 +70,11 @@ Agent聊天剪视频且已有字幕时，先按[字幕询问](subtitle-interacti
 
 ## 保存、冲突与恢复
 
+本节是查询与留底的统一入口：每轮先实际query route定位正式节点，再query目标timeline，取得本轮真实身份和工具提供的hash/revision；不能把上一回合下标或直接读route.json当作本轮查询证据。剪辑已有字幕且未明确是否联动时，按[字幕选择](subtitle-interaction.md)取得必要选择；已明确的不重问，等待期间对象变化须重新query。
+
 编辑前必须将本轮query返回的完整timeline原对象（所有video/audio/timed_text轨、settings、每个clip及其全部属性/引用/源区间/时间/layout）、节点身份与原数组下标、timeline_hash、route_revision、用户要求及区间映射实际写入 `runtime/postproduction_history/<本轮唯一标识>/before.json`，随即重新打开文件、json.loads解析，并断言读回timeline与本轮查询原对象完全相等，成功后才允许首个修改工具。读回可与写入放在同一次exec内，但必须有真实read_text/解析/比较，不能只见write_text exit0就跳到trim。只摘录文字/时间的摘要、历史工具输出或裁后日志都不是完整留底。备份不作为整route写回载荷；日志不是MCP参数。恢复超出当前source_range时不能用trim扩大，需依据原媒体和留底通过支持的add/delete重新编排；没有可靠备份不承诺恢复。
+
+同轮对每个受影响对象在首次修改前完整留底一次；若后来新增目标，在首次修改该目标前补充留底并读回，保留已存原件。后续步骤读取最新状态及回执，不重复备份全项目。外部修改或授权变化造成原基线失效时，保留旧基线并追加新基线，不用旧快照覆盖当前内容。
 
 写成功看 `structuredContent` 中完整timeline、timeline_hash、route_revision，并核对isError及目标变化。后续操作使用最新数组；同一节点串行，不用旧下标并行写。服务内部冲突检查不保障早先query版本，也不是端到端原子事务。
 
