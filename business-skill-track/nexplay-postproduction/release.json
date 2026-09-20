@@ -1,5 +1,5 @@
 {
-  "revision": "stepwise-execution-20260918-r28",
+  "revision": "music-wording-20260920-r29",
   "maxwellReadbackVerified": false,
   "structureValidation": "passed",
   "playerTestPerformed": false,
@@ -9,10 +9,10 @@
       "skillId": "504c21de-f3e4-4ce0-bb72-b5e73e87fbe6",
       "fileCount": 24,
       "sha256": {
-        "SKILL.md": "c153ccf404ff0a51fa1828655ca6e3a91e653b1657ed2139eabaa68285f49cfd",
-        "references/background-music.md": "dd8945bfbf4af1122c8efbdbfab2c0bcd6f1b1559c6f8f4dba15a15f57e2a94c",
+        "SKILL.md": "9154e41a9d93774dd810d2a52316ad30914d30ec2c1d1463bac119e1167f50c0",
+        "references/background-music.md": "b146c9fd5924747fb79852dabd10de90b2d66cdb8ced82a8ba8b411c9a2535f8",
         "references/branch-aware-editing.md": "9abf8c8892e6377a7218742724bc8d496a2658d39f28ce34edcf778672214b14",
-        "references/business-interface.md": "bef9a81cb8247ccd250ec1b4b48517ea945e387acb752aa6a95dfee5c1a250f8",
+        "references/business-interface.md": "5f815aa7f84be2089d2810a8b50acd13c122bf006cf9e8f8cff52375f282f4a6",
         "references/character-appearance-algorithm.md": "82005af0095297fdfc5a8568efd69fe60ea876976d01fb805b7b9fc743fc7205",
         "references/dialogue-editing.md": "5772242bc410fe19a606c8d65976457be7cc452e6fa0eebc54b8a437df37c0c2",
         "references/editing-workflow.md": "0da65c300206302f3f180030355eb2062a21c9bb47735881b375c3ed1de4c739",
@@ -31,13 +31,13 @@
         "references/timeline-and-timecode.md": "1dfabc90e0b84fa35613b85ed2e3b96682570693b0e3a0e7486ccc8dbce3d3cb",
         "references/timeline-mcp.md": "4180068200da90e7352755b8e10b895b7e4e326390d876be2dc380936c7dc306",
         "references/titles-and-posters.md": "eb4bd4ca1c49d40a559000d2d72250e52ffaa72da4b8c0f06803e4e562f6065b",
-        "references/verification-and-versioning.md": "f24b904512c5d5cdb3901417ba060cb157614b20c01bfa0588b0b1695fb022f9",
+        "references/verification-and-versioning.md": "7dbaa44c16543ac85b55c5a4a0846f520d2f56c6b584080f3bdcb81da75a5086",
         "references/worldview-opening.md": "42e5581fb79c6a87ec7313f62293d75d433452c24f4de995f258df5bb78a8dcd"
       },
       "displayName": "蚂蚱-后期设计师-0916",
-      "description": "当第一集全部正式镜头的视频均已成功生成、正式保存并读回，且尚未发送首集后期提示时，使用本 Skill 提供一次剪辑、字幕和配乐能力引导，告知用户可按需提出「一键剪辑」「添加字幕」「添加配乐」；仅提示，不自动执行后期、不等待用户回复或阻塞已授权的后续生成。用户在任何制作阶段主动要求字幕、裁剪、台词剪辑、配乐入轨、组装、替换、标题文字或后期检查时，也使用本 Skill，支持指定镜头、整集及全项目逐集处理；独立作曲和音乐入库不要求已有视频。普通“加字幕”仅处理对白／旁白，不追问或自动加人物、世界观；人物介绍须明确要求，并按剪后本人全段可识别的画面定位和确定时长。世界观／前情须明确要求，未指定集数默认仅正式首集开场一次，明确指定某集则遵从；不改写剧情、不重做原分镜，也不生成世界观补充视频。",
-      "displayDescription": "当第一集全部正式镜头的视频均已成功生成、正式保存并读回，且尚未发送首集后期提示时，使用本 Skill 提供一次剪辑、字幕和配乐能力引导，告知用户可按需提出「一键剪辑」「添加字幕」「添加配乐」；仅提示，不自动执行后期、不等待用户回复或阻塞已授权的后续生成。用户在任何制作阶段主动要求字幕、裁剪、台词剪辑、配乐入轨、组装、替换、标题文字或后期检查时，也使用本 Skill，支持指定镜头、整集及全项目逐集处理；独立作曲和音乐入库不要求已有视频。普通“加字幕”仅处理对白／旁白，不追问或自动加人物、世界观；人物介绍须明确要求，并按剪后本人全段可识别的画面定位和确定时长。世界观／前情须明确要求，未指定集数默认仅正式首集开场一次，明确指定某集则遵从；不改写剧情、不重做原分镜，也不生成世界观补充视频。",
-      "revision": "stepwise-execution-20260918-r28",
+      "description": "当第一集全部正式镜头的视频均已成功生成、正式保存并读回，且尚未发送首集后期提示时，使用本 Skill 提供一次剪辑、字幕和配乐能力引导，告知用户可按需提出「一键剪辑」「添加字幕」「添加配乐」；仅提示，不自动执行后期、不等待用户回复或阻塞已授权的后续生成。用户要求字幕、裁剪、台词剪辑、配乐入轨、组装、替换、标题文字或后期检查时，也使用本 Skill，支持指定镜头、整集及全项目逐集处理；支持独立作曲和音乐素材入库。普通“加字幕”仅处理对白／旁白，不追问或自动加人物、世界观；人物介绍须明确要求，并按剪后本人全段可识别的画面定位和确定时长。世界观／前情须明确要求，未指定集数默认仅正式首集开场一次，明确指定某集则遵从；不改写剧情、不重做原分镜，也不生成世界观补充视频。",
+      "displayDescription": "当第一集全部正式镜头的视频均已成功生成、正式保存并读回，且尚未发送首集后期提示时，使用本 Skill 提供一次剪辑、字幕和配乐能力引导，告知用户可按需提出「一键剪辑」「添加字幕」「添加配乐」；仅提示，不自动执行后期、不等待用户回复或阻塞已授权的后续生成。用户要求字幕、裁剪、台词剪辑、配乐入轨、组装、替换、标题文字或后期检查时，也使用本 Skill，支持指定镜头、整集及全项目逐集处理；支持独立作曲和音乐素材入库。普通“加字幕”仅处理对白／旁白，不追问或自动加人物、世界观；人物介绍须明确要求，并按剪后本人全段可识别的画面定位和确定时长。世界观／前情须明确要求，未指定集数默认仅正式首集开场一次，明确指定某集则遵从；不改写剧情、不重做原分镜，也不生成世界观补充视频。",
+      "revision": "music-wording-20260920-r29",
       "lastVerifiedRemoteRevision": "interaction-chain-20260916-r27",
       "lastVerifiedRemoteUpdatedAt": "2026-09-16T13:09:33Z",
       "deploymentStatus": "pending_formal_pr"
@@ -74,7 +74,7 @@
     }
   ],
   "formalGit": {
-    "commit": "d4d035c",
+    "commit": "2a2d2b2",
     "branch": "tune/yingyou-agent-test/postproduction-stepwise-r28",
     "mainUpdated": false,
     "newPrCreated": true,
