@@ -116,21 +116,42 @@ def policy(root):
             'ending_override': ending_override, 'exemptions': exemptions}
 
 
+def narrative_text(text, titles):
+    """Remove standalone document headings, never infer or rewrite story events."""
+    document_titles = {'主线故事', '主线长故事', '支线故事', '支线长故事'}
+    def unnumber(value):
+        return re.sub(r'^(?:[0-9]+[.、．]|第[0-9零〇一二两三四五六七八九十百]+[集章节][：:、.．]?)\s*', '', value).strip()
+    episode_titles = {unnumber(title) for title in titles}
+    lines = []
+    for line in text.splitlines(keepends=True):
+        heading = re.fullmatch(r'[ \t]*#{1,6}[ \t]+(.+?)[ \t]*(?:\r?\n)?', line)
+        if heading:
+            label = re.sub(r'[ \t]+#+$', '', heading.group(1)).strip()
+            if label in document_titles or unnumber(label) in episode_titles:
+                continue
+        lines.append(line)
+    return ''.join(lines)
+
+
 def story_parts(story):
     parts = story['episodes']
     if not isinstance(parts, list) or not parts or not isinstance(story['complete_story'], str):
         raise ValueError('INPUT: story needs complete_story and episodes')
     by = {}
+    titles = [part.get('title', '') for part in parts]
     for part in parts:
         for key in ('id', 'title', 'text', 'conflict', 'stop_boundary'):
             if not isinstance(part.get(key), str) or not part[key].strip():
                 raise ValueError('INPUT: missing story slice field '+key)
         if part['id'] in by:
             raise ValueError('INPUT: duplicate story slice ID')
-        by[part['id']] = part
+        text = narrative_text(part['text'], titles)
+        if not text.strip():
+            raise ValueError('INPUT: story slice contains only a document heading')
+        by[part['id']] = {**part, 'text': text}
     # Identity of the projection, not a literary quality judgement.
     clean = lambda s: re.sub(r'\s+', '', s)
-    if clean(''.join(p['text'] for p in parts)) != clean(story['complete_story']):
+    if clean(''.join(p['text'] for p in by.values())) != clean(narrative_text(story['complete_story'], titles)):
         raise ValueError('PROJECTION: slices must cover their complete story without rewriting or omission')
     return by
 
@@ -142,7 +163,9 @@ def freeze(root):
     source = (root/'mainline-story.md').read_text(encoding='utf-8')
     story = read(root/'mainline.json')
     story_parts(story)
-    if not source.strip() or re.sub(r'\s+', '', source) != re.sub(r'\s+', '', story['complete_story']):
+    titles = [part['title'] for part in story['episodes']]
+    clean = lambda text: re.sub(r'\s+', '', narrative_text(text, titles))
+    if not clean(source) or clean(source) != clean(story['complete_story']):
         raise ValueError('PROJECTION: mainline slices must preserve the independently written mainline-story.md')
     lock = {'contract_version': 'route.mainline-lock.v1', 'created_at': stamp(), 'policy': value,
             'files': {name: sha(root/name) for name in ('user-request.md', 'brief.json', 'mainline-story.md', 'mainline.json')}}
