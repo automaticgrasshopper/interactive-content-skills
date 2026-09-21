@@ -4,7 +4,7 @@
 
 | 目录 | Maxwell Skill ID | 当前修订 |
 |---|---|---|
-| `video-editing-subtitles-music-biz` | `504c21de-f3e4-4ce0-bb72-b5e73e87fbe6` | `music-wording-20260920-r29`（待 PR 发布） |
+| `video-editing-subtitles-music-biz` | `504c21de-f3e4-4ce0-bb72-b5e73e87fbe6` | `fine-cut-20260921-r30`（待 PR 发布） |
 | `video-editing-subtitles-music-test-biz` | `5e20600a-a4cc-4414-81d6-a5d31cd5fe6e` | `interaction-chain-20260916-r24` |
 
 每个目录包含完整的 SKILL.md 与 references，可独立对照 Maxwell 发布内容。Git 历史保存后续修订，不把运行项目、凭据、接口响应或测试媒体提交到本目录。
@@ -40,3 +40,6 @@ r28：统一查询留底入口，新增执行目录、首次失败修复及同�
 
 
 r29：移除“任何制作阶段”“大纲阶段”“没有视频即可作曲”等时机声明，只保留作曲用途、输入、保存和入轨规则；同步正式 manifest 描述。追加至 PR #35，未修改 SP、UUID、预设绑定或直接发布 Maxwell。
+
+
+r30：将成片精剪经验整合到既有 editing-workflow，先标记剧情功能，分别检查画面与原声，再用现有素材最小修改，复看跨镜头衔接。精剪不重生成、不补拍、不列重生成候选；无法修剪解决的问题保留必要内容并说明。经验依据用户观看反馈与对话审阅，本轮未重新运行项目或独立验证成片。追加原 PR #35，未直接发布 Maxwell。
