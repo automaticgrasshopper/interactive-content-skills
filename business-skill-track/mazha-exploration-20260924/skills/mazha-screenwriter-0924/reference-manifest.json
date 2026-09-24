@@ -1,0 +1,13 @@
+{
+  "skill_version": "mazha-screenwriter-0924/0.1",
+  "based_on": "episode-testscreenwriter-biz@2026-09-08T11:23",
+  "release_status": "isolated-test",
+  "references": [
+    "business-interface.md",
+    "compact-action-draft.md",
+    "full-scene-enhancer.md",
+    "node-screenwriting.md",
+    "dialogue-and-quality.md",
+    "user-visible-progress.md"
+  ]
+}
