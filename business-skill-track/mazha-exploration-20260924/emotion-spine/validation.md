@@ -1,0 +1,12 @@
+# 影游创作 · 2026-09-24
+
+- Maxwell test preset: 蚂蚱测试探索 / 8bf0ce65-3d52-4819-97d7-9afbb5751203.
+- Existing skill 4568d2b1-85ad-43fe-a361-9801d4b26a6f renamed 影游创作; slug mazha-route-0924 retained. Entire entrypoint replaced, not an override delegating to the old writer. UI readback exactly matched submitted content (4327 characters; codepoint checksum 102641227).
+- Skill now owns research, pitch, short-story direction, emotion spine, incremental topology, screenplay and just-in-time textual assets. User continuation expands the existing frontier; first batch is an opening, not a compressed whole story.
+- Preset saved and reread: only 影游创作 + nextplay-cli selected. Old bootstrap and screenwriter resources are preserved but no longer bound. No other presets changed.
+- Test prompt fff75383-8b7d-40e4-a46e-45208a52a5a1 replaced with system-prompt.md; UI showed only this test preset as reference and saved content. Frontend prelude/confirmation now dispatch only to unified skill.
+- Old uploaded support files remain for recovery, explicitly retired from the active entrypoint; no old script or reference is required by the new skill. The reproducible active skill is the single SKILL.md in this directory.
+- Read current nextplay-cli SKILL.md, references/routes.md and references/assets.md in Studio. CLI provides route create/edit, add-node/connect, asset add/update and script set/edit, stable refs and atomic operations. Non-ending disconnections are project issues, not evidence of a finished ending; never relabel them as endings for acceptance. Actual runtime partial-route behavior still requires a real trial.
+- CLI is shared with CLI-Simplify; it was read only, not modified. No production resources/backend changes.
+- Validation: frontend TypeScript and targeted ESLint pass; six existing prelude/expert tests pass after updating old prompt dispatch expectation. Skill frontmatter/manual consistency checks pass. Official quick_validate.py could not run because PyYAML is absent in both available Python runtimes. No claim of full behavioral validation: a fresh generation/continuation run has not been performed in this change.
+- Source: local rulebook copy /private/tmp/interactive-drama-rules-20260924.md, especially sections 2, 3.5 and 4, and original screenplay references compact-action-draft/full-scene-enhancer/dialogue-and-quality. Original source link: https://github.com/automaticgrasshopper/interactive-drama-lab/blob/main/规则/互动影视游戏设计规则书.md
