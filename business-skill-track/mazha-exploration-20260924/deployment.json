@@ -1,5 +1,5 @@
 {
-  "status": "configuration-created-integration-pending",
+  "status": "natural-input-test-assets-saved-route-running",
   "business_id": "ad3d5c4b-c7c9-4ed3-b15d-4f3556520263",
   "preset_id": "8bf0ce65-3d52-4819-97d7-9afbb5751203",
   "preset_name": "蚂蚱测试探索",
@@ -10,9 +10,11 @@
     "mazha-screenwriter-0924": "65f32552-dd5c-4298-b9a4-842d08956b89",
     "mazha-route-0924": "4568d2b1-85ad-43fe-a361-9801d4b26a6f"
   },
-  "reused_unchanged_skill_id": "a7f05163-2e70-4771-b2b6-f26c9b521ebb",
   "diagnostic_thread_id": "thr_01M394FYRZT4CRV0YAB82BKGRN",
   "source_screenwriter_slug": "episode-testscreenwriter-biz",
   "source_route_path": "/private/tmp/route-narrative-pr-0921/agent-resources/skills/episode-route-planner-biz",
-  "source_route_thread": "01a094ae-e65a-7720-9209-9272a10d613b"
+  "source_route_thread": "01a094ae-e65a-7720-9209-9272a10d613b",
+  "previous_engineering_skill_id": "a7f05163-2e70-4771-b2b6-f26c9b521ebb",
+  "reused_unchanged_skill_slug": "nextplay-cli",
+  "active_test_story_id": "7bc1b3c1-e84a-42f0-8d3b-88ade343dcf0"
 }

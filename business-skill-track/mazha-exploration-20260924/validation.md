@@ -31,3 +31,13 @@
 - 复测 `c23eed77-d64c-47f8-b1f7-fbb7f8e4a945`：仍使用以上原话，首页独立预设 ID 已确认。成功自动定位并核验项目身份；约 81 秒结束，9 次工具调用。初始化与安全修复均因 `manifest.story.cover` 缺失而失败，合同要求 `media_ref` 与 `url`。没有企划、人物场景、流程图或剧本产出，端到端未通过。
 - 结论：提示词可修复“不检查项目就询问 ID”的交互问题，但当前复用工程 Skill 与新建项目初始化存在合同兼容阻塞。遵守用户范围，不修改平台代码、共享工程 Skill 或其他预设，不手写项目文件绕过校验。
 - 当前测试入口：https://nextplay-dev.sandaii.cn/story-creation?story_id=c23eed77-d64c-47f8-b1f7-fbb7f8e4a945
+
+## 回归原通路：CLI 工程适配实测
+
+用户取消本地环境方案；两个团队仓库实验分支已删除，本地服务停止。
+仅在独立预设中将旧 interactive-film-game_dev 解绑，改为现有 nextplay-cli 原样绑定；独立 Prompt 将工程提交改为 CLI，不改变流程图和编剧创作规则。共享 Skill 内容未修改。
+
+复测输入仍为用户第4条原话，项目：
+https://nextplay-dev.sandaii.cn/story-creation?story_id=7bc1b3c1-e84a-42f0-8d3b-88ade343dcf0
+
+约2分半：页面已显示《回南天》企划、5角色、5场景、3道具；无图片；Agent 自动进入路线阶段，未追加用户消息。旧封面字段阻塞不再出现。全路线与全剧本尚待验证，不能据此判定端到端完成。
