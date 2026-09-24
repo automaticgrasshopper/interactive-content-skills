@@ -1,0 +1,4 @@
+interface:
+  display_name: "流程图规划师"
+  short_description: "从完整故事自然生长并验收可编辑的互动剧情流程图"
+  default_prompt: "Use $episode-route-planner-biz to generate and formally accept an editable interactive-story route graph."
