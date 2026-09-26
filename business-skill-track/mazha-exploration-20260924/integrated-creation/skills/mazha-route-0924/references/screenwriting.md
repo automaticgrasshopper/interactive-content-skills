@@ -20,7 +20,7 @@
 
 `python3 scripts/build_enhancer_input.py node-writing-packet.txt compact-draft.md compact-draft-receipt.json enhancer-input.txt`
 
-唯一正式写作者只读这个输入，执行 full-scene-enhancer.md 与 dialogue-and-quality.md。保留事实和戏剧拍，表达完全重写；对白以交流段为单位自然整理，不增加轮次补证明。输出 enhanced-screenplay.md；固定场次、对白、单换行格式，详见 full-scene-enhancer.md。
+唯一正式写作者只读这个输入，执行 full-scene-enhancer.md 与 dialogue-and-quality.md。保留事实和戏剧拍，表达完全重写；对白以交流段为单位自然整理，不增加轮次补证明。依 live-creation.md 将已写出的完整行动段及时保存为当前累计工作稿；完成后输出 enhanced-screenplay.md；固定场次、对白、单换行格式，详见 full-scene-enhancer.md。
 
 ## 4. 冷读、检查与保存
 
