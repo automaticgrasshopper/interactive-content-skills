@@ -16,7 +16,7 @@ description: "影游创作：从题材调研、创意提案到故事、互动路
 ## 一条创作链
 
 1. **创意入口**：读[题材与提案](references/creative-entry.md)，实际搜索后给简短、有人物行动和选择可能性的提案；支持手改、再创意。指定确认停点时保存后等待，不抢跑。
-2. **故事与方向**：确认后读[故事整理](references/story-development.md)与[情绪脊](references/emotional-spine.md)，写通短故事；主角的目标、事件因果与情绪变化决定岔点。仅专家首批开场另读[开场形状选择](references/expert-opening.md)，让题材冲突和实际后果决定开头结构；后续续写仍由情绪脊推进，不轮换形状。
+2. **故事与方向**：确认后读[故事整理](references/story-development.md)与[情绪脊](references/emotional-spine.md)，写通短故事；主角的目标、事件因果与情绪变化决定岔点。仅专家首批开场另读[开场形状选择](references/expert-opening.md)，优先从五种非小菱形开场中按实际后果选择，小菱形仅限符合回汇条件的例外；首批保存后用只读脚本核对后端实际连线。后续续写仍由情绪脊推进，不轮换形状。
 3. **边长路线边写戏**：按[创作模式](references/modes.md)确定全作或本批范围；读[拓扑展开](references/story-planning.md)、[图形规则](references/graph-contract.md)。每段先写通事件，再建节点、选择与后果，随写随补[文字资产](references/assets.md)，按[单集写作](references/screenwriting.md)完成短底稿→增强复写→冷读→保存。全自动持续执行到全部完成；专家完成本批后交还决定权。
 4. **完成或续写**：按[验收与修复](references/acceptance.md)核对真实内容及读回；遵守[交互与进度](references/interaction.md)。用户打断立即停；“再做几个节点”从当前末端续长。
 

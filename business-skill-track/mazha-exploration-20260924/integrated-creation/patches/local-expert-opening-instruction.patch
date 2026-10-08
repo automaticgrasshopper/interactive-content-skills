@@ -1,0 +1,47 @@
+--- a/src/pages/StoryCreation/expertMessageDisplay.ts
++++ b/src/pages/StoryCreation/expertMessageDisplay.ts
+@@ -3,7 +3,8 @@
+ import { publicProgressStyleInstruction } from './CreationPlayback/publicProgressCopy';
+ // Keep transport instructions intact; only the user-message view removes this exact suffix.
+ export const previousExpertModeInstruction = '【已选择专家模式】本轮只推进一个小批次：从情绪推进中的天然抉择形成少量剧情节点和必要的选择卡，并完成这批节点的正式剧本及人物、场景、道具文字。用户给了具体范围则遵从；未给时以一个可审阅的局部单元为限，不扩写整部作品。该回线的在不同即时后果后合理汇合，不回线的给出成立的小结局。每批仍保存合法可读的路线，未展开的后续只在工作计划中记录，不伪装成已完成结局或悬空连接。批次完成后用 AskUser 暂停并给出三个方向：继续创作、修改本批、就此停止。等待选择时不要结束运行或解锁编辑；用户选就此停止时结束当前批次，不再写入、不再发起 AskUser，让我自由编辑和聊天。说明本批范围，问我想如何继续。仅查询或修改时按原请求范围处理；保留现有执行前确认/全自动权限，不因专家模式跳过审批。';
+-export const expertModeInstruction = previousExpertModeInstruction.replace('批次完成后用 AskUser 暂停并给出三个方向：继续创作、修改本批、就此停止。等待选择时不要结束运行或解锁编辑；用户选就此停止时结束当前批次，不再写入、不再发起 AskUser，让我自由编辑和聊天。说明本批范围，问我想如何继续。', '批次完成后默认就此停止，保留已保存内容并结束本轮，不再写入、不展开下一批、不弹出批次交接 AskUser，让我自由编辑和聊天。');
++export const previousDefaultExpertModeInstruction = previousExpertModeInstruction.replace('批次完成后用 AskUser 暂停并给出三个方向：继续创作、修改本批、就此停止。等待选择时不要结束运行或解锁编辑；用户选就此停止时结束当前批次，不再写入、不再发起 AskUser，让我自由编辑和聊天。说明本批范围，问我想如何继续。', '批次完成后默认就此停止，保留已保存内容并结束本轮，不再写入、不展开下一批、不弹出批次交接 AskUser，让我自由编辑和聊天。');
++export const expertModeInstruction = previousDefaultExpertModeInstruction.replace('该回线的在不同即时后果后合理汇合，不回线的给出成立的小结局。', '仅首批开场按当前 mazha-route-0924 的 expert-opening.md 比较六种形状，优先按实际选择后果采用非小菱形结构；不以少量节点为由提前回汇。不同线索、信任或去向可以各自停在明确待续前沿，不要求小结局。共同任务、同一地点或拿到同一线索不足以证明必须回汇；已兑现的差异若引出新的决定，继续该决定及其后果。本批保存后核对后端 route.json 的真实节点和连线，不能只靠布局或自称保留代价通过。后续批次仍由情绪脊自然续接，不轮换开场形状。');
+ 
+ 
+ const previousOutlineFirstInstruction = '【本轮停点：大纲确认】使用“影游创作”（mazha-route-0924），直接创作并分段保存、读回 story.outline。先完成可编辑的故事大纲，完成后输出公开的主标签、副标签和创意词，再结束本轮，等待前端编辑与确认。不要先输出开场标签或创意词；确认前不展开路线节点、剧本或资产，不进入专家批次 AskUser。用户确认后才按所选模式进入正式创作。保留现有工具审批和用户明确的权限。';
+@@ -16,7 +17,7 @@
+ export const savedRevisionInstruction = '【修改结果以保存的 JSON 为准】用户要求改哪个环节，就完成该环节的修改并更新对应的实际 JSON，保存后读回核对，不能只回复一份新文案或只改变展示。核查本次修改涉及的依赖、引用和工作计划：已被修改推翻的错误结果要删除或重写，不把旧稿、失效节点或错误资产保留为当前版本，不让旧工作计划继续推进。只清理已失效的部分，保留仍然成立且无关的内容。若大纲发生变化，先清理基于旧版且已经失效的短故事、路线、剧本及资产结果，停在新版大纲确认环节；收到用户对新版的确认后才生成新的下游内容。仅查询或讨论时不擅自写入。';
+ 
+ export function expertMessageDisplay(text: string) {
+-  const suffix = [`\n\n${expertModeInstruction}\n${expertBatchStopInstruction}`, `\n\n${expertModeInstruction}`, `\n\n${previousExpertModeInstruction}`].find(value => text.endsWith(value));
++  const suffix = [`\n\n${expertModeInstruction}\n${expertBatchStopInstruction}`, `\n\n${expertModeInstruction}`, `\n\n${previousDefaultExpertModeInstruction}\n${expertBatchStopInstruction}`, `\n\n${previousDefaultExpertModeInstruction}`, `\n\n${previousExpertModeInstruction}`].find(value => text.endsWith(value));
+   const expert = Boolean(suffix);
+   let visible = suffix ? text.slice(0, -suffix.length) : text;
+   const revisionSuffix=`\n\n${outlineRevisionInstruction}`;
+--- a/src/pages/StoryCreation/expertMessageDisplay.test.ts
++++ b/src/pages/StoryCreation/expertMessageDisplay.test.ts
+@@ -2,7 +2,7 @@
+ import { useCreativePrelude } from './CreativePrelude/store';
+ import { describe, expect, it } from 'vitest';
+ import { messageForExpertProject, useExpertModeStore, expertMessage } from './expertMode';
+-import { expertMessageDisplay, outlineFirstInstruction, previousPublicOutlineFirstInstruction, previousResearchOutlineFirstInstruction, previousExpertModeInstruction } from './expertMessageDisplay';
++import { expertMessageDisplay, outlineFirstInstruction, previousPublicOutlineFirstInstruction, previousResearchOutlineFirstInstruction, previousExpertModeInstruction, previousDefaultExpertModeInstruction, expertBatchStopInstruction } from './expertMessageDisplay';
+ import { previousPublicCreationInstruction, previousResearchPublicCreationInstruction } from './CreationPlayback/publicPresentation';
+ 
+ describe('expert user-message presentation', () => {
+@@ -56,6 +56,14 @@
+       expect(expertMessageDisplay(text)).toEqual({ text, expert: false });
+     }
+   });
++  it('allows opening frontiers without demanding endings and retains historical batch messages', () => {
++    const current = expertMessage('开始创作', true);
++    expect(current).not.toContain('不回线的给出成立的小结局');
++    expect(current).toContain('不同线索、信任或去向可以各自停在明确待续前沿');
++    expect(current).toContain('仅首批开场');
++    expect(current).toContain('后续批次仍由情绪脊自然续接');
++    expect(expertMessageDisplay(`继续\n\n${previousDefaultExpertModeInstruction}\n${expertBatchStopInstruction}`)).toEqual({ text: '继续', expert: true });
++  });
+   it('requires persisted JSON revisions and invalid-result cleanup without exposing transport instructions',()=>{
+     for(const enabled of [false,true]) {
+       useExpertModeStore.getState().set('revision-json',enabled);
