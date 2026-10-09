@@ -116,3 +116,8 @@ Maxwell 的七份修改内容均在保存后重新打开逐字读回一致；证
 Maxwell 原位保存大纲15项、编剧2项和测试 SP，18项均重新打开逐字读回一致；SP 26740字节。41个相对链接有效，通用 SP 基线逐字不变。测试预设取消共享 planner 绑定，刷新后完整 JSON 对比只 skillIds/updatedAt 改变，最终4项为 nextplay-cli、mazha-asset-image-direct-1008、mazha-outline-route-1008、mazha-screenplay-1008，模型仍 gpt-5.6-sol。没有创建额外拓扑 Skill。证据在本地前端 validation/2026-10-09-continuation-handoff/，包括共享只读原文、18项前后内容及哈希、预设前后 JSON、差异和 maxwell-merged-topology.png。
 
 按用户要求不新开作品或执行生成测试；文件保存读回不等同于端到端接续验证。配合会话负责前端，已报告第一／第三人称实际 PATCH 和 GET 回读成功并还原项目原值，workspace outline 的独立实时读回未在本会话验证。前端本轮完整构建及界面结果由配合会话另报。
+
+
+追加20:03新版CLI只读复核：Maxwell 当前来源 nextplay-cli-389e40a.zip；仅读导出包 nextplay.bin（1323449字节，SHA256 698fbbf4e63e5b4a7f204eaf57d81c03724bfeeedc6b90fb4e363420beea92f7）与 references/routes.md（23946字节，与UI逐字一致），未读取runtime.env、未执行CLI。新版普通start仍要求空图，非空首次mainline-cut仍要求replace-route并detachRoute，无新增无损adopt-existing入口；文档明确complete后普通route edit，不再generate或reconcile。next仍status=ok及next.step，complete仍status=saved、step=complete、result.planning_complete=true、next.step=done。本轮合并接续合同兼容新版，不需再改Skill。静态源码摘录、版本哈希及新旧diff位于同一证据目录cli-2003-*，不能当作运行验证。
+
+配合会话最终报告前端已统一mazha-outline-route-1008并兼容历史消息；48相关用例、tsc、eslint、build通过。侧边浏览器验证移交前及动画中隐藏入口，finish后显示，刷新保留入口不重播，未保存时禁用；发送前新GET当前大纲并提交增量交接。第一／第三人称真实PATCH及GET均成功且还原测试项目。普通编辑不伪造移交，活跃规划要求本轮complete。上述为对方已完成验证记录；本轮没有新创作生成的端到端验证。
