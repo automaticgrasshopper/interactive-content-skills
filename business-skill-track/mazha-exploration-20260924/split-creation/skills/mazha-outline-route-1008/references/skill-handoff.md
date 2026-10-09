@@ -1,8 +1,10 @@
 # 同一运行内调度路线与编剧
 
-这是同一 Agent、Thread、项目和当前 Run 内按需加载的工作说明，不是跨会话接力。nextplay-cli 负责工程接口；本 Skill 负责大纲与逐段生长；nextplay-route-planning 负责普通完整拓扑；mazha-screenplay-1008 负责正式剧本。按 modes.md 先定范围和方法，不能同时让两套路线策略接管同一段。
+这是同一 Agent、Thread、项目和当前 Run 内按需加载的工作说明，不是跨会话接力。nextplay-cli 负责工程接口；本 Skill 统一负责大纲、逐段生长、完整 CLI 拓扑与增量接续；mazha-screenplay-1008 负责正式剧本。按 modes.md 先定范围和方法，不能同时让两套路线策略接管同一段。
 
-完整拓扑由同事 Skill 按 start/next、故事、切片、全部支线、check、complete 推进；切片真实写入 summary，正式 script 空是正常状态。branch-shape 草案、主线保存或部分 landing 不是全图完成。确认无待展开方向及阻塞，真实 complete 成功、next=done 才完成规划。【一键拓扑】到此停止，即使项目开启形象生成也不编剧或生成媒体。
+route generate 路径按 cli-topology.md 的 start/next、故事、切片、全部支线、check、complete 推进；切片真实写入 summary，正式 script 空是正常状态。branch-shape 草案、主线保存或部分 landing 不是全图完成。确认无待展开方向及阻塞，真实 complete 成功、next=done 才完成规划。【一键拓扑】到此停止，即使项目开启形象生成也不编剧或生成媒体。
+
+非空图已完成规划或无规划时，按 continuation-handoff.md 使用普通 route edit 增量补全；以本轮读回和全图实际内容核对，不借历史 done，也不为收尾重建。
 
 普通整作文字创作在完整拓扑完成后，不结束 Run 或偷偷另发消息，直接交独立编剧逐个处理已保存 video 节点，包括各分支和结局；choice 不编剧。优先先写实际前驱，汇合读全部合法来路，只补未完成正文，保留手改。逐段生长则保存当前事件、选择与全部即时后果入口及必要文字资产后交编剧，当前单元完成再续下一段；不先造整作空图。
 

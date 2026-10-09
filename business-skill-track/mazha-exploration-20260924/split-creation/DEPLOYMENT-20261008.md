@@ -103,3 +103,16 @@ Maxwell 保存后重新打开并对五份 Skill 文件逐字回读，SP 刷新�
 当前线上 CLI 源码确认：outline data.play.perspective 是 string|null，工程约定 first/third；outline update --field play.perspective --value first/third 或真实 input patch 保存，再 outline inspect --field play.perspective 回读。play.player 记录玩家身份；script context settings.perspective/player 直接取当前大纲 play 字段。两种路线及编剧读取实际最新值，不以缓存推荐覆盖用户改选。第一人称落实角色眼睛摄影位置、可见手部／身体局部及有现场依据的镜像，禁止外部玩家正脸／背影／过肩与未亲历秘密；第三人称可外部观看主角，但不自动全知。两段大纲可用人物名叙述，换视角不是代词替换。已制剧本、分镜及媒体受影响须如实说明，设置保存不冒充全量重制，媒体不自动重做。
 
 Maxwell 的七份修改内容均在保存后重新打开逐字读回一致；证据在本地前端 validation/2026-10-09-perspective-skill（before-local、before-remote、readback、verified-hashes.json、local-checks.json）。35 个本地引用目标有效，SP 通用生产基线逐字不变，git diff --check 通过。按原要求不运行新创作测试，不将资源读回当作视角行为或前端持久化测试；前端 PATCH settings.perspective 到 workspace outline 的实测由配合会话负责并另报。
+
+
+## 2026-10-09 大纲与流程图合并 CLI 拓扑及已有图接续
+
+按用户“合成一个大纲与流程图 Skill”“把他那套 cli 拓扑拿过来”的要求，把 Maxwell 当前共享 nextplay-route-planning（10-09 14:37）的三文件完整复制到现有 mazha-outline-route-1008 的 references/cli-topology*.md。入口只去除嵌套 frontmatter、调整两条内部链接并添加当前工程状态前言；两份参考与源文件逐字一致，原完整规划、审读、主线与支线切片、回汇、结局及检查完成方法保留。共享原资源未改。大纲 Skill 由21增至25文件；编剧仍独立9文件，仅更新交接引用。
+
+大纲、完整拓扑、逐段生长和已有图接续统一加载 mazha-outline-route-1008；实验 SP 同步。新增 continuation-handoff：每次读取后端最新大纲、稳定节点与边、正式剧情、用户手改和实际规划状态，辨认主线真正推进最远的事件及各支线前沿，整理包含既有事实与完整后续结局的短故事。节点位置、数组顺序、标题占位或正文为空不代替剧情判断。保留已发生事实、节点引用、素材及用户删除，不串用互斥分支状态。
+
+工程按真实 CLI 能力分派：空图和可续活跃规划走完整 generate；已 done 或无活跃规划的非空图走普通 route edit 增量扩展。已核对的 CLI 源码不支持无损 adopt-existing generate，start --new 的非空图切片要求 replace-route，因此不虚构该命令或为接续清空旧图。generate 必须取得本轮实际 complete 与 next.step=done；普通编辑依据实际完整内容、保存读回与工程检查完成，不能借历史 done 或伪造 generate 完成回执，也不重播创作权移交。
+
+Maxwell 原位保存大纲15项、编剧2项和测试 SP，18项均重新打开逐字读回一致；SP 26740字节。41个相对链接有效，通用 SP 基线逐字不变。测试预设取消共享 planner 绑定，刷新后完整 JSON 对比只 skillIds/updatedAt 改变，最终4项为 nextplay-cli、mazha-asset-image-direct-1008、mazha-outline-route-1008、mazha-screenplay-1008，模型仍 gpt-5.6-sol。没有创建额外拓扑 Skill。证据在本地前端 validation/2026-10-09-continuation-handoff/，包括共享只读原文、18项前后内容及哈希、预设前后 JSON、差异和 maxwell-merged-topology.png。
+
+按用户要求不新开作品或执行生成测试；文件保存读回不等同于端到端接续验证。配合会话负责前端，已报告第一／第三人称实际 PATCH 和 GET 回读成功并还原项目原值，workspace outline 的独立实时读回未在本会话验证。前端本轮完整构建及界面结果由配合会话另报。

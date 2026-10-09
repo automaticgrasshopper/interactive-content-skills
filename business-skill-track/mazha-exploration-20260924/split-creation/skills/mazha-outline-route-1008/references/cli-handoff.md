@@ -17,7 +17,7 @@ CLI 的 PASS 证明工程合同与保存结果，不证明 woven、情绪脊、�
 
 视角存在当前 `nextplay/current/outline.json` 的 `data.play.perspective`，统一使用 `first`（第一人称）或 `third`（第三人称）。当前 CLI 可用 `outline update --field play.perspective --value first`（第三人称用 `third`），或在真实 `outline update --input` 补丁中保存 `{"play":{"perspective":"first"}}`；然后 `outline inspect --field play.perspective` 读回。随大纲保存实际采用的推荐或玩家选择，不能只在回复、前端或临时上下文写一个名称。玩家扮演的身份记录在已有 `play.player`，明确角色与关系，不另造视角字段。命令前缀及项目绑定仍按当前 CLI 文档。
 
-大纲确认、路线规划和续写前读最新视角；玩家在前端改选后，以后端已保存值为准，不用旧提案覆写。值缺失或旧中文值时，结合最新明确选择与实际记录，经上述接口补齐或规范化并读回；不根据空值偷偷重置已有作品。第一人称的节点和选择只使用玩家角色能看到、听到、经历或被告知的信息，不安排脱离角色的秘密旁观；第三人称允许外部观看与多线叙事，但信息何时揭露仍服从既定悬念。两种路线方法都遵守，不要求共享 planner 新增字段。
+大纲确认、路线规划和续写前读最新视角；玩家在前端改选后，以后端已保存值为准，不用旧提案覆写。值缺失或旧中文值时，结合最新明确选择与实际记录，经上述接口补齐或规范化并读回；不根据空值偷偷重置已有作品。第一人称的节点和选择只使用玩家角色能看到、听到、经历或被告知的信息，不安排脱离角色的秘密旁观；第三人称允许外部观看与多线叙事，但信息何时揭露仍服从既定悬念。两种路线方法都遵守，不要求CLI 规划方法 新增字段。
 
 用户改视角时先保存新选择，再按授权调整受影响的节点材料和剧本，保留无关内容、稳定引用与媒体；不能只替换“我／他”。已有剧本、分镜或媒体若仍按旧视角制作，如实说明受影响范围，不把设置保存说成全部内容已重制，不自动重做图片或视频。
 
@@ -31,6 +31,6 @@ CLI 的 PASS 证明工程合同与保存结果，不证明 woven、情绪脊、�
 
 CLI 保存成功只证明项目文件保存并读回，不代表远端投影或前端刷新。需要交付前端结果时，再确认页面同步；页面尚未更新要准确说明同步状态，不能只调整显示来掩盖后端未写入。保留未涉及的节点、稳定引用、媒体与用户手改内容。
 
-## 同事规划的保存与修改
+## 完整 CLI 规划的保存与修改
 
-普通完整图按 nextplay-route-planning 和真实 next.input_spec 使用 route generate，切片写 summary 和稳定节点，正式 script 不提前填入。活跃未完规划的改图使用 generate edit，跨集 rewrite-segment 后提交 segment-story/cut，保留 node_ref；新结局必须经真实故事切片，不绕过 ENDING_STORY_REQUIRED。外部用户改图触发 USER_ROUTE_EDIT_DETECTED 时读 next.route_version 并 reconcile，保留当前画布和删除，不恢复旧长故事。next=done 后结束 generate，后续局部改图只用普通 route edit，不再 reconcile。partial_saved 或超时先 next／检查现状，再按合同恢复，不盲目重复创建或 start --new。
+普通完整图先按 continuation-handoff.md 确认状态；空图和活跃规划按 cli-topology.md 与真实 next.input_spec 使用 route generate，切片写 summary 和稳定节点，正式 script 不提前填入。活跃未完规划的改图使用 generate edit，跨集 rewrite-segment 后提交 segment-story/cut，保留 node_ref；新结局必须经真实故事切片，不绕过 ENDING_STORY_REQUIRED。外部用户改图触发 USER_ROUTE_EDIT_DETECTED 时读 next.route_version 并 reconcile，保留当前画布和删除，不恢复旧长故事。next=done 后结束 generate，后续局部改图只用普通 route edit，不再 reconcile。partial_saved 或超时先 next／检查现状，再按合同恢复，不盲目重复创建或 start --new。

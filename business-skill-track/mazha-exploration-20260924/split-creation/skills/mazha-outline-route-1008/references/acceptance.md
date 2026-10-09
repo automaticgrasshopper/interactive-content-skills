@@ -6,11 +6,13 @@
 
 ## 完整拓扑专项
 
-普通完整拓扑与【一键拓扑】由 nextplay-route-planning 的真实检查验收：全部实际支线、回汇和结局切片落地，无 blockers／待展开选项，执行真实 check（至少一次不带 --no-review）和 complete 成功，next=done。branch-shape、主线完成、部分 landing、status:ok 的 project check 或 Run final 均不证明全图完成。保持正式 script 为空可以是正确图专项结果，不自动拉起编剧或媒体。
+普通完整拓扑与【一键拓扑】先按 continuation-handoff.md 区分路径。route generate 路径按 cli-topology.md 的真实检查验收：全部实际支线、回汇和结局切片落地，无 blockers／待展开选项，执行真实 check（至少一次不带 --no-review）和 complete 成功，next=done。branch-shape、主线完成、部分 landing、status:ok 的 project check 或 Run final 均不证明全图完成。保持正式 script 为空可以是正确图专项结果，不自动拉起编剧或媒体。
 
 complete 回执与 next 的实际结果就是证据，不发明 routeComplete、scriptComplete 等字段；文档没有明确 JSON 层级时读取工具真实输出，不能猜字段让前端提前结束。保存只证明项目文件，远端投影／展示就绪另以实际状态判断。真实 CLI 硬阻塞不能人工豁免。
 
-完整拓扑真实完成后，最后单独执行一次 `route generate next`，从实际返回 JSON 仅提取并原样输出 `status` 和 `next` 字段；可用 JSON 解析器过滤，不手写或推断状态。此工具不夹带其他命令的长输出，避免完成证据被截断；当前成功完成的短回执是实际 `status=ok`、`next.step=done`。机器 JSON 只留在工具结果，给玩家用自然语言说明结果；整作联合创作仍须等授权的剧本等内容完成，不能因图阶段的短回执提前移交。
+route generate 路径的完整拓扑真实完成后，最后单独执行一次 `route generate next`，从实际返回 JSON 仅提取并原样输出 `status` 和 `next` 字段；可用 JSON 解析器过滤，不手写或推断状态。此工具不夹带其他命令的长输出，避免完成证据被截断；当前成功完成的短回执是实际 `status=ok`、`next.step=done`。机器 JSON 只留在工具结果，给玩家用自然语言说明结果；整作联合创作仍须等授权的剧本等内容完成，不能因图阶段的短回执提前移交。
+
+普通 route edit 增量补全用本轮实际保存、当前全图读回和工程检查，结合全部方向与结局的实际剧情核对；project check 不能单独证明完整故事。该路径没有 generate complete，不借旧规划 done、不伪造回执，也不为播放新移交动画重开规划。玩家已获创作权时正常回编辑，保存与同步限制如实说明。
 
 ## 局部与联合完成
 
@@ -20,7 +22,7 @@ complete 回执与 next 的实际结果就是证据，不发明 routeComplete、
 
 ## 逐段方法的图形和故事各查各的
 
-以下内部检查仅约束本 Skill 的逐段方法，不复制成同事 planner 的额外门禁或 intent。
+以下内部检查仅约束本 Skill 的逐段方法，不复制成完整 CLI 方法 的额外门禁或 intent。
 
 graph_check.py 保留原无环复杂图诊断；graph_audit.py 增加批次末端和循环结构检查。机器只能证明图形、数目、引用与格式，不能证明因果、精彩或状态继承。作者沿真实路线核对选择前未行动、选项后演对动作、支线连续展开、回汇条件、结局结算。共享节点逐来路追溯，不用另一支的物品／知识补洞。
 
