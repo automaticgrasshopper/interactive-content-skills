@@ -11,7 +11,7 @@ description: "创作或修改影游的大纲、故事与流程图：题材调研
 
 ## 创作与连续衔接
 
-1. **提案与大纲**：读[题材与提案](references/creative-entry.md)，实际搜索、创作、保存读回。产品指定大纲确认时停在这里，不写路线或剧本。
+1. **提案与大纲**：读[题材与提案](references/creative-entry.md)，除了题材，重点辨认用户点名的人物、昵称和疑似网络梗，优先查抖音与 B 站相关资料，再实际创作、保存读回。产品指定大纲确认时停在这里，不写路线或剧本。
 2. **故事与分支方向**：确认后读[故事整理](references/story-development.md)与[情绪脊](references/emotional-spine.md)，写通确定结果的短故事，再按真实因果找岔点。仅专家首批读[六种开场](references/expert-opening.md)，首批外仍由情绪脊续接。
 3. **当前事件与路线**：按[模式和范围](references/modes.md)、[连续事件与切口](references/story-planning.md)、[图形规则](references/graph-contract.md)处理当前单元。每次设计节点先读[旧目标兑现与新目标接管](references/goal-handoff.md)。保存当前剧情材料、稳定节点与边，选择及全部即时后果入口一起提交；随事件补[文字资产](references/assets.md)，不先灌满整图。
 4. **交给独立编剧，再继续路线**：按[同运行交接](references/skill-handoff.md)，加载 `mazha-screenplay-1008` 为当前已保存的剧情节点写作、修订并读回正文。这里不执行底稿、增强复写或冷读工序；编剧不替这里改图。完成当前单元后，按授权继续下一段或结束本批。
