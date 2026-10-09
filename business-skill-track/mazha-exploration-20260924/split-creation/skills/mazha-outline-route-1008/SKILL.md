@@ -9,12 +9,16 @@ description: "创作或修改影游的大纲、故事与流程图：题材调研
 
 未被询问时不主动展示自动估算的体量或视频分钟数，也不让估算限制拓扑；用户明确数量和范围仍遵守。实际时长字段按[题材与提案](references/creative-entry.md)，完整图按[图形规则](references/graph-contract.md)。
 
+## 先分派任务
+
+按[方法、范围与执行模式](references/modes.md)分开判断。大纲与逐段生长由本 Skill 负责；普通完整拓扑及【一键拓扑】交 nextplay-route-planning，完成全部故事切片、分支、回汇、结局和真实 check/complete、next=done。一键拓扑到此停止，不写正式剧本或媒体；普通整作文字任务在同 Run 继续独立编剧。本 Skill 的六种开场、情绪脊和内部完整图门槛仅用于自己的逐段策略，不强加同事 planner。专家模式保留原功能，方法同样兼容全自动与执行前确认。
+
 ## 创作与连续衔接
 
 1. **提案与大纲**：读[题材与提案](references/creative-entry.md)，结合整句意图逐个辨认人物、昵称和疑似网络梗，优先查抖音与 B 站资料；语境清楚就按正确对象创作，明显歧义简短问清，普通名字不硬凑梗。新恋爱或联动无需已有原作关系，不能因没搜到现成 CP 就把网络对象改成同名原创人物。保留已查明的身份与特征，主副标签合计最多 5 个，公开输出与保存数据一致，再实际创作、保存读回。产品指定大纲确认时停在这里，不写路线或剧本。
-2. **故事与分支方向**：确认后读[故事整理](references/story-development.md)与[情绪脊](references/emotional-spine.md)，写通确定结果的短故事，再按真实因果找岔点。仅专家首批读[六种开场](references/expert-opening.md)，首批外仍由情绪脊续接。
+2. **逐段方法的故事与分支方向**：确认后读[故事整理](references/story-development.md)与[情绪脊](references/emotional-spine.md)，写通确定结果的短故事，再按真实因果找岔点。本方法首次开场读[六种开场](references/expert-opening.md)，首批外仍由情绪脊续接。
 3. **当前事件与路线**：按[模式和范围](references/modes.md)、[连续事件与切口](references/story-planning.md)、[图形规则](references/graph-contract.md)处理当前单元。每次设计节点先读[旧目标兑现与新目标接管](references/goal-handoff.md)。保存当前剧情材料、稳定节点与边，选择及全部即时后果入口一起提交；随事件补[文字资产](references/assets.md)，不先灌满整图。
 4. **交给独立编剧，再继续路线**：按[同运行交接](references/skill-handoff.md)，加载 `mazha-screenplay-1008` 为当前已保存的剧情节点写作、修订并读回正文。这里不执行底稿、增强复写或冷读工序；编剧不替这里改图。完成当前单元后，按授权继续下一段或结束本批。
-5. **验收和续接**：按[路线与批次验收](references/acceptance.md)及[真实保存节奏](references/live-creation.md)核对持久化内容。全自动推进整作；专家只完成本批，按前端停点交还编辑，不把路线准备好或编剧单节点完成当本批结束。
+5. **验收和续接**：按[路线与批次验收](references/acceptance.md)及[真实保存节奏](references/live-creation.md)核对持久化内容。整作范围推进整作；局部请求只完成本批，按前端停点交还编辑，不把路线准备好或编剧单节点完成当本批结束。
 
 用户仅要大纲／路线时只做该范围，不自动写剧本；仅要改剧本则直接交给独立编剧，涉及新事件或连接才先处理路线材料。按需读[画布局部修改](references/current-canvas-editing.md)、[循环／调查](references/loops.md)及[交互与真实进展](references/interaction.md)。画风、音色和媒体仍遵从用户及已选生成能力，不凭拆分扩大权限。
