@@ -5,15 +5,25 @@
 ## 实验创作调度（优先）
 
 1. 分别判断当前任务范围、创作方法和执行模式。新测试入口默认全自动，专家入口已下线；仅旧请求带明确专家标记时兼容原有局部批次，不自行推断专家，也不把历史专家状态套到新请求。全自动 full-access 与执行前确认 approval 沿用第3节真实审批，Agent 不擅自切换模式。旧上下文不能覆盖本轮明确新任务，模式不扩大授权。
-2. 新创意／重新创意加载 mazha-outline-route-1008 的 creative-entry：实际调研题材、逐个辨认人物与网络梗，结合整句识别，清楚就做、普通名字不硬凑、明显歧义简短问清。优先查抖音/B站，不要求既有CP。人物职业、关系、实际目标符合故事所在地区生活常识，特殊牵挂在故事中建立。主副标签合计最多5个，创意词另计，公开与保存一致。大纲第一段 logline 先建立具体期待，再用因果相关变化勾起追看欲，以“……”结束；第二段完整梗概保留。前端指定大纲确认时保存读回后停，确认取用户最新大纲。
-3. 普通完整拓扑和明确【一键拓扑】加载 nextplay-route-planning，按其 next.input_spec 完成短故事、长故事、主线切片、全部真实支线／回汇／结局、check 与 complete。不得以 branch-shape、部分落点或主线完成代替全图；当前 CLI 的 next 是对象：next 命令成功 status=ok 且 next.step=done；complete 成功 status=saved、step=complete、next.step=done，result.planning_complete=true。这些真实回执才证明规划完成，project check 的 ok 不等于全图完成。不要把 own 的 six shapes、内部 long_story 默认或额外门禁复制到同事 intent。用户原话与当前 Skill 优先，不将估时当用户预算；start 前核对 outline constraints.duration 来源，AI 自动值按 creative-entry 处理，来源不明不擅清真实限制。未被问不展示总视频分钟。
+2. 新创意／重新创意加载 mazha-outline-route-1008 的 creative-entry：实际调研题材、逐个辨认人物与网络梗，结合整句识别，清楚就做、普通名字不硬凑、明显歧义简短问清。优先查抖音/B站，不要求既有CP。人物职业、关系、实际目标符合故事所在地区生活常识，特殊牵挂在故事中建立。调研辨认题材惯用身份与可猜转折；自由创作时从可信日常愿望及行动切入，先有实际进展，再由同一行动显露非日常并沿因果升级。换普通职业名不自动等于新思路，保留用户指定身份与核心体验。主副标签合计最多5个，创意词另计，公开与保存一致。大纲第一段 logline 建立具体期待，再用实际剧情支持的变化超出题材常规猜测，打开更高的行动、关系或后果期待，在此戛然而止，以“……”结束；不只藏一个常规身份秘密或机械加标点。第二段完整梗概保留，两段因果一致。前端指定大纲确认时保存读回后停，确认取用户最新大纲。
+3. 普通完整拓扑和明确【一键拓扑】加载 nextplay-route-planning，按其 next.input_spec 完成短故事、长故事、主线切片、全部真实支线／回汇／结局、check 与 complete。不得以 branch-shape、部分落点或主线完成代替全图；当前 CLI 的 next 是对象：next 命令成功 status=ok 且 next.step=done；complete 成功 status=saved、step=complete、next.step=done，result.planning_complete=true。这些真实回执才证明规划完成，project check 的 ok 不等于全图完成。拓扑最终单独执行 route generate next，从真实 JSON 仅提取并原样输出 status/next，可用 JSON 解析器过滤，不手写状态、不夹其他长输出；机器回执只留工具结果，给玩家用自然语言回复。整作联合任务不因图完成提前结束。不要把 own 的 six shapes、内部 long_story 默认或额外门禁复制到同事 intent。用户原话与当前 Skill 优先，不将估时当用户预算；start 前核对 outline constraints.duration 来源，AI 自动值按 creative-entry 处理，来源不明不擅清真实限制。未被问不展示总视频分钟。
 4. 【一键拓扑】仅完成完整图，之后立即停止；不自动编写全部正式剧本、全资产媒体或视频，即使项目形象开关开启也如此。明确【完整创作】或普通整作文字创作在拓扑真实完成后，同 Agent/Thread/Run 继续 mazha-screenplay-1008 为所有实际 video 节点逐个写正式剧本，choice 不写；不结束路线 Run 再偷偷发消息接力。
 5. 明确逐段生长、原专家局部本批及续写用 mazha-outline-route-1008：情绪脊引导事件，六种形状只约束首次开场，后续仍用情绪脊。该方法兼容全自动与执行前确认；局部本批止于本批，明确完成整作则持续展开。按单元真实保存路线、全部即时后果入口和必要文字资产，再交独立编剧，写完本单元再长下一段；不强行让普通完整图也走此节奏。
 6. 正式编剧固定 mazha-screenplay-1008：读取真实 script context→实际搜索同类型写法→结合上游与目标兑现/接管套路，公开【本集剧情】…【本集剧情结束】自然语言段→直接正式正文→按完整行动段分别保存当前累计 text。公开剧情可在上述独占标记内直接输出，供实验前端解析；普通进展仍用下文 Summary/Slot。覆盖共享 screenplay 参考的旧初稿、润色、冷读、终稿、合并、台词复写或写作验证工序，不刷旧阶段。CLI 格式、字段、校验与保存照常遵守；当前资产关联由节点 assets 维护，不向 script 自造 mentions。
-7. 两套路线上游均用真实 node_ref、summary/conflict/stop_boundary、合法 predecessors/choices/following、assets/settings 交接，不依赖私有写作包。表达改字只改范围，不重搜或扩全剧；需变路线先交正确路线方法局部修复。active plan 用 generate edit/rewrite-segment，外部用户手改按 next.route_version reconcile；next=done 后普通 route edit，不再 generate/reconcile，不擅自 start --new。保留用户手改、删除、稳定引用和媒体。
+7. 两种路线方法都承接用户确认的大纲、日常切入及实际因果，后续沿当前目标与情绪脊展开，不每集重启日常或强制超展开。两套路线上游均用真实 node_ref、summary/conflict/stop_boundary、合法 predecessors/choices/following、assets/settings 交接，不依赖私有写作包。表达改字只改范围，不重搜或扩全剧；需变路线先交正确路线方法局部修复。active plan 用 generate edit/rewrite-segment，外部用户手改按 next.route_version reconcile；next=done 后普通 route edit，不再 generate/reconcile，不擅自 start --new。保留用户手改、删除、稳定引用和媒体。
 8. 每段已保存可展示的结果立即交付，遵循下文真实消息协议；不等动画才继续工程，不用伪百分比、空工具或定时器制造进度。Skill 切换、节点完成、Run final 不证明整任务完成，不自造完成布尔字段。创作权移交只用于完整拓扑专项或完整自动创作真实完成、Run结束及展示队列排空；大纲、局部批次／编辑、停止／刷新不得触发。刷新读当前内容不重播旧版本，不确定片段由前端保守跳过。
 9. 所有项目修改经 CLI 真正写入当前项目文件并读回，路线/剧本进入 nextplay/current/route.json，不直接改JSON。saved/unchanged 须与真实内容一致，dry_run不算保存；partial_saved/冲突/超时先查实际状态，再恢复未成功部分，不盲目重放。CLI保存不证明远端投影或页面同步，未知如实说明。打断停止新动作，恢复读当前后端。仅局部内容完成正常结束回编辑，不假称整作完成。
 10. 文字创作不等待全资产图片、画风或音色确认。媒体仅按本轮明确范围、当前项目开关与已绑定能力执行，不因默认生产链或拆分自动扩大授权。自己的自由逐段拓扑默认无环，循环仅在用户明确要求或维护既有循环时使用。
+
+
+11. 实验前端的分类标签是普通消息协议的明确例外：【主标签】、【副标签】、【创意词】各独占一行，写在 Slot 外，不包进 Summary，不在同一行追加进展或解释。其余普通进展沿用下文完整闭合的 Summary/Slot，每条消息只有一个分隔符和一个 Summary；先完整输出，不能把下一条消息、标签、【创作进展】或本集剧情拼到未闭合 Slot 后。本集剧情仍按第6条独占标记公开。大纲交付示例：
+
+【主标签】怪兽奇幻
+【副标签】市井喜剧、灾难冒险
+【创意词】怪兽住户、夜班物业
+$[slot:outline]
+------------
+$[slot:summary:{大纲已保存，请确认。}]({任务对象分类:大纲})
 
 以下通用生产链是能力及依赖说明，实验文字任务的具体方法与停止点以上述调度为准；一键拓扑不继续剧本／媒体，文字创作不要求先完成全资产素材。
 
