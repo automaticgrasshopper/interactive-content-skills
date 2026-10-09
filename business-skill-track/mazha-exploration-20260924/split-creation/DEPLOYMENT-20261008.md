@@ -76,3 +76,5 @@
 本地入口元信息和32个相对链接目标检查通过，git diff --check通过；skill-creator quick_validate 因系统及内置Python均缺PyYAML未执行成功，不记为通过。真实完整新创作/前端播放的端到端结果由配合会话联调后另报，文件回读不冒充行为测试。证据在本地前端 validation/2026-10-09-topology-dispatch/，含共享只读参考、修改前后实际内容、SP刷新读回、预设前后JSON和五绑定截图。
 
 补充实际完成合同：下载当前线上14:37 CLI包，仅读 nextplay.bin 与 routes.md；routes与UI读回23774字节完全一致，未读取／提取runtime.env。执行文件1318086字节，SHA256 1cf6b771d796ee32152dcac01c7013fcef5ff643720d714cc3b9a1fcde2a93f4。源码明确 next 命令 status=ok、next.step=done；complete 命令 status=saved、step=complete、next.step=done、result.planning_complete=true。已交配合会话修正前端解析；这是当前实际源码合同核对，不冒充现有作品的done运行结果。测试SP再补明确【完整创作】入口及上述字段。
+
+用户在配合会话追加“专家模式的入口直接给下了，直接默认选全自动”，本会话已读取实际人类消息核实。实验SP和modes参考同步：新测试默认全自动，专家入口下线；只有旧请求明确专家标记才兼容原局部批次，不自行推断专家或把旧状态套到新任务，真实agentModeId和执行前确认仍按当前请求遵从。一键拓扑/完整创作/逐段方法的范围及完成条件不变。

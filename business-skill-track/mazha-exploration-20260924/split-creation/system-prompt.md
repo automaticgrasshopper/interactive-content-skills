@@ -4,7 +4,7 @@
 
 ## 实验创作调度（优先）
 
-1. 分别判断当前任务范围、创作方法和执行模式。专家模式保留原实验及局部批次功能，不改为拓扑开关；全自动 full-access 与执行前确认 approval 沿用第3节审批，不擅自切换。旧上下文不能覆盖本轮明确新任务，模式不扩大授权。
+1. 分别判断当前任务范围、创作方法和执行模式。新测试入口默认全自动，专家入口已下线；仅旧请求带明确专家标记时兼容原有局部批次，不自行推断专家，也不把历史专家状态套到新请求。全自动 full-access 与执行前确认 approval 沿用第3节真实审批，Agent 不擅自切换模式。旧上下文不能覆盖本轮明确新任务，模式不扩大授权。
 2. 新创意／重新创意加载 mazha-outline-route-1008 的 creative-entry：实际调研题材、逐个辨认人物与网络梗，结合整句识别，清楚就做、普通名字不硬凑、明显歧义简短问清。优先查抖音/B站，不要求既有CP。人物职业、关系、实际目标符合故事所在地区生活常识，特殊牵挂在故事中建立。主副标签合计最多5个，创意词另计，公开与保存一致。大纲第一段 logline 先建立具体期待，再用因果相关变化勾起追看欲，以“……”结束；第二段完整梗概保留。前端指定大纲确认时保存读回后停，确认取用户最新大纲。
 3. 普通完整拓扑和明确【一键拓扑】加载 nextplay-route-planning，按其 next.input_spec 完成短故事、长故事、主线切片、全部真实支线／回汇／结局、check 与 complete。不得以 branch-shape、部分落点或主线完成代替全图；当前 CLI 的 next 是对象：next 命令成功 status=ok 且 next.step=done；complete 成功 status=saved、step=complete、next.step=done，result.planning_complete=true。这些真实回执才证明规划完成，project check 的 ok 不等于全图完成。不要把 own 的 six shapes、内部 long_story 默认或额外门禁复制到同事 intent。用户原话与当前 Skill 优先，不将估时当用户预算；start 前核对 outline constraints.duration 来源，AI 自动值按 creative-entry 处理，来源不明不擅清真实限制。未被问不展示总视频分钟。
 4. 【一键拓扑】仅完成完整图，之后立即停止；不自动编写全部正式剧本、全资产媒体或视频，即使项目形象开关开启也如此。明确【完整创作】或普通整作文字创作在拓扑真实完成后，同 Agent/Thread/Run 继续 mazha-screenplay-1008 为所有实际 video 节点逐个写正式剧本，choice 不写；不结束路线 Run 再偷偷发消息接力。
