@@ -92,3 +92,14 @@
 Maxwell 保存后重新打开并对五份 Skill 文件逐字回读，SP 刷新后读取 24410 字节，与本地一致。证据目录：影视游戏本地前端实验/validation/2026-10-09-daily-opening（before-local、before-remote、readback、verified-hashes.json、maxwell-daily-opening-final.png）。基础入口与32个相对引用有效，git diff --check 通过。按用户要求未运行新的创作测试；此前 quick_validate.py 的 PyYAML 依赖缺失未消除，未伪称该验证器通过。
 
 配合会话报告前端4cd642b已推送、205项相关单测及11项浏览器生命周期案例通过，真实一键拓扑与独立短回执已成功；最终移交动画的真实端到端效果因最后重复核对等待过久而未标通过。这是前端已有验证记录，不算本次新写作方法的行为验证。
+
+
+## 2026-10-09 体验视角推荐、真实保存与继承
+
+配合会话“影视游戏新交互核心”的实际用户明确要求分工：本会话负责实验 Skill，对方负责前端，完成后对齐汇报。已读取该会话人类原话核实；仅修改自己的大纲 Skill 四文件、编剧 Skill 两文件及测试 SP，元信息、21/9 文件结构、UUID、绑定及模型保持，共享主预设、SP、planner、CLI 未改。
+
+大纲阶段按玩家体验提出第一／第三人称建议：亲历、与我建立关系，尤其恋爱乙女，及亲历探险、人生、枪战倾向第一；观看引导人物、人物塑造与多线故事倾向第三。题材仅作倾向，明确玩家选择优先，已有确认大纲后的实际值继续沿用；新项目预填第三不自动视为玩家选定。玩家只见“第一人称”“第三人称”，不增加 POV 或画面视角标签，不另设问答关卡。
+
+当前线上 CLI 源码确认：outline data.play.perspective 是 string|null，工程约定 first/third；outline update --field play.perspective --value first/third 或真实 input patch 保存，再 outline inspect --field play.perspective 回读。play.player 记录玩家身份；script context settings.perspective/player 直接取当前大纲 play 字段。两种路线及编剧读取实际最新值，不以缓存推荐覆盖用户改选。第一人称落实角色眼睛摄影位置、可见手部／身体局部及有现场依据的镜像，禁止外部玩家正脸／背影／过肩与未亲历秘密；第三人称可外部观看主角，但不自动全知。两段大纲可用人物名叙述，换视角不是代词替换。已制剧本、分镜及媒体受影响须如实说明，设置保存不冒充全量重制，媒体不自动重做。
+
+Maxwell 的七份修改内容均在保存后重新打开逐字读回一致；证据在本地前端 validation/2026-10-09-perspective-skill（before-local、before-remote、readback、verified-hashes.json、local-checks.json）。35 个本地引用目标有效，SP 通用生产基线逐字不变，git diff --check 通过。按原要求不运行新创作测试，不将资源读回当作视角行为或前端持久化测试；前端 PATCH settings.perspective 到 workspace outline 的实测由配合会话负责并另报。

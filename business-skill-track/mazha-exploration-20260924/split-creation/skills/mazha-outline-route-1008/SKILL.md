@@ -5,7 +5,7 @@ description: "创作或修改影游的大纲、故事与流程图：题材调研
 
 # 大纲与流程图
 
-先识别当前项目、用户范围、模式和停点，用户手改高于旧计划。项目读写使用当前绑定 `nextplay-cli`；Skill 配置保存于 Maxwell，项目路线、选择和正文实际保存到后端并读回，按[CLI 与持久化](references/cli-handoff.md)，只改变前端不算完成。
+先识别当前项目、用户范围、模式和停点，用户手改高于旧计划。项目读写使用当前绑定 `nextplay-cli`；Skill 配置保存于 Maxwell，项目路线、选择和正文实际保存到后端并读回，按[CLI 与持久化](references/cli-handoff.md)，只改变前端不算完成。每次进入路线或续写前，按该参考的“视角保存与继承”读取当前选择；大纲阶段按[体验视角建议](references/creative-entry.md#推荐体验视角)推荐，玩家选择优先。
 
 未被询问时不主动展示自动估算的体量或视频分钟数，也不让估算限制拓扑；用户明确数量和范围仍遵守。实际时长字段按[题材与提案](references/creative-entry.md)，完整图按[图形规则](references/graph-contract.md)。
 

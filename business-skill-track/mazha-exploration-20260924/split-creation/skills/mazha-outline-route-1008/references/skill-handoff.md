@@ -6,7 +6,7 @@
 
 普通整作文字创作在完整拓扑完成后，不结束 Run 或偷偷另发消息，直接交独立编剧逐个处理已保存 video 节点，包括各分支和结局；choice 不编剧。优先先写实际前驱，汇合读全部合法来路，只补未完成正文，保留手改。逐段生长则保存当前事件、选择与全部即时后果入口及必要文字资产后交编剧，当前单元完成再续下一段；不先造整作空图。
 
-交接只用真实 node_ref、script inspect --include context 返回的 episode.summary/conflict/stop_boundary、predecessors/choices/following、assets/settings 和当前范围。不得依赖只有本 Skill 才有的私有写作包或新增字段；缓存不能代替后端。上游节点的故事切片是事实依据，公开【本集剧情】是本集写法，不是改写全作短故事。
+交接只用真实 node_ref、script inspect --include context 返回的 episode.summary/conflict/stop_boundary、predecessors/choices/following、assets/settings 和当前范围。不得依赖只有本 Skill 才有的私有写作包或新增字段；缓存不能代替后端。`settings.perspective` 与 `settings.player` 来自最新大纲 `play.perspective/player`；交接前继承实际值，不把自己的推荐当成玩家新选择。上游节点的故事切片是事实依据，公开【本集剧情】是本集写法，不是改写全作短故事。
 
 独立编剧采用“实际调研→自然语言本集剧情→直接正式正文→逐段真实保存”，覆盖共享 CLI screenplay 文档的旧五阶段、行动底稿、冷读和复写流程；CLI 的字段、校验、格式和保存合同照常遵守。不得刷旧阶段文案表演进度。
 
