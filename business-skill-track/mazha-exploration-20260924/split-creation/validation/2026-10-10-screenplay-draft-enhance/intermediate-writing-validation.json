@@ -1,0 +1,17 @@
+{
+  "threadId": "thr_01M4JS7VY06ZAWTPKYPBZ5FMD9",
+  "runId": "run-f74f9ce301590c2c68a537edcdac1d5b",
+  "nodeRef": "node-y7ubw7",
+  "artifactOrder": [
+    "action-draft.md / enhancer-input.txt 20:21:46",
+    "script-part1.txt 20:21:58",
+    "script.txt 20:22:13"
+  ],
+  "scriptCharacters": 689,
+  "scriptLines": 22,
+  "internalBlankLines": 0,
+  "sceneHeadersValid": true,
+  "dialogueLinesValid": true,
+  "singleInputComplete": false,
+  "inputLimitation": "Actual enhancer-input references action-draft.md by filename and summarizes rules, rather than embedding frozen draft and original dialogue examples. Both stage files exist; strict sole-input packaging has not passed."
+}

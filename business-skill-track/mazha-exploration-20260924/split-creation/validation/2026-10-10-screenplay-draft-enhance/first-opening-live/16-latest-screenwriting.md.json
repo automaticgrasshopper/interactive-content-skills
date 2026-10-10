@@ -1,0 +1,16 @@
+{
+  "id": "msg-exec-run-48348152e380117645b62587fa35dee9-000002-tool-call_Dkmd9Xf20PqIR7WPbhbyc6GZ",
+  "role": "tool",
+  "content": "{\"content\":{\"content\":\"# 本集梗概、短底稿与增强复写\\n\\n取得上游资料后，按 genre-research-and-treatment.md 实际搜索同类写法，结合目标转移套路讲通连续、具体的本集剧情。不同来路分别承接真实前情，选择卡只提供上游剧情与所选动作，不给选择卡编剧本。\\n\\n1. 本集梗概：保留已确定的事件、因果、结果和停点，用自然语言讲清楚；按 cli-handoff.md 保存当前节点 summary。它显示在该节点标题下的梗概正文区，不单开本集剧情界面。已有梗概符合本轮要求就复用，不为打字重写用户稿。\\n2. 短底稿：读 compact-action-draft.md，把这段剧情落成最短而完整的场景骨架，冻结每一拍的行动、反馈、变化、分支准备和停止位置。人物首次出场及规则首次起作用所需的信息附着在已有戏剧拍上。保存到当前 Thread 工作区该真实节点对应的 action-draft.md，实际读回。\\n3. 增强复写：将当前真实 node_ref、视角与玩家身份、必要入口状态、允许揭露的人物和资产事实、已保存的本集梗概、分支准备、停止边界及冻结底稿全文保存为同节点的 enhancer-input.txt，实际读回。增强阶段直接读取 scene-writing.md、full-scene-enhancer.md 和 dialogue.md 原文，连同口语实例落实到正式稿；已经完整读过的原文可复用，不在输入文件里重抄或摘要写法。剧情事实只取这份冻结输入，不读取全图、旧正式稿、后续正文、验收答案或未揭露秘密；充分重写表达，不增添戏剧拍。\\n\\n两个写作阶段在同 Agent / Thread / Run 中先后完成，不要求另建子 Agent、机器写作包或 hash 门禁。底稿不必润饰对白，增强稿可以充分选择动作、对白与停顿表达同一变化；不以底稿简短为由另添冲突、问答或重复确认。增强稿形成完整行动段即按 live-creation.md 保存当前累计正式正文，工具返回后继续，不必等整场全文写完才落盘。\\n\\n每次讲本集剧情、写底稿及增强前，沿用 scene-writing.md 的实际视角和“旧目标兑现与新目标接管”。材料缺少关键事实或必须改事件、来源、选择与连接时，返回 mazha-outline-route-1008 局部修材料，实际保存后更新受影响的梗概、底稿和增强输入；不在正式稿偷偷补设定。\\n\\n写完保存并读回正文及节点资产，才算本集完成；不恢复冷读、独立台词复写或写作验收。只有实际已保存的正式稿可作为下一节点前情。用户只改台词、错字或小段表达时直接修指定范围，既定戏剧拍未变不重走全套；本轮重写场景或改动戏剧拍时再更新受影响底稿并增强复写。\\n\",\"contentLoaded\":true,\"encoding\":\"utf-8\",\"hasMore\":false,\"loadedBytes\":2772,\"nextOffset\":2772,\"offset\":0,\"resource\":{\"encoding\":\"utf-8\",\"kind\":\"file\",\"mimeType\":\"text/markdown\",\"modifiedAt\":\"2026-10-10T14:17:06Z\",\"path\":\"references/screenwriting.md\",\"size\":2772},\"skill\":{\"description\":\"为已保存影游节点编写或修改剧本：调研同类写法，讲通并保存本集梗概，写短底稿，再增强复写为正式场景并逐段保存。支持局部修改；不创作大纲、不重建流程图，不另设冷读或写作验收。\",\"displayName\":\"蚂蚱-剧情到剧本-1008\",\"name\":\"mazha-screenplay-1008\",\"owner\":\"当前业务\",\"scope\":\"business\",\"updatedAt\":\"2026-10-10T14:17:06Z\",\"version\":\"v1\"},\"stage\":\"resource\",\"totalBytes\":2772},\"status\":\"success\"}",
+  "structuredInput": {
+    "refs": {}
+  },
+  "metadata": {
+    "runtime.toolResultAdmission": {
+      "action": "inline",
+      "originalBytes": 3547
+    },
+    "runtime.toolResultModelWindow": true
+  },
+  "toolCallId": "call_Dkmd9Xf20PqIR7WPbhbyc6GZ"
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "资产图片生成师"
+  short_description: "从角色、场景、道具描述生成中文prompt和对应资产"
+  default_prompt: "Use $asset-image-generator_biz 根据角色、场景和道具描述按来源读取库内画风或具备非空prompt的自定义风格，将有效风格合入资产prompt；自定义Prompt保留原文，忽略Tool返回的画风参考图，生成对应资产。"

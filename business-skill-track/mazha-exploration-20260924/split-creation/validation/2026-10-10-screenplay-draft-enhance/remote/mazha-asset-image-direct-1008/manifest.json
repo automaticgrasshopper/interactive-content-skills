@@ -1,0 +1,12 @@
+{
+  "createdAt": "2026-10-08T12:34:39Z",
+  "createdBy": "5b430df2-ea67-4824-8c45-434c05b367b9",
+  "description": "同时生图开启时，按主预设资产生成师的视觉规则，为本轮实际用到的人物、场景和道具生成设定图；支持已授权批次后台并行、前台按顺序逐图确认。仅供蚂蚱测试探索。",
+  "id": "563ab429-e570-4931-9c69-00f40f01722b",
+  "name": "蚂蚱-同时生图-1008",
+  "scope": "business",
+  "slug": "mazha-asset-image-direct-1008",
+  "sourceName": "mazha-asset-image-direct-1008.zip",
+  "sourceType": "folder",
+  "updatedAt": "2026-10-10T11:59:32Z"
+}

@@ -1,0 +1,8 @@
+entry: episode-001
+IDs before titles are display labels; use ref= and edge refs for edits.
+episode-001 [video] 钥匙转向门口 (ref=node-spxs72)
+issues (whole project):
+{"code":"DISCONNECTED_END","node_ref":"node-spxs72"}
+Details: route inspect --node-ref <ref> --detail
+Next: Review route issues and edit the affected nodes or edges.
+{"status":"ok","data":{"warnings":[{"code":"STALE_DEPENDENCY","file":"assets.json","dependency":"outline","consumed_revision":0,"current_revision":1},{"code":"STALE_DEPENDENCY","file":"route.json","dependency":"outline","consumed_revision":0,"current_revision":1},{"code":"STALE_DEPENDENCY","file":"route.json","dependency":"assets","consumed_revision":0,"current_revision":1},{"code":"STALE_DEPENDENCY","file":"media.json","dependency":"assets","consumed_revision":0,"current_revision":1},{"code":"STALE_DEPENDENCY","file":"media.json","dependency":"route","consumed_revision":0,"current_revision":7}],"issues":[{"code":"DISCONNECTED_END","node_ref":"node-spxs72"}],"counts":{"video_count":1,"choice_count":0,"ending_count":0}},"next":{"step":"route-edit","instruction":"Resolve the reported route issues."}}

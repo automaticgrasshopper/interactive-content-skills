@@ -1,0 +1,34 @@
+{
+  "args": {
+    "description": "裂口铜铃的文字设定和当前选中图已保存。这是本轮最后一项必要资产，确认后才会创建开头节点与正式剧本。",
+    "questions": [
+      {
+        "description": "确认后进入开头节点与剧本；重新生成则只重做裂口铜铃。",
+        "id": "asset_image_confirmation",
+        "multiple": false,
+        "options": [
+          {
+            "description": "保留当前铜铃形象并继续。",
+            "label": "确认形象",
+            "value": "confirm_image"
+          },
+          {
+            "description": "保留文字设定，重新生成铜铃形象。",
+            "label": "重新生成",
+            "value": "regenerate_image"
+          }
+        ],
+        "placeholder": "",
+        "required": true,
+        "title": "裂口铜铃：请确认这个形象",
+        "type": "select",
+        "userInput": {
+          "label": "说明希望调整的道具细节",
+          "placeholder": "例如：裂口更窄、铜锈更重、挂环更短；提交后将按调整要求重新生成"
+        }
+      }
+    ],
+    "title": "确认道具形象"
+  },
+  "kind": "ask_user"
+}

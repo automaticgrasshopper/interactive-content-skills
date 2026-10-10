@@ -1,0 +1,66 @@
+{
+  "threadId": "thr_01M4JWJCTF1NKY9SPMHQMAMY5A",
+  "runId": "run-5dce6df8587278cd2d965bcb6df6fdec",
+  "contentId": "msg-run-5dce6df8587278cd2d965bcb6df6fdec-assistant-000011",
+  "plan": {
+    "version": 1,
+    "request_id": "f451ea2b-07a0-44b3-acbc-bf37d4d57152",
+    "intent": "create",
+    "goal": "为“并发移交终测1010”形成精简原创悬疑互动故事与第三人称大纲提案，并选定游戏CG画风",
+    "stop_after": "完整短故事工作稿与三段大纲提案保存、读回，并提交现有大纲卡确认；确认前不创建资产、不生成图片、不写路线或剧本",
+    "outline_confirmation": true,
+    "materials": [
+      {
+        "ref": "user-message",
+        "kind": "text",
+        "usage": "source",
+        "scope": "项目名、第三人称、唯一人物/场景/道具限制、开场钩子、精简要求与游戏CG画风",
+        "status": "read"
+      }
+    ],
+    "tasks": [
+      {
+        "id": "t1",
+        "artifact": "short_story",
+        "action": "create",
+        "coverage": "complete",
+        "scope": "围绕沈芒在雨夜废弃渡口值班亭取回提灯、目睹空亭内提灯被重新点亮的精简完整短故事工作稿",
+        "sources": [
+          "user-message"
+        ],
+        "locked": [
+          "主角仅女性巡夜员沈芒",
+          "不增加其他人物",
+          "唯一场景为雨夜废弃渡口值班亭",
+          "唯一核心道具为提灯",
+          "第三人称",
+          "故事精简"
+        ],
+        "depends_on": [],
+        "presentation": "progress",
+        "targets": []
+      },
+      {
+        "id": "t2",
+        "artifact": "outline",
+        "action": "derive",
+        "coverage": "complete",
+        "scope": "从同一完整短故事提炼logline、高潮前预览与第三人称玩家介绍，保存为大纲提案；同时设置游戏CG画风",
+        "sources": [
+          "user-message"
+        ],
+        "locked": [
+          "开端包含空亭窗内有人把提灯重新点亮",
+          "不增加其他人物、场景或道具",
+          "第三人称",
+          "游戏CG画风"
+        ],
+        "depends_on": [
+          "t1"
+        ],
+        "presentation": "write",
+        "targets": []
+      }
+    ]
+  }
+}

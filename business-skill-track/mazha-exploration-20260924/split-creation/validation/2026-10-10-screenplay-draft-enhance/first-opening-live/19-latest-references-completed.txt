@@ -1,0 +1,91 @@
+- generic: 蚂蚱本地前端 · 5195 · 连接开发站后端，数据保存在开发站
+- banner:
+  - generic "8bf0ce65-3d52-4819-97d7-9afbb5751203": 当前预设：蚂蚱测试探索
+  - button "Nexplay"
+  - textbox "文件名":
+    - /placeholder: Untitled
+    - text: 门外的许宁
+  - button "experiment 测试环境":
+    - img "experiment":
+    - generic: 测试环境
+  - button "▷ 回放创作过程"
+  - button "打开用户手册":
+    - img "book":
+    - generic: 用户手册
+  - button "审核通知":
+    - img "bell":
+  - button "thunderbolt 300":
+    - img "thunderbolt":
+    - text: "300"
+- button "一键生成全部故事流程"
+- main:
+  - generic "在前面添加路线卡 / 拖拽连线"
+  - generic: 01-钥匙转向门口
+  - article:
+    - button "删除节点":
+      - img "close":
+    - heading "钥匙转向门口" [level=3]
+    - paragraph: 邮局停用后的第七天，许宁深夜独自回到值班室，只想从抽屉里取走旧宿舍钥匙，完成交接后赶紧离开。她发现抽屉是空的，那串钥匙却平放在桌子正中，最长的一把正绕着钥匙环缓慢转向房门。她先检查扣紧的窗和桌下，确认屋内没有风，也没有别人，随后用手掌按住钥匙。钥匙立刻停止，门外却同时响起许宁自己的声音，请她开门，还催她别按着钥匙。许宁没有照做，而是隔门追问对方是谁；门外的声音复述她进门时的自言自语，并准确说出她此刻左手按着钥匙、右手拿着手机，连手机剩余电量也分毫不差。许宁把手机扣到桌上，仍不松手。她原本取钥匙离开的目标被迫中断，新的压力变成：守住正在指向房门的钥匙，并判断门外这个比她更清楚室内情况的声音究竟是什么。
+    - button "剧本":
+      - generic: 剧本
+    - button "规划分镜":
+      - generic: 规划分镜
+  - generic "在后面添加路线卡 / 拖拽连线"
+  - button "缩小":
+    - img "minus":
+  - button "重置为 100%": 140%
+  - button "放大":
+    - img "plus":
+  - button "重新布局":
+- complementary:
+  - generic: 游戏资产
+  - button "游戏资产":
+  - generic: 分支路线
+  - button "分支路线":
+  - generic: 游戏发布
+  - button "游戏发布":
+- button "提交用户反馈":
+  - img "customer-service":
+  - generic: 反馈
+- heading "Agent" [level=3]
+- button "收起 Agent 对话" [expanded]:
+- generic "tool 已运行 2 个工具 down":
+  - img "tool":
+  - generic: 已运行 2 个工具
+  - img "down":
+- generic "tool 已运行 9 个工具 down":
+  - img "tool":
+  - generic: 已运行 9 个工具
+  - img "down":
+- heading "生成完成" [level=4]
+- generic: 1/1
+- paragraph: 已生成故事路线
+- button "去查看"
+- paragraph: 开头创作已完成：已保存许宁、停用邮局值班室和旧钥匙串三项必要文字资产；唯一开头节点《钥匙转向门口》的梗概与正式剧本均已保存并读回。正文停在门外声音准确报出手机电量、许宁扣下手机却仍按紧钥匙的瞬间。当前画布仅有这一个待续节点，未创建选择卡、后续节点或完整流程图；待续断线为本次授权范围的预期结果。没有生成图片、分镜或视频。现已停止创作，交由前端核对并将创作权交还给你。
+- generic: 请用最新“蚂蚱-剧情到剧本-1008”重写《钥匙转向门口》的正式剧本，仍按短底稿→增强复写完成。保留本集梗概、既定事件、停点和唯一节点，不扩后续路线，不生图。完成后保存并读回。
+- generic: 已处理 1m 57s
+- generic "tool 已运行 9 个工具 down":
+  - img "tool":
+  - generic: 已运行 9 个工具
+  - img "down":
+- paragraph: 《钥匙转向门口》已按最新版“蚂蚱-剧情到剧本-1008”完成短底稿与增强复写，并将新版正式剧本保存、读回。原本集梗概、既定事件、第三人称、停止边界和资产均保持不变；画布仍只有这一个待续节点。未扩展后续路线，也未生成图片或其他媒体。
+- generic: 请重新加载“mazha-screenplay-1008”的最新 screenwriting.md、scene-writing.md、full-scene-enhancer.md 和 dialogue.md，按当前写法对《钥匙转向门口》做一次增强复写并保存读回。沿用已冻结的本集事实和短底稿，保持梗概、唯一节点、事件与停点，不扩路线、不生图。
+- generic: 已处理 1m 40s
+- generic "tool 已运行 6 个工具 down":
+  - img "tool":
+  - generic: 已运行 6 个工具
+  - img "down":
+- generic "tool 已运行 6 个工具 down":
+  - img "tool":
+  - generic: 已运行 6 个工具
+  - img "down":
+- paragraph: 已重新加载最新的 screenwriting.md、scene-writing.md、full-scene-enhancer.md 和 dialogue.md，并沿用冻结短底稿完成《钥匙转向门口》的增强复写。新版正式剧本已保存并读回；本集梗概、第三人称、既定事件、停止边界和资产均未改变。画布仍只有这一个待续节点，未扩路线，也未生成图片。
+- text: 开始你的创作，可以
+- img "@"
+- text: 引用资源
+- paragraph
+- button "添加附件":
+- button "提及故事对象":
+- button "选择控制模式":
+  - generic: 全自动
+- button "发送消息" [disabled]:

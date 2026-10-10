@@ -1,0 +1,12 @@
+{
+  "createdAt": "2026-10-08T13:02:05Z",
+  "createdBy": "5b430df2-ea67-4824-8c45-434c05b367b9",
+  "description": "把已保存影游节点的上游资料，经同类型写法调研与自然语言剧情，直接写成正式剧本并逐段保存；支持已有剧本的局部修改。不创作大纲、不重建流程图，不走短底稿、增强复写或写作验收流程。",
+  "id": "e27c0130-be87-4756-9652-0e2cad2f31c2",
+  "name": "蚂蚱-剧情到剧本-1008",
+  "scope": "business",
+  "slug": "mazha-screenplay-1008",
+  "sourceName": "mazha-split-creation-direct-1008.zip",
+  "sourceType": "folder",
+  "updatedAt": "2026-10-10T09:18:32Z"
+}

@@ -1,0 +1,116 @@
+- main:
+  - complementary:
+    - link "返回 Maxwell AI 首页":
+      - /url: /
+      - generic: Maxwell
+    - button "切换业务，当前：互动影游NexPlay":
+      - heading "互动影游NexPlay" [level=1]
+    - navigation:
+      - generic: 业务搭建
+      - link "智能体预设":
+        - /url: /agents?businessId=ad3d5c4b-c7c9-4ed3-b15d-4f3556520263
+        - generic: 智能体预设
+      - link "提示词管理":
+        - /url: /prompts?businessId=ad3d5c4b-c7c9-4ed3-b15d-4f3556520263
+        - generic: 提示词管理
+      - link "工具管理":
+        - /url: /tools/list?businessId=ad3d5c4b-c7c9-4ed3-b15d-4f3556520263
+        - generic: 工具管理
+      - link "技能管理":
+        - /url: /skills?businessId=ad3d5c4b-c7c9-4ed3-b15d-4f3556520263
+        - generic: 技能管理
+      - link "知识管理":
+        - /url: /knowledge?businessId=ad3d5c4b-c7c9-4ed3-b15d-4f3556520263
+        - generic: 知识管理
+      - link "应用管理":
+        - /url: /applications?businessId=ad3d5c4b-c7c9-4ed3-b15d-4f3556520263
+        - generic: 应用管理
+      - link "资源管理":
+        - /url: /resources?businessId=ad3d5c4b-c7c9-4ed3-b15d-4f3556520263
+        - generic: 资源管理
+      - generic: 运行调试
+      - link "发起会话":
+        - /url: /chat?businessId=ad3d5c4b-c7c9-4ed3-b15d-4f3556520263
+        - generic: 发起会话
+      - link "运行追踪":
+        - /url: /threads?businessId=ad3d5c4b-c7c9-4ed3-b15d-4f3556520263
+        - generic: 运行追踪
+      - generic: 分析优化
+      - link "业务看板":
+        - /url: /analytics?businessId=ad3d5c4b-c7c9-4ed3-b15d-4f3556520263
+        - generic: 业务看板
+      - generic: 其它
+      - link "设置":
+        - /url: /businesses/ad3d5c4b-c7c9-4ed3-b15d-4f3556520263/settings
+        - generic: 设置
+    - button "打开账号菜单":
+      - generic: M
+      - generic: mazha
+      - generic: m***@sand.ai
+    - button "收起侧边栏":
+  - button "打开 Studio 助手":
+  - navigation "Breadcrumb":
+    - link "业务管理":
+      - /url: /businesses
+    - link "互动影游NexPlay":
+      - /url: /agents?businessId=ad3d5c4b-c7c9-4ed3-b15d-4f3556520263
+    - generic: Thread Detail
+  - generic "做一个原创悬疑互动影游，项目名《三类出图与开头移交1010》。唯一出场人物是夜班守门员杜岚，唯一场景"
+  - generic "thr_01M4JS7VY06ZAWTPKYPBZ5FMD9": (thr_01M4JS7VY06ZAWTPKYPBZ5FMD9)
+  - button "返回会话":
+    - text: 返回会话
+  - generic "蚂蚱测试探索"
+  - tablist "Thread detail sections":
+    - tab "Trace 排查"
+    - tab "运行事件"
+    - tab "文件" [selected]
+    - tab "Sandbox"
+  - heading "文件" [level=2]
+  - navigation "文件路径":
+    - button "根目录"
+    - generic: /
+    - button "creative-work"
+    - generic: /
+    - button "三类出图与开头移交1010"
+    - generic: /
+    - button "1a6d8e45-d0ee-4b7c-b579-f39dcfaaa48a"
+    - generic: /
+    - button "node-y7ubw7"
+  - button "上级":
+    - generic: 上级
+  - table:
+    - rowgroup:
+      - row "名称 类型 大小 更新时间":
+        - columnheader "名称"
+        - columnheader "类型"
+        - columnheader "大小"
+        - columnheader "更新时间"
+    - rowgroup:
+      - row "action-draft.md 文本 974 B 2026/10/10 20:21:46":
+        - cell "action-draft.md":
+          - generic: action-draft.md
+        - cell "文本":
+          - generic: 文本
+        - cell "974 B"
+        - cell "2026/10/10 20:21:46"
+      - row "enhancer-input.txt 文本 1.9 KB 2026/10/10 20:21:46":
+        - cell "enhancer-input.txt":
+          - generic: enhancer-input.txt
+        - cell "文本":
+          - generic: 文本
+        - cell "1.9 KB"
+        - cell "2026/10/10 20:21:46"
+      - row "script-part1.txt 文本 861 B 2026/10/10 20:21:58":
+        - cell "script-part1.txt":
+          - generic: script-part1.txt
+        - cell "文本":
+          - generic: 文本
+        - cell "861 B"
+        - cell "2026/10/10 20:21:58"
+      - row "script.txt 文本 2.0 KB 2026/10/10 20:22:13":
+        - cell "script.txt":
+          - generic: script.txt
+        - cell "文本":
+          - generic: 文本
+        - cell "2.0 KB"
+        - cell "2026/10/10 20:22:13"

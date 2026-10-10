@@ -1,0 +1,41 @@
+- generic: 蚂蚱本地前端 · 5195 · 连接开发站后端，数据保存在开发站
+- banner:
+  - generic "8bf0ce65-3d52-4819-97d7-9afbb5751203": 当前预设：蚂蚱测试探索
+  - button "Nexplay"
+  - textbox "文件名":
+    - /placeholder: Untitled
+  - button "experiment 测试环境":
+    - img "experiment":
+    - generic: 测试环境
+  - button "▷ 回放创作过程" [disabled]
+  - button "打开用户手册":
+    - img "book":
+    - generic: 用户手册
+  - button "审核通知":
+    - img "bell":
+  - button "thunderbolt 300":
+    - img "thunderbolt":
+    - text: "300"
+- region "正在准备故事创作":
+  - generic: 理解材料
+  - main:
+    - heading [level=2]
+    - generic: 创作脉络
+    - generic: 正在理解材料
+    - generic "创作阶段":
+      - generic: 理解材料
+    - paragraph: 正在阅读你的要求与材料…
+- button "提交用户反馈":
+  - img "customer-service":
+  - generic: 反馈
+- heading "Agent" [level=3]
+- button "收起 Agent 对话" [expanded]:
+- generic: 创建一个原创悬疑互动故事，项目名“首开写作回归1010”。第三人称。只有女值班员许宁和一间深夜停用的邮局值班室。许宁只是回来取钥匙，却发现钥匙正在桌上自己转动；她按住钥匙，门外立刻传来自己的声音，请她开门。请先给完整短故事、创意和大纲，之后我确认再做默认开头。单场景、小规模，重人物的自然口语。不要生成任何图片、分镜或视频。
+- generic: 已处理 9m 36s
+- generic: 开始你的创作
+- paragraph
+- button "添加附件":
+- button "提及故事对象":
+- button "选择控制模式":
+  - generic: 全自动
+- button "停止生成":

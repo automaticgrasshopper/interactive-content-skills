@@ -1,0 +1,231 @@
+{
+  "skills": [
+    {
+      "skill": "mazha-screenplay-1008",
+      "valid": true,
+      "message": "Skill is valid!"
+    },
+    {
+      "skill": "mazha-outline-route-1008",
+      "valid": true,
+      "message": "Skill is valid!"
+    },
+    {
+      "skill": "mazha-asset-image-direct-1008",
+      "valid": true,
+      "message": "Skill is valid!"
+    }
+  ],
+  "relativeLinks": [
+    {
+      "file": "mazha-screenplay-1008/SKILL.md",
+      "target": "references/scene-writing.md#实际体验视角"
+    },
+    {
+      "file": "mazha-screenplay-1008/SKILL.md",
+      "target": "references/genre-research-and-treatment.md"
+    },
+    {
+      "file": "mazha-screenplay-1008/SKILL.md",
+      "target": "references/scene-writing.md#旧目标兑现与新目标接管"
+    },
+    {
+      "file": "mazha-screenplay-1008/SKILL.md",
+      "target": "references/screenwriting.md"
+    },
+    {
+      "file": "mazha-screenplay-1008/SKILL.md",
+      "target": "references/compact-action-draft.md"
+    },
+    {
+      "file": "mazha-screenplay-1008/SKILL.md",
+      "target": "references/full-scene-enhancer.md"
+    },
+    {
+      "file": "mazha-screenplay-1008/SKILL.md",
+      "target": "references/scene-writing.md"
+    },
+    {
+      "file": "mazha-screenplay-1008/SKILL.md",
+      "target": "references/dialogue.md"
+    },
+    {
+      "file": "mazha-screenplay-1008/SKILL.md",
+      "target": "references/live-creation.md"
+    },
+    {
+      "file": "mazha-screenplay-1008/SKILL.md",
+      "target": "references/cli-handoff.md"
+    },
+    {
+      "file": "mazha-screenplay-1008/SKILL.md",
+      "target": "references/assets.md"
+    },
+    {
+      "file": "mazha-screenplay-1008/SKILL.md",
+      "target": "references/loops.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/cli-handoff.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/creative-entry.md#推荐体验视角"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/frontend-protocol.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/interaction.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/production-workflow.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/creative-entry.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/graph-contract.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/materials-and-scope.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/research-before-creation.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/modes.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/continuation-handoff.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/cli-topology.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/creative-entry.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/story-development.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/emotional-spine.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/expert-opening.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/modes.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/story-planning.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/graph-contract.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/goal-handoff.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/assets.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/skill-handoff.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/acceptance.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/live-creation.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/current-canvas-editing.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/loops.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/SKILL.md",
+      "target": "references/interaction.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/references/cli-topology.md",
+      "target": "continuation-handoff.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/references/cli-topology.md",
+      "target": "cli-topology-story-and-review.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/references/cli-topology.md",
+      "target": "cli-topology-branches-and-quality.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/references/cli-topology.md",
+      "target": "cli-topology-story-and-review.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/references/creative-entry.md",
+      "target": "materials-and-scope.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/references/creative-entry.md",
+      "target": "research-before-creation.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/references/creative-entry.md",
+      "target": "goal-handoff.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/references/creative-entry.md",
+      "target": "cli-handoff.md#视角保存与继承"
+    },
+    {
+      "file": "mazha-outline-route-1008/references/creative-entry.md",
+      "target": "materials-and-scope.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/references/creative-entry.md",
+      "target": "cli-handoff.md#大纲三段与全文交接"
+    },
+    {
+      "file": "mazha-outline-route-1008/references/current-canvas-editing.md",
+      "target": "cli-handoff.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/references/emotional-spine.md",
+      "target": "expert-opening.md"
+    },
+    {
+      "file": "mazha-outline-route-1008/references/story-planning.md",
+      "target": "goal-handoff.md"
+    }
+  ],
+  "allLinksResolve": true,
+  "validatedRevision": "SP5119 / 3 skills49 effective files / screenplay direct original references updated22:17"
+}

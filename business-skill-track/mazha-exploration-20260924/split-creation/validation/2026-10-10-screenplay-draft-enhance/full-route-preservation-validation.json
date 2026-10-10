@@ -1,0 +1,41 @@
+{
+  "projectId": "ced5a81f-0c6e-4ff3-a413-54cee8ead71e",
+  "runId": "run-f31f947241bd833b6358a07e6a3c86e9",
+  "unchangedScript": true,
+  "scriptChars": 633,
+  "sameThreeGenerationsAndOutputMedia": true,
+  "refs": [
+    {
+      "asset": "item-nqrft3",
+      "generation": "generation-peou2s",
+      "media": [
+        "media-7caq1m"
+      ]
+    },
+    {
+      "asset": "character-r97s2u",
+      "generation": "generation-jhriz1",
+      "media": [
+        "media-uiycel"
+      ]
+    },
+    {
+      "asset": "scene-0z6tim",
+      "generation": "generation-bmhgmx",
+      "media": [
+        "media-r1j78o"
+      ]
+    }
+  ],
+  "mediaRecords": 5,
+  "mediaRecordsNote": "3 generated output images plus 2 source layout references",
+  "newScriptsRemainEmpty": true,
+  "route": {
+    "plot": 4,
+    "choice": 1,
+    "ending": 3,
+    "edges": 4
+  },
+  "projectCheckIssues": [],
+  "projectCheckWarnings": "4 stale dependency revision warnings; preserved images not regenerated"
+}

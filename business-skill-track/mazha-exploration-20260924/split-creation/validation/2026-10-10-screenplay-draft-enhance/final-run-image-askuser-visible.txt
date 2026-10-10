@@ -1,0 +1,92 @@
+  - heading "runtime.interrupted" [level=3]
+  - generic: 事件上下文
+  - paragraph: 起始时间
+  - paragraph: 2026/10/10 20:58:21.665
+  - paragraph: 结束时间
+  - paragraph: 2026/10/10 20:58:22.725
+  - paragraph: 耗时 / 间隔
+  - paragraph: 1.06s
+  - generic "相关 ID":
+    - generic: Event ID
+    - code: evt-runtime-interrupted-tool-input-3bf1d384e9076079dea3d599
+    - generic: Thread ID
+    - code: thr_01M4JWJCTF1NKY9SPMHQMAMY5A
+    - generic: Run ID
+    - code: run-9ea5f399de1ddde0e031a1d1864a0ec6
+    - generic: Parent Run ID
+    - code: run-5dce6df8587278cd2d965bcb6df6fdec
+    - generic: Tool Call ID
+    - code: call_zLGd3o0OkpbbOFG7iKJSBu4v
+    - generic: Interrupt ID
+    - code: tool-input-3bf1d384e9076079dea3d599
+  - heading "Runtime Interrupted" [level=3]
+  - paragraph: Type
+  - paragraph: input_required
+  - paragraph: Status
+  - paragraph: TASK_STATE_INPUT_REQUIRED
+  - paragraph: Reason
+  - paragraph: ask_user
+  - button "COLLAPSE ALL":
+  - button "WRAP":
+  - button "COPY":
+  - 'button "- {"':
+    - generic: "-"
+    - generic: "{"
+  - 'button "- \"args\": {"':
+    - generic: "-"
+    - generic: "\"args\": {"
+  - generic: "\"description\": \"沈芒是本轮第一项待确认形象。确认后将依次展示并确认雨夜废弃渡口值班亭、提灯；选择重新生成则只重做沈芒并再次停留确认。\""
+  - 'button "- \"questions\": ["':
+    - generic: "-"
+    - generic: "\"questions\": ["
+  - 'button "- \"0\": {" [active]':
+    - generic: "-"
+    - generic: "\"0\": {"
+  - generic: "\"description\": \"请查看已展示的沈芒游戏CG人物设定图。\""
+  - generic: "\"id\": \"asset_image_confirmation\""
+  - generic: "\"multiple\": false"
+  - 'button "+ \"options\": [ ... ] 2 items"':
+    - generic: +
+    - generic: "\"options\": ["
+    - generic: ... ] 2 items
+  - generic: "\"placeholder\": \"\""
+  - generic: "\"required\": true"
+  - generic: "\"title\": \"沈芒｜请确认这个形象\""
+  - generic: "\"type\": \"select\""
+  - 'button "+ \"userInput\": { ... } 2 keys"':
+    - generic: +
+    - generic: "\"userInput\": {"
+    - generic: "... } 2 keys"
+  - generic: "}"
+  - generic: "]"
+  - generic: "\"title\": \"\""
+  - generic: "}"
+  - generic: "\"kind\": \"ask_user\""
+  - generic: "}"
+  - heading "content_json" [level=3]
+  - button "COLLAPSE ALL":
+  - button "WRAP":
+  - button "COPY":
+  - 'button "- {"':
+    - generic: "-"
+    - generic: "{"
+  - 'button "- \"interrupt\": {"':
+    - generic: "-"
+    - generic: "\"interrupt\": {"
+  - generic: "\"id\": \"tool-input-3bf1d384e9076079dea3d599\""
+  - 'button "- \"presentation\": {"':
+    - generic: "-"
+    - generic: "\"presentation\": {"
+  - 'button "+ \"args\": { ... } 3 keys"':
+    - generic: +
+    - generic: "\"args\": {"
+    - generic: "... } 3 keys"
+  - generic: "\"kind\": \"ask_user\""
+  - generic: "}"
+  - generic: "\"reason\": \"ask_user\""
+  - generic: "\"toolCallId\": \"call_zLGd3o0OkpbbOFG7iKJSBu4v\""
+  - generic: "\"toolName\": \"ask_user\""
+  - generic: "\"type\": \"input_required\""
+  - generic: "}"
+  - generic: "\"status\": \"TASK_STATE_INPUT_REQUIRED\""
+  - generic: "}"

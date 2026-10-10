@@ -1,0 +1,16 @@
+{
+  "source": "Studio visible /nextplay/current/route.json data.nodes[0].content.script.text",
+  "nodeRef": "node-a2j61s",
+  "characters": 633,
+  "contentLines": 22,
+  "sceneHeaders": [
+    "【雨夜废弃渡口值班亭·深夜·外】"
+  ],
+  "headersValid": true,
+  "dialogueCount": 2,
+  "dialogueValid": true,
+  "internalBlankLines": false,
+  "literalSlashN": false,
+  "note": "Editor DOM normalizes format; actual persisted source is verified.",
+  "passed": true
+}

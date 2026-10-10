@@ -1,0 +1,26 @@
+{
+  "runId": "run-9ea5f399de1ddde0e031a1d1864a0ec6",
+  "executionSeq": 22,
+  "calls": [
+    {
+      "kind": "character",
+      "start": "2026/10/10 20:56:05.317",
+      "end": "2026/10/10 20:57:30.505",
+      "callId": "call_pONCvlYZhtn0dEbSL20u0EbP"
+    },
+    {
+      "kind": "scene",
+      "start": "2026/10/10 20:55:42.833",
+      "end": "2026/10/10 20:57:30.766",
+      "callId": "call_m55zMU2HMKmrxmSkS7iifxlh"
+    },
+    {
+      "kind": "prop",
+      "start": "2026/10/10 20:56:11.756",
+      "end": "2026/10/10 20:57:31.024",
+      "callId": "call_j4KpdyP5LIJWkTNcQfwROmvm"
+    }
+  ],
+  "allThreeOverlapSeconds": 78.749,
+  "allSaved": true
+}

@@ -1,0 +1,471 @@
+{
+  "systemPrompt": {
+    "id": "fff75383-8b7d-40e4-a46e-45208a52a5a1",
+    "refreshedReadbackEqual": true,
+    "length": 5119,
+    "sha256": "590b7b6d4782ee4d90c42fd798b7988fa8fc4b52b05feaf007f4cd7664e9c638"
+  },
+  "presetId": "8bf0ce65-3d52-4819-97d7-9afbb5751203",
+  "skills": {
+    "mazha-screenplay-1008": {
+      "fileCount": 11,
+      "allFilesEqual": true,
+      "changed": [
+        "SKILL.md",
+        "references/cli-handoff.md",
+        "references/dialogue.md",
+        "references/genre-research-and-treatment.md",
+        "references/live-creation.md",
+        "references/scene-writing.md",
+        "references/screenwriting.md"
+      ],
+      "added": [
+        "references/compact-action-draft.md",
+        "references/full-scene-enhancer.md"
+      ],
+      "unchanged": [
+        "references/assets.md",
+        "references/loops.md"
+      ],
+      "files": {
+        "SKILL.md": {
+          "equal": true,
+          "sha256": "dfe7e9fd0ad6aa700c12f1fb7f627b67ec65342aa2cc34b5f6dc2a752957de93"
+        },
+        "references/assets.md": {
+          "equal": true,
+          "sha256": "c94e8cb1fd9160eaedc57713c9e98d60fdbd2893c25a32eb52e4038b32f77984"
+        },
+        "references/cli-handoff.md": {
+          "equal": true,
+          "sha256": "d79afe0c9bdae084d6b4caedfd7ea6f5e88072006ffe80519fa425801aced106"
+        },
+        "references/compact-action-draft.md": {
+          "equal": true,
+          "sha256": "5f5af189ff03c665966e0042faae4e6594fd2b2e2265d51fdcf06abb2fed21ed"
+        },
+        "references/dialogue.md": {
+          "equal": true,
+          "sha256": "e34410746d02cfbe2df7d5704f6f91729ab64ba1b2b66eae909b9d4b313c86be"
+        },
+        "references/full-scene-enhancer.md": {
+          "equal": true,
+          "sha256": "6c614726c64a62bb8b5694389ce930a97eb03bc124a959c5e7ed439f7d80e7c7"
+        },
+        "references/genre-research-and-treatment.md": {
+          "equal": true,
+          "sha256": "af2705616b5d6ac1a8557c3c06c954fb49ee22651e3ad91990616b3c47d434f9"
+        },
+        "references/live-creation.md": {
+          "equal": true,
+          "sha256": "81c4f5e5d278e4f35aed79e8e30e4d0de90ac3f6119352379f7d3faeb4ac583d"
+        },
+        "references/loops.md": {
+          "equal": true,
+          "sha256": "5b3dc914bdceeae17184aaff48b37f59ad0e92788768203cd7582466098bed36"
+        },
+        "references/scene-writing.md": {
+          "equal": true,
+          "sha256": "0055ac5b01a2bf7a024fbb0ae0f1f59d4196360be2692a1ee6a05a2211f9cb0d"
+        },
+        "references/screenwriting.md": {
+          "equal": true,
+          "sha256": "00c80c5d0a041c86f55c4ce135b826bd95c39e5742248e20dc5423392f24ca61"
+        }
+      },
+      "manifest": {
+        "createdAt": "2026-10-08T13:02:05Z",
+        "createdBy": "5b430df2-ea67-4824-8c45-434c05b367b9",
+        "description": "为已保存影游节点编写或修改剧本：调研同类写法，讲通并保存本集梗概，写短底稿，再增强复写为正式场景并逐段保存。支持局部修改；不创作大纲、不重建流程图，不另设冷读或写作验收。",
+        "id": "e27c0130-be87-4756-9652-0e2cad2f31c2",
+        "name": "蚂蚱-剧情到剧本-1008",
+        "scope": "business",
+        "slug": "mazha-screenplay-1008",
+        "sourceName": "mazha-split-creation-direct-1008.zip",
+        "sourceType": "folder",
+        "updatedAt": "2026-10-10T14:17:06Z"
+      }
+    },
+    "mazha-asset-image-direct-1008": {
+      "fileCount": 9,
+      "allFilesEqual": true,
+      "changed": [
+        "SKILL.md"
+      ],
+      "added": [],
+      "unchanged": [
+        "source/SKILL.md",
+        "source/agents/openai.yaml",
+        "source/assets/layout-references/character-layout-square.png",
+        "source/assets/layout-references/prop-layout-white.png",
+        "source/references/business-interface.md",
+        "source/references/generation-workflow.md",
+        "source/references/image-layout-rules.md",
+        "source/references/reference-image-rules.md"
+      ],
+      "files": {
+        "SKILL.md": {
+          "equal": true,
+          "sha256": "fd2b66fb92e487efdb6e61b4c2bb640c0d6dc31279737f990bad71c5bed4d7c2"
+        },
+        "source/SKILL.md": {
+          "equal": true,
+          "sha256": "5c7333b36ce7c9076dd80e4705c2b60b60ea5beb8dd5798f8dd6152cbd5e2c12"
+        },
+        "source/agents/openai.yaml": {
+          "equal": true,
+          "sha256": "f121b967d9eb2adc6a2b7b10707ffbc734e2c65764c4dd479cdf550c50ec3d41"
+        },
+        "source/assets/layout-references/character-layout-square.png": {
+          "equal": true,
+          "sha256": "a27e2222a72a396f3013e0d5cfac9ea035d73aaf387e35c65ff394fd0197814a"
+        },
+        "source/assets/layout-references/prop-layout-white.png": {
+          "equal": true,
+          "sha256": "d5dd0e1476187c55e328d4a9977a9f791ba6ed244181b45c4ccb5f7e6d43c034"
+        },
+        "source/references/business-interface.md": {
+          "equal": true,
+          "sha256": "129c07c0b66d9a86582f380678231ba0804e18f71138e1bc6c43325ae3d6c5be"
+        },
+        "source/references/generation-workflow.md": {
+          "equal": true,
+          "sha256": "62e60ba5016f2f89ebe49837496d787e1836091f9b704bf43ce0b334d6ac57b0"
+        },
+        "source/references/image-layout-rules.md": {
+          "equal": true,
+          "sha256": "bd8d96a7ad62111d0d7f348184fa648061dcf1abf4a2454e71c2c27408d1fb62"
+        },
+        "source/references/reference-image-rules.md": {
+          "equal": true,
+          "sha256": "bec94f326aff9b083239e2521f980e38fbba35c4fbd62a7994601022cb105b5e"
+        }
+      },
+      "manifest": {
+        "createdAt": "2026-10-08T12:34:39Z",
+        "createdBy": "5b430df2-ea67-4824-8c45-434c05b367b9",
+        "description": "同时生图开启时，按主预设资产生成师的视觉规则，为本轮实际用到的人物、场景和道具生成设定图；支持已授权批次后台并行、前台按顺序逐图确认。仅供蚂蚱测试探索。",
+        "id": "563ab429-e570-4931-9c69-00f40f01722b",
+        "name": "蚂蚱-同时生图-1008",
+        "scope": "business",
+        "slug": "mazha-asset-image-direct-1008",
+        "sourceName": "mazha-asset-image-direct-1008.zip",
+        "sourceType": "folder",
+        "updatedAt": "2026-10-10T11:59:32Z"
+      }
+    },
+    "mazha-outline-route-1008": {
+      "fileCount": 29,
+      "allFilesEqual": true,
+      "changed": [
+        "SKILL.md",
+        "references/assets.md",
+        "references/cli-topology.md",
+        "references/interaction.md",
+        "references/modes.md",
+        "references/research-before-creation.md",
+        "references/skill-handoff.md"
+      ],
+      "added": [
+        "references/frontend-protocol.md",
+        "references/production-workflow.md"
+      ],
+      "unchanged": [
+        "references/acceptance.md",
+        "references/cli-handoff.md",
+        "references/cli-topology-branches-and-quality.md",
+        "references/cli-topology-story-and-review.md",
+        "references/continuation-handoff.md",
+        "references/creative-entry.md",
+        "references/current-canvas-editing.md",
+        "references/emotional-spine.md",
+        "references/expert-opening.md",
+        "references/goal-handoff.md",
+        "references/graph-contract.md",
+        "references/live-creation.md",
+        "references/loops.md",
+        "references/materials-and-scope.md",
+        "references/story-development.md",
+        "references/story-planning.md",
+        "scripts/graph_audit.py",
+        "scripts/graph_check.py",
+        "scripts/inspect_opening.py",
+        "scripts/user_constraints.py"
+      ],
+      "files": {
+        "SKILL.md": {
+          "equal": true,
+          "sha256": "76de402dc48304bee0fec311b248569c25cecf9c7c73cb95d0a05f17a29bfcdf"
+        },
+        "references/acceptance.md": {
+          "equal": true,
+          "sha256": "e4471d8f0b667fed6ba4bccf5871e6c6004e3aa1efcbf2ea384578b9def5c9e3"
+        },
+        "references/assets.md": {
+          "equal": true,
+          "sha256": "5e83dba9a372486a79f2b5dd5a02d13c94c7d410d7af169dd270ce95b439b9ce"
+        },
+        "references/cli-handoff.md": {
+          "equal": true,
+          "sha256": "c9140c45910b9d597b02ea55716d297383f9a4e65411db7b35967fe41027e72d"
+        },
+        "references/cli-topology-branches-and-quality.md": {
+          "equal": true,
+          "sha256": "45bc503ca31947b826fea924b1f9ea95fbe4c6fa9a1eeda83a4cb3a89184b71b"
+        },
+        "references/cli-topology-story-and-review.md": {
+          "equal": true,
+          "sha256": "ef8f93c881ca4f4a2ae15e9cf6daab569d63dfbec020603bde0a19db1079b7e5"
+        },
+        "references/cli-topology.md": {
+          "equal": true,
+          "sha256": "1c2ee4b330f6a64901ab30fc9127989d2219c4180fac9874ca98298b64a27841"
+        },
+        "references/continuation-handoff.md": {
+          "equal": true,
+          "sha256": "c0d8515deea931140bb6e94dbb7ab5a1df3e2348e91440c5bff968f2f0000be6"
+        },
+        "references/creative-entry.md": {
+          "equal": true,
+          "sha256": "64c9cd9ff4795aa20394119f9ada08ae5303d455d798ff14bac1362a9fb17fb3"
+        },
+        "references/current-canvas-editing.md": {
+          "equal": true,
+          "sha256": "df0dc7af18981a2559146ff877ed1e4b86fa18aa5ab1f123e9dd7b3856c8e3d1"
+        },
+        "references/emotional-spine.md": {
+          "equal": true,
+          "sha256": "accde945905adfddfeaa6fcae2c19020c6e2df5aff9bf4bfddac83bba22bc2bf"
+        },
+        "references/expert-opening.md": {
+          "equal": true,
+          "sha256": "8117f46c9ba5ba7afba4728f649aa0bec0a087274e8037994710be4132804ac4"
+        },
+        "references/frontend-protocol.md": {
+          "equal": true,
+          "sha256": "3a302fba10ca519ca5057be0477e463b21d749ae137fd3a6c0bb2ae46cf08864"
+        },
+        "references/goal-handoff.md": {
+          "equal": true,
+          "sha256": "83c978f314225ed12287d480918b7510e94845991451e782263baafc38711413"
+        },
+        "references/graph-contract.md": {
+          "equal": true,
+          "sha256": "effc16e64b30a4c6d6f4c0de0b50d95319d817cb6460c623a65d19b9b7bb1816"
+        },
+        "references/interaction.md": {
+          "equal": true,
+          "sha256": "89223232aaa5686511d585bee8d65550aea8da5bcd20ad21e74b243d44f4ec88"
+        },
+        "references/live-creation.md": {
+          "equal": true,
+          "sha256": "4e32fbcd190744659c6982caaeb909ed9f29b5ad227c85cf07a03de2541313fd"
+        },
+        "references/loops.md": {
+          "equal": true,
+          "sha256": "18c46516c87d3f8ab4ecf923907d6c6f15ec292e8b4868dbed572723cd09a182"
+        },
+        "references/materials-and-scope.md": {
+          "equal": true,
+          "sha256": "4807289c31425ed560a175f2bb6e1409a4bbe0678cb30f323b7d54aff8675275"
+        },
+        "references/modes.md": {
+          "equal": true,
+          "sha256": "a1258c263d2f7e3d96c71700d8499fe6765d465f2023e7f29af3b0d9f9e34e4a"
+        },
+        "references/production-workflow.md": {
+          "equal": true,
+          "sha256": "4f139126d2693313dfeb644ea8d605453dcd93e68ed8739ecf8383a0e1ac694c"
+        },
+        "references/research-before-creation.md": {
+          "equal": true,
+          "sha256": "02772877c8e2b21022f8b5eec9bd8cdd02f225049cf60f5e7a2e86f4c3acb394"
+        },
+        "references/skill-handoff.md": {
+          "equal": true,
+          "sha256": "e489b750d4ed37d4591cf65a1afae23a0f9861b5b976314378cf75b49390058d"
+        },
+        "references/story-development.md": {
+          "equal": true,
+          "sha256": "7562b268ccc1579680f01a5cd201ae56b63ecc0e57815feaf8f351aa3a1968fa"
+        },
+        "references/story-planning.md": {
+          "equal": true,
+          "sha256": "4011679c56ed764b47cf2fc773faef83e93b956269bdd50fb165b12450a2d95a"
+        },
+        "scripts/graph_audit.py": {
+          "equal": true,
+          "sha256": "5df40a57e3fedaff1340954af32d4204f3cdd80ce4a9ed531d4d394503202601"
+        },
+        "scripts/graph_check.py": {
+          "equal": true,
+          "sha256": "677e0475dfb8a5006c5e06b10bfefeeae21a09f18fde9517032bc9c30df7e879"
+        },
+        "scripts/inspect_opening.py": {
+          "equal": true,
+          "sha256": "a1de5155debd7d31d0a7bbd9c81b95c05e03bcc5b44576a8108988c97e960bd8"
+        },
+        "scripts/user_constraints.py": {
+          "equal": true,
+          "sha256": "ba3e444cbfd3ea6e5d0f1cbccee3d3adad9dbc957ecc5075480c2ce1c5c5fb55"
+        }
+      },
+      "manifest": {
+        "createdAt": "2026-10-08T13:02:04Z",
+        "createdBy": "5b430df2-ea67-4824-8c45-434c05b367b9",
+        "description": "创作或修改影游的大纲、故事与流程图：题材调研、情绪脊、剧情节点、选择后果和文字资产；支持全自动、专家分批与当前路线局部修复。正式剧本交给 mazha-screenplay-1008。",
+        "id": "7de81a35-b816-46f7-b68e-f50392dc5927",
+        "name": "蚂蚱-构思创意大纲流程图-1008",
+        "scope": "business",
+        "slug": "mazha-outline-route-1008",
+        "sourceName": "mazha-split-creation-direct-1008.zip",
+        "sourceType": "folder",
+        "updatedAt": "2026-10-10T12:00:42Z"
+      }
+    }
+  },
+  "projectDataWrittenByThisTask": true,
+  "tests": {
+    "skillCreatorValidation": "passed for all three updated skills",
+    "frontendBehavior": "Passed live opening OFF, three-image ON, original interrupt confirmations, handoff and route continuation; frontend02 owns code.",
+    "localMarkdownLinks": {
+      "checked": 52,
+      "allResolve": true
+    },
+    "frontendTargeted": {
+      "files": 28,
+      "tests": 223,
+      "passed": true,
+      "log": "/tmp/nextplay-final-contracts.log",
+      "note": "Includes overlapping previously reported tests; not summed."
+    },
+    "frontendChecks": {
+      "typecheck": "passed",
+      "eslint": "passed with existing warnings",
+      "build": "passed, final display build 7.71s",
+      "wholeSuite": "Earlier baseline: 10 pre-existing failures reproduced at archived HEAD; not a claim of whole-suite green.",
+      "diffCheck": "passed"
+    },
+    "frontendFinalDisplay": {
+      "files": 27,
+      "tests": 201,
+      "passed": true,
+      "overlapsEarlierTargetedTests": true
+    }
+  },
+  "regressionCorrections": [
+    "Screenplay research unreadable/failure immediately falls back to general writing methods",
+    "One request shares upfront research budget across keyword/source/reference changes",
+    "Public progress rewritten into natural player-facing language before output",
+    "Exact node:<actual node.id> and script:<same actual node.id> target keys; [] remains legal",
+    "Character/scene/prop all require a submit-capable AskUser image confirmation",
+    "Official current CLI asset-materials explicitly supports independent image calls together and handles concurrent persistence; use foreground separate calls, no &/invented async, frontend sequential confirmation",
+    "Final live run outline derive/write from current newly created story rejected the full plan; SP adds create/write classification example, frontend restricts compatibility to the exact new-story dependency case",
+    "Removed redundant full-text copying into enhancer input after repeated summary loss. Frozen episode facts/draft remain the input; enhancement reads original scene/full-enhancer/dialogue references directly, including examples. No new stage or machine package."
+  ],
+  "spSlim": {
+    "beforeLength": 18193,
+    "afterLength": 5119,
+    "reductionPercent": 71.9,
+    "coverageMatrix": "requirement-coverage.md",
+    "referencePromptEdited": false
+  },
+  "liveRegression": {
+    "projectId": "ced5a81f-0c6e-4ff3-a413-54cee8ead71e",
+    "threadId": "thr_01M4JWJCTF1NKY9SPMHQMAMY5A",
+    "runId": "run-9ea5f399de1ddde0e031a1d1864a0ec6",
+    "actualImagesSaved": [
+      "character",
+      "scene",
+      "prop"
+    ],
+    "formalScriptSaved": true,
+    "firstImageConfirmResumedOriginalRun": true,
+    "secondImageInterrupt": "tool-input-9c7b0b3cdf9a32346c3588de",
+    "pendingAskUserCause": "Frontend recovery mapped existing messages but did not insert a missing original message. Right-side real interrupt submissions worked; scoped insertion correction tested.",
+    "enhancerCompletenessRetest": "Superseded single-package duplication requirement; direct-reference design passed targeted run-48348152e380117645b62587fa35dee9.",
+    "threeImageConfirmationsSubmitted": true,
+    "handoffAfterImageConfirmations": true,
+    "rawScriptFormatPassed": true,
+    "fullRoutePreservation": "Passed; full-route-preservation-validation.json",
+    "threeImageConcurrency": "Three original calls overlap 78.749 seconds; all saved and separately confirmed."
+  },
+  "firstOpeningRegression": {
+    "projectId": "74370a0c-3df8-4702-9a8b-6657cd6bd03d",
+    "threadId": "thr_01M4K0WR8CY9ZERF000NC01NSN",
+    "imagesEnabled": false,
+    "withoutRefreshOrPromptInjection": true,
+    "initialConnectionExhaustion": "Old completed local HTTP/SSE test pages occupied connections; automatically recovered after closing old tabs, no resend, reload, or code change.",
+    "nodeSynopsisInPlaceObserved": true,
+    "scriptThinkingObserved": true,
+    "partialScriptTypingObserved": true,
+    "automaticReturnToNodeObserved": true,
+    "handoffButtonObserved": true,
+    "openingRunDuration": "3m44s",
+    "enhancerInputCompleteness": "Old single-package requirement failed (examples summarized); redundant copying removed at22:17, then latest references loaded exactly and targeted enhancement passed.",
+    "evidenceDirectory": "first-opening-live"
+  },
+  "projectDataScope": "Only isolated authorized regression projects; no unrelated user project rewritten.",
+  "targetedEnhancementRegression": {
+    "passed": true,
+    "runId": "run-48348152e380117645b62587fa35dee9",
+    "nodeRef": "node-spxs72",
+    "characters": 824,
+    "lines": 42,
+    "dialogueLines": 9,
+    "summaryUnchanged": true,
+    "assetsUnchanged": true,
+    "noImages": true,
+    "route": {
+      "plot": 1,
+      "choice": 0,
+      "ending": 0
+    },
+    "expectedPendingEnd": "DISCONNECTED_END at only opening node is within authorized stop boundary",
+    "references": "16-reference-validation.json",
+    "newSourceActuallyLoaded": true,
+    "latestRunDuration": "1m40s frontend"
+  },
+  "fullRoutePreservation": {
+    "projectId": "ced5a81f-0c6e-4ff3-a413-54cee8ead71e",
+    "runId": "run-f31f947241bd833b6358a07e6a3c86e9",
+    "unchangedScript": true,
+    "scriptChars": 633,
+    "sameThreeGenerationsAndOutputMedia": true,
+    "refs": [
+      {
+        "asset": "item-nqrft3",
+        "generation": "generation-peou2s",
+        "media": [
+          "media-7caq1m"
+        ]
+      },
+      {
+        "asset": "character-r97s2u",
+        "generation": "generation-jhriz1",
+        "media": [
+          "media-uiycel"
+        ]
+      },
+      {
+        "asset": "scene-0z6tim",
+        "generation": "generation-bmhgmx",
+        "media": [
+          "media-r1j78o"
+        ]
+      }
+    ],
+    "mediaRecords": 5,
+    "mediaRecordsNote": "3 generated output images plus 2 source layout references",
+    "newScriptsRemainEmpty": true,
+    "route": {
+      "plot": 4,
+      "choice": 1,
+      "ending": 3,
+      "edges": 4
+    },
+    "projectCheckIssues": [],
+    "projectCheckWarnings": "4 stale dependency revision warnings; preserved images not regenerated"
+  },
+  "status": "Implementation and self-test complete; repository commit receipts reported separately"
+}

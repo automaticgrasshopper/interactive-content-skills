@@ -1,0 +1,175 @@
+- generic: 蚂蚱本地前端 · 5195 · 连接开发站后端，数据保存在开发站
+- banner:
+  - generic "8bf0ce65-3d52-4819-97d7-9afbb5751203": 当前预设：蚂蚱测试探索
+  - button "Nexplay"
+  - textbox "文件名":
+    - /placeholder: Untitled
+    - text: 门外的许宁
+  - button "experiment 测试环境":
+    - img "experiment":
+    - generic: 测试环境
+  - button "▷ 回放创作过程" [disabled]
+  - button "打开用户手册":
+    - img "book":
+    - generic: 用户手册
+  - button "审核通知":
+    - img "bell":
+  - button "thunderbolt 300":
+    - img "thunderbolt":
+    - text: "300"
+- generic: 01-钥匙转向门口
+- article:
+  - button:
+  - heading [level=3]: 钥匙转向门口
+  - paragraph: 邮局停用后的第七天，许宁深夜独自回到值班室，只想从抽屉里取走旧宿舍钥匙，完成交接后赶紧离开。她发现抽屉是空的，那串钥匙却平放在桌子正中，最长的一把正绕着钥匙环缓慢转向房门。她先检查扣紧的窗和桌下，确认屋内没有风，也没有别人，随后用手掌按住钥匙。钥匙立刻停止，门外却同时响起许宁自己的声音，请她开门，还催她别按着钥匙。许宁没有照做，而是隔门追问对方是谁；门外的声音复述她进门时的自言自语，并准确说出她此刻左手按着钥匙、右手拿着手机，连手机剩余电量也分毫不差。许宁把手机扣到桌上，仍不松手。她原本取钥匙离开的目标被迫中断，新的压力变成：守住正在指向房门的钥匙，并判断门外这个比她更清楚室内情况的声音究竟是什么。
+  - button:
+    - generic: 剧本
+  - button [disabled]:
+    - generic: 规划分镜
+- region "实时创作画布":
+  - generic: 创作中分集剧本
+  - main:
+    - complementary:
+      - heading "分集目录" [level=2]
+      - generic: 钥匙转向门口
+    - heading "钥匙转向门口" [level=1]
+    - textbox "剧本内容":
+      - text: 【
+      - generic "场景名称": 停用邮局值班室
+      - generic: ·
+      - generic "日/夜": 深夜
+      - generic: ·
+      - generic "内/外": 内
+      - text: 】
+      - paragraph: 房门推开一条缝，手机的白光先扫进来。许宁侧身进门，反手把门带上。
+      - paragraph: 冷青色的应急灯还亮着。旧木桌、矮文件柜和左墙的小窗都蒙着一层停用后的灰。
+      - generic "角色": 许宁
+      - generic: （
+      - generic "语气": 疲惫
+      - generic: ）
+      - generic: ：“
+      - generic "台词": 一把破钥匙，明早拿不行吗。
+      - generic: ”
+      - paragraph: 她径直走到桌边，拉开抽屉。
+      - paragraph: 空的。
+      - paragraph: 许宁把手机往抽屉深处照，指尖拨过两张废纸，什么也没碰到。
+      - generic "角色": 许宁
+      - generic: （
+      - generic "语气": 压着烦躁
+      - generic: ）
+      - generic: ：“
+      - generic "台词": 别闹啊……
+      - generic: ”
+      - paragraph: 沙——
+      - paragraph: 细响从她手边传来。
+      - paragraph: 许宁停住。手机光移上桌面。
+      - paragraph: 一串旧钥匙平放在桌子正中。银色圆环没有移动，最长的黄铜钥匙却贴着木面，一点点朝房门转去。斜划痕每转过一寸，钥匙齿便刮出一声轻响。
+      - paragraph: 许宁没有碰它。她先抬头看左墙的小窗。
+      - paragraph: 插销扣着，窗帘边一动不动。
+      - paragraph: 钥匙还在转。
+      - paragraph: 她弯腰照向桌底。桌腿之间空空的，灰尘上没有脚印。
+      - paragraph: 许宁直起身，目光重新落到钥匙上。黄铜钥匙已经转过桌角，正对房门。
+      - paragraph: 她用指腹试探着压住钥匙柄。
+      - paragraph: 钥匙在她指下继续拧了一下。
+      - paragraph: 许宁手掌猛地覆下去。
+      - paragraph: 刮擦声戛然而止。
+      - generic "角色": 门外许宁的声音
+      - generic: （
+      - generic "语气": 平常
+      - generic: ）
+      - generic: ：“
+      - generic "台词": 许宁，开门。钥匙别按着。
+      - generic: ”
+      - paragraph: 许宁肩膀一紧，右手的手机光晃过门缝。门缝下没有影子。
+      - generic "角色": 门外许宁的声音
+      - generic: （
+      - generic "语气": 有点不耐烦
+      - generic: ）
+      - text: ：“ ”
+      - paragraph
+  - generic: 画布随实际保存同步更新 · 展示期间画布只读
+- button "提交用户反馈":
+  - img "customer-service":
+  - generic: 反馈
+- heading "Agent" [level=3]
+- button "收起 Agent 对话" [expanded]:
+- generic "tool 已运行 6 个工具 down":
+  - img "tool":
+  - generic: 已运行 6 个工具
+  - img "down":
+- generic "tool 已运行 5 个工具 down":
+  - img "tool":
+  - generic: 已运行 5 个工具
+  - img "down":
+- button "门外的许宁 深夜，女值班员许宁回到停用邮局的值班室取钥匙，却发现钥匙会自行转向门锁；当她按住它，门外竟响起另一个许宁的声音，催她开门，并准确说出只有她知道的事。 邮局停用后的第七天，许宁独自回到值班室，只想拿走落在抽屉里的旧宿舍钥匙。抽屉是空的，那串钥匙却在桌子正中缓慢自转。她伸手按住，门外立刻传来自己的声音：‘许宁，开门。钥匙别按着。’门外的‘她’知道许宁刚说过什么、手机还剩多少电，甚至警告钥匙一旦转满一圈，门里门外的两个人就会交换位置。许宁不敢松手，也不肯开门，只能翻找废弃的交接簿，发现自己在邮局停用前留下过一句被划掉的话：‘抽屉里还有一封……’桌上随即出现一封收件人和寄件人都是许宁的旧信，而门外的声音第一次慌了，请她千万别拆…… 玩家需要扮演引导许宁的观察者，在深夜停用的邮局值班室里，陪她按住不断转向门锁的钥匙，核对门外‘自己’的每句话，从交接簿和未寄出的信中找出谁在撒谎，并决定她是否还要让那个总替她把真话咽回去的声音进门。":
+  - heading "门外的许宁" [level=4]
+  - generic: 深夜，女值班员许宁回到停用邮局的值班室取钥匙，却发现钥匙会自行转向门锁；当她按住它，门外竟响起另一个许宁的声音，催她开门，并准确说出只有她知道的事。 邮局停用后的第七天，许宁独自回到值班室，只想拿走落在抽屉里的旧宿舍钥匙。抽屉是空的，那串钥匙却在桌子正中缓慢自转。她伸手按住，门外立刻传来自己的声音：‘许宁，开门。钥匙别按着。’门外的‘她’知道许宁刚说过什么、手机还剩多少电，甚至警告钥匙一旦转满一圈，门里门外的两个人就会交换位置。许宁不敢松手，也不肯开门，只能翻找废弃的交接簿，发现自己在邮局停用前留下过一句被划掉的话：‘抽屉里还有一封……’桌上随即出现一封收件人和寄件人都是许宁的旧信，而门外的声音第一次慌了，请她千万别拆…… 玩家需要扮演引导许宁的观察者，在深夜停用的邮局值班室里，陪她按住不断转向门锁的钥匙，核对门外‘自己’的每句话，从交接簿和未寄出的信中找出谁在撒谎，并决定她是否还要让那个总替她把真话咽回去的声音进门。
+- paragraph:
+  - text: 【主标签】悬疑
+  - text: 【副标签】单场景、心理惊悚
+  - text: 【创意词】自转钥匙、门外的许宁、未寄出的信
+- paragraph: 项目“首开写作回归1010”的完整短故事工作稿、创意与三段大纲均已保存并读回。创意核心是：门外的“许宁”并非替身，而是她一次次咽回真话后留下的声音；钥匙既控制房门，也决定这种旧习惯能否再次接管她。大纲采用第三人称，预览停在高潮前，当前等待你在大纲卡确认。本轮没有创建默认开头、路线或剧本，也没有生成任何图片、分镜和视频。
+- generic: 确认大纲，开始创作
+- generic: 已处理 3m 33s
+- generic "tool 已运行 7 个工具 down":
+  - img "tool":
+  - generic: 已运行 7 个工具
+  - img "down":
+- generic "tool 已运行 14 个工具 down":
+  - img "tool":
+  - generic: 已运行 14 个工具
+  - img "down":
+- generic "tool 已运行 2 个工具 down":
+  - img "tool":
+  - generic: 已运行 2 个工具
+  - img "down":
+- generic "tool 已运行 9 个工具 执行中 down":
+  - img "tool":
+  - generic: 已运行 9 个工具
+  - generic: 执行中
+  - img "down":
+- generic "check-circle 正在读取开头剧本上下文 down":
+  - img "check-circle":
+  - generic: 正在读取开头剧本上下文
+  - img "down":
+- generic "check-circle 正在撰写开头短底稿 down":
+  - img "check-circle":
+  - generic: 正在撰写开头短底稿
+  - img "down":
+- generic "check-circle 正在核对开头短底稿 down":
+  - img "check-circle":
+  - generic: 正在核对开头短底稿
+  - img "down":
+- generic "check-circle 正在组织正式场景输入 down":
+  - img "check-circle":
+  - generic: 正在组织正式场景输入
+  - img "down":
+- generic "check-circle 正在核对正式场景输入 down":
+  - img "check-circle":
+  - generic: 正在核对正式场景输入
+  - img "down":
+- generic "check-circle 正在写入开头第一段正式剧本 down":
+  - img "check-circle":
+  - generic: 正在写入开头第一段正式剧本
+  - img "down":
+- generic "check-circle 正在完成开头正式剧本 down":
+  - img "check-circle":
+  - generic: 正在完成开头正式剧本
+  - img "down":
+- generic "loading 正在读回开头正式剧本 down":
+  - img "loading":
+  - generic: 正在读回开头正式剧本
+  - img "down":
+- generic "loading 正在核对开头交付边界 down":
+  - img "loading":
+  - generic: 正在核对开头交付边界
+  - img "down":
+- text: 开始你的创作，可以
+- img "@"
+- text: 引用资源
+- paragraph
+- button "添加附件":
+- button "提及故事对象":
+- button "选择控制模式":
+  - generic: 全自动
+- button "停止生成":

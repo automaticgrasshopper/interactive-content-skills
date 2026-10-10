@@ -1,0 +1,12 @@
+{
+  "createdAt": "2026-10-08T13:02:04Z",
+  "createdBy": "5b430df2-ea67-4824-8c45-434c05b367b9",
+  "description": "创作或修改影游的大纲、故事与流程图：题材调研、情绪脊、剧情节点、选择后果和文字资产；支持全自动、专家分批与当前路线局部修复。正式剧本交给 mazha-screenplay-1008。",
+  "id": "7de81a35-b816-46f7-b68e-f50392dc5927",
+  "name": "蚂蚱-构思创意大纲流程图-1008",
+  "scope": "business",
+  "slug": "mazha-outline-route-1008",
+  "sourceName": "mazha-split-creation-direct-1008.zip",
+  "sourceType": "folder",
+  "updatedAt": "2026-10-10T12:00:42Z"
+}

@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "runId": "run-48348152e380117645b62587fa35dee9",
+  "nodeRef": "node-spxs72",
+  "characters": 824,
+  "lines": 42,
+  "dialogueLines": 9,
+  "summaryUnchanged": true,
+  "assetsUnchanged": true,
+  "noImages": true,
+  "route": {
+    "plot": 1,
+    "choice": 0,
+    "ending": 0
+  },
+  "expectedPendingEnd": "DISCONNECTED_END at only opening node is within authorized stop boundary",
+  "references": "16-reference-validation.json",
+  "newSourceActuallyLoaded": true,
+  "latestRunDuration": "1m40s frontend"
+}

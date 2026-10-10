@@ -1,0 +1,10 @@
+{
+  "sameKind": true,
+  "sameQuestionKeys": true,
+  "sameQuestionId": true,
+  "sameOptionValues": true,
+  "finalTopTitle": "",
+  "intermediateTopTitle": "确认道具形象",
+  "frontendAcceptsEmptyTopTitle": true,
+  "cause": "Unconfirmed; Studio actually input_required but frontend projection lacks event. Do not attribute to model/tool omission."
+}

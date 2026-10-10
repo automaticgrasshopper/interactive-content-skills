@@ -1,0 +1,34 @@
+{
+  "args": {
+    "description": "沈芒是本轮第一项待确认形象。确认后将依次展示并确认雨夜废弃渡口值班亭、提灯；选择重新生成则只重做沈芒并再次停留确认。",
+    "questions": [
+      {
+        "description": "请查看已展示的沈芒游戏CG人物设定图。",
+        "id": "asset_image_confirmation",
+        "multiple": false,
+        "options": [
+          {
+            "description": "接受当前选中图，并继续下一项资产确认。",
+            "label": "确认形象",
+            "value": "confirm_image"
+          },
+          {
+            "description": "保留文字设定，重新生成沈芒设定图。",
+            "label": "重新生成",
+            "value": "regenerate_image"
+          }
+        ],
+        "placeholder": "",
+        "required": true,
+        "title": "沈芒｜请确认这个形象",
+        "type": "select",
+        "userInput": {
+          "label": "调整后重新生成",
+          "placeholder": "请说明希望调整的外观细节"
+        }
+      }
+    ],
+    "title": ""
+  },
+  "kind": "ask_user"
+}

@@ -1,0 +1,30 @@
+{
+  "runId": "run-48348152e380117645b62587fa35dee9",
+  "fourReferences": [
+    {
+      "file": "screenwriting.md",
+      "exactCurrentSource": true,
+      "complete": true,
+      "modifiedAt": "2026-10-10T14:17:06Z"
+    },
+    {
+      "file": "scene-writing.md",
+      "exactCurrentSource": true,
+      "complete": true,
+      "modifiedAt": "2026-10-10T11:23:23Z"
+    },
+    {
+      "file": "full-scene-enhancer.md",
+      "exactCurrentSource": true,
+      "complete": true,
+      "modifiedAt": "2026-10-10T14:17:06Z"
+    },
+    {
+      "file": "dialogue.md",
+      "exactCurrentSource": true,
+      "complete": true,
+      "modifiedAt": "2026-10-10T11:23:23Z"
+    }
+  ],
+  "examplesPresent": true
+}

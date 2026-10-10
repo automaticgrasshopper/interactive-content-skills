@@ -1,0 +1,205 @@
+Skill Detail
+
+NEXTPLAY-CLI
+
+nextplay-cli
+
+使用 Node 单文件 CLI 查询和编辑 NextPlay 大纲、路线、剧本、资产及故事板和分镜，并提供大纲与画风、资产文字、资产素材（图片与音色）、分集剧本、分镜拆分与故事板、分镜视频步骤的完整做法；选择项目画风，生成或修改资产图片、故事板和封面，为分镜生成有声视频并放入本集视频轨，生成与选择主背景音乐，选择或导入素材并保存。不做后期剪辑或发布项目。
+
+范围
+业务可见
+OWNER
+当前业务
+文件
+12
+更新
+10-10 16:14
+来源
+nextplay-cli-389e40a.zip
+P
+
+Preset 引用
+
+被 3 个 Preset 使用
+
+C
+CLI-Simplify
+11d5275a-eaa3-45ce-a673-2952339457f4
+查看
+蚂
+蚂蚱测试探索
+8bf0ce65-3d52-4819-97d7-9afbb5751203
+查看
+C
+CLI-Simplify-Biz-Opt
+85ef0254-ecb5-45b0-bef1-0622a32b3b82
+查看
+
+FILES
+
+Skill 文件预览台
+
+12 个文件
+readonly
+-
+DIR
+references
+MD
+asset-materials.md
+10-10 16:14
+MD
+assets.md
+10-10 16:14
+MD
+media.md
+10-10 16:14
+MD
+outline.md
+10-10 16:14
+MD
+routes.md
+10-10 16:14
+MD
+screenplay.md
+10-10 16:14
+MD
+shot-video.md
+10-10 16:14
+MD
+storyboard.md
+10-10 16:14
+SH
+init.sh
+10-10 16:14
+BIN
+nextplay.bin
+10-10 16:14
+BIN
+ENV
+runtime.env
+10-10 16:14
+MD
+SKILL.md
+10-10 16:14
+
+PREVIEW
+
+references/asset-materials.md
+
+更新 10-10 16:14
+9666 B
+MD
+# 资产素材：图片与音色
+
+为已有文字设定的角色、场景、道具生成或修改设定图，并为有台词的角色匹配音色。本文件包含这一步需要的全部规则和命令；命令在本 Skill 目录执行 `./nextplay.bin`。
+
+适用：去生图、给资产出图、重做或修改资产图、查看生图要求、匹配或更换角色音色。不适用：资产文字设计（见 [资产文字](assets.md)）、封面、故事板、分镜视频（见 [媒体](media.md)）和无法对应到明确资产的图片。
+
+## 判断模式
+
+| 用户意图 | 做法 |
+|---|---|
+| 去生图、生成资产图、重新生成 | `asset image generate` |
+| 修改已有图片（改发色、换时间、改状态等） | `asset image edit`，默认基于当前选中图 |
+| 只看生图要求、暂不生图 | 加 `--dry-run`，展示返回的 `assembled.asset_requirements` 和附加要求 |
+| 匹配或更换音色 | 见下文“音色” |
+
+用户点名资产时只处理这些资产；说“全部”或没说范围时处理所有需要出图的角色、场景和道具。名称无法唯一定位时先请用户说明。资产文字缺少外观信息时先补文字设定再生图。
+
+## CLI 已自动完成的内容
+
+生图要求由 CLI 从资产字段拼装，不需要复述设定：
+
+- 角色：name、age、gender、visual_appearance、fixed_traits、consistency_rules、visual_style_alignment
+- 场景：name、scene_description、spatial_layout、identifying_elements、fixed_spatial_relations、consistency_rules、allowed_states、visual_style_alignment
+- 道具：name、visual_description、fixed_appearance、consistency_rules、allowed_states 前两项（右侧状态视图）、visual_style_alignment
+
+此外自动加入项目画风（正负向提示词）、固定 16:9 版式（角色三视图 + 头像 + 细节，场景单张空间图，道具三视图 + 主视图 + 状态细节）、白模和基础图的参考说明、通用禁止项和本类资产禁止项。画风参考图不会传给模型。核心外观字段为空时返回 `ASSET_FIELDS_INCOMPLETE`，按 `empty_fields` 先补资产文字（角色 visual_appearance，场景 scene_description 或 spatial_layout，道具 visual_description）。其余字段为空时跳过并在 `assembled.empty_fields` 列出。画风名称、ID 或提示词冲突时生图停止，先用 `outline style set` 重新选择。
+
+## 附加要求
+
+资产图片始终与资产文字一致。凡是会改变资产长相的要求（发色、服装、配饰、颜色、材质、布局、季节、状态等），先用 `asset update` 改对应字段，再生图或改图，不写进附加要求。
+
+`--extra-requirements`（generate，可选）只写不改变资产设定的内容：
+
+- 每张额外参考图的用途和禁止借用的内容（见下节）。
+- 构图和取景说明，例如场景图从哪个方向看、是否俯瞰。
+- 画风、比例、版式、禁止项和资产设定已经自动加入，不要重复。
+
+```bash
+./nextplay.bin asset image generate --asset-ref-id <ref>
+./nextplay.bin asset image generate --asset-ref-id <ref> \
+  --reference-url 'https://…/coat.png' \
+  --extra-requirements '第 1 张参考图只借用外套的版型和面料，不借用人物、姿势和背景'
+```
+
+## 参考图
+
+用户附件先判断用途，再绑定到明确的资产：
+
+- 角色身份参考：只借用用户点名的脸、发型、体型、服装或气质，不借用背景、姿势、排版和画风。
+- 场景参考：只借用点名的空间布局、建筑语言、材质或灯光，不复制无关人物、标识和事件。
+- 道具参考：只借用点名的轮廓、结构、材质、颜色或状态，不复制品牌 logo、个人信息和文字。
+- 用户明确作为风格参考的图片：已在画风步骤处理，生图时不再传入；附件风格与项目画风明显冲突且用户没说要换画风时，先问用户。
+
+用户说“参考这个人生成林晚”只绑定到“林晚”，不影响其他资产。额外参考图用 `--reference-media-ref <media-ref>` 或 `--reference-url <HTTP(S) URL>`（不接受本地路径）传入，可重复；按命令行顺序排在最前，之后是基础图和白模，包括自动附加的图片最多 16 张，重复的参考图会报错。在附加要求里按“第 N 张参考图”说明用途。真实人物参考不扩展为身份推断或完整复制。
+
+必须先问用户的情况：参考图对应哪个资产不清楚且有多个可能；一张图可能是身份、服装、排版或风格参考且理解不同会明显改变结果；“参考这个人”没说明参考哪部分；附件与资产的时代、职业、功能或安全边界冲突；已有图片与最新文字修改冲突且无法判断保留哪版。
+
+冲突时的优先级：用户本轮明确的修改 > 资产字段中的固定特征与一致性要求 > 用户指定用途的附件 > 其他未说明用途的附件。
+
+## 修改已有图片
+
+```bash
+./nextplay.bin asset image edit --asset-ref-id <ref> \
+  --edit-request '只把发色改为深棕色；保持脸型、年龄、体型、服装结构和构图不变'
+```
+
+`--edit-request` 必填，写清要改什么和保留什么：
+
+- 改角色局部时锁定脸、年龄、体型、服装结构和其他未点名信息。
+- 改场景时间或天气时锁定入口、窗户、主要家具、焦点和空间方向，只改光线和状态。
+- 改道具状态时锁定轮廓、材质、主色和结构，只改点名状态。
+
+默认编辑当前选中图；要基于历史版本时加 `--base-media-ref <media-ref>`（`asset inspect --asset-ref-id <ref> --include media` 查看历史）。
+
+改图就是改资产：先用 `asset update` 改对应文字字段（角色的 visual_appearance、fixed_traits、consistency_rules，场景和道具的对应字段），字段写修改后的最终外观，不写修改指令；再用 `asset image edit` 改图，修改指令写在本次 prompt 里，交付时文字和图片一致。只改用户点名的资产；改完与其他资产冲突时，不改其他资产，交付时指出冲突点和受影响的资产。
+
+## 音色
+
+依据资产文字中的 `voice`（声音气质）为每个角色分别匹配；只为有台词的角色匹配，无台词角色不绑定。`voice` 为空时先回到资产文字补写。
+
+- 年龄、性别接近的主要角色匹配到相同音色时，重新检查整组声音气质后再匹配。
+- 失声、不说话或非人无声的角色不匹配音色。
+- 匹配：每个角色单独调用 `voice_tone_match` 工具。第一次传 `text`（以 voice 为主，补充身份、年龄、性别和性格），并尽量提取 `gender`（male/female）、`age`（young/middle/old）、`language`、`tags`，detail 省略，得到候选。选定后保持其他参数不变，把同一候选项的 `id` 和 `name` 原样放进 `detail` 再调用一次，取得完整字段。
+- 写入：`preview_url` 写入 `preview_audio_url`。
+- 多个角色按轮次并行：所有目标角色的候选查询在同一次回复中一起发出；看完整组候选、排除重复后，把各角色的详情查询一起发出；再把各角色的 `asset voice bind` 一起发出。
+
+```bash
+./nextplay.bin asset voice bind --asset-ref-id <ref> --input - <<'JSON'
+{"voice_id":"<详情中的 voice_id>","preview_audio_url":"<详情中的 preview_url>"}
+JSON
+```
+
+工具失败允许重试一次；仍无结果时不编造 voice_id，说明哪些角色未绑定音色。`voice_binding` 只接受 `voice_id` 和 `preview_audio_url`（不含空白的 HTTP(S) URL）；再次 bind 整体替换，`asset voice unbind --asset-ref-id <ref>` 解除绑定。
+
+## 执行与结果
+
+- 本次所有目标资产的 `generate` / `edit` 在同一次回复中一起发出，每个资产一条命令；CLI 会处理并发写入。不要等上一张出图再发下一张，也不要在一条 exec 里用 `&&` 串起多张。只有同一资产的连续修改（后一次基于前一次的结果）按顺序调用。
+- 同一批调用全部返回（成功或明确失败）后，在一条消息中用多个图片 Slot 一起交付，失败项在 Summary 中说明。不逐张发送进度或展示消息，中途不询问是否继续。
+- 命令在前台等待生成、保存和读回完成，给足等待时间，不要后台运行后再查询。
+- 成功返回 `saved`，含 `asset_ref`、`generation_ref`、`media_ref`、`image_url`、`provider_task_id`、`selected=true` 和 `assembled`；新图自动设为当前图，旧版本保留，不修改文字设定、其他资产、剧本或剪辑。
+- `--dry-run` 返回 `assembled`、参考图顺序、画风 ID/名称、模型和比例，不联网、不生成、不写文件。
+- 明确失败（`failed`）时原选择不变，可以检查原因后重新调用一次；仍失败就说明该资产未出图，继续处理其他资产。
+- `unknown`（提交或轮询结果不明）、`save_pending` 或 `partial_saved`（已生成但未保存完成）时不要重新生成，保留返回的任务和图片信息（`errors[0].generated_artifact`）并说明情况。CLI 不会自动重新提交。
+- 用户看过图片并明确要求重做或修改时，再按上述模式重新调用；不自动重做已成功的图。
+
+## 交付
+
+最后一条消息列出已出图的资产、已绑定音色的角色、同步修改的文字、失败或未完成的部分、与其他资产的冲突提示，以及建议的下一步。
+
+执行前确认模式下，先确认用户已能核对资产文字设定，再请用户确认是否生图（见 SP 第 4 章）；全自动模式不增加这个确认点。
+
+下载 ZIP
+取消
+编辑

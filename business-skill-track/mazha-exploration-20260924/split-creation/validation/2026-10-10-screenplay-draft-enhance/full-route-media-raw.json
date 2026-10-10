@@ -1,0 +1,204 @@
+{
+  "schema_version": "nextplay.media.v1",
+  "revision": 3,
+  "updated_by": "project-file-cli",
+  "updated_at": "2026-10-10T12:57:30.284Z",
+  "identity": {
+    "story_id": "ced5a81f-0c6e-4ff3-a413-54cee8ead71e",
+    "edition_id": "db3340aa-a587-4709-9a47-b3be332b9b34",
+    "edition_version": 1,
+    "agent_thread_id": "thr_01M4JWJCTF1NKY9SPMHQMAMY5A",
+    "edition_role": "current",
+    "business_id": "ad3d5c4b-c7c9-4ed3-b15d-4f3556520263",
+    "biz_user_id": "832192738395525"
+  },
+  "depends_on": {
+    "assets_revision": 4,
+    "route_revision": 3
+  },
+  "data": {
+    "generations": [
+      {
+        "generation_ref": "generation-peou2s",
+        "owner_ref": "item-nqrft3",
+        "owner_type": "asset",
+        "media_type": "image",
+        "role": "prop_image",
+        "status": "ready",
+        "prompt": "【资产要求】（来自已保存的资产设定）\n道具名称：沈芒遗落的提灯\n外观：一盏约前臂高的旧式便携提灯，深色氧化金属椭圆框架包围透明玻璃灯罩，顶部为半圆提环，底部是宽圆形油仓；暖黄灯芯位于中央。识别细节包括提环右侧一道浅凹痕、玻璃下缘细小斜裂纹、油仓边缘不均匀的暗铜磨损，整体无文字与品牌。\n固定外观：前臂高的旧式便携提灯与椭圆深色金属框架；透明玻璃灯罩、中央灯芯、宽圆形油仓和顶部半圆提环；提环右侧浅凹痕、玻璃下缘斜裂纹、油仓暗铜磨损；只发暖黄光，不出现电光、文字或品牌\n必须保持一致：始终是沈芒遗落的同一盏提灯，不复制第二盏实体灯；默认位置为值班亭窗内台面中央，除剧情动作外不随机移动；亮灭变化不改变框架、裂纹、凹痕和油仓结构；不增加钥匙、纸张或其他附属核心物件\n右侧状态视图展示的状态：熄灭遗落状态：置于窗内旧木台面中央，玻璃灯罩仅反射冷蓝雨光；重新点亮状态：灯芯发出稳定暖黄光，照出窗内沈芒的时间回声\n画风适配：写实3D游戏道具质感，氧化金属、旧玻璃与灯芯火光具有精细物理材质；暖黄体积光克制，轮廓清楚，磨损细节适合近景。\n\n【项目画风】\n画风名称：游戏CG\nHigh-end 3D game cinematic CGI with clearly computer-generated visual construction. Coherent volumetric geometry, precise surface construction and physically based materials with distinct texture, roughness, reflectance and transmission. Physically coherent global illumination, accurate contact shadows and controlled reflections. Filmic tone mapping with natural color separation, readable midtones, preserved shadow detail and smooth highlight rolloff. Clear spatial depth, selective focal sharpness, stable edge resolution and restrained atmospheric effects. Polished offline-render quality with crisp, balanced detail.\n\n【固定比例与版式】\n横屏16:9专业道具设定图。浅灰中性背景，连续纯白分隔带，无外框。左侧约六成：同一道具正面、侧面、背面三视图，比例一致、基线对齐、完整展示。右上约右区一半高度：完整的四分之三角度主视图。右下2×2四格：结构、连接、材质等重要细节。保留贯穿全高的左右分隔带、右侧主视图下方横带和右下十字分隔带。各视图保持同一道具的形态、材质、颜色、比例和结构。\n\n【自动附加参考图说明】\n第1张图为硬性版式白模，仅借用区域划分、展示角度及分隔留白；不借用人物身份、服装、配饰、长方体形状、白色材质或画风。\n\n【资产通用禁止项】\n避免说明文字、标题、图例、标签、箭头、标注线、注释、界面覆盖、水印、真实logo；避免添加资产要求中未指定的主体、服装、配饰或叙事事件。\n\n【本类资产禁止项】\n避免轮廓变化、材质变化、比例变化、随机零件、状态与基础形态不一致、重复道具、复制白模的长方体形状或白色材质、额外彩色底板、装饰边框、尺寸标注、视图名称和说明文字。\n\n【画风负向要求】\n以下内容为需要避免的画风或视觉表现，不是正向生成要求：\nlive-action photography, 2D illustration, cel shading, low-poly geometry, flat material response, broken geometry, texture stretching, excessive bloom, muddy shadows, crushed blacks, clipped highlights, oversharpening halos, low resolution, compression artifacts",
+        "model": "gpt-image-2-edit",
+        "created_by_run_id": "01a125e2-418f-7120-97c0-2c0c5336982c",
+        "created_at": "2026-10-10T12:56:55.963332Z",
+        "outputs": [
+          {
+            "media_ref": "media-7caq1m",
+            "is_primary": true
+          }
+        ],
+        "metadata": {
+          "execution_id": "exec-ly6um7",
+          "provider_request_id": "01a125e2-418f-7120-97c0-2c0c5336982c",
+          "provider_effective_prompt": null,
+          "prompt_sha256": "714bf00395d2fbe8f10f8a523c7e288b39995808030ebc31b959b075c6572012",
+          "request_sha256": "1d86035192455157b78e4459ccfd8cc768b8f4d97ed9db0333a963f79281e45a",
+          "request_parameters": {
+            "aspect_ratio": "16:9"
+          },
+          "input_references": [
+            {
+              "media_ref": "media-xhx170",
+              "media_type": "image",
+              "purpose": "layout",
+              "usage": "硬性版式白模，仅借用区域划分与展示角度",
+              "order": 1
+            }
+          ],
+          "generation_mode": "edit"
+        }
+      },
+      {
+        "generation_ref": "generation-jhriz1",
+        "owner_ref": "character-r97s2u",
+        "owner_type": "asset",
+        "media_type": "image",
+        "role": "character_image",
+        "status": "ready",
+        "prompt": "【资产要求】（来自已保存的资产设定）\n角色名称：沈芒\n年龄：约30岁\n性别：女\n外貌：写实东亚女性，约30岁，中等身高、清瘦结实体型，偏长椭圆脸，平直浓眉与深褐色窄长眼，鼻梁利落、薄唇，下颌线清晰；冷调自然肤色。黑色及肩直发中分，雨水打湿后成束贴在脸侧与颈后。穿深墨绿色防水巡夜外套、炭黑长裤和黑色防滑雨靴，无帽，服装无文字与标识；肩背微绷，动作克制。\n固定特征：约30岁东亚女性，清瘦结实体型与偏长椭圆脸；黑色及肩直发中分，湿发成束贴在脸侧和颈后；深墨绿色无标识防水巡夜外套、炭黑长裤、黑色雨靴；平直浓眉、窄长深褐眼与清晰下颌线\n必须保持一致：始终只有同一名沈芒；窗内轮廓不得设计成第二名不同女性；保持约30岁、清瘦体型、及肩中分黑发与深墨绿巡夜外套；服装无真实机构标志、文字或品牌；窗内时间回声与窗外沈芒外形完全一致，仅动作方向和光照相反\n画风适配：高端写实3D过场质感，皮肤与湿发布料采用可信物理材质，冷蓝环境光与暖黄侧光塑造面部，细节精致但不夸张美化。\n\n【项目画风】\n画风名称：游戏CG\nHigh-end 3D game cinematic CGI with clearly computer-generated visual construction. Coherent volumetric geometry, precise surface construction and physically based materials with distinct texture, roughness, reflectance and transmission. Physically coherent global illumination, accurate contact shadows and controlled reflections. Filmic tone mapping with natural color separation, readable midtones, preserved shadow detail and smooth highlight rolloff. Clear spatial depth, selective focal sharpness, stable edge resolution and restrained atmospheric effects. Polished offline-render quality with crisp, balanced detail.\n\n【固定比例与版式】\n横屏16:9专业角色设定图。左侧同一角色全身正面、侧面、背面三视图，中性站姿，完整露出头顶和鞋底。右上为扣除分隔留白后宽高相等的1:1正方形单头上半身特写，头顶上方保留可见背景，头发和头顶不贴边、不裁切。右下三列两行6个细节视图。保持白模板式的分区和分隔留白，干净中性背景。所有视图的身份、年龄、头身比例、体型、脸、基础服装、鞋履一致；头发长度、发际线、分缝、刘海方向、束发结构、发饰数量与位置一致，不重新设计或简化发型。\n\n【自动附加参考图说明】\n第1张图为硬性版式白模，仅借用区域划分、展示角度及分隔留白；不借用人物身份、服装、配饰、长方体形状、白色材质或画风。\n\n【资产通用禁止项】\n避免说明文字、标题、图例、标签、箭头、标注线、注释、界面覆盖、水印、真实logo；避免添加资产要求中未指定的主体、服装、配饰或叙事事件。\n\n【本类资产禁止项】\n避免不同的脸、头发长度变化、发际线变化、分缝变化、刘海方向变化、束发结构变化、发饰数量或位置变化、不同服装、不同鞋履、重复角色、头身比例漂移、三视图比例不一致、细节块身份漂移，以及复制排版参考图的脸、发型、服装或人物身份。\n\n【画风负向要求】\n以下内容为需要避免的画风或视觉表现，不是正向生成要求：\nlive-action photography, 2D illustration, cel shading, low-poly geometry, flat material response, broken geometry, texture stretching, excessive bloom, muddy shadows, crushed blacks, clipped highlights, oversharpening halos, low resolution, compression artifacts",
+        "model": "gpt-image-2-edit",
+        "created_by_run_id": "01a125e2-3be1-73d2-bd15-953891cde0e3",
+        "created_at": "2026-10-10T12:56:54.693147Z",
+        "outputs": [
+          {
+            "media_ref": "media-uiycel",
+            "is_primary": true
+          }
+        ],
+        "metadata": {
+          "execution_id": "exec-32fap7",
+          "provider_request_id": "01a125e2-3be1-73d2-bd15-953891cde0e3",
+          "provider_effective_prompt": null,
+          "prompt_sha256": "c02ab4c039cc868aa46eb3cf7d6e293dd3c003fe814885eb6888b89aa105a6e9",
+          "request_sha256": "8c580322398d7b4b922794eca6a39a1fee8324f9c656fc4488b7e32c214a29c0",
+          "request_parameters": {
+            "aspect_ratio": "16:9"
+          },
+          "input_references": [
+            {
+              "media_ref": "media-vkdlcx",
+              "media_type": "image",
+              "purpose": "layout",
+              "usage": "硬性版式白模，仅借用区域划分与展示角度",
+              "order": 1
+            }
+          ],
+          "generation_mode": "edit"
+        }
+      },
+      {
+        "generation_ref": "generation-bmhgmx",
+        "owner_ref": "scene-0z6tim",
+        "owner_type": "asset",
+        "media_type": "image",
+        "role": "scene_image",
+        "status": "ready",
+        "prompt": "【资产要求】（来自已保存的资产设定）\n场景名称：雨夜废弃渡口值班亭\n场景描述：当代中国废弃渡口边的一座狭小木质值班亭，长期停用，雨夜中潮湿破旧而结构完整；冷蓝雨幕包围亭体，窗内黑暗，突现的暖黄灯火成为唯一视觉焦点。\n空间布局：单层长方形小亭，正面偏右是一扇向内开的旧木门，正面偏左为一块完整大窗；窗与门之间隔着窄木柱。提灯在窗后靠内侧的旧木台面中央，沈芒通常站在窗外近景与门前之间移动。亭外临水一侧被雨幕和黑暗吞没，不展开为第二场景；镜头保持门、窗、台面三者固定关系。\n识别元素：正面偏左的整块雨水玻璃窗；正面偏右的旧木门；窗门之间的窄木柱；窗后靠内侧的旧木台面；冷蓝雨幕与窗内暖黄孤光\n固定空间关系：从亭外看，窗始终在左、门始终在右；旧木台面紧贴窗内下沿，提灯默认位于台面中央；沈芒可在窗外与门前之间横向移动，但不进入其他空间；窗内人影只出现于窗玻璃内侧，与窗外沈芒隔窗相对\n必须保持一致：始终是同一座狭小废弃值班亭，不扩展新的房间或建筑；固定窗左门右、台面在窗内、提灯居中的几何关系；避免可读小字、复杂镜面和额外人物痕迹；只用雨夜冷光与提灯暖光改变氛围，不随机增添家具或核心物件\n允许变化的状态：雨夜熄灯状态：亭内全黑，仅有冷蓝雨夜反光；提灯亮起状态：窗内出现暖黄光和同一沈芒的暗色轮廓；火光熄灭状态：亭内重新归于黑暗，空间布局不变\n画风适配：写实3D游戏过场环境，木材、湿玻璃和积水采用精细物理材质与全局光照，电影感冷暖调色，空间简洁、压迫且可稳定复现。\n\n【项目画风】\n画风名称：游戏CG\nHigh-end 3D game cinematic CGI with clearly computer-generated visual construction. Coherent volumetric geometry, precise surface construction and physically based materials with distinct texture, roughness, reflectance and transmission. Physically coherent global illumination, accurate contact shadows and controlled reflections. Filmic tone mapping with natural color separation, readable midtones, preserved shadow detail and smooth highlight rolloff. Clear spatial depth, selective focal sharpness, stable edge resolution and restrained atmospheric effects. Polished offline-render quality with crisp, balanced detail.\n\n【固定比例与版式】\n横屏16:9单张完整环境参考图，不使用分镜或多格网格。表现空间尺度、入口出口、窗户、行动路径、主要物件相对位置和前中后景。保持已确认时间、天气、光线、材质及识别元素；以空场景为主，不添加无关人物或戏剧动作。\n\n【资产通用禁止项】\n避免说明文字、标题、图例、标签、箭头、标注线、注释、界面覆盖、水印、真实logo；避免添加资产要求中未指定的主体、服装、配饰或叙事事件。\n\n【本类资产禁止项】\n避免入口方向错误、随机房间、家具位置漂移、多余人群、复杂镜面反射、分镜格和镜头组。\n\n【画风负向要求】\n以下内容为需要避免的画风或视觉表现，不是正向生成要求：\nlive-action photography, 2D illustration, cel shading, low-poly geometry, flat material response, broken geometry, texture stretching, excessive bloom, muddy shadows, crushed blacks, clipped highlights, oversharpening halos, low resolution, compression artifacts",
+        "model": "gpt-image-2",
+        "created_by_run_id": "01a125e2-3cc7-7019-b314-54d52776f211",
+        "created_at": "2026-10-10T12:57:16.844668Z",
+        "outputs": [
+          {
+            "media_ref": "media-r1j78o",
+            "is_primary": true
+          }
+        ],
+        "metadata": {
+          "execution_id": "exec-49tbpa",
+          "provider_request_id": "01a125e2-3cc7-7019-b314-54d52776f211",
+          "provider_effective_prompt": null,
+          "prompt_sha256": "3efffa84310500683c771c513e0dc68c75574ba9b305b1a27b6763571c1240a6",
+          "request_sha256": "61ad8cab15a31f19da3aa967890e47ad06299264a1e159a23e93d93cd97be311",
+          "request_parameters": {
+            "aspect_ratio": "16:9"
+          },
+          "input_references": [],
+          "generation_mode": "prompt_only"
+        }
+      }
+    ],
+    "media": [
+      {
+        "media_ref": "media-xhx170",
+        "media_type": "image",
+        "status": "ready",
+        "path": null,
+        "url": "https://cdn.sandcdn.com/nextplay/generation/image/prop-layout.png",
+        "mime_type": "image/png",
+        "size_bytes": 1237236,
+        "checksum": "d5dd0e1476187c55e328d4a9977a9f791ba6ed244181b45c4ccb5f7e6d43c034",
+        "metadata": {
+          "source_type": "import",
+          "width": 1672,
+          "height": 941
+        }
+      },
+      {
+        "media_ref": "media-7caq1m",
+        "media_type": "image",
+        "status": "ready",
+        "path": null,
+        "url": "https://product-infra-dev.oss-ap-southeast-1.aliyuncs.com/generated/019fc57c-2318-731b-a020-43ca9740958b/01a125e2-418f-7120-97c0-2c0c5336982c/01a125e3-49a7-793d-8467-ce2bffc75a3d/primary-1.png",
+        "mime_type": "image/png",
+        "size_bytes": 966322,
+        "checksum": "d2ec3882629f95ad0c98491ae4df1f116593a240a618ec45947375b3bd646085",
+        "metadata": {
+          "width": 1088,
+          "height": 608
+        }
+      },
+      {
+        "media_ref": "media-vkdlcx",
+        "media_type": "image",
+        "status": "ready",
+        "path": null,
+        "url": "https://product-infra-dev.oss-ap-southeast-1.aliyuncs.com/files/019fc57c-2318-731b-a020-43ca9740958b/01a07b14-e891-763f-aba3-2a834bc7aae9/character-layout-square.png",
+        "mime_type": "image/png",
+        "size_bytes": 1409425,
+        "checksum": "a27e2222a72a396f3013e0d5cfac9ea035d73aaf387e35c65ff394fd0197814a",
+        "metadata": {
+          "source_type": "import",
+          "physical_asset_id": "01a07b14-e891-763f-aba3-2a834bc7aae9",
+          "width": 1672,
+          "height": 941
+        }
+      },
+      {
+        "media_ref": "media-uiycel",
+        "media_type": "image",
+        "status": "ready",
+        "path": null,
+        "url": "https://product-infra-dev.oss-ap-southeast-1.aliyuncs.com/generated/019fc57c-2318-731b-a020-43ca9740958b/01a125e2-3be1-73d2-bd15-953891cde0e3/01a125e3-4582-7b62-9576-67c16016b733/primary-1.png",
+        "mime_type": "image/png",
+        "size_bytes": 963862,
+        "checksum": "f980764d91d2491cf2c818d1e2fc2f4dd6fb293aedf3525d34a8230b66030f18",
+        "metadata": {
+          "width": 1088,
+          "height": 608
+        }
+      },
+      {
+        "media_ref": "media-r1j78o",
+        "media_type": "image",
+        "status": "ready",
+        "path": null,
+        "url": "https://product-infra-dev.oss-ap-southeast-1.aliyuncs.com/generated/019fc57c-2318-731b-a020-43ca9740958b/01a125e2-3cc7-7019-b314-54d52776f211/01a125e3-9b46-7603-aeca-c66e63ca33c6/primary-1.png",
+        "mime_type": "image/png",
+        "size_bytes": 1083179,
+        "checksum": "836682925fabc8e602faff47917b481ee3eb37170072ee920c13d592dd9d64f0",
+        "metadata": {
+          "width": 1088,
+          "height": 608
+        }
+      }
+    ]
+  }
+}
