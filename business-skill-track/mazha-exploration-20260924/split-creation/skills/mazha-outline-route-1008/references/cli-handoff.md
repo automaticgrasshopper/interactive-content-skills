@@ -13,11 +13,17 @@
 
 CLI 的 PASS 证明工程合同与保存结果，不证明 woven、情绪脊、情节连贯或写作合格。反之内部创作检查不是平台权限；平台拒绝保存不能用人工验收绕过。初始化、读取和写入错误只作简短准确说明，内部命令、hash 与制作话语不进玩家剧本。
 
+## 大纲三段与全文交接
+
+当前 CLI 的合法字段为 `premise.logline`、`premise.description`、`play.player` 和 `play.perspective`，没有独立 `story` 或 `player_role` 字段。新大纲三段用一次真实 `outline update --input <文件路径|->` 同步：logline 存第一段，description 存“短故事预览\n\n玩家介绍”（JSON 中换行正确转义），player 存同一玩家介绍，perspective 按实际选择存 `first` 或 `third`；未涉及字段保留。现有投影把 logline 和 description 组合为玩家看到的三段，不在 description 重复 logline。完整短故事按 materials-and-scope.md 留在工作区 `story-core.md`，不塞进 description、constraints 或未经支持的项目字段；一次保存三段并读回后再交付大纲卡，不为展示过程先写半成品。
+
+确认前不启动 route generate，不改 planning/state，也不把工作区全文说成已进入路线。确认后按本次 `outline-proposal.md` 的真实关联读回完整短故事，首次空图规划将原文作为 story-core 的故事内容，按当次 `next.input_spec` 包装提交；不能把省略的预览当全文，也不另写同一故事。玩家明确改稿时保留最新 `story.outline`，仅把受影响事实同步到完整故事与提案关联；视角改选先取最新 `settings.perspective` 与明确选择，同步 `play.player/play.perspective` 并读回，再交接全文，不用旧 outline.play 反向覆盖新设置。没有实际新选择或新稿证据时继承当前已保存版本；缺少历史全文时如实说明并从当前已确认材料补齐一次，不能声称找到了原全文。
+
 ## 视角保存与继承
 
 视角存在当前 `nextplay/current/outline.json` 的 `data.play.perspective`，统一使用 `first`（第一人称）或 `third`（第三人称）。当前 CLI 可用 `outline update --field play.perspective --value first`（第三人称用 `third`），或在真实 `outline update --input` 补丁中保存 `{"play":{"perspective":"first"}}`；然后 `outline inspect --field play.perspective` 读回。随大纲保存实际采用的推荐或玩家选择，不能只在回复、前端或临时上下文写一个名称。玩家扮演的身份记录在已有 `play.player`，明确角色与关系，不另造视角字段。命令前缀及项目绑定仍按当前 CLI 文档。
 
-大纲确认、路线规划和续写前读最新视角；玩家在前端改选后，以后端已保存值为准，不用旧提案覆写。值缺失或旧中文值时，结合最新明确选择与实际记录，经上述接口补齐或规范化并读回；不根据空值偷偷重置已有作品。第一人称的节点和选择只使用玩家角色能看到、听到、经历或被告知的信息，不安排脱离角色的秘密旁观；第三人称允许外部观看与多线叙事，但信息何时揭露仍服从既定悬念。两种路线方法都遵守，不要求CLI 规划方法 新增字段。
+大纲确认、路线规划和续写前读最新视角；玩家在前端改选后，先按上节核对最新 settings 与大纲正文并同步 CLI 字段，不用旧提案覆写。值缺失或旧中文值时，结合最新明确选择与实际记录，经上述接口补齐或规范化并读回；不根据空值偷偷重置已有作品。第一人称的节点和选择只使用玩家角色能看到、听到、经历或被告知的信息，不安排脱离角色的秘密旁观；第三人称允许外部观看与多线叙事，但信息何时揭露仍服从既定悬念。两种路线方法都遵守，不要求CLI 规划方法 新增字段。
 
 用户改视角时先保存新选择，再按授权调整受影响的节点材料和剧本，保留无关内容、稳定引用与媒体；不能只替换“我／他”。已有剧本、分镜或媒体若仍按旧视角制作，如实说明受影响范围，不把设置保存说成全部内容已重制，不自动重做图片或视频。
 

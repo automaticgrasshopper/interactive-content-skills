@@ -1,0 +1,9 @@
+system-prompt.md
+mazha-outline-route-1008/SKILL.md
+mazha-outline-route-1008/references/cli-topology.md
+mazha-outline-route-1008/references/creative-entry.md
+mazha-outline-route-1008/references/story-development.md
+mazha-outline-route-1008/references/cli-handoff.md
+mazha-outline-route-1008/references/continuation-handoff.md
+mazha-outline-route-1008/references/materials-and-scope.md
+mazha-outline-route-1008/references/interaction.md
