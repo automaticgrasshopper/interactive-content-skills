@@ -1,0 +1,234 @@
+--- yesterday/SKILL.md
++++ current/SKILL.md
+@@ -7,7 +7,7 @@
+ 
+ ## 首次使用
+ 
+-用 `skill_load` 的 copy 模式将整个 Skill 目录（含 `runtime.env`）复制到 `/app-data/threads/.skills/nextplay-cli`。工作区设置为 `NEXTPLAY_WORKSPACE=/app-data/threads`，复制完成后执行 [init.sh](init.sh)：
++用 `skill_load` 的 copy 模式将整个 Skill 目录（含 `runtime.env`）复制到 `/app-data/threads/.skills/nextplay-cli`：调用 `skill_load({"name":"nextplay-cli","copy":[[".", ".skills/nextplay-cli"]]})`，目标写相对线程工作区的路径。工作区设置为 `NEXTPLAY_WORKSPACE=/app-data/threads`，复制完成后执行 [init.sh](init.sh)：
+ 
+ ```bash
+ export NEXTPLAY_WORKSPACE=/app-data/threads
+@@ -33,22 +33,22 @@
+ - `--input /absolute/path/request.json`：从文件读取；相对路径按当前执行目录解析，不相对于 Skill 或项目目录。路径含空格时加引号，不需要 `@` 前缀。文件输入时不读取 stdin。
+ 
+ ```bash
+-./nextplay.bin script set --node-ref episode-001 --input /tmp/script.json
+-./nextplay.bin script set --node-ref episode-001 --input - < /tmp/script.json
++./nextplay.bin route edit --input /tmp/route-edit.json
++./nextplay.bin route edit --input - < /tmp/route-edit.json
+ ```
+ 
+-两种输入使用同一套 JSON 与业务校验；文件不可读、JSON 无效或业务校验失败时不会写入项目。
++两种输入使用同一套 JSON 与业务校验；文件不可读、JSON 无效或业务校验失败时不会写入项目。剧本正文例外：`script set --text <path|->` 直接读纯文本，见 [分集剧本](references/screenplay.md)。
+ 
+ 每份参考对应一个业务步骤，包含该步骤的判断规则、字段写法和命令；执行该步骤时读对应的一份即可。括号内是该步骤的必要前置：只等待目标对象实际需要的内容，不等待全项目就绪；已有内容直接复用，只补本轮目标必需的缺口。
+ 
+ - [大纲与画风](references/outline.md)（用户想法或已有材料）：从游戏描述形成大纲、确认设置、选择或导入画风。
+-- [资产文字](references/assets.md)（大纲与已定画风）：设计和修改角色、场景、道具的文字设定（含声音气质），`gen-id` 与 `--ref-id` 写入。
++- [资产文字](references/assets.md)（大纲与已定画风）：设计和修改角色、场景、道具的文字设定（含声音气质），`gen-id` 生成 ref 后用 `asset apply` 整批写入。
+ - [资产素材](references/asset-materials.md)（对应资产文字与项目画风；画风未定不进入视觉制作）：资产图片生成与修改，角色音色匹配与绑定。
+ - [路线](references/routes.md)（大纲；不等待资产图片）：分阶段创作路线、整图创建、节点和选择分支、排序。新建、重做或续做规划先读路线规划 Skill。
+ - [分集剧本](references/screenplay.md)（当前路线中的目标剧集）：为一集创作、修改或保存剧本，含写作方法、对白规则、`script set/edit` 与多行替换示例。
+ - [分镜拆分与故事板](references/storyboard.md)（目标分集剧本及所需资产图片）：预检、拆分分镜、规划并生成整集故事板，分镜与故事板属性。
+ - [分镜视频](references/shot-video.md)（最新展示的故事板与本集视听基调；各镜头可独立推进）：编写并检查视频 prompt，生成、重做或选择分镜视频，本集视频轨的自动维护。
+-- [封面、音乐与素材](references/media.md)（菜单 BGM 与独立音乐的入口时机见 SP 2.4）：正式封面、首页主背景音乐、素材选择与导入、生成失败处理和参考上传缓存。
++- [封面、音乐与素材](references/media.md)（主背景音乐按需制作，见 SP 第 2 章）：正式封面、首页主背景音乐、素材选择与导入、生成失败处理和参考上传缓存。
+ 
+ 文字修改不会自动生成图片或视频。
+ 
+@@ -58,6 +58,6 @@
+ 
+ 读取成功返回 `ok`；修改返回 `saved`、`unchanged` 或 `dry_run`。失败退出码为 1，输出 JSON：`errors` 列出本次发现的全部问题（每项含 `code`、`path`、`message`），一次修完所有问题再重跑；`next.instruction` 给出下一步。参数与输入格式问题先一起报出，修正后才会检查与项目现状相关的问题。`partial_saved` 表示已开始写盘，查看 `written_files` 和 `errors[0].failed_file/stage`，重新读取现状，不自动重放创建或导入。图片、视频和音乐生成的 `unknown` 表示提交/轮询结果不明；`save_pending` 表示已有服务产物但落盘未完成。保留返回的请求、任务或产物信息，检查已有结果，不自动重新生成。
+ 
+-需要检查当前警告和问题时，运行 `./nextplay.bin project check`。此命令只读：先校验五文件的结构和引用，再返回 `data.warnings`（上游版本 stale、资产命名提示）与 `data.issues`（路线不可达、选择不足两项、同组选项指向同一后继、非结局断线）。`status: ok` 表示检查完成，不表示没有问题；结构或引用错误返回 `failed` 和全部问题（`errors`），修复后再检查。常规读取、修改和 dry-run 不附带 stale 警告，不必每次操作后额外检查。媒体生成或导入保存时，CLI 自动维护媒体登记表对最终资产、路线版本的依赖；具体生成参考保留在历史记录中。未改动的下游仍保留原消费基线，因此可能出现保守的 stale 提示；它不等于内容失效，也不应为消除提示而重写业务文件。
++需要检查当前警告和问题时，运行 `./nextplay.bin project check`。此命令只读：先校验五文件的结构和引用，再返回 `data.warnings`（上游版本 stale、资产命名提示、旧数据的默认分流 `PLAYBACK_DEFAULT_STALE`）与 `data.issues`（路线不可达、选择不足两项、同组选项指向同一后继、非结局断线）。`status: ok` 表示检查完成，不表示没有问题；结构或引用错误返回 `failed` 和全部问题（`errors`），修复后再检查。常规读取、修改和 dry-run 不附带 stale 警告，不必每次操作后额外检查。媒体生成或导入保存时，CLI 自动维护媒体登记表对最终资产、路线版本的依赖；具体生成参考保留在历史记录中。未改动的下游仍保留原消费基线，因此可能出现保守的 stale 提示；它不等于内容失效，也不应为消除提示而重写业务文件。`PLAYBACK_DEFAULT_STALE` 由下一次路线修改自动重算，不需要单独处理，也不要直接修改 route.json。
+ 
+ 保持既有剪辑数据。删除被引用资产、带剪辑数据的节点或共享支线时，先处理返回的具体依赖，不隐式级联删除。保存成功只代表本地五文件保存并读回，不代表远端投影或页面刷新。
+--- yesterday/references/asset-materials.md
++++ current/references/asset-materials.md
+@@ -76,12 +76,13 @@
+ 
+ ## 音色
+ 
+-依据资产文字中的 `voice`（声音气质）逐个匹配；只为有台词的角色匹配，无台词角色不绑定。`voice` 为空时先回到资产文字补写。
++依据资产文字中的 `voice`（声音气质）为每个角色分别匹配；只为有台词的角色匹配，无台词角色不绑定。`voice` 为空时先回到资产文字补写。
+ 
+ - 年龄、性别接近的主要角色匹配到相同音色时，重新检查整组声音气质后再匹配。
+ - 失声、不说话或非人无声的角色不匹配音色。
+ - 匹配：每个角色单独调用 `voice_tone_match` 工具。第一次传 `text`（以 voice 为主，补充身份、年龄、性别和性格），并尽量提取 `gender`（male/female）、`age`（young/middle/old）、`language`、`tags`，detail 省略，得到候选。选定后保持其他参数不变，把同一候选项的 `id` 和 `name` 原样放进 `detail` 再调用一次，取得完整字段。
+ - 写入：`preview_url` 写入 `preview_audio_url`。
++- 多个角色按轮次并行：所有目标角色的候选查询在同一次回复中一起发出；看完整组候选、排除重复后，把各角色的详情查询一起发出；再把各角色的 `asset voice bind` 一起发出。
+ 
+ ```bash
+ ./nextplay.bin asset voice bind --asset-ref-id <ref> --input - <<'JSON'
+@@ -93,8 +94,8 @@
+ 
+ ## 执行与结果
+ 
+-- 不同资产可以并行调用；同一资产连续修改时按顺序调用。
+-- 所有目标资产都调用完成（成功或明确失败）后再汇总交付；每张图保存成功后即可按 SP 展示，不需要等整批。中途不询问是否继续。
++- 本次所有目标资产的 `generate` / `edit` 在同一次回复中一起发出，每个资产一条命令；CLI 会处理并发写入。不要等上一张出图再发下一张，也不要在一条 exec 里用 `&&` 串起多张。只有同一资产的连续修改（后一次基于前一次的结果）按顺序调用。
++- 同一批调用全部返回（成功或明确失败）后，在一条消息中用多个图片 Slot 一起交付，失败项在 Summary 中说明。不逐张发送进度或展示消息，中途不询问是否继续。
+ - 命令在前台等待生成、保存和读回完成，给足等待时间，不要后台运行后再查询。
+ - 成功返回 `saved`，含 `asset_ref`、`generation_ref`、`media_ref`、`image_url`、`provider_task_id`、`selected=true` 和 `assembled`；新图自动设为当前图，旧版本保留，不修改文字设定、其他资产、剧本或剪辑。
+ - `--dry-run` 返回 `assembled`、参考图顺序、画风 ID/名称、模型和比例，不联网、不生成、不写文件。
+@@ -106,4 +107,4 @@
+ 
+ 最后一条消息列出已出图的资产、已绑定音色的角色、同步修改的文字、失败或未完成的部分、与其他资产的冲突提示，以及建议的下一步。
+ 
+-执行前确认模式下，先确认用户已能核对资产文字设定，再请用户确认是否生图（见 SP 第 3 节）；全自动模式不增加这个确认点。
++执行前确认模式下，先确认用户已能核对资产文字设定，再请用户确认是否生图（见 SP 第 4 章）；全自动模式不增加这个确认点。
+--- yesterday/references/assets.md
++++ current/references/assets.md
+@@ -110,7 +110,7 @@
+ 
+ ## 写入
+ 
+-先生成全部 ref，再按依赖顺序 add；互相引用的部分最后用 update 补齐。整段放在一次执行里，开头加 `set -e`：
++同一批新资产一次写入：先用 `gen-id` 生成全部 ref，把整批资产写进一个 JSON 文件，再用一条 `asset apply` 提交。引用只按整批写完后的最终状态检查，同批资产可以互相引用（人物关系双向、角色与常驻场景互指等），不需要排顺序或事后补引用。
+ 
+ ```bash
+ set -e
+@@ -118,30 +118,28 @@
+ ZHOU=$(./nextplay.bin gen-id --type character)
+ LOBBY=$(./nextplay.bin gen-id --type scene)
+ HARNESS=$(./nextplay.bin gen-id --type prop)
+-./nextplay.bin asset add --type scene --ref-id "$LOBBY" --input - <<'JSON'
+-{"name":"停电宠物医院","attributes":{"scene_description":"…","spatial_layout":"…","identifying_elements":["…"],"narrative_function":"…"}}
++cat > /tmp/assets.json <<JSON
++{"assets":[
++  {"type":"scene","ref_id":"$LOBBY","name":"停电宠物医院","attributes":{"scene_description":"…","spatial_layout":"…","identifying_elements":["…"],"narrative_function":"…","related_assets":["$LIN","$ZHOU","$HARNESS"]}},
++  {"type":"character","ref_id":"$LIN","name":"林小满","attributes":{"character_type":"主角","character_feature":"…","age":"24岁","gender":"女","visual_appearance":"…","fixed_traits":["…","…","…"],"voice":"…","relationships":[{"target_ref_id":"$ZHOU","relation":"被质疑者到搜救伙伴","description":"…"}],"related_assets":["$LOBBY","$ZHOU","$HARNESS"]}},
++  {"type":"character","ref_id":"$ZHOU","name":"周岚","attributes":{"character_type":"配角","character_feature":"…","relationships":[{"target_ref_id":"$LIN","relation":"质疑者到搜救伙伴","description":"…"}],"related_assets":["$LIN","$LOBBY","$HARNESS"]}},
++  {"type":"prop","ref_id":"$HARNESS","name":"平安的反光导盲鞍","attributes":{"visual_description":"…","meaning":"…","related_assets":["$LIN","$LOBBY"]}}
++]}
+ JSON
+-./nextplay.bin asset add --type character --ref-id "$LIN" --input - <<'JSON'
+-{"name":"林小满","attributes":{"character_type":"主角","character_feature":"…","age":"24岁","gender":"女","visual_appearance":"…","fixed_traits":["…","…","…"],"voice":"…"}}
+-JSON
+-./nextplay.bin asset add --type prop --ref-id "$HARNESS" --input - <<JSON
+-{"name":"平安的反光导盲鞍","attributes":{"visual_description":"…","meaning":"…","related_assets":["$LOBBY"]}}
+-JSON
+-./nextplay.bin asset add --type character --ref-id "$ZHOU" --input - <<JSON
+-{"name":"周岚","attributes":{"character_type":"配角","character_feature":"…","relationships":[{"target_ref_id":"$LIN","relation":"质疑者到搜救伙伴","description":"…"}],"related_assets":["$LIN","$LOBBY","$HARNESS"]}}
+-JSON
+-./nextplay.bin asset update --asset-ref-id "$LIN" --input - <<JSON
+-{"attributes":{"relationships":[{"target_ref_id":"$ZHOU","relation":"被质疑者到搜救伙伴","description":"…"}],"related_assets":["$LOBBY","$ZHOU","$HARNESS"]}}
+-JSON
++./nextplay.bin asset apply --input /tmp/assets.json
+ ```
+ 
+-- 不含变量的长正文用 `<<'JSON'`；含 `$REF` 的 JSON 用 `<<JSON` 展开变量，此时正文里不要出现 `$` 和反引号，长正文放到前一次 add 中。
+-- 中途失败：修正后从头重跑同一段脚本，已写入且内容相同的 add 返回 `unchanged`；`NAME_DUPLICATE` 说明同类已有同名资产，换名或改用已有资产。
+-- 回执中的 `result.warnings` 若有 `NAME_NUMBERED`，把名称改为按身份、位置或功能区分。
++- 每项必填 `type`（character / scene / prop），可选 `ref_id`，其余字段与 `asset add` 相同。`ref_id` 已存在时按 `asset update` 合并该项，不存在时新建；省略 `ref_id` 时由 CLI 生成，回执 `result.assets` 按提交顺序列出每项的 `ref_id` 和 `action`（added / updated / unchanged）。
++- 整批原子写入：任一项有问题时一次报出全部错误（路径形如 `input/assets/<序号>/…`），一个资产都不写。修正 JSON 文件后重跑同一条命令即可，已写入且内容相同的项返回 `unchanged`；正文写在文件里，重试不需要重新生成。
++- 含 `$REF` 的 JSON 用 `<<JSON` 展开变量，此时正文里不要出现 `$` 和反引号。
++- 回执出现 `DANGLING_REF` 时，若被引用的 ref 是还没写入的新资产，把它并入同一批 `asset apply`；否则修正或删除该引用。
++- `NAME_DUPLICATE` 说明同类已有同名资产，换名或改用已有资产；回执中的 `warnings` 若有 `NAME_NUMBERED`，把名称改为按身份、位置或功能区分。
++- 单个资产的新增或修改仍可用 `asset add` / `asset update`。
+ 
+ ## 命令细节
+ 
+ - `asset inspect` 可按 `--type`、`--asset-ref-id`、`--query`（名称或别名）筛选；三类资产的 description 不单独展示，看对应字段即可。
++- `asset apply --input <文件>` 见上文“写入”。
+ - `asset add --type character|scene|prop`（prop 在存储中为 item）接受 `name`、`aliases`、`attributes`，新建必填 `name` 和对应的 description 来源字段。`asset update` 只修改提交的内容：`attributes` 按顶层字段合并，数组和对象（`relationships`、`related_assets`、`voice_binding` 等）整组替换，未提供的字段保留，未知字段拒绝。ref、selected、validity、展示编号不能经正文覆盖。
+ - `relationships` 每项只接受 `target_ref_id`（必填，真实存在的资产 ref）、`relation`（必填）、`description`（可选）；CLI 维护 reference_index。
+ - `gen-id --type <character|scene|prop>` 每次输出一个未使用的 ref（纯文本，如 `character-k3f9qa`）。`asset add --ref-id` 只接受同格式且前缀与类型一致的 ref；已被占用返回 `REF_ID_TAKEN`；同一 ref 以完全相同内容重复 add 返回 `unchanged`。不传 `--ref-id` 时由 CLI 生成。
+--- yesterday/references/screenplay.md
++++ current/references/screenplay.md
+@@ -34,15 +34,21 @@
+ 
+ ## 创作流程
+ 
+-按以下阶段推进，写作方法见下文“写作与冷读”，对白按“对白”一节，每个阶段真正开始时向用户发送一条只含 Summary 的普通消息（任务对象分类为“分集剧情”），文案依次为：
++写作方法见下文“写作与冷读”，对白按“对白”一节。每个阶段对应一次真实的工具调用，在调用参数里写出这一阶段的内容；进度只通过该调用的 `www.summary` 展示，取下表的阶段文案，不另发普通消息。工作稿放在 `/tmp/nextplay-script/<剧集引用>/`，首次写入前 `mkdir -p`，用 `exec` 的 heredoc 写入，可直接覆盖；工作稿不展示给用户，不写入项目。
+ 
+-1. `正在撰写初稿`：在内部写行动底稿，确定戏剧拍、因果链和停止位置。底稿不展示、不保存。
+-2. `正在进行润色`：依据底稿完整写出正式剧本。
+-3. `正在对照细节`：按冷读清单通读正式剧本。任一项不通过，废弃整稿，回到第 2 步从同一依据重新完整写作，不在成品上零碎修补。
+-4. `正在完成终稿`：冷读通过，整理最终正文。
+-5. `正在合并剧本`：用 `script set` 保存。
++| www.summary | 工具调用 |
++|---|---|
++| `正在撰写初稿` | 把行动底稿写入 `beats.md` |
++| `正在进行润色` | 依据底稿写出正式剧本（含一次台词复写），把正文原样写入 `script.txt` |
++| `正在对照细节` | 把冷读结论写入 `cold-read.md`，同时用 `script set --dry-run --text <script.txt>` 检查成品格式 |
++| `正在完成终稿` | 按冷读第 1 项和 dry-run 的 `warnings` 修正 `script.txt` 的成品格式 |
++| `正在合并剧本` | `script set --text <script.txt>` 保存 |
+ 
+-每句每集最多发送一次，返工停留在当前阶段，不重复发送，也不提前发送后一阶段。状态文案不包含命令、字段、引用、内部术语或检查记录。保存成功后发送 `$[slot:episode](剧集引用)` 与 Summary“本集剧本已完成”；依据不足时用一句话说明缺少什么，如“本集的人物资料不完整，暂时无法继续”。
++- 冷读第 2—7 项任一不通过：回到润色，依据同一底稿重新完整写出 `script.txt`，再重新冷读和 dry-run。
++- 只有格式问题时在终稿修正，不整稿重写；没有格式问题时跳过“正在完成终稿”，直接合并。
++- 不为展示进度调用空操作。
++
++保存成功后发送 `$[slot:episode](剧集引用)` 与 Summary“本集剧本已完成”；依据不足时用一句话说明缺少什么，如“本集的人物资料不完整，暂时无法继续”。
+ 
+ ## 写作与冷读
+ 
+@@ -56,9 +62,9 @@
+ - 人物身份、关系和说话方式依据 `assets`；资产卡只补充可见属性和已知用法，不替故事承担关键解释。
+ - 叙述视角遵循 `settings.perspective`。
+ 
+-### 一、行动底稿（内部）
++### 一、行动底稿
+ 
+-只决定戏剧拍，不写成品。一个戏剧拍必须带来至少一种新变化：人物获得新信息、行动遇到新阻力、策略改变、关系或权力改变、行动产生结果。没有新变化的解释、确认、走位和反应并入相邻戏剧拍或删除。
++写入工作稿 `beats.md`。只决定戏剧拍，不写成品。一个戏剧拍必须带来至少一种新变化：人物获得新信息、行动遇到新阻力、策略改变、关系或权力改变、行动产生结果。没有新变化的解释、确认、走位和反应并入相邻戏剧拍或删除。
+ 
+ 按原文写出最短而完整的因果链：进入时的处境 → 人物行动 → 阻力或反馈 → 人物调整 → 状态变化 → 停止位置。每个事实只在第一次改变局面时使用；被人物接住后，下一拍进入新的行动或结果，不继续证明。
+ 
+@@ -91,7 +97,7 @@
+ 
+ ### 三、冷读
+ 
+-只判断正式剧本能否交付，不在正文里逐项补证明。逐项检查：
++只判断正式剧本能否交付，不在正文里逐项补证明。依据已写入的 `script.txt` 逐项检查，在 `cold-read.md` 中每项写“通过”或“不通过：所在段落与问题”，不写修改方案：
+ 
+ 1. **成品格式**：场次标题、对白行和换行符合上述排版。
+ 2. **路线与边界**：事件、人物、资产和结尾忠实于本集原文；开头接得上前情；没有越过停止位置，没有提前演出后续剧集或选项结果。
+@@ -101,7 +107,7 @@
+ 6. **对白**：说话对象和回应关系清楚，语言像当前关系中的人话，没有作者结论、资料搬运或连续的字幕式语义骨架。
+ 7. **分支准备**：`following` 是选择卡时，每个选项都已成为眼前可执行的行动，并受同一现场压力约束；正文没有替玩家做出选择。
+ 
+-任一项不通过，指出问题所在的段落，废弃整稿，从同一依据重新完整写作；不在成品上贴补，不修改路线或其他剧集。
++第 2—7 项任一不通过，废弃整稿，从同一依据重新完整写作；不在成品上贴补，不修改路线或其他剧集。只有第 1 项不通过时，在终稿阶段修正格式。
+ 
+ ## 对白
+ 
+@@ -125,12 +131,19 @@
+ ## 保存
+ 
+ ```bash
+-./nextplay.bin script set --node-ref <剧集引用> --input - <<'JSON'
+-{"text":"完整剧本正文"}
+-JSON
++./nextplay.bin script set --node-ref <剧集引用> --text /tmp/nextplay-script/<剧集引用>/script.txt --dry-run
++./nextplay.bin script set --node-ref <剧集引用> --text /tmp/nextplay-script/<剧集引用>/script.txt
+ ```
+ 
+-正文用真实换行，写进 JSON 时转义为 `\n`。保存即写入并读回，不需要额外保存。结果中的 `warnings` 是成品格式问题，修正后再保存；用户原样沿用的剧本除外。`review_asset_refs` 非空表示本集已有故事板或分镜，说明它们可能需要复核，不自动重做。
++`--text` 读取 UTF-8 纯文本，文件内容即剧本正文，用真实换行，不包 JSON、不转义；末尾一个换行会被忽略，空文本报错（清空用 `script clear`）。用户原样沿用的剧本不走创作流程，可直接用 `--text -` 加 heredoc 传入：
++
++```bash
++./nextplay.bin script set --node-ref <剧集引用> --text - <<'EOF'
++完整剧本正文
++EOF
++```
++
++保存即写入并读回，不需要额外保存。结果中的 `warnings` 是成品格式问题，修正后再保存；用户原样沿用的剧本除外。`review_asset_refs` 非空表示本集已有故事板或分镜，说明它们可能需要复核，不自动重做。
+ 
+ 修改已有剧本的局部内容用 `script edit`，清空用 `script clear`：
+ 
+--- yesterday/references/shot-video.md
++++ current/references/shot-video.md
+@@ -111,7 +111,7 @@
+ 
+ CLI 自动要求成片为单一连续画面，不出现故事板版式、标注或字幕。成功后选中新视频，保留旧视频；不自动加字幕或重新剪辑。本集主视频轨由 CLI 维护：分镜的当前视频变化后，按分镜顺序把从第一镜起已就绪的视频连续放入主视频轨，已放入的整段片段换成新选中的视频；不删除或重排已放入的片段。主视频轨被裁剪、调整过，或本集已有字幕、音频等其他轨道时不再改动，结果返回 `timeline_note`。
+ 
+-成功后发送 `$[slot:shot_videos](分镜引用)`。回执出现 `timeline_note` 时，说明本集剪辑已调整过、新视频未自动放入，由用户决定是否调整剪辑。
++成功后在 Summary 中说明本镜视频已完成。回执出现 `timeline_note` 时，说明本集剪辑已调整过、新视频未自动放入，由用户决定是否调整剪辑。
+ 
+ ## 选择已有视频
+ 

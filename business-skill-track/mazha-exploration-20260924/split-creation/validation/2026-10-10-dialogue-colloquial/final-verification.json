@@ -1,0 +1,29 @@
+{
+  "resourceFiles": 9,
+  "onlineChangedFiles": [
+    "references/cli-handoff.md",
+    "references/dialogue.md",
+    "references/live-creation.md"
+  ],
+  "otherResourceFilesUnchanged": 6,
+  "localSyncFiles": [
+    "SKILL.md",
+    "references/cli-handoff.md",
+    "references/dialogue.md",
+    "references/live-creation.md"
+  ],
+  "sha256": {
+    "SKILL.md": "fac07abb438392cdec063861e75daaf83b3dd04ab11b96e95d8e151643caa170",
+    "references/assets.md": "c94e8cb1fd9160eaedc57713c9e98d60fdbd2893c25a32eb52e4038b32f77984",
+    "references/cli-handoff.md": "bc629b2567ff832fc1c44f7507f997b64d9e8383dd78be4cd41ef08f1b631525",
+    "references/dialogue.md": "d41a3b24488bc5607bbba7610da9747363e41bba995459096ece4b16a5361dc0",
+    "references/genre-research-and-treatment.md": "875395be7853a1b32068650c3931a87e94f427a9b355c2c15ca4cf5508de79e1",
+    "references/live-creation.md": "f5b8a922376238b15e1ef815f38943f39f9fdb44755ab8bbd78dbacd7a4018f7",
+    "references/loops.md": "5b3dc914bdceeae17184aaff48b37f59ad0e92788768203cd7582466098bed36",
+    "references/scene-writing.md": "976b4280794774070f1bc3ec6c51402c21861602ee7996fbe57e3999e6d9b650",
+    "references/screenwriting.md": "8acc794faaa5bbaed45765c7a68f0e07a66a2d87919ea7627d8df31aa6478b93"
+  },
+  "liveSkillId": "e27c0130-be87-4756-9652-0e2cad2f31c2",
+  "savedAt": "2026-10-10 17:18 Asia/Shanghai",
+  "newGenerationRun": false
+}
