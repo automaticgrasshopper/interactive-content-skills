@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-12",
+  "tests": 158,
+  "test_files": 21,
+  "typecheck": "passed",
+  "lint": "passed",
+  "build": "passed",
+  "browser_assertions": 19,
+  "mobile_width": 390,
+  "offline_audio_fixture": true,
+  "real_tts": "blocked_http_400_voice_clone_vs_preset_voice",
+  "studio_readback": {
+    "image_skill": true,
+    "system_prompt": true,
+    "outline_assets": true,
+    "outline_production_workflow": true
+  },
+  "shared_backend_changed": false,
+  "real_user_project_changed": false
+}

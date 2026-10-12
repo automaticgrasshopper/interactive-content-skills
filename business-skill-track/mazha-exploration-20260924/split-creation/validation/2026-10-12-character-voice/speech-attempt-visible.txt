@@ -1,0 +1,113 @@
+Browser tab: 2, Title: "Maxwell Studio", URL: "https://agent.sandaii.cn/chat/thread?businessId=ad3d5c4b-c7c9-4ed3-b15d-4f3556520263&threadId=thr_01M4Q4SF07QH9G05DE1YBEQJMB&presetId=8bf0ce65-3d52-4819-97d7-9afbb5751203".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+~				347 button (expanded) 正在生成真实试听配音 2026/10/12 12:10:13, Secondary Actions: Collapse
++				352 text media
++				353 button Description: Copy tool call ID call_yFG7CWjgYHshkIZyjeIaPLgo, Help: Copy tool call ID: call_yFG7CWjgYHshkIZyjeIaPLgo
++					354 text CALL ID
++					355 text call_yFG7CWjgYHshkIZyjeIaPLgo
++				356 definition list
++					357 container 为何
++						358 text 为何
++					359 text 需要交付本次实际生成的音频，而不是音色库自带预览。
++					360 container 做什么
++						361 text 做什么
++					362 text 使用 minimax-speech-2.8-turbo 和已匹配的“冷艳女帝”音色生成周岚的一句独立配音，并等待最终结果。
++					363 container 怎么做
++						364 text 怎么做
++					365 text 将唯一台词作为 text，并按已查询的 speech schema 把所选音色详情中的实际音频地址作为 voice 输入；不添加任何额外文案。
++				366 text ARGUMENTS
++				367 container
++					368 button COLLAPSE ALL
++					369 button WRAP
++					370 button COPY
++					371 button - {
++						372 text -
++						373 text {
++					374 container
++						375 text "action" :  "generate"
++					376 container
++						377 text "kind" :  "speech"
++					378 container
++						379 text "language" :  "zh"
++					380 container
++						381 text "model" :  "minimax-speech-2.8-turbo"
++					382 button - "parts": [
++						383 text -
++						384 text "parts"
++						385 text : 
++						386 text [
++					387 button - "0": {
++						388 text -
++						389 text "0"
++						390 text : 
++						391 text {
++					392 container
++						393 text "text" :  "别替我决定，我自己来。"
++					394 container
++						395 text "type" :  "text"
++					396 text }
++					397 button - "1": {
++						398 text -
++						399 text "1"
++						400 text : 
++						401 text {
++					402 button - "audio": {
++						403 text -
++						404 text "audio"
++						405 text : 
++						406 text {
++					407 container
++						408 text "url" :  "https://cdn.sandcdn.com/console-uploads/v621791546998657.wav"
++					409 text }
++					410 container
++						411 text "type" :  "voice"
++					412 text }
++					413 text ]
++					414 text }
++				415 button 查看完整结果
++				416 text RESULT
++				417 container
++					418 button COLLAPSE ALL
++					419 button WRAP
++					420 button COPY
++					421 button - {
++						422 text -
++						423 text {
++					424 button - "error": {
++						425 text -
++						426 text "error"
++						427 text : 
++						428 text {
++					429 container
++						430 text "action" :  "do_not_retry"
++					431 container
++						432 text "code" :  "ExecutionFailed"
++					433 container
++						434 text "message" :  "model service returned HTTP 400 (6030001): 没有满足能力要求的候选模型（必需标签 [text2speech voice_clone]）"
++					435 button - "metadata": {
++						436 text -
++						437 text "metadata"
++						438 text : 
++						439 text {
++					440 container
++						441 text "delivery" :  "mcp_tasks"
++					442 container
++						443 text "lastUpdatedAt" :  "2026-10-12T04:10:16Z"
++					444 container
++						445 text "providerErrorCode" :  "tool_error"
++					446 container
++						447 text "providerId" :  "00000000-0000-4000-8000-000000000001"
++					448 container
++						449 text "remoteTaskId" :  "task_dbc547b0f213d9c8"
++					450 container
++						451 text "statusMessage" :  "completed"
++					452 container
++						453 text "taskStatus" :  "completed"
++					454 text }
++					455 container
++						456 text "retryable" :  false
++					457 text }
++					458 container
++						459 text "status" :  "failed"
++					460 text }
+The focused UI element is 347 button (expanded) 正在生成真实试听配音 2026/10/12 12:10:13, Secondary Actions: Collapse

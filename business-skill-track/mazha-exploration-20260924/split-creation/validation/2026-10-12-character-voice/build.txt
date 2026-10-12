@@ -1,0 +1,170 @@
+vite v6.1.0 building for production...
+transforming...
+Browserslist: browsers data (caniuse-lite) is 10 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 4963 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/assets/playback-volume-low-CIFEqzg4.svg               0.71 kB │ gzip:   0.42 kB
+dist/index.html                                            0.72 kB │ gzip:   0.38 kB
+dist/assets/playback-volume-muted-ML-VtZxf.svg             0.76 kB │ gzip:   0.39 kB
+dist/assets/playback-volume-Dlev2YuI.svg                   0.82 kB │ gzip:   0.47 kB
+dist/assets/KaTeX_Size3-Regular-CTq5MqoE.woff              4.42 kB
+dist/assets/KaTeX_Size4-Regular-Dl5lxZxV.woff2             4.93 kB
+dist/assets/KaTeX_Size2-Regular-Dy4dx90m.woff2             5.21 kB
+dist/assets/KaTeX_Size1-Regular-mCD8mA8B.woff2             5.47 kB
+dist/assets/KaTeX_Size4-Regular-BF-4gkZK.woff              5.98 kB
+dist/assets/KaTeX_Size2-Regular-oD1tc_U0.woff              6.19 kB
+dist/assets/KaTeX_Size1-Regular-C195tn64.woff              6.50 kB
+dist/assets/KaTeX_Caligraphic-Regular-Di6jR-x-.woff2       6.91 kB
+dist/assets/KaTeX_Caligraphic-Bold-Dq_IR9rO.woff2          6.91 kB
+dist/assets/KaTeX_Size3-Regular-DgpXs0kz.ttf               7.59 kB
+dist/assets/KaTeX_Caligraphic-Regular-CTRA-rTL.woff        7.66 kB
+dist/assets/KaTeX_Caligraphic-Bold-BEiXGLvX.woff           7.72 kB
+dist/assets/KaTeX_Script-Regular-D3wIWfF6.woff2            9.64 kB
+dist/assets/KaTeX_SansSerif-Regular-DDBCnlJ7.woff2        10.34 kB
+dist/assets/KaTeX_Size4-Regular-DWFBv043.ttf              10.36 kB
+dist/assets/KaTeX_Script-Regular-D5yQViql.woff            10.59 kB
+dist/assets/KaTeX_Fraktur-Regular-CTYiF6lA.woff2          11.32 kB
+dist/assets/KaTeX_Fraktur-Bold-CL6g_b3V.woff2             11.35 kB
+dist/assets/KaTeX_Size2-Regular-B7gKUWhC.ttf              11.51 kB
+dist/assets/KaTeX_SansSerif-Italic-C3H0VqGB.woff2         12.03 kB
+dist/assets/KaTeX_SansSerif-Bold-D1sUS0GD.woff2           12.22 kB
+dist/assets/KaTeX_Size1-Regular-Dbsnue_I.ttf              12.23 kB
+dist/assets/KaTeX_SansSerif-Regular-CS6fqUqJ.woff         12.32 kB
+dist/assets/KaTeX_Caligraphic-Regular-wX97UBjC.ttf        12.34 kB
+dist/assets/KaTeX_Caligraphic-Bold-ATXxdsX0.ttf           12.37 kB
+dist/assets/KaTeX_Fraktur-Regular-Dxdc4cR9.woff           13.21 kB
+dist/assets/KaTeX_Fraktur-Bold-BsDP51OF.woff              13.30 kB
+dist/assets/KaTeX_Typewriter-Regular-CO6r4hn1.woff2       13.57 kB
+dist/assets/KaTeX_SansSerif-Italic-DN2j7dab.woff          14.11 kB
+dist/assets/KaTeX_SansSerif-Bold-DbIhKOiC.woff            14.41 kB
+dist/assets/KaTeX_Typewriter-Regular-C0xS9mPB.woff        16.03 kB
+dist/assets/KaTeX_Math-BoldItalic-CZnvNsCZ.woff2          16.40 kB
+dist/assets/KaTeX_Math-Italic-t53AETM-.woff2              16.44 kB
+dist/assets/KaTeX_Script-Regular-C5JkGWo-.ttf             16.65 kB
+dist/assets/KaTeX_Main-BoldItalic-DxDJ3AOS.woff2          16.78 kB
+dist/assets/KaTeX_Main-Italic-NWA7e6Wa.woff2              16.99 kB
+dist/assets/KaTeX_Math-BoldItalic-iY-2wyZ7.woff           18.67 kB
+dist/assets/KaTeX_Math-Italic-DA0__PXp.woff               18.75 kB
+dist/assets/KaTeX_Main-BoldItalic-SpSLRI95.woff           19.41 kB
+dist/assets/KaTeX_SansSerif-Regular-BNo7hRIc.ttf          19.44 kB
+dist/assets/KaTeX_Fraktur-Regular-CB_wures.ttf            19.57 kB
+dist/assets/KaTeX_Fraktur-Bold-BdnERNNW.ttf               19.58 kB
+dist/assets/KaTeX_Main-Italic-BMLOBm91.woff               19.68 kB
+dist/assets/KaTeX_SansSerif-Italic-YYjJ1zSn.ttf           22.36 kB
+dist/assets/KaTeX_SansSerif-Bold-CFMepnvq.ttf             24.50 kB
+dist/assets/KaTeX_Main-Bold-Cx986IdX.woff2                25.32 kB
+dist/assets/KaTeX_Main-Regular-B22Nviop.woff2             26.27 kB
+dist/assets/KaTeX_Typewriter-Regular-D3Ib7_Hf.ttf         27.56 kB
+dist/assets/KaTeX_AMS-Regular-BQhdFMY1.woff2              28.08 kB
+dist/assets/KaTeX_Main-Bold-Jm3AIy58.woff                 29.91 kB
+dist/assets/KaTeX_Main-Regular-Dr94JaBh.woff              30.77 kB
+dist/assets/KaTeX_Math-BoldItalic-B3XSjfu4.ttf            31.20 kB
+dist/assets/KaTeX_Math-Italic-flOr_0UB.ttf                31.31 kB
+dist/assets/item-card-placeholder-C1Mwa3Kz.png            32.30 kB
+dist/assets/KaTeX_Main-BoldItalic-DzxPMmG6.ttf            32.97 kB
+dist/assets/KaTeX_AMS-Regular-DMm9YOAa.woff               33.52 kB
+dist/assets/KaTeX_Main-Italic-3WenGoN9.ttf                33.58 kB
+dist/assets/route-generating-placeholder-C99TIba_.png     33.77 kB
+dist/assets/publish-placeholder-BZJWIH-p.png              33.81 kB
+dist/assets/character-card-placeholder-5Snb3768.png       34.75 kB
+dist/assets/publish-game-ui-detail-3-xNi-ix8k.png         39.77 kB
+dist/assets/publish-game-ui-detail-4-C0Y7RJbb.png         43.55 kB
+dist/assets/KaTeX_Main-Bold-waoOVXN0.ttf                  51.34 kB
+dist/assets/KaTeX_Main-Regular-ypZvNtVU.ttf               53.58 kB
+dist/assets/publish-game-ui-detail-5-CyOp_7CJ.png         58.26 kB
+dist/assets/KaTeX_AMS-Regular-DRggAlZN.ttf                63.63 kB
+dist/assets/publish-game-ui-detail-2-DPNjQPZy.png         80.84 kB
+dist/assets/publish-game-ui-preview-3-BhWDo-Z1.png        87.47 kB
+dist/assets/publish-game-ui-detail-1-CByFFocO.png         90.25 kB
+dist/assets/publish-game-ui-preview-2-DKqwjk-O.png       112.15 kB
+dist/assets/publish-game-ui-preview-1-Cn1OUvky.png       152.40 kB
+dist/assets/home-prism-first-frame-B4PYova_.webp         219.11 kB
+dist/assets/branch-route-overview-CE8yvNBv.png           676.43 kB
+dist/assets/game-settings-assets-DG_Ehu-I.png          1,527.41 kB
+dist/assets/nexplay-home-overview-CQ5UEapG.png         2,833.71 kB
+dist/assets/MiSans-Thin-OinTpfi5.woff2                 4,481.75 kB
+dist/assets/MiSans-ExtraLight-C9_cnlfV.woff2           4,752.61 kB
+dist/assets/MiSans-Light-DLrVFtCj.woff2                4,817.86 kB
+dist/assets/MiSans-Regular-D_e-bW4F.woff2              4,866.05 kB
+dist/assets/MiSans-Normal-Cf3EZAVH.woff2               4,885.50 kB
+dist/assets/MiSans-Medium-CyM9bnJr.woff2               4,947.65 kB
+dist/assets/MiSans-Demibold-DEnJepSS.woff2             4,996.91 kB
+dist/assets/MiSans-Heavy-CXah9r-G.woff2                5,021.13 kB
+dist/assets/MiSans-Semibold-Azj2EBPf.woff2             5,036.53 kB
+dist/assets/MiSans-Bold-WDB7PxCS.woff2                 5,083.82 kB
+dist/assets/index-CPeBfvoZ.css                             1.01 kB │ gzip:   0.40 kB
+dist/assets/index-BBXmtAt2.css                             1.11 kB │ gzip:   0.41 kB
+dist/assets/index-CP0rTJaQ.css                             2.04 kB │ gzip:   0.68 kB
+dist/assets/serverSnapshot-XOClIL9y.css                    2.69 kB │ gzip:   0.91 kB
+dist/assets/style-DQ3NfGFj.css                             7.04 kB │ gzip:   1.58 kB
+dist/assets/index-ClPK-AVF.css                             7.84 kB │ gzip:   1.99 kB
+dist/assets/index-D4VLvuHD.css                            10.44 kB │ gzip:   2.79 kB
+dist/assets/index-Brw4hO_A.css                            13.92 kB │ gzip:   3.04 kB
+dist/assets/storyWorkspaceEmbed-55ZPZeOF.css              29.23 kB │ gzip:   8.04 kB
+dist/assets/index-CCA9Kmpf.css                            79.00 kB │ gzip:  12.41 kB
+dist/assets/index-QBasle8e.css                           185.37 kB │ gzip:  28.97 kB
+dist/assets/localExperiment-BkwIPoEz.js                    0.04 kB │ gzip:   0.06 kB
+dist/assets/artStyleAnswer-CDi7IxRn.js                     0.19 kB │ gzip:   0.17 kB
+dist/assets/storyIdSearchParam-DgytgK0S.js                 0.32 kB │ gzip:   0.22 kB
+dist/assets/storyCanvas-DozT3LGR.js                        0.38 kB │ gzip:   0.25 kB
+dist/assets/LeftOutlined-D6KuuZkt.js                       0.48 kB │ gzip:   0.37 kB
+dist/assets/RightOutlined-DEHPvnrp.js                      0.48 kB │ gzip:   0.37 kB
+dist/assets/PlayCircleFilled-BgQ6_ZAR.js                   0.49 kB │ gzip:   0.37 kB
+dist/assets/ArrowLeftOutlined-D8z4scA7.js                  0.52 kB │ gzip:   0.40 kB
+dist/assets/useCreationEntry-CibokhQw.js                   0.64 kB │ gzip:   0.41 kB
+dist/assets/EditOutlined-CtBryNou.js                       0.70 kB │ gzip:   0.49 kB
+dist/assets/PictureOutlined-Bk9957EX.js                    0.70 kB │ gzip:   0.48 kB
+dist/assets/BulbOutlined-YYFKYfHj.js                       0.72 kB │ gzip:   0.48 kB
+dist/assets/BranchesOutlined-Deuo0p4L.js                   0.83 kB │ gzip:   0.50 kB
+dist/assets/StoryCoverPreview-EUA-Uq2v.js                  0.97 kB │ gzip:   0.52 kB
+dist/assets/index-ncHc71F7.js                              1.22 kB │ gzip:   0.62 kB
+dist/assets/Preview-DxMohByO.js                            1.45 kB │ gzip:   1.33 kB
+dist/assets/assets-CUoQuGQs.js                             1.55 kB │ gzip:   0.72 kB
+dist/assets/playback-volume-muted-DghdjplB.js              1.72 kB │ gzip:   0.59 kB
+dist/assets/storyLibrary-Ci4ikir7.js                       2.12 kB │ gzip:   0.93 kB
+dist/assets/with-selector-Catd9YwB.js                      2.36 kB │ gzip:   1.03 kB
+dist/assets/RocketOutlined-BZWU-AT4.js                     2.96 kB │ gzip:   1.39 kB
+dist/assets/useMutation-BIo_g1AH.js                        3.10 kB │ gzip:   1.27 kB
+dist/assets/index-Bv-wQr6y.js                              3.20 kB │ gzip:   1.24 kB
+dist/assets/attachments-Bu5BJrJP.js                        3.78 kB │ gzip:   1.72 kB
+dist/assets/icons-CbtIEwZS.js                              4.91 kB │ gzip:   1.61 kB
+dist/assets/ProjectCard-BAH9NaLy.js                        4.93 kB │ gzip:   2.44 kB
+dist/assets/index-BW1rddIZ.js                              6.38 kB │ gzip:   2.22 kB
+dist/assets/index-2hZu5tsb.js                              6.47 kB │ gzip:   2.76 kB
+dist/assets/index-D2nmcClC.js                              8.36 kB │ gzip:   3.22 kB
+dist/assets/index-DR0TtyVe.js                              8.72 kB │ gzip:   3.67 kB
+dist/assets/storyPlayer-BfCABELN.js                        8.72 kB │ gzip:   3.15 kB
+dist/assets/index-XBApqz3K.js                              8.93 kB │ gzip:   3.38 kB
+dist/assets/useQuery-CjNPAM-c.js                          10.47 kB │ gzip:   3.71 kB
+dist/assets/index-MQh6XU0a.js                             11.56 kB │ gzip:   4.38 kB
+dist/assets/index-BWwFt9Bh.js                             18.82 kB │ gzip:   9.24 kB
+dist/assets/HomeBackgroundMusic-DJJnRAjx.js               21.55 kB │ gzip:   7.53 kB
+dist/assets/index-B_2bF9ge.js                             22.45 kB │ gzip:   8.71 kB
+dist/assets/presentationPersistence-CPwZgNOG.js           29.87 kB │ gzip:  12.86 kB
+dist/assets/index-BTvskBMW.js                             30.33 kB │ gzip:  11.04 kB
+dist/assets/index-sQ2ngaiZ.js                             33.31 kB │ gzip:  12.10 kB
+dist/assets/index-BEOvhTXG.js                             36.66 kB │ gzip:   9.88 kB
+dist/assets/index-CbDOUOdf.js                             40.53 kB │ gzip:  14.47 kB
+dist/assets/serverSnapshot-B_292_oC.js                    43.29 kB │ gzip:  16.74 kB
+dist/assets/index-By9FLvBI.js                             46.70 kB │ gzip:  18.18 kB
+dist/assets/index-CY7BpPel.js                             52.85 kB │ gzip:  18.50 kB
+dist/assets/zipObject-BcqGqjWF.js                         60.91 kB │ gzip:  21.55 kB
+dist/assets/index-BvVi2Jg_.js                             74.67 kB │ gzip:  22.96 kB
+dist/assets/index-wCGZKCMp.js                            117.83 kB │ gzip:  37.37 kB
+dist/assets/index-CpyaCjMp.js                            127.10 kB │ gzip:  38.37 kB
+dist/assets/style-CA5FY4ac.js                            138.60 kB │ gzip:  45.32 kB
+dist/assets/index-CIspw4UB.js                            157.05 kB │ gzip:  47.60 kB
+dist/assets/PageContainer-fj-LRK5V.js                    241.09 kB │ gzip:  81.80 kB
+dist/assets/storyWorkspaceEmbed-XziZx_V1.js              331.59 kB │ gzip: 101.80 kB
+dist/assets/index.es-ZF0QS0BO.js                         465.25 kB │ gzip: 152.17 kB
+dist/assets/index-CSOKOuZU.js                            642.64 kB │ gzip: 213.92 kB
+dist/assets/index-BCjZL-t0.js                            711.73 kB │ gzip: 233.02 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 6.40s
