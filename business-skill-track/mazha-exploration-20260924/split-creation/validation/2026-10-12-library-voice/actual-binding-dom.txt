@@ -1,0 +1,139 @@
+- generic: 蚂蚱本地前端 · 5195 · 连接开发站后端，数据保存在开发站
+- banner:
+  - generic "8bf0ce65-3d52-4819-97d7-9afbb5751203": 当前预设：蚂蚱测试探索
+  - button "Nexplay"
+  - textbox "文件名":
+    - /placeholder: Untitled
+    - text: 蚂蚱库音色绑定验收-20261012
+  - button "experiment 测试环境":
+    - img "experiment":
+    - generic: 测试环境
+  - button "▷ 回放创作过程" [disabled]
+  - button "打开用户手册":
+    - img "book":
+    - generic: 用户手册
+  - button "审核通知":
+    - img "bell":
+  - button "thunderbolt 300":
+    - img "thunderbolt":
+    - text: "300"
+- main:
+  - heading "游戏设定" [level=2]
+  - heading "蚂蚱库音色绑定验收-20261012" [level=3]
+  - generic: 暂无故事大纲
+  - heading "游戏资产" [level=2]
+  - button "生成素材图片"
+  - heading "角色设定" [level=3]
+  - button "添加角色": 添加
+  - article "角色：周岚":
+    - button "编辑周岚素材":
+      - generic: 30岁的应急协调员，负责在突发状况中统筹资源与行动。她判断冷静、执行果断，沟通直接利落，做决定时有明确主见。
+    - generic "周岚"
+    - button "AI 生成周岚图片":
+      - generic: AI 生成
+    - button "上传周岚图片"
+    - button "编辑周岚"
+  - heading "场景设定" [level=3]
+  - button "添加场景": 添加
+  - generic: 暂无场景数据
+  - heading "道具设定" [level=3]
+  - button "添加道具": 添加
+  - generic: 暂无道具数据
+- complementary:
+  - generic: 游戏资产
+  - button "游戏资产":
+  - generic: 分支路线
+  - button "分支路线" [disabled]:
+  - generic: 游戏发布
+  - button "游戏发布":
+- button "提交用户反馈":
+  - img "customer-service":
+  - generic: 反馈
+- heading "Agent" [level=3]
+- button "收起 Agent 对话" [expanded]:
+- generic: 这是独立验收项目“蚂蚱库音色绑定验收-20261012”，只测试本项目的一名人物与库音色绑定，不是故事创作。授权用 nextplay-cli 保存项目标题和一个虚构人物周岚：30岁女性，冷静果断，职业为应急协调员，性格直接利落、做事有主见；声音字段“酷飒御姐：成年女声，中低音，直接利落”。请读取当前真实 CLI 合同，保存人物并读回ref，按 voice_tone_match 查候选和所选详情，用真实voice_id及详情preview_url执行asset voice bind，再inspect --include media核对绑定。直接使用库试听，不单独生成一句台词。禁止生成图片、配音、视频、转写或提取音轨；不写故事、大纲、路线、剧本；不改任何其他项目、SP或Skill，不询问画风。只完成本次人物保存、库音色匹配绑定并读回后停止。请返回真实项目ID、人物ref、所选音色、voice_binding和库试听URL，不把库示范音说成人物台词。
+- generic: 已处理 1m 53s
+- generic "tool 已运行 4 个工具 down":
+  - img "tool":
+  - generic: 已运行 4 个工具
+  - img "down":
+- paragraph: 正在核对当前项目身份与真实命令合同，随后只保存标题和周岚的人物文字。
+- generic "tool 已运行 4 个工具 down":
+  - img "tool":
+  - generic: 已运行 4 个工具
+  - img "down":
+- paragraph: 周岚已保存并读回，人物ref为 character-cilj0g；现在按已保存的声音字段查询库音色候选。
+- generic "tool 已运行 7 个工具 down":
+  - img "tool":
+  - generic: 已运行 7 个工具
+  - img "down":
+- generic "check-circle 正在匹配库音色候选 down":
+  - img "check-circle":
+  - generic: 正在匹配库音色候选
+  - img "down":
+- generic "check-circle 正在读取真实项目ID down":
+  - img "check-circle":
+  - generic: 正在读取真实项目ID
+  - img "down":
+- generic "check-circle 正在读取所选音色详情 down":
+  - img "check-circle":
+  - generic: 正在读取所选音色详情
+  - img "down":
+- generic "check-circle 正在核对项目标识 down":
+  - img "check-circle":
+  - generic: 正在核对项目标识
+  - img "down":
+- generic "check-circle 正在绑定库音色 down":
+  - img "check-circle":
+  - generic: 正在绑定库音色
+  - img "down":
+- generic "check-circle 正在读取项目清单 down":
+  - img "check-circle":
+  - generic: 正在读取项目清单
+  - img "down":
+- generic "check-circle 正在读回绑定结果 down" [active]:
+  - img "check-circle":
+  - generic: 正在读回绑定结果
+  - img "down":
+- paragraph: 参数
+- generic: "{ \"command\": \"set -e\\ncd /app-data/threads/.skills/nextplay-cli\\nprintf '%s\\\\n' '--- bound character with media ---'\\n./nextplay.bin asset inspect --asset-ref-id 'character-cilj0g' --include media\\nprintf '%s\\\\n' '--- title readback ---'\\n./nextplay.bin outline inspect --field premise.title\", \"timeout\": 300 }"
+- paragraph: 结果
+- generic: "{\"content\":{\"content\":[{\"text\":\"Backend tool completed.\",\"type\":\"text\"}],\"isError\":false,\"structuredContent\":{\"mode\":\"backend\",\"result\":{\"exitCode\":0,\"output\":\"--- bound character with media ---\\n{\\\"status\\\":\\\"ok\\\",\\\"data\\\":{\\\"assets\\\":[{\\\"ref_id\\\":\\\"character-cilj0g\\\",\\\"category\\\":\\\"character\\\",\\\"name\\\":\\\"周岚\\\",\\\"aliases\\\":[],\\\"attributes\\\":{\\\"character_type\\\":\\\"主角\\\",\\\"tags\\\":[\\\"应急协调员\\\",\\\"冷静果断\\\",\\\"直接利落\\\",\\\"有主见\\\"],\\\"character_feature\\\":\\\"30岁的应急协调员，负责在突发状况中统筹资源与行动。她判断冷静、执行果断，沟通直接利落，做决定时有明确主见。\\\",\\\"identity\\\":\\\"30岁，应急协调员\\\",\\\"age\\\":\\\"30岁\\\",\\\"gender\\\":\\\"女\\\",\\\"temperament\\\":\\\"冷静果断，存在感明确，行动不拖沓\\\",\\\"personality\\\":\\\"直接利落、做事有主见，压力下仍能迅速判断并推动执行\\\",\\\"voice\\\":\\\"酷飒御姐：成年女声，中低音，直接利落\\\",\\\"voice_binding\\\":{\\\"voice_id\\\":\\\"vl_8f86a541-05cc-406d-a753-e468a09e6...[truncated]"
+- paragraph:
+  - text: 已完成指定验收范围，并通过
+  - code: asset inspect --include media
+  - text: 读回核对。
+- list:
+  - strong: 项目标题
+  - text: ：蚂蚱库音色绑定验收-20261012
+  - strong: 真实项目 ID（story_id）
+  - text: ：
+  - code: f1ec1440-b8dd-43bb-b6d0-0d680605c1d8
+  - strong: 人物
+  - text: ：周岚
+  - strong: 人物 ref
+  - text: ：
+  - code: character-cilj0g
+  - strong: 所选库音色
+  - text: ：冷艳女帝
+  - strong: 音色库记录 ID
+  - text: ：
+  - code: "285"
+  - strong: voice_binding
+  - text: ：
+- code: "{ \"voice_id\": \"vl_8f86a541-05cc-406d-a753-e468a09e63eb\", \"preview_audio_url\": \"https://cdn.sandcdn.com/console-uploads/v621791546998657.wav\" }"
+- list:
+  - strong: 库试听 URL
+  - text: ：
+  - link "https://cdn.sandcdn.com/console-uploads/v621791546998657.wav":
+    - /url: https://cdn.sandcdn.com/console-uploads/v621791546998657.wav
+- paragraph: 该 URL 是音色库的示范试听，不是周岚的人物台词。本次未生成图片、配音、视频，未执行转写或音轨提取，也未写入故事、大纲正文、路线或剧本。
+- text: 开始你的创作，可以
+- img "@"
+- text: 引用资源
+- paragraph
+- button "添加附件":
+- button "提及故事对象":
+- button "选择控制模式":
+  - generic: 全自动
+- button "发送消息" [disabled]:
