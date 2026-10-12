@@ -1,0 +1,11 @@
+{
+  "backendComplete": true,
+  "before": {
+    "key": "public:thought",
+    "shown": 44
+  },
+  "after": {
+    "key": "public:thought",
+    "shown": 46
+  }
+}

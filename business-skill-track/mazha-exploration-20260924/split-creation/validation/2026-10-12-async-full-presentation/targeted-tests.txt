@@ -1,0 +1,94 @@
+
+ RUN  v3.2.7 /Users/automaticgrasshopper/Documents/ChatGPT/影视游戏本地前端实验/frontend
+
+ ✓ src/pages/StoryCreation/CreationPlayback/assetImagePrompt.test.ts (8 tests) 12ms
+ ✓ src/pages/StoryCreation/CreationPlayback/sequence.test.ts (6 tests) 7ms
+ ✓ src/pages/StoryCreation/CreationPlayback/assetImageRequests.test.ts (10 tests) 12ms
+Browserslist: browsers data (caniuse-lite) is 10 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+ ✓ src/pages/StoryCreation/CreationPlayback/publicPresentation.test.ts (18 tests) 40ms
+ ✓ src/pages/StoryCreation/CreationPlayback/taskCompletion.test.ts (8 tests) 14ms
+ ✓ src/pages/StoryCreation/CreationPlayback/coreStoryText.test.tsx (3 tests) 13ms
+stderr | src/pages/StoryCreation/CreationPlayback/interruptStore.test.ts > creation interruption > stops replay without sending any request
+[zustand persist middleware] Unable to update item 'nextplay:creation-pauses', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:creation-pauses', the given storage is currently unavailable.
+
+stderr | src/pages/StoryCreation/CreationPlayback/interruptStore.test.ts > creation interruption > records the paused story before stop acceptance and resumes only for a new running turn
+[zustand persist middleware] Unable to update item 'nextplay:creation-pauses', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:creation-pauses', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:creation-pauses', the given storage is currently unavailable.
+
+stderr | src/pages/StoryCreation/CreationPlayback/interruptStore.test.ts > creation interruption > records the paused story before stop acceptance and resumes only for a new running turn
+[zustand persist middleware] Unable to update item 'nextplay:creation-pauses', the given storage is currently unavailable.
+
+stderr | src/pages/StoryCreation/CreationPlayback/interruptStore.test.ts > creation interruption > records the paused story before stop acceptance and resumes only for a new running turn
+[zustand persist middleware] Unable to update item 'nextplay:creation-pauses', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:creation-pauses', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:creation-pauses', the given storage is currently unavailable.
+
+stderr | src/pages/StoryCreation/CreationPlayback/interruptStore.test.ts > creation interruption > does not claim a failed stop succeeded
+[zustand persist middleware] Unable to update item 'nextplay:creation-pauses', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:creation-pauses', the given storage is currently unavailable.
+
+stderr | src/pages/StoryCreation/CreationPlayback/interruptStore.test.ts > creation interruption > does not claim a failed stop succeeded
+[zustand persist middleware] Unable to update item 'nextplay:creation-pauses', the given storage is currently unavailable.
+
+stderr | src/pages/StoryCreation/CreationPlayback/interruptStore.test.ts > creation interruption > does not resume when a refreshed thread first has no messages or recovers its initial run id
+[zustand persist middleware] Unable to update item 'nextplay:creation-pauses', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:creation-pauses', the given storage is currently unavailable.
+
+stderr | src/pages/StoryCreation/CreationPlayback/interruptStore.test.ts > creation interruption > remembers the outline stage on interruption without replacing the frozen display
+[zustand persist middleware] Unable to update item 'nextplay:local-creative-prelude', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:local-creative-prelude', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:local-creative-prelude', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:creation-pauses', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:creation-pauses', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:local-creative-prelude', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:creation-pauses', the given storage is currently unavailable.
+
+ ✓ src/pages/StoryCreation/CreationPlayback/interruptStore.test.ts (5 tests) 6ms
+ ✓ src/pages/StoryCreation/CreationPlayback/assetReviewSave.test.ts (3 tests) 6ms
+ ✓ src/pages/StoryCreation/CreationPlayback/presentationPersistence.test.ts (8 tests) 105ms
+ ✓ src/pages/StoryCreation/CreationPlayback/publicProgressCopy.test.ts (21 tests) 9ms
+ ✓ src/pages/StoryCreation/CreationPlayback/activityStore.test.ts (7 tests) 15ms
+stderr | src/pages/StoryCreation/CreationPlayback/handoffStore.test.ts > handoff waits for the complete presentation > cannot start or skip handoff while text or final synchronization is pending
+[zustand persist middleware] Unable to update item 'nextplay:creation-handoff', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:creation-handoff', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:creation-handoff', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:creation-handoff', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:creation-handoff', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:creation-handoff', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:creation-handoff', the given storage is currently unavailable.
+
+stderr | src/pages/StoryCreation/CreationPlayback/handoffStore.test.ts > handoff waits for the complete presentation > unlocks only the handed-over story after the animation finishes and retains access across runs
+[zustand persist middleware] Unable to update item 'nextplay:creation-handoff', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:creation-handoff', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:creation-handoff', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:creation-handoff', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:creation-handoff', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:creation-handoff', the given storage is currently unavailable.
+
+stderr | src/pages/StoryCreation/CreationPlayback/handoffStore.test.ts > handoff waits for the complete presentation > fast-types every completed script before handing over
+[zustand persist middleware] Unable to update item 'nextplay:creation-handoff', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:creation-handoff', the given storage is currently unavailable.
+[zustand persist middleware] Unable to update item 'nextplay:creation-handoff', the given storage is currently unavailable.
+
+ ✓ src/pages/StoryCreation/CreationPlayback/handoffStore.test.ts (4 tests) 9ms
+ ✓ src/pages/StoryCreation/CreationPlayback/characterVoicePreview.test.ts (5 tests) 22ms
+ ✓ src/pages/StoryCreation/CreationPlayback/scriptCompletion.test.ts (2 tests) 2ms
+ ✓ src/pages/StoryCreation/CreationPlayback/scriptTypingTiming.test.ts (5 tests) 4ms
+ ✓ src/pages/StoryCreation/CreationPlayback/livePresentation.test.ts (39 tests) 481ms
+   ✓ generation and presentation run independently > does not use completed-run timing to shorten a 40-second presentation  429ms
+ ✓ src/pages/StoryCreation/CreationPlayback/imageReviewStore.test.ts (5 tests) 4ms
+ ✓ src/pages/StoryCreation/CreationPlayback/creationStage.test.ts (2 tests) 4ms
+ ✓ src/pages/StoryCreation/CreationPlayback/typingTiming.test.ts (4 tests) 41ms
+ ✓ src/pages/StoryCreation/CreationPlayback/cameraFocus.test.ts (2 tests) 2ms
+ ✓ src/pages/StoryCreation/components/episode-route/routeEdgeStyle.test.ts (2 tests) 3ms
+ ✓ src/pages/StoryCreation/components/episode-route/routeActiveEdges.test.ts (6 tests) 14ms
+
+ Test Files  22 passed (22)
+      Tests  173 passed (173)
+   Start at  16:20:28
+   Duration  2.35s (transform 2.02s, setup 237ms, collect 4.31s, tests 825ms, environment 4ms, prepare 2.80s)
+
