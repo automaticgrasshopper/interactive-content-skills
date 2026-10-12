@@ -1,0 +1,7 @@
+PASS 后果节点已全部保存，仍等待开场当前节点的剧本
+PASS 节点梗概之后展示公开构思
+PASS 累计剧本中途保存不提前回图或展示选择
+PASS 开场剧本→回图→选择→各后果梗概、剧本、回图顺序完整
+script:start → return:start → node:pick → node:family → public:family → script:family → return:family → node:work → public:work → script:work → return:work
+PASS 各分支完整播放之后镜头容纳本批整体路线
+路线流程验证完成，保留整体路线画面供检查。

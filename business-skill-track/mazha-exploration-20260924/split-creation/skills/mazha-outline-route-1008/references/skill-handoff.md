@@ -14,4 +14,6 @@ route generate 路径按 cli-topology.md 的 start/next、故事、切片、全�
 
 表达改动由编剧完成。确需改变路线事件、选择或连接，交回当前路线方法的局部修复：活跃未完规划使用 generate edit/rewrite-segment，外部手改后按真实 next.route_version reconcile；规划 next=done 后用普通 route edit。不要由编剧越权重建图，或为了写一句话重启 start --new。
 
+默认开场单元不能在首个剧情节点完成时结束；同一 Run 继续处理本批各路实际后果节点，choice 不编剧。所有本批正文完成、必要图片审核通过并经玩家确认后，结束本轮交前端完整播放与核对移交；待续方向不建空正文节点，不擅自扩全图。
+
 单节点完成只是推进点，不提前 final／AskUser／解锁整作编辑。完整拓扑专项、整作联合创作和局部批次分别按各自停止点结束；前端依真实版本与 SSE 展示，Skill 不发明完成布尔值、Slot 或动画状态，不等动画后再执行后端操作。

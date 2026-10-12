@@ -121,3 +121,11 @@ Maxwell 原位保存大纲15项、编剧2项和测试 SP，18项均重新打开�
 追加20:03新版CLI只读复核：Maxwell 当前来源 nextplay-cli-389e40a.zip；仅读导出包 nextplay.bin（1323449字节，SHA256 698fbbf4e63e5b4a7f204eaf57d81c03724bfeeedc6b90fb4e363420beea92f7）与 references/routes.md（23946字节，与UI逐字一致），未读取runtime.env、未执行CLI。新版普通start仍要求空图，非空首次mainline-cut仍要求replace-route并detachRoute，无新增无损adopt-existing入口；文档明确complete后普通route edit，不再generate或reconcile。next仍status=ok及next.step，complete仍status=saved、step=complete、result.planning_complete=true、next.step=done。本轮合并接续合同兼容新版，不需再改Skill。静态源码摘录、版本哈希及新旧diff位于同一证据目录cli-2003-*，不能当作运行验证。
 
 配合会话最终报告前端已统一mazha-outline-route-1008并兼容历史消息；48相关用例、tsc、eslint、build通过。侧边浏览器验证移交前及动画中隐藏入口，finish后显示，刷新保留入口不重播，未保存时禁用；发送前新GET当前大纲并提交增量交接。第一／第三人称真实PATCH及GET均成功且还原测试项目。普通编辑不伪造移交，活跃规划要求本轮complete。上述为对方已完成验证记录；本轮没有新创作生成的端到端验证。
+
+## 2026-10-12 开场选择后果单元与逐图审核展示
+
+用户批准七项待办实施，最终镜头阶段文案为“分镜”。已在自己的实验SP和三个Skill原位保存，并重新打开编辑台核对全部七个修改文件逐字一致。长期授权及不需要CLI key写入两仓AGENTS.md。
+
+SP与大纲恢复完整开场选择/后果局部单元及画风选择门槛；编剧新增单节点正式稿最后保存读回后的前端播放边界；图片Skill明确当前版本自动审核通过之后再AskUser、玩家确认前不展示下一张、前端已调整新版只审核不重复生成，固定确认文案。前端保留平台组件，按节点完整播放并延后未来节点构思，最后显示本批整体路线。
+
+相关前端195项测试、TypeScript、生产构建及平台组件离线图片/路线夹具通过，ESLint 0错误/2处既有警告。未调用真实生图或推进用户测试作品，完整真实Agent与审核运行仍待实测；详见 validation/2026-10-12-opening-image/README.md。
