@@ -1,0 +1,34 @@
+{
+  "scope": "同一作品首次调研文风、开场写法和格式，后续各集沿用",
+  "live_generation_test": false,
+  "files": [
+    {
+      "path": "SKILL.md",
+      "before_sha256": "dfe7e9fd0ad6aa700c12f1fb7f627b67ec65342aa2cc34b5f6dc2a752957de93",
+      "after_sha256": "43c941246490efd577dedf04e63f99dec06d1df3492cf97f637fdb17cce23ec2"
+    },
+    {
+      "path": "references/genre-research-and-treatment.md",
+      "before_sha256": "af2705616b5d6ac1a8557c3c06c954fb49ee22651e3ad91990616b3c47d434f9",
+      "after_sha256": "c92b9945e55c4b5002dacbcdfdb19cab2a090e94844f09867472e8c452cb83f5"
+    },
+    {
+      "path": "references/screenwriting.md",
+      "before_sha256": "00c80c5d0a041c86f55c4ce135b826bd95c39e5742248e20dc5423392f24ca61",
+      "after_sha256": "d14f61a75b5c2a322ee377ddc9663e9b7cf9c32cd62a80182052b8f34615e576"
+    },
+    {
+      "path": "references/full-scene-enhancer.md",
+      "before_sha256": "6c614726c64a62bb8b5694389ce930a97eb03bc124a959c5e7ed439f7d80e7c7",
+      "after_sha256": "94aca14150b0fec5ac8a8ba6b1e3e904eaa4ecda5c7c7c2ca14ba9a6afca9513"
+    }
+  ],
+  "validation": {
+    "quick_validate": "passed",
+    "relative_links": 12,
+    "git_diff_check": "passed",
+    "studio_save_readback": "4 changed files exact",
+    "browser": "Codex in-app browser",
+    "user_requested_no_live_generation_test": true
+  }
+}
