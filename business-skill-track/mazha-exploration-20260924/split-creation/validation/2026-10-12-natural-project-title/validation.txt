@@ -1,0 +1,7 @@
+2026-10-12 中文项目命名
+
+仅改自有大纲 Skill：SKILL.md、references/research-before-creation.md、references/creative-entry.md。题材调研兼看实际同题材中文片名；名称自然、口语、清楚并兑现故事冲突；不用生硬意象拼接，不机械复制示例。命名共享原调研预算，不新增深搜、问卷或质量门槛。用户已定名/手改优先，已有项目不批量改名。
+
+Maxwell Studio 已登录后台修改；3份保存前内容均与本地 before 精确一致，保存后重新打开逐文件读回与本地精确一致。引用关系仍为蚂蚱测试探索（8bf0ce65-3d52-4819-97d7-9afbb5751203）。未使用CLI key，未改共享Skill。
+
+YAML元信息没有改动；当前环境缺少PyYAML，未运行依赖它的quick_validate。所改本地引用存在、git diff --check通过；真实生成标题的语言质量仍需后续创作观察，不声称规则文本等于模型质量验证。

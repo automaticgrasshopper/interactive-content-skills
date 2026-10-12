@@ -1,0 +1,5 @@
+2026-10-12 图片确认接续协议
+
+仅改自有 mazha-asset-image-direct-1008/SKILL.md。图片问卷在右侧提供唯一交互，后台AskUser保留原运行答复通道；同资产同版本前台确认存档、后到提问承接、不发新的开始创作消息；新版仍须人工确认；全部前台步骤播完后按已授权范围移交并释放遮罩。
+
+保存前远端与本地before精确一致，保存后重新打开pre全文与本地精确一致。只改本人Skill，无CLI key、无共享后端修改。前端回归证据见本地前端 docs/lab-validation/2026-10-12-image-confirmation-delivery。
