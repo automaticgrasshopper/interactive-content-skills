@@ -1,0 +1,43 @@
+ffmpeg version 8.1.2 Copyright (c) 2000-2026 the FFmpeg developers
+  built with Apple clang version 21.0.0 (clang-2100.0.123.102)
+  configuration: --prefix=/opt/homebrew/Cellar/ffmpeg/8.1.2_1 --enable-shared --enable-pthreads --enable-version3 --cc=clang --host-cflags= --host-ldflags= --enable-ffplay --enable-gpl --enable-libsvtav1 --enable-libopus --enable-libx264 --enable-libmp3lame --enable-libdav1d --enable-libvmaf --enable-libvpx --enable-libx265 --enable-openssl --enable-videotoolbox --enable-audiotoolbox --enable-neon
+  libavutil      60. 26.102 / 60. 26.102
+  libavcodec     62. 28.102 / 62. 28.102
+  libavformat    62. 12.102 / 62. 12.102
+  libavdevice    62.  3.102 / 62.  3.102
+  libavfilter    11. 14.102 / 11. 14.102
+  libswscale      9.  5.102 /  9.  5.102
+  libswresample   6.  3.102 /  6.  3.102
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'validation/2026-10-12-video-voice-trial/trial.mp4':
+  Metadata:
+    minor_version   : 512
+    major_brand     : isom
+    compatible_brands: isomiso2avc1mp41
+    decoder         : Lavf15.0
+    AIGC            : {"Label":"1","ContentProducer":"001191330106MA2CFLDG4R10001","ProduceID":"R-2JTg1enfR_2iPemnxBxiLw","ReservedCode1":"K-LBkc9peJ0GoxPECtYBct7vfZZgZvwy4FZrhe/DJovt3rGFEyBJ4z5WZYsl9yWMbLF5TdAJpVxvBsyZQFyr1TydnxKRx42cbkXPx44i7Wjjsz6lcifmu7tW4OLVXocwRbsGirL6io
+    encoder         : Lavf60.16.100
+  Duration: 00:00:02.02, start: 0.000000, bitrate: 2352 kb/s
+  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 854x480, 2225 kb/s, 30 fps, 30 tbr, 15360 tbn (default)
+    Metadata:
+      handler_name    : VideoHandler
+      encoder         : Lavc60.31.102 libx264
+  Stream #0:1[0x2](und): Audio: aac (LC) (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 128 kb/s (default)
+    Metadata:
+      handler_name    : SoundHandler
+Stream mapping:
+  Stream #0:1 -> #0:0 (aac (native) -> pcm_s16le (native))
+Press [q] to stop, [?] for help
+Output #0, wav, to 'validation/2026-10-12-video-voice-trial/trial.wav':
+  Metadata:
+    minor_version   : 512
+    major_brand     : isom
+    compatible_brands: isomiso2avc1mp41
+    decoder         : Lavf15.0
+    AIGC            : {"Label":"1","ContentProducer":"001191330106MA2CFLDG4R10001","ProduceID":"R-2JTg1enfR_2iPemnxBxiLw","ReservedCode1":"K-LBkc9peJ0GoxPECtYBct7vfZZgZvwy4FZrhe/DJovt3rGFEyBJ4z5WZYsl9yWMbLF5TdAJpVxvBsyZQFyr1TydnxKRx42cbkXPx44i7Wjjsz6lcifmu7tW4OLVXocwRbsGirL6io
+    ISFT            : Lavf62.12.102
+  Stream #0:0(und): Audio: pcm_s16le ([1][0][0][0] / 0x0001), 16000 Hz, mono, s16, 256 kb/s (default)
+    Metadata:
+      encoder         : Lavc62.28.102 pcm_s16le
+      handler_name    : SoundHandler
+[out#0/wav @ 0xa7ac049c0] video:0KiB audio:63KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: 0.120661%
+size=      63KiB time=00:00:02.02 bitrate= 256.3kbits/s speed= 723x elapsed=0:00:00.00

@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-12",
+  "status": "dialogue_pass_voice_verification_blocked",
+  "model": "wan-3.0",
+  "task_id": "01a12ec2-a84e-7470-a988-21e35e70058d",
+  "generation_count": 1,
+  "requested_duration": 2,
+  "width": 854,
+  "height": 480,
+  "video_duration": 2.0,
+  "audio_duration": 2.02,
+  "expected_dialogue": "这事，我来。",
+  "voice_library_name": "冷艳女帝",
+  "voice_id": "vl_8f86a541-05cc-406d-a753-e468a09e63eb",
+  "reference_url": "https://cdn.sandcdn.com/console-uploads/v621791546998657.wav",
+  "price": null,
+  "extraction": "Local FFmpeg; original AAC stream copied to M4A and converted to 16kHz mono PCM WAV for transcription",
+  "skill_changed": false,
+  "hashes": {
+    "trial.mp4": "1bd9409c12efb5a50899acaebdc6507442d1205f4477a1bf17ae5eaf7997cbac",
+    "trial.m4a": "f8680212e093232c2f49f7ac31ebb6216d636a4fe4030a0e89e26c96a72f56fc",
+    "trial.wav": "ce02df139f5a44e70587388f58a8e6e45cd760b042afb99ef87b0da6f78b0859"
+  },
+  "transcription": {
+    "model": "doubao-asr-flash",
+    "task_id": "01a12ed7-59f2-783d-b389-63dc27a1488f",
+    "status": "success",
+    "text": "这事我来。",
+    "utterances": [
+      {
+        "start": 0.57,
+        "end": 1.81,
+        "text": "这事我来。"
+      }
+    ],
+    "matches_expected_ignoring_punctuation": true,
+    "expected_text_prompt_sent_to_asr": false
+  },
+  "voice_analysis": {
+    "status": "blocked",
+    "provider_error": "ProviderTransient: 模型 gemini-3.1-pro 的服务暂时不可用，请稍后重试或切换模型。",
+    "attempts": 2,
+    "voice_similarity": null,
+    "music_or_noise": null,
+    "subjective_end_truncation": null,
+    "alternative_model_available": false,
+    "tool_model_selector": false
+  }
+}

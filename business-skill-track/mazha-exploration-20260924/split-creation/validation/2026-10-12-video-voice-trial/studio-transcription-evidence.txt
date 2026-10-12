@@ -1,0 +1,1030 @@
+- main:
+  - complementary:
+    - link "返回 Maxwell AI 首页":
+      - /url: /
+      - generic: Maxwell
+    - button "切换业务，当前：互动影游NexPlay":
+      - heading "互动影游NexPlay" [level=1]
+    - navigation:
+      - generic: 业务搭建
+      - link "智能体预设":
+        - /url: /agents?businessId=ad3d5c4b-c7c9-4ed3-b15d-4f3556520263
+        - generic: 智能体预设
+      - link "提示词管理":
+        - /url: /prompts?businessId=ad3d5c4b-c7c9-4ed3-b15d-4f3556520263
+        - generic: 提示词管理
+      - link "工具管理":
+        - /url: /tools/list?businessId=ad3d5c4b-c7c9-4ed3-b15d-4f3556520263
+        - generic: 工具管理
+      - link "技能管理":
+        - /url: /skills?businessId=ad3d5c4b-c7c9-4ed3-b15d-4f3556520263
+        - generic: 技能管理
+      - link "知识管理":
+        - /url: /knowledge?businessId=ad3d5c4b-c7c9-4ed3-b15d-4f3556520263
+        - generic: 知识管理
+      - link "应用管理":
+        - /url: /applications?businessId=ad3d5c4b-c7c9-4ed3-b15d-4f3556520263
+        - generic: 应用管理
+      - link "资源管理":
+        - /url: /resources?businessId=ad3d5c4b-c7c9-4ed3-b15d-4f3556520263
+        - generic: 资源管理
+      - generic: 运行调试
+      - link "发起会话":
+        - /url: /chat?businessId=ad3d5c4b-c7c9-4ed3-b15d-4f3556520263
+        - generic: 发起会话
+      - link "运行追踪":
+        - /url: /threads?businessId=ad3d5c4b-c7c9-4ed3-b15d-4f3556520263
+        - generic: 运行追踪
+      - generic: 分析优化
+      - link "业务看板":
+        - /url: /analytics?businessId=ad3d5c4b-c7c9-4ed3-b15d-4f3556520263
+        - generic: 业务看板
+      - generic: 其它
+      - link "设置":
+        - /url: /businesses/ad3d5c4b-c7c9-4ed3-b15d-4f3556520263/settings
+        - generic: 设置
+    - button "打开账号菜单":
+      - generic: M
+      - generic: mazha
+      - generic: m***@sand.ai
+    - button "收起侧边栏":
+  - button "打开 Studio 助手":
+  - navigation "Breadcrumb":
+    - link "业务管理":
+      - /url: /businesses
+    - link "互动影游NexPlay":
+      - /url: /agents?businessId=ad3d5c4b-c7c9-4ed3-b15d-4f3556520263
+    - generic: 独立语音能力验证，只查询不生成、不创建或修改任何 NextPlay 项…
+  - generic: 蚂蚱测试探索
+  - button "打开当前会话的 Trace 排查":
+    - generic: 追踪
+  - button "修改 Thread 可见性":
+  - button "查看 Agent 运行状态":
+  - button "隐藏 Chat Side Panel" [pressed]:
+  - button "已运行 1 个工具 Expand tool call":
+    - generic: 已运行 1 个工具
+    - button "Expand tool call":
+  - paragraph:
+    - text: 试听生成结果：
+    - strong: 失败
+    - text: 。
+  - list:
+    - strong: 所选音色
+    - text: ：冷艳女帝
+    - strong: voice_id
+    - text: ：
+    - code: vl_8f86a541-05cc-406d-a753-e468a09e63eb
+    - strong: 实际输入文本
+    - text: ：
+    - code: 别替我决定，我自己来。
+    - strong: 使用模型
+    - text: ：
+    - code: minimax-speech-2.8-turbo
+    - strong: 生成音频可播放 URL
+    - text: ：无
+    - strong: 错误
+    - text: ：模型服务返回 HTTP 400（
+    - code: "6030001"
+    - text: ）
+    - code: 没有满足能力要求的候选模型（必需标签 [text2speech voice_clone]）
+  - paragraph:
+    - text: 已按工具实际 schema 将匹配音色详情中的音频作为
+    - code: voice
+    - text: 输入，但服务将其判定为需要
+    - code: voice_clone
+    - text: 能力；所选模型仅列有
+    - code: text2speech
+    - text: 、
+    - code: preset_voice
+    - text: ，因此未能生成。没有用音色库预览冒充成品，也未重试、未添加额外台词，未操作任何 NextPlay 项目或其他线程。
+  - generic: ASSISTANT / 2026/10/12 12:10:26
+  - generic: ↑22k ↓309
+  - generic "回答反馈":
+    - button "这个回答有帮助":
+    - button "这个回答需要改进":
+  - button "朗读回复":
+  - button "Copy assistant markdown":
+  - paragraph: 继续只读排查，不生成。错误说明 audio URL 触发 voice_clone，但候选具备 preset_voice。请核对当前 media 工具实际 inputSchema 和已查模型规则：voice part 是否支持 text（直接传所选真实 voice_id）或其他预设音色字段？输出真实支持的字段及匹配详情中的实际 voice_id/provider_voice_id；不要把 voice_library_id 当供应商voice_id，不猜字段。仅当当前schema确认无法指定预设音色时说明缺口。不要调用生成。
+  - button "展开":
+    - generic: 展开
+  - generic: user / 2026/10/12 12:11:31
+  - paragraph: 只读核对结果如下，未调用生成。
+  - heading "当前 media 的 speech 输入 Schema" [level=3]:
+    - text: 当前
+    - code: media
+    - text: 的 speech 输入 Schema
+  - paragraph:
+    - code: parts
+    - text: 对 speech 仅支持两类：
+  - code: "{\"type\":\"text\",\"text\":\"待合成文本\"}"
+  - code: "{\"type\":\"voice\",\"audio\":{\"url\":\"https://...\"}}"
+  - paragraph:
+    - text: 其中
+    - code: voice
+    - text: part：
+  - list:
+    - strong: 支持
+    - text: ：
+    - code: audio.url
+    - strong: 不支持
+    - text: ：
+    - code: text
+    - strong: 不支持
+    - text: ：
+    - code: voice_id
+    - strong: 不支持
+    - text: ：
+    - code: provider_voice_id
+    - strong: 未定义其他预设音色字段
+  - heading "已查询模型规则" [level=3]
+  - paragraph:
+    - code: minimax-speech-2.8-turbo
+    - text: 的规则只确认：
+  - list:
+    - text: 至少一个
+    - code: text
+    - text: part
+    - text: 至少一个
+    - code: voice
+    - text: part
+    - listitem: 文本最多 10,000 字符
+    - text: 不支持
+    - code: prompt
+    - text: 不支持指定
+    - code: duration
+  - paragraph:
+    - text: 规则没有提供把预设音色 ID 传入
+    - code: voice
+    - text: part 的额外字段或映射方式。
+  - heading "音色匹配详情中的实际标识" [level=3]
+  - list:
+    - code: voice_id
+    - text: ：
+    - code: vl_8f86a541-05cc-406d-a753-e468a09e63eb
+    - code: voice_library_id
+    - text: ：
+    - code: "285"
+    - code: provider_voice_id
+    - text: ：
+    - strong: 匹配详情未返回该字段
+  - paragraph:
+    - text: 因此不能把
+    - code: voice_library_id
+    - text: 当作供应商 voice ID，也不能将
+    - code: voice_id
+    - text: 填入当前 Schema 未定义的字段。
+  - heading "结论" [level=3]
+  - paragraph:
+    - text: 当前工具 Schema
+    - strong: 无法直接指定预设音色 ID
+    - text: 。唯一可用的
+    - code: voice
+    - text: 输入是
+    - code: audio.url
+    - text: ，但它会触发
+    - code: voice_clone
+    - text: 能力要求。工具虽然列出模型具备
+    - code: preset_voice
+    - text: 标签，当前输入 Schema 却没有暴露对应的预设音色 ID 参数；这是目前的能力合同缺口。
+  - generic: ASSISTANT / 2026/10/12 12:11:42
+  - generic: ↑22.4k ↓497
+  - generic "回答反馈":
+    - button "这个回答有帮助":
+    - button "这个回答需要改进":
+  - button "朗读回复":
+  - button "Copy assistant markdown":
+  - paragraph: 请做最后一项只读能力核对，不生成不改项目：读取 nextplay-cli 的初始化说明以及 CLI --help/相关 media help，检查是否已有能“指定真实 voice_id + 朗读文本”的语音生成入口或明确的模型服务 API 文档入口（不是 asset voice bind 的库预览）。只用已声明的命令和参考，不猜URL，不读取或输出 runtime.env 凭据，不修改公共CLI。如果没有可用入口就明确说没有，停止排查。
+  - button "展开":
+    - generic: 展开
+  - generic: user / 2026/10/12 12:13:07
+  - button "已运行 12 个工具 Expand tool call":
+    - generic: 已运行 12 个工具
+    - button "Expand tool call":
+  - paragraph:
+    - text: 只读核对完成，未生成媒体、未读取或修改 NextPlay 项目，也未修改公共 CLI 或读取/输出
+    - code: runtime.env
+    - text: 凭据。
+  - heading "核对结果" [level=3]
+  - list:
+    - text: CLI 顶层命令仅有：
+    - code: gen-id
+    - text: 、
+    - code: project
+    - text: 、
+    - code: outline
+    - text: 、
+    - code: route
+    - text: 、
+    - code: script
+    - text: 、
+    - code: asset
+    - text: 、
+    - code: storyboard
+    - text: 、
+    - code: shot
+    - text: 、
+    - code: cover
+    - text: 、
+    - code: music
+    - strong:
+      - text: 没有独立的
+      - code: media
+      - text: 、
+      - code: speech
+      - text: 或 TTS 命令
+    - code: asset voice
+    - text: 仅支持：
+    - list:
+      - code: bind
+      - code: unbind
+    - code: asset voice bind
+    - text: 只接收资产引用和 JSON 输入。文档明确其内容为：
+  - code: "{ \"voice_id\": \"<匹配详情中的 voice_id>\", \"preview_audio_url\": \"<匹配详情中的 preview_url>\" }"
+  - paragraph:
+    - text: 这只是把音色 ID 和音色库预览绑定到角色资产，
+    - strong: 不接收朗读文本，也不生成新配音
+    - text: 。
+  - list:
+    - code: asset media
+    - text: 仅支持素材的
+    - code: select
+    - text: 、
+    - code: unselect
+    - text: 、
+    - code: import
+    - text: 分镜视频流程可将已绑定音色的预览音频作为模型参考输入，但也不是“真实
+    - code: voice_id
+    - text: + 文本”的独立语音合成入口
+    - text: CLI 初始化说明、相关帮助及随附参考中均未找到明确的模型服务 API 文档入口，也未找到可传
+    - code: voice_id
+    - text: 与朗读文本的接口说明
+  - paragraph:
+    - strong:
+      - text: 结论：当前 nextplay-cli 没有可用的“指定真实
+      - code: voice_id
+      - text: + 朗读文本”语音生成入口，也没有提供明确的模型服务 API 文档入口。
+    - text: 到此停止排查。
+  - generic: ASSISTANT / 2026/10/12 12:14:22
+  - generic: ↑30.6k ↓479
+  - generic "回答反馈":
+    - button "这个回答有帮助":
+    - button "这个回答需要改进":
+  - button "朗读回复":
+  - button "Copy assistant markdown":
+  - paragraph: 继续本独立验证。用户已授权：用现有音色库做声音参考，为一个人物生成平台支持此能力最省钱模型的最短有声视频，再提取音频核对台词/音色；测通后才考虑改Skill。目前这条消息只做能力和价格查询，不生成、不改项目或Skill。复用周岚及已匹配冷艳女帝音色。请实际调用 media list_models kind=video，读取支持声音参考输入且可生成指定中文对白的候选模型规则和当前计费，比较每款最短可生成片长在最低适用分辨率的总价（不是只比每秒价）。明确哪些实际支持 reference_audio、原生中文对白，列出真实模型ID、最短时长、分辨率、报价来源；价格查不到就标未知，不按外网价冒充平台价。同时核对现有真实工具是否支持视频提取音轨、音频转写/感知及保存可播放音频URL。不要调用任何付费生成，不读取凭据，不查看其他项目/线程。输出原始能力/计费证据及推荐。
+  - button "展开":
+    - generic: 展开
+  - generic: user / 2026/10/12 14:13:29
+  - button "已运行 17 个工具 Expand tool call":
+    - generic: 已运行 17 个工具
+    - button "Expand tool call":
+  - paragraph: 已完成只读核对；未调用付费生成，未读取凭据，也未访问或修改任何项目、线程或 Skill。
+  - heading "一、平台实际视频模型证据" [level=2]
+  - paragraph:
+    - code: media list_models kind=video
+    - text: 返回 30 个模型，其中以下
+    - strong:
+      - text: 12 个模型实际带有
+      - code: reference_audio
+      - text: 标签
+    - text: ：
+  - table:
+    - rowgroup:
+      - row "模型 ID 同时带 video_with_audio 规则确认的最短时长 最低分辨率 平台价格 最低配置总价":
+        - columnheader "模型 ID"
+        - columnheader "同时带 video_with_audio":
+          - text: 同时带
+          - code: video_with_audio
+        - columnheader "规则确认的最短时长"
+        - columnheader "最低分辨率"
+        - columnheader "平台价格"
+        - columnheader "最低配置总价"
+    - rowgroup:
+      - row "seedance-2.0-fast 是 4 秒 480p 未知 未知":
+        - cell "seedance-2.0-fast":
+          - code: seedance-2.0-fast
+        - cell "是":
+          - generic: 是
+        - cell "4 秒":
+          - generic: 4 秒
+        - cell "480p":
+          - generic: 480p
+        - cell "未知":
+          - generic: 未知
+        - cell "未知":
+          - generic: 未知
+      - row "seedance-2.0-mini 是 4 秒 480p 未知 未知":
+        - cell "seedance-2.0-mini":
+          - code: seedance-2.0-mini
+        - cell "是":
+          - generic: 是
+        - cell "4 秒":
+          - generic: 4 秒
+        - cell "480p":
+          - generic: 480p
+        - cell "未知":
+          - generic: 未知
+        - cell "未知":
+          - generic: 未知
+      - row "doubao-seedance-2.0-mini 是 4 秒 480p 未知 未知":
+        - cell "doubao-seedance-2.0-mini":
+          - code: doubao-seedance-2.0-mini
+        - cell "是":
+          - generic: 是
+        - cell "4 秒":
+          - generic: 4 秒
+        - cell "480p":
+          - generic: 480p
+        - cell "未知":
+          - generic: 未知
+        - cell "未知":
+          - generic: 未知
+      - row "minimax-h3-max-reference-to-video 是 规则未给出 规则枚举含 480p 未知 未知":
+        - cell "minimax-h3-max-reference-to-video":
+          - code: minimax-h3-max-reference-to-video
+        - cell "是":
+          - generic: 是
+        - cell "规则未给出":
+          - generic: 规则未给出
+        - cell "规则枚举含 480p":
+          - generic: 规则枚举含 480p
+        - cell "未知":
+          - generic: 未知
+        - cell "未知":
+          - generic: 未知
+      - row "grok-imagine-video-1.5 是 1 秒 480p 未知 未知":
+        - cell "grok-imagine-video-1.5":
+          - code: grok-imagine-video-1.5
+        - cell "是":
+          - generic: 是
+        - cell "1 秒":
+          - generic: 1 秒
+        - cell "480p":
+          - generic: 480p
+        - cell "未知":
+          - generic: 未知
+        - cell "未知":
+          - generic: 未知
+      - row "kling-avatar-professional 是 随驱动音频，不能指定 档位决定，不能指定 未知 未知":
+        - cell "kling-avatar-professional":
+          - code: kling-avatar-professional
+        - cell "是":
+          - generic: 是
+        - cell "随驱动音频，不能指定":
+          - generic: 随驱动音频，不能指定
+        - cell "档位决定，不能指定":
+          - generic: 档位决定，不能指定
+        - cell "未知":
+          - generic: 未知
+        - cell "未知":
+          - generic: 未知
+      - row "kling-avatar-standard 是 规则未给出 规则未明确约束 未知 未知":
+        - cell "kling-avatar-standard":
+          - code: kling-avatar-standard
+        - cell "是":
+          - generic: 是
+        - cell "规则未给出":
+          - generic: 规则未给出
+        - cell "规则未明确约束":
+          - generic: 规则未明确约束
+        - cell "未知":
+          - generic: 未知
+        - cell "未知":
+          - generic: 未知
+      - row "minimax-h3-video 否 候选规则分别为 4 秒或5秒 候选分别为 480p或720p 未知 未知":
+        - cell "minimax-h3-video":
+          - code: minimax-h3-video
+        - cell "否":
+          - strong: 否
+        - cell "候选规则分别为 4 秒或5秒":
+          - generic: 候选规则分别为 4 秒或5秒
+        - cell "候选分别为 480p或720p":
+          - generic: 候选分别为 480p或720p
+        - cell "未知":
+          - generic: 未知
+        - cell "未知":
+          - generic: 未知
+      - row "wan-3.0 是 2 秒 480p 未知 未知":
+        - cell "wan-3.0":
+          - code: wan-3.0
+        - cell "是":
+          - generic: 是
+        - cell "2 秒":
+          - generic: 2 秒
+        - cell "480p":
+          - generic: 480p
+        - cell "未知":
+          - generic: 未知
+        - cell "未知":
+          - generic: 未知
+      - row "doubao-seedance-2.0-fast 是 4 秒 480p 未知 未知":
+        - cell "doubao-seedance-2.0-fast":
+          - code: doubao-seedance-2.0-fast
+        - cell "是":
+          - generic: 是
+        - cell "4 秒":
+          - generic: 4 秒
+        - cell "480p":
+          - generic: 480p
+        - cell "未知":
+          - generic: 未知
+        - cell "未知":
+          - generic: 未知
+      - row "seedance-2.5 是 4 秒 480p 未知 未知":
+        - cell "seedance-2.5":
+          - code: seedance-2.5
+        - cell "是":
+          - generic: 是
+        - cell "4 秒":
+          - generic: 4 秒
+        - cell "480p":
+          - generic: 480p
+        - cell "未知":
+          - generic: 未知
+        - cell "未知":
+          - generic: 未知
+      - row "seedance-2.0 是 4 秒 480p 未知 未知":
+        - cell "seedance-2.0":
+          - code: seedance-2.0
+        - cell "是":
+          - generic: 是
+        - cell "4 秒":
+          - generic: 4 秒
+        - cell "480p":
+          - generic: 480p
+        - cell "未知":
+          - generic: 未知
+        - cell "未知":
+          - generic: 未知
+  - heading "关键规则证据" [level=3]
+  - list:
+    - text: Seedance 2.0 系列：
+    - list:
+      - code: duration
+      - text: ：4–15 秒整数
+      - code: resolution
+      - text: ：最低 480p
+      - listitem: 参考音频最大 15 MiB
+      - strong: 输入参考音频时必须同时提供参考图或参考视频
+    - text: Seedance 2.5：
+    - list:
+      - code: duration
+      - text: ：4–30 秒整数
+      - listitem: 最低 480p
+      - listitem: 参考音频最大 15 MiB
+    - code: wan-3.0
+    - text: ：
+    - list:
+      - code: duration
+      - text: ：最短 2 秒，最长30秒
+      - listitem: 最低 480p
+      - listitem: 最多5段参考音频，单段小于15 MiB
+      - listitem: 规则未要求参考音频必须搭配视觉参考
+    - code: grok-imagine-video-1.5
+    - text: ：
+    - list:
+      - listitem: 最短1秒、最低480p
+      - listitem: 最多3段参考音频
+      - listitem: 强制有声输出
+      - text: 规则文案称输出音轨为“
+      - strong: 驱动音频
+      - text: ”，因此不能据此认定它会根据提示词把声音参考转换成另一句新对白
+    - code: kling-avatar-professional
+    - text: ：
+    - list:
+      - listitem: 必须提供人物图和驱动音频
+      - listitem: 输出时长随驱动音频
+      - listitem: 驱动音频直接进入视频音轨
+      - listitem: 不属于“用音色参考朗读另一句文本”的明确合同
+    - code: minimax-h3-max-reference-to-video
+    - text: 、
+    - code: kling-avatar-standard
+    - text: ：
+    - list:
+      - text: 模型列表标有
+      - code: reference_audio
+      - listitem: 但当前规则响应为空或信息不足，无法确认最短时长和实际声音参考语义
+  - heading "二、中文对白能力结论" [level=2]
+  - paragraph: 当前模型清单与校验规则只证明：
+  - list:
+    - text: 哪些模型接受
+    - code: reference_audio
+    - text: ；
+    - listitem: 哪些模型能输出有声音轨；
+    - listitem: 部分模型的时长、分辨率和素材约束。
+  - paragraph:
+    - text: 规则中
+    - strong: 没有任何模型明确声明
+    - text: ：
+  - blockquote:
+    - paragraph: 能把一段音色库预览只作为“说话人音色参考”，再根据 prompt 原生朗读另一句指定中文对白。
+  - paragraph: 也没有语言枚举或“中文对白/中文口型/声音克隆后朗读新文本”的明确字段。因此：
+  - list:
+    - strong:
+      - text: 实际确认支持
+      - code: reference_audio
+    - text: ：上述12个模型；
+    - strong: 实际确认原生生成指定中文对白并保持参考音色
+    - text: ：目前
+    - strong: 0 个
+    - text: ；
+    - text: 不能仅凭
+    - code: reference_audio + video_with_audio
+    - text: 标签宣称该能力已经成立。
+  - paragraph:
+    - text: 尤其是 Grok 与可灵数字人的规则明确使用“驱动音频”表述，更接近把输入音频作为成片声音和口型驱动，而不是读取
+    - code: voice_id
+    - text: 后朗读新台词。
+  - heading "三、平台计费证据" [level=2]
+  - paragraph: 本次真实来源：
+  - list:
+    - code: media list_models kind=video
+    - text: 各候选的
+    - code: media get_model_validation_rules
+    - listitem: 对 NextPlay 官方域名的公开计费页面检索
+  - paragraph: 结果：
+  - list:
+    - listitem: 模型列表未返回价格字段；
+    - listitem: 模型规则未返回单价、计费单位或估价字段；
+    - listitem: 未找到可核验的 NextPlay 平台官方公开计费页面；
+    - listitem: 搜索结果只有无关第三方页面，未采用。
+  - paragraph:
+    - text: 因此所有候选的
+    - strong: 平台价格和最低配置总价均为未知
+    - text: 。不能用厂商官网、外部聚合站或每秒市场价冒充当前平台价格，也无法据此真实判定“最省钱模型”。
+  - heading "四、音轨提取、转写与音色核对能力" [level=2]
+  - heading "视频提取音轨" [level=3]
+  - list:
+    - text: 当前
+    - code: media
+    - text: 工具没有“提取音轨”动作；
+    - text: 当前执行环境未发现
+    - code: ffmpeg
+    - text: ；
+    - listitem: 因而现有工具链中没有已确认的视频转独立音频入口。
+  - heading "音频转写" [level=3]
+  - paragraph: 实际存在：
+  - list:
+    - text: ASR 模型：
+    - code: doubao-asr-flash
+    - text: 标签：
+    - list:
+      - code: speech2text
+      - code: asr_timestamps
+      - code: asr_diarization
+  - paragraph:
+    - code: media transcribe
+    - text: 可接收一个可直接访问的 HTTP(S)
+    - strong: 音频 URL
+    - text: 。它不能按当前 schema 直接接收视频 URL，所以仍依赖先提取音轨。
+  - heading "音色感知与一致性核验" [level=3]
+  - list:
+    - code: multimodal_understand
+    - text: 可以理解公开 HTTP(S) 音频或带音轨视频，可用于主观核对“是否为中低音、冷静利落”等声音特征；
+    - text: 但它不是供应商级声纹验证，不能严格证明生成声音与
+    - code: voice_id
+    - text: 属于同一音色；
+    - listitem: 当前没有声纹相似度或 speaker verification 工具。
+  - heading "保存可播放音频 URL" [level=3]
+  - list:
+    - listitem: 如果已有直接音频 HTTP(S) URL，可通过文件托管能力保存资源；
+    - listitem: 但现有链路无法从视频中提取独立音轨，因此不能保证产生新的独立可播放音频 URL；
+    - listitem: 视频自身若返回可播放 URL，可直接播放其内嵌音轨，但这不等于独立音频文件。
+  - heading "五、推荐" [level=2]
+  - paragraph:
+    - text: 目前
+    - strong: 无法按平台总价推荐真正“最省钱”模型
+    - text: ，因为平台计费数据缺失。
+  - paragraph: 若只按已确认的最低生成规格和输入约束排序：
+  - list:
+    - paragraph:
+      - strong:
+        - text: 能力排查首选：
+        - code: wan-3.0
+    - list:
+      - listitem: 最短2秒、最低480p；
+      - text: 接受
+      - code: reference_audio
+      - text: ；
+      - listitem: 未要求参考音频必须搭配人物图；
+      - listitem: 支持有声视频。
+      - listitem: 但“参考音色朗读新中文台词”仍未被规则明确保证。
+    - paragraph:
+      - strong:
+        - text: 表面最短：
+        - code: grok-imagine-video-1.5
+    - list:
+      - listitem: 最短1秒、最低480p；
+      - listitem: 但规则把参考音频描述为驱动音频，不适合验证“用预览音色说另一句新台词”。
+    - paragraph:
+      - strong: Seedance Mini/Fast
+    - list:
+      - listitem: 最短4秒、480p；
+      - listitem: 参考音频必须同时提供参考图或参考视频；
+      - listitem: 当前独立验证若不生图，需要另有合法视觉参考，成本和输入复杂度更高。
+  - paragraph:
+    - strong:
+      - text: 最终结论：当前只能推荐
+      - code: wan-3.0
+      - text: 作为后续最小规格的能力实验候选，不能宣称它是平台最便宜，也不能在付费生成前确认它会用“冷艳女帝”的声音参考朗读“别替我决定，我自己来。”。此外，生成后独立提取音轨的现有工具链仍有明确缺口。
+  - generic: ASSISTANT / 2026/10/12 14:15:04
+  - generic: ↑52.6k ↓2.5k
+  - generic "回答反馈":
+    - button "这个回答有帮助":
+    - button "这个回答需要改进":
+  - button "朗读回复":
+  - button "Copy assistant markdown":
+  - paragraph: 用户已确认：先用 Wan 3.0 做一次最小规格验证。现在授权且只授权生成1个视频，不生成图片、不重试生成、不改NextPlay项目、SP或Skill、不操作其他线程。你之前查询的价格缺失保留为未知，不宣称它是平台最便宜。按刚查的真实 wan-3.0 模型规则和当前schema调用，最低480p、最短2秒、有声输出，音色参考必须实际传入已匹配的“冷艳女帝” voice_id=vl_8f86a541-05cc-406d-a753-e468a09e63eb 对应的真实预览URL（可复用之前详情；若URL状态不明仅重查该音色详情），不要只在prompt写音色名。虚构人物周岚，30岁女性，冷静果断，声音类型酷飒御姐，中低音、直接利落。画面只需单人物安静室内静止近景，不要求昂贵复杂动作。唯一口述台词：“这事，我来。”，正常清晰中文，一口说完并在2秒内完整收尾；禁止增加欢迎语、客服话术、旁白和其他台词。不要音乐，不要额外音效，只有人物对白与极轻环境底声。把库预览只当声线参考，不复制参考里的原台词/声轨。严格遵守模型真实输入合同，不猜字段。等待这唯一任务最终成功/失败，状态不明只恢复同一任务，不重新提交。成功返回最终真实视频URL、resource/task ID、实际model、时长分辨率、提交的完整原文和实际声音参考URL；可用multimodal_understand对参考音频与成片做核听，分别客观报告实际说了什么、是否有音乐或杂音、声线年龄/音高/质感/语气是否接近参考，不把参考标签当核听结论。不要伪造声纹分数。视频下载及提取音轨我在本机用已安装的FFmpeg完成，你这里不必安装FFmpeg、不需要提取工具。失败如实停止并保留结果。
+  - button "展开":
+    - generic: 展开
+  - generic: user / 2026/10/12 14:17:32
+  - button "已运行 2 个工具 Collapse tool call":
+    - generic: 已运行 2 个工具
+    - button "Collapse tool call":
+  - button "正在生成唯一验证视频 2026/10/12 14:17:48" [expanded]:
+    - generic: 正在生成唯一验证视频
+    - time: 2026/10/12 14:17:48
+  - generic: media
+  - button "Copy tool call ID call_rZmDGg70PR9ojXI1AJRSGd2N":
+    - generic: CALL ID
+    - generic: call_rZmDGg70PR9ojXI1AJRSGd2N
+  - term: 为何
+  - definition: 用户已明确授权用 Wan 3.0 做一次最小规格的真实声音参考验证。
+  - term: 做什么
+  - definition: 让周岚在安静室内近景中只说“这事，我来。”，等待该唯一任务最终成功或失败。
+  - term: 怎么做
+  - definition: 严格使用已查询的 wan-3.0 合同，提交一次 2 秒、480p、有声视频任务，并将真实音色预览 URL 作为 reference_audio；不生成图片、不重试。
+  - paragraph: Arguments
+  - button "COLLAPSE ALL":
+  - button "WRAP":
+  - button "COPY":
+  - 'button "- {"':
+    - generic: "-"
+    - generic: "{"
+  - generic: "\"action\": \"generate\""
+  - generic: "\"audio\": true"
+  - generic: "\"duration\": 2"
+  - generic: "\"kind\": \"video\""
+  - generic: "\"model\": \"wan-3.0\""
+  - 'button "- \"parts\": ["':
+    - generic: "-"
+    - generic: "\"parts\": ["
+  - 'button "- \"0\": {"':
+    - generic: "-"
+    - generic: "\"0\": {"
+  - generic: "\"text\": \"生成一段2秒、480p的有声写实人物视频。虚构人物周岚，30岁女性，冷静果断，成年女性中低音，声线酷飒、直接利落、不撒娇。画面为安静室内的单人物静止近景，人物正对或微侧镜头，动作极少，构图简单稳定。她只用正常、清晰的中文，一口完整说出：“这事，我来。”，必须在2秒内完整收尾。仅有人物对白与极轻微室内环境底声；不要音乐，不要额外音效。禁止欢迎语、客服话术、旁白以及任何其他台词。参考音频只用于声线、音高、质感和说话气质参考，不复制参考音频中的原台词或原声轨。\""
+  - generic: "\"type\": \"prompt\""
+  - generic: "}"
+  - 'button "- \"1\": {"':
+    - generic: "-"
+    - generic: "\"1\": {"
+  - 'button "- \"audio\": {"':
+    - generic: "-"
+    - generic: "\"audio\": {"
+  - generic: "\"url\": \"https://cdn.sandcdn.com/console-uploads/v621791546998657.wav\""
+  - generic: "}"
+  - generic: "\"type\": \"reference_audio\""
+  - generic: "}"
+  - generic: "]"
+  - generic: "\"resolution\": \"480p\""
+  - generic: "}"
+  - button "查看完整结果":
+    - generic: 查看完整结果
+  - paragraph: Result
+  - button "WRAP":
+  - button "COPY":
+  - generic: "{\"content\":{\"content\":[{\"text\":\"{\\\"action\\\":\\\"generate\\\",\\\"artifacts\\\":[{\\\"duration\\\":2,\\\"filename\\\":\\\"primary-1.mp4\\\",\\\"height\\\":480,\\\"mimeType\\\":\\\"video/mp4\\\",\\\"name\\\":\\\"primary-1.mp4\\\",\\\"role\\\":\\\"primary\\\",\\\"size\\\":593956,\\\"sizeBytes\\\":593956,\\\"type\\\":\\\"video\\\",\\\"uri\\\":\\\"sandbox://app-data/threads/hosted/files/1bd9409c12efb5a50899acaebdc6507442d1205f4477a1bf17ae5eaf7997cbac/primary-1.mp4\\\",\\\"url\\\":\\\"sandbox://app-data/threads/hosted/files/1bd9409c12efb5a50899acaebdc6507442d1205f4477a1bf17ae5eaf7997cbac/primary-1.mp4\\\",\\\"width\\\":854}],\\\"kind\\\":\\\"video\\\",\\\"model\\\":\\\"wan-3.0\\\",\\\"modelTaskId\\\":\\\"01a12ec2-a84e-7470-a988-21e35e70058d\\\",\\\"outputs\\\":[{\\\"duration\\\":2,\\\"filename\\\":\\\"primary-1.mp4\\\",\\\"height\\\":480,\\\"mimeType\\\":\\\"video/mp4\\\",\\\"name\\\":\\\"primary-1.mp4\\\",\\\"role\\\":\\\"primary\\\",\\\"size\\\":593956,\\\"sizeBytes\\\":593956,\\\"type\\\":\\\"video\\\",\\\"uri\\\":\\\"sandbox://app-data/threads/hosted/files/1bd9409c12efb5a50899acaebdc6507442d1205f4477a1bf17ae5eaf7997cbac/primary-1.mp4\\\",\\\"url\\\":\\\"sandbox://app-data/threads/hosted/fi...[truncated]"
+  - button "正在核听声音参考 2026/10/12 14:22:24":
+    - generic: 正在核听声音参考
+    - time: 2026/10/12 14:22:24
+  - heading "生成结果：成功" [level=2]
+  - paragraph:
+    - text: 仅提交并完成了
+    - strong: 1 个视频任务
+    - text: ，未生成图片、未重试、未修改任何 NextPlay 项目、SP 或 Skill。
+  - list:
+    - strong: 视频
+    - text: ：
+    - link "播放/下载生成视频":
+      - /url: "#"
+    - strong: 任务 ID
+    - text: ：
+    - code: 01a12ec2-a84e-7470-a988-21e35e70058d
+    - strong: 模型
+    - text: ：
+    - code: wan-3.0
+    - strong: 时长
+    - text: ：2 秒
+    - strong: 分辨率
+    - text: ：480p（实际尺寸 854×480）
+    - strong: 格式
+    - text: ：MP4
+    - strong: 文件大小
+    - text: ：593,956 字节
+    - strong: 有声输出参数
+    - text: ：
+    - code: audio=true
+    - strong: 平台价格
+    - text: ：未知，不宣称为平台最便宜
+  - heading "实际声音参考" [level=3]
+  - list:
+    - strong: 匹配音色
+    - text: ：冷艳女帝
+    - strong: voice_id
+    - text: ：
+    - code: vl_8f86a541-05cc-406d-a753-e468a09e63eb
+    - strong: 实际提交的 reference_audio URL
+    - text: ：
+    - code: https://cdn.sandcdn.com/console-uploads/v621791546998657.wav
+  - paragraph:
+    - text: 声音参考以真实
+    - code: reference_audio
+    - text: part 提交，并非只在提示词里写音色名称。
+  - heading "提交的完整提示词原文" [level=3]
+  - blockquote:
+    - paragraph: 生成一段2秒、480p的有声写实人物视频。虚构人物周岚，30岁女性，冷静果断，成年女性中低音，声线酷飒、直接利落、不撒娇。画面为安静室内的单人物静止近景，人物正对或微侧镜头，动作极少，构图简单稳定。她只用正常、清晰的中文，一口完整说出：“这事，我来。”，必须在2秒内完整收尾。仅有人物对白与极轻微室内环境底声；不要音乐，不要额外音效。禁止欢迎语、客服话术、旁白以及任何其他台词。参考音频只用于声线、音高、质感和说话气质参考，不复制参考音频中的原台词或原声轨。
+  - heading "核听状态" [level=2]
+  - paragraph: 我尝试对参考音频进行客观核听，但听觉分析服务未成功消费音频，返回“无法进行声音的客观核听”。因此该次分析结果不可作为听感证据。
+  - paragraph: 生成视频只有托管资源地址，没有可交给当前核听工具的直接 HTTP(S) URL；所以本次不能可靠报告：
+  - list:
+    - listitem: 成片实际逐字说了什么；
+    - listitem: 是否存在音乐、杂音或额外话术；
+    - listitem: 成片声线与参考音频在年龄感、音高、质感、语气上的接近程度。
+  - paragraph: 我没有把提示词或“冷艳女帝”标签冒充实际核听结论，也没有伪造声纹分数。可使用上方视频资源在本机播放，并按你的计划用 FFmpeg 提取音轨进一步核验。
+  - generic: ASSISTANT / 2026/10/12 14:22:58
+  - generic: ↑57.3k ↓843
+  - generic "回答反馈":
+    - button "这个回答有帮助":
+    - button "这个回答需要改进":
+  - button "朗读回复":
+  - button "Copy assistant markdown":
+  - paragraph: 继续只核验现有唯一成片，不生成任何媒体，不改项目/SP/Skill。我已将任务 01a12ec2-a84e-7470-a988-21e35e70058d 的真实视频用本机FFmpeg提取为附件 trial.wav（16kHz单声道PCM，约2.02秒），请对附件真实HTTP音频URL调用 media transcribe（doubao-asr-flash，若有language设中文，不传预期台词作提示），输出实际逐字转写和原始结果；再用实际可消费音频的理解工具核对该音频与原冷艳女帝参考 https://cdn.sandcdn.com/console-uploads/v621791546998657.wav 的声线、语气，检查音乐/额外台词/截断。如果服务未消费音频，明确失败，不根据提示词猜听感。目标台词“这事，我来。”仅用于拿到真实转写后比对，不得当作听到的文字。请同时返回附件的实际音频URL供证据保存。禁止重新生成视频或配音。
+  - button "展开":
+    - generic: 展开
+  - region "1 file":
+    - link "trial.wav WAVE / 63 KB":
+      - /url: https://agent-assets.sandaii.cn/api/runtime/assets/download/ast_01M4QDBJAE64PT3RRFKM191QEX?expires=1886395144&sig=REDACTED
+      - paragraph: trial.wav
+      - paragraph: WAVE / 63 KB
+  - generic: user / 2026/10/12 14:39:01
+  - button "已运行 3 个工具 Expand tool call":
+    - generic: 已运行 3 个工具
+    - button "Expand tool call":
+  - paragraph: 核验未能继续，原因是当前托管接口只返回了附件的 ResourceLink，没有返回可供媒体服务消费的真实 HTTP(S) URL。
+  - heading "附件证据" [level=3]
+  - list:
+    - text: 文件：
+    - code: trial.wav
+    - text: 类型：
+    - code: audio/wave
+    - listitem: 大小：64,722 字节
+    - text: SHA-256：
+    - code: ce02df139f5a44e70587388f58a8e6e45cd760b042afb99ef87b0da6f78b0859
+    - text: 托管资源：
+    - code: sandbox://app-data/threads/hosted/files/ce02df139f5a44e70587388f58a8e6e45cd760b042afb99ef87b0da6f78b0859/trial.wav
+    - strong: 实际 HTTP(S) 音频 URL：未提供
+  - paragraph:
+    - code: media transcribe
+    - text: 和音频理解工具都只接受可直接访问的 HTTP(S) URL，明确不接受
+    - code: sandbox://
+    - text: ResourceLink。因此：
+  - list:
+    - text: 未调用
+    - code: doubao-asr-flash
+    - text: ，没有真实转写结果；
+    - listitem: 未对成片音轨进行听感分析；
+    - listitem: 未将目标台词“这事，我来。”冒充听写结果；
+    - listitem: 未根据提示词猜测音乐、额外台词、截断或声线；
+    - listitem: 未重新生成任何媒体，也未修改项目、SP 或 Skill。
+  - paragraph: 原参考音频仍为：
+  - paragraph:
+    - code: https://cdn.sandcdn.com/console-uploads/v621791546998657.wav
+  - paragraph:
+    - text: 由于成片附件缺少媒体服务可消费的 HTTP(S) 地址，无法进行有效的双音频比较。本次结果为：
+    - strong: 核验失败（输入 URL 交付缺口）
+    - text: 。
+  - generic: ASSISTANT / 2026/10/12 14:39:45
+  - generic: ↑59.9k ↓892
+  - generic "回答反馈":
+    - button "这个回答有帮助":
+    - button "这个回答需要改进":
+  - button "朗读回复":
+  - button "Copy assistant markdown":
+  - paragraph: Studio附件链接在真实页面已提供HTTP地址，刚才上下文未给到你。下面是刚从 trial.wav 附件链接读取的真实href，不是猜测URL： https://agent-assets.sandaii.cn/api/runtime/assets/download/ast_01M4QDBJAE64PT3RRFKM191QEX?expires=1886395144&sig=REDACTED 请直接使用此URL调用 media transcribe，model=doubao-asr-flash。不传预期台词作提示。再用此URL与原参考音频做声音对比。用户已授权上传及核验该音频，这是同一文件同一任务；不要重新托管而丢掉HTTP地址，不生成任何媒体、不改项目或Skill。若URL访问失败，报告真实错误。
+  - button "展开":
+    - generic: 展开
+  - generic: user / 2026/10/12 14:40:16
+  - button "已运行 3 个工具 Collapse tool call":
+    - generic: 已运行 3 个工具
+    - button "Collapse tool call":
+  - button "正在转写成片音轨 2026/10/12 14:40:26":
+    - generic: 正在转写成片音轨
+    - time: 2026/10/12 14:40:26
+  - button "正在核听并对比两段声音 2026/10/12 14:40:54":
+    - generic: 正在核听并对比两段声音
+    - time: 2026/10/12 14:40:54
+  - button "正在恢复声音对比核验 2026/10/12 14:42:55" [expanded] [active]:
+    - generic: 正在恢复声音对比核验
+    - time: 2026/10/12 14:42:55
+  - generic: multimodal_understand
+  - button "Copy tool call ID call_abhufW7EBO9tI7r2eHB5GojS":
+    - generic: CALL ID
+    - generic: call_abhufW7EBO9tI7r2eHB5GojS
+  - term: 为何
+  - definition: 首次失败属于可重试的临时服务错误，音频地址与核验范围均保持不变。
+  - term: 做什么
+  - definition: 在上次理解服务暂时不可用后，再次核验两段实际音频。
+  - term: 怎么做
+  - definition: 对同一双音频核听请求做一次服务级恢复重试，不生成或修改任何媒体。
+  - paragraph: Arguments
+  - button "COLLAPSE ALL":
+  - button "WRAP":
+  - button "COPY":
+  - 'button "- {"':
+    - generic: "-"
+    - generic: "{"
+  - generic: "\"instruction\": \"这是一次双音频客观核听比较。音频1是成片提取音轨，音频2是原声音参考。必须实际消费两段音频后再回答；若任一未被消费，请明确指出并停止比较。分别报告每段实际听到的逐字内容、是否有音乐、环境底声/杂音、是否有额外台词、是否截断；并比较两者说话者的大致年龄感、音高、声音质感、语气、节奏与接近程度。不要依据外部音色名称或预期台词推断，不要给声纹相似度分数。\""
+  - generic: "\"limit\": 2"
+  - 'button "- \"media\": ["':
+    - generic: "-"
+    - generic: "\"media\": ["
+  - 'button "- \"0\": {"':
+    - generic: "-"
+    - generic: "\"0\": {"
+  - generic: "\"url\": \"https://agent-assets.sandaii.cn/api/runtime/assets/download/ast_01M4QDBJAE64PT3RRFKM191QEX?expires=1886395144&sig=REDACTED\""
+  - generic: "}"
+  - 'button "- \"1\": {"':
+    - generic: "-"
+    - generic: "\"1\": {"
+  - generic: "\"url\": \"https://cdn.sandcdn.com/console-uploads/v621791546998657.wav\""
+  - generic: "}"
+  - generic: "]"
+  - generic: "\"offset\": 0"
+  - generic: "\"storage\": \"\""
+  - generic: "}"
+  - button "查看完整结果":
+    - generic: 查看完整结果
+  - paragraph: Result
+  - button "COLLAPSE ALL":
+  - button "WRAP":
+  - button "COPY":
+  - 'button "- {"':
+    - generic: "-"
+    - generic: "{"
+  - 'button "- \"content\": {"':
+    - generic: "-"
+    - generic: "\"content\": {"
+  - generic: "\"content\": null"
+  - generic: "\"isError\": true"
+  - generic: "}"
+  - 'button "- \"error\": {"':
+    - generic: "-"
+    - generic: "\"error\": {"
+  - generic: "\"action\": \"retry\""
+  - generic: "\"code\": \"ProviderTransient\""
+  - generic: "\"message\": \"multimodal model failed: 模型 gemini-3.1-pro 的服务暂时不可用，请稍后重试或切换模型。\""
+  - generic: "\"retryable\": true"
+  - generic: "}"
+  - generic: "\"status\": \"failed\""
+  - generic: "}"
+  - heading "转写成功" [level=2]
+  - paragraph:
+    - text: 直接使用用户提供的真实 HTTP 音频地址调用了
+    - code: doubao-asr-flash
+    - text: ，未传入预期台词提示。
+  - paragraph:
+    - strong: 附件实际音频 URL：
+    - link "https://agent-assets.sandaii.cn/api/runtime/assets/download/ast_01M4QDBJAE64PT3RRFKM191QEX?expires=1886395144&sig=REDACTED":
+      - /url: https://agent-assets.sandaii.cn/api/runtime/assets/download/ast_01M4QDBJAE64PT3RRFKM191QEX?expires=1886395144&sig=REDACTED
+  - heading "实际逐字转写" [level=3]
+  - blockquote:
+    - paragraph: 这事我来。
+  - paragraph: 与目标台词“这事，我来。”相比，文字一致，仅 ASR 标点未保留逗号。
+  - heading "原始识别结果" [level=3]
+  - code: "{ \"action\": \"transcribe\", \"kind\": \"asr\", \"model\": \"doubao-asr-flash\", \"modelTaskId\": \"01a12ed7-59f2-783d-b389-63dc27a1488f\", \"status\": \"success\", \"transcript\": \"这事我来。\", \"outputs\": [ { \"type\": \"text\", \"role\": \"transcript\", \"duration\": 2.02, \"text\": \"这事我来。\", \"utterances\": [ { \"start\": 0.57, \"end\": 1.81, \"text\": \"这事我来。\" } ] } ], \"usage\": { \"audio_seconds\": 2.02, \"prompt_tokens\": 0, \"completion_tokens\": 0, \"total_tokens\": 0 } }"
+  - paragraph:
+    - text: 识别到的对白从
+    - strong: 0.57 秒
+    - text: 开始，到
+    - strong: 1.81 秒
+    - text: 结束，在2.02秒音频结束前完成。ASR 未识别到额外台词。
+  - heading "声音对比结果" [level=2]
+  - paragraph: 已使用以下两段真实地址发起双音频核听：
+  - list:
+    - listitem: 成片提取音轨：上述附件 HTTP URL
+    - text: 原参考音频：
+    - link "https://cdn.sandcdn.com/console-uploads/v621791546998657.wav":
+      - /url: https://cdn.sandcdn.com/console-uploads/v621791546998657.wav
+  - paragraph: 但音频理解服务连续两次返回真实错误：
+  - code: "ProviderTransient: 模型 gemini-3.1-pro 的服务暂时不可用，请稍后重试或切换模型。"
+  - paragraph: 因此当前无法可靠报告：
+  - list:
+    - listitem: 两段声音的年龄感、音高、质感和语气是否接近；
+    - listitem: 是否存在音乐、环境杂音；
+    - listitem: 参考音频实际说了什么；
+    - listitem: 成片末尾是否存在听觉上的截断。
+  - paragraph: 没有根据提示词或“冷艳女帝”标签猜测听感，也没有伪造声纹相似度。未生成任何媒体，未修改项目或 Skill。
+  - generic: ASSISTANT / 2026/10/12 14:43:42
+  - generic: ↑61.8k ↓626
+  - generic "回答反馈":
+    - button "这个回答有帮助":
+    - button "这个回答需要改进":
+  - button "朗读回复":
+  - button "Copy assistant markdown":
+  - paragraph: 台词转写已经通过，不必重复。声音分析 gemini-3.1-pro 两次不可用，请只核对当前 multimodal_understand 实际 schema 是否允许选择其他已声明且支持音频的模型；若允许，改用当前工具实际可选的一款对同两段HTTP音频做一次对比（无需再上传或生成）；若工具不支持切换或没有其他已声明可用模型，明确说明并停止。不要猜模型字段，不根据ASR判断音色，不生成任何媒体、不修改资源。
+  - button "展开":
+    - generic: 展开
+  - generic: user / 2026/10/12 14:44:27
+  - paragraph:
+    - text: 只读核对当前
+    - code: multimodal_understand
+    - text: 实际 Schema：
+  - list:
+    - text: 可传字段只有：
+    - list:
+      - code: media
+      - code: instruction
+      - code: limit
+      - code: offset
+      - code: storage
+    - strong:
+      - text: 没有
+      - code: model
+      - text: 或
+      - code: model_id
+      - text: 字段
+    - code: storage
+    - text: 仅是目标 Model Service 存储标识，不是模型选择参数
+    - text: 当前工具说明只明确提到其音频约束对应
+    - strong: Gemini 3.1 Pro
+    - text: ，没有声明其他可选音频理解模型，也没有模型列表查询动作
+  - paragraph: 因此无法按当前工具合同切换到其他模型；若擅自添加模型字段或填写其他模型名称，会属于猜字段/猜模型。
+  - paragraph:
+    - text: 本轮未再次转写、未重新上传、未调用声音分析、未生成媒体，也未修改任何资源。结论：
+    - strong: 当前没有已声明的可切换音频理解模型入口，停止核验。
+  - generic: ASSISTANT / 2026/10/12 14:44:36
+  - generic: ↑62.6k ↓206
+  - generic "回答反馈":
+    - button "这个回答有帮助":
+    - button "这个回答需要改进":
+  - button "朗读回复":
+  - button "Copy assistant markdown":
+  - complementary "用户消息导航，共 9 轮":
+    - button "第 1 轮 · 独立语音能力验证，只查询不生成、不创建或修改任何 NextPlay 项目，不读取其他线程。请调用 media action=list_models kind=speech，返回实际列表；若有可… · 2026/10/12 12:09:03"
+    - button "第 2 轮 · 继续做一次独立真实试听验证，范围仅一个虚构角色的一句配音，不创建/修改任何 NextPlay 项目，不生图、不操作其他线程。角色：周岚，30岁女性，冷静果断，声音类型“酷飒御姐”，成年女声中低… · 2026/10/12 12:09:49"
+    - button "第 3 轮 · 继续只读排查，不生成。错误说明 audio URL 触发 voice_clone，但候选具备 preset_voice。请核对当前 media 工具实际 inputSchema 和已查模型规则… · 2026/10/12 12:11:31"
+    - button "第 4 轮 · 请做最后一项只读能力核对，不生成不改项目：读取 nextplay-cli 的初始化说明以及 CLI --help/相关 media help，检查是否已有能“指定真实 voice_id + 朗… · 2026/10/12 12:13:07"
+    - button "第 5 轮 · 继续本独立验证。用户已授权：用现有音色库做声音参考，为一个人物生成平台支持此能力最省钱模型的最短有声视频，再提取音频核对台词/音色；测通后才考虑改Skill。目前这条消息只做能力和价格查询，不… · 2026/10/12 14:13:29"
+    - button "第 6 轮 · 用户已确认：先用 Wan 3.0 做一次最小规格验证。现在授权且只授权生成1个视频，不生成图片、不重试生成、不改NextPlay项目、SP或Skill、不操作其他线程。你之前查询的价格缺失保留… · 2026/10/12 14:17:32"
+    - button "第 7 轮 · 继续只核验现有唯一成片，不生成任何媒体，不改项目/SP/Skill。我已将任务 01a12ec2-a84e-7470-a988-21e35e70058d 的真实视频用本机FFmpeg提取为附件… · 2026/10/12 14:39:01"
+    - button "第 8 轮 · Studio附件链接在真实页面已提供HTTP地址，刚才上下文未给到你。下面是刚从 trial.wav 附件链接读取的真实href，不是猜测URL： https://agent-assets.s… · 2026/10/12 14:40:16"
+    - button "第 9 轮 · 台词转写已经通过，不必重复。声音分析 gemini-3.1-pro 两次不可用，请只核对当前 multimodal_understand 实际 schema 是否允许选择其他已声明且支持音频的… · 2026/10/12 14:44:27"
+  - button "回到底部":
+  - combobox "消息输入": 输入消息，Cmd/Ctrl + Enter 发送...
+  - button "添加素材":
+  - button:
+    - text: 文件
+  - button:
+    - text: 文件夹
+  - button "gpt-5.6-sol":
+    - generic: gpt-5.6-sol
+  - button "配置模型运行参数":
+  - combobox "选择 Agent 模式":
+    - option "执行前确认 · approval"
+    - option "全自动 · full-access" [selected]
+  - button "发送" [disabled]:
+    - generic: 发送
+  - button "调整 Chat Side Panel 宽度"
+  - complementary:
+    - tablist "Chat Side Panel":
+      - tab "Files" [selected]:
+        - generic: Files
+      - tab "Summarization":
+        - generic: Summarization
+      - tab "Task":
+        - generic: Task
+    - button "隐藏 Chat Side Panel":
+    - button "收起文件树":
+    - button "返回文件":
+      - generic: 返回文件
+    - generic: /hosted/files/1bd9409c12efb5a50899acaebdc6507442d1205f4477a1bf17ae5eaf7997cbac/primary-1.mp4
+    - button "复制 Resource Link":
+      - text: 复制链接
+    - button "全屏预览":
+      - text: 全屏
+    - button "刷新":
+      - text: 刷新
+    - complementary "文件树":
+      - generic: Explorer
+      - button "刷新文件树":
+      - button ".skills":
+        - generic: .skills
+      - button "hosted" [expanded]:
+        - generic: hosted
+      - button "files" [expanded]:
+        - generic: files
+      - button "1bd9409c12efb5a50899acaebdc6507442d1205f4477a1bf17ae5eaf7997cbac" [expanded]:
+        - generic: 1bd9409c12efb5a50899acaebdc6507442d1205f4477a1bf17ae5eaf7997cbac
+      - button "primary-1.mp4":
+        - generic: primary-1.mp4
+    - generic "primary-1.mp4": 您的浏览器不支持该视频格式。

@@ -1,0 +1,8 @@
+实际使用已安装的本机 FFmpeg，不是平台运行时能力。
+无变声、降噪、配乐或台词拼接。
+
+ffmpeg -i trial.mp4 -vn -c:a copy trial.m4a
+ffmpeg -i trial.mp4 -vn -ac 1 -ar 16000 -c:a pcm_s16le trial.wav
+
+原视频：H.264 854x480，2.000 秒；原音轨：AAC，44100Hz，双声道，2.020 秒。
+WAV 音量检测：mean -23.6 dB，max -7.1 dB，证明并非全静音，不能据此判断音色或音乐是否合格。
